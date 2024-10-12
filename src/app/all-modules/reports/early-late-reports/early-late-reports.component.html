@@ -1,0 +1,181 @@
+<div class="content container-fluid">
+    <div class="mb-2">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="d-flex align-items-baseline">
+                    <i style="font-size:20px" class="fa fa-arrow-left"
+                        (click)="back()" aria-label="back"></i>
+                    <h3 class="ms-4 page-title">
+                        {{globalServ.showLabel('cameLateAndleftEarlyHeader')}}
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row filter-row">
+        <div class="col-sm-6 col-md-3">
+            <div class>
+                <label>{{globalServ.getGlobalNames('employee')}}</label>
+                <ng-select
+                    [items]="employees_list"
+                    id="emp"
+                    bindLabel="mergeName"
+                    bindValue="employeeCode"
+                    (change)="modified()"
+                    [multiple]="false"
+                    placeholder="Select an employee"
+                    class="ngSelectform"
+                    [(ngModel)]="reportObj.employeeCode">
+                </ng-select>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class>
+                <label> {{globalServ.getGlobalNames('shift')}}</label>
+                <select id="shifts" class="form-select"
+                    [(ngModel)]="reportObj.shiftCode" (change)="modified()">
+                    <option [value]="s.shiftCode"
+                        *ngFor="let s of shifts">{{s.shiftCode}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-3">
+            <div class>
+                <label>{{globalServ.getGlobalNames('status')}}</label>
+                <select id="status" class="form-select"
+                    [(ngModel)]="reportObj.statusCode" (change)="modified()">
+                    <option [value]="s.value"
+                        *ngFor="let s of earlyList">{{s.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class>
+                <label>{{globalServ.getGlobalNames('dateFromandTo')}}</label>
+                <input id="selectedDateRange" type="text" ngxDaterangepickerMd
+                    [maxDate]="maxDate"
+                    [(ngModel)]="selectedDateRange" (change)="modified()"
+                    class="form-control" />
+            </div>
+        </div>
+    </div>
+    <div class="row g-2 mb-2 mt-2">
+        <div class="col-sm-6 col-lg-2 ">
+            <label class="form-label ms-2">
+                {{globalServ.getGlobalNames('ShowEntries')}}
+            </label>
+            <select class="form-select" (change)="resultsPerPage($event)">
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="all">All</option>
+            </select>
+        </div>
+           <div class="col-md d-flex align-items-end mb-3 ms-2"
+            style=" font-size: 25px;">
+            <i class="fa-solid fa-gear" data-bs-toggle="modal"
+                data-bs-target="#earlyLateRpt" *ngIf="rows.length > 0"
+                data-placement="right"></i>
+        </div>
+        <div class="col-md d-flex justify-content-end align-items-end">
+            <button id="save_pdf" class="btn add-btn float-end me-4"
+                [disabled]="rows.length === 0"
+                (click)="savePDF()"> {{globalServ.getGlobalNames('saveAsPDF')}}
+            </button>
+            <button id="save_excel" class="btn add-btn float-end me-4"
+                [disabled]="rows.length === 0"
+                (click)="saveExcel()">
+                {{globalServ.getGlobalNames('saveAsExcel')}}
+            </button>
+            <button id="submit_salary_details"
+                class="btn add-btn float-end me-4" (click)="submit()">
+                {{globalServ.getGlobalNames('submit')}}
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive card p-3">
+                   <table datatable
+                    class="table table-hover custom-table mb-0 datatable">
+                    <thead class="thead-all" *ngIf="rows.length > 0">
+                        <tr class="tr-th-all" cdkDropList
+                            (cdkDropListDropped)="drop($event)"
+                            cdkDropListOrientation="horizontal"
+                            [cdkDropListData]="activeColumns">
+                            <th *ngFor="let colKey of activeColumns"
+                                cdkDrag>{{globalServ.showLabel(colKey.key)}}</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="rows.length > 0">
+                        <tr class="dasboard-td" *ngFor="let item of rows  | paginate: config; let i=index;">
+                            <td *ngFor="let colKey of activeColumns" [ngClass]="{'text-end': isNumber(item[colKey.key])}">{{item[colKey.key]}}</td>
+                        </tr>
+                    </tbody>
+
+                    <tbody *ngIf="rows.length === 0 && message === 'modified'">
+                        <tr
+                            style=" text-align: center; height: 150px;">
+                            <td [colspan]="activeColumns.length -1">
+                                {{globalServ.showGlobalErrors('notFound')}}
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody
+                        *ngIf="rows.length === 0 && message === 'clickOnsubmit'">
+                        <tr
+                            style=" text-align: center; height: 150px;">
+                            <td [colspan]="activeColumns.length -1">
+                                {{globalServ.showGlobalErrors('greatChoices')}}
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="rows.length === 0 && message === 'error'">
+                        <tr
+                            style=" text-align: center; height: 150px;">
+                            <td [colspan]="activeColumns.length-1">
+                                {{globalServ.showGlobalErrors('sorry')}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div *ngIf="rows.length > config.itemsPerPage"
+                    class="text-center mt-3">
+                    <pagination-controls
+                        (pageChange)="pageChanged($event)"></pagination-controls>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="earlyLateRpt" class="modal custom-modal fade" role="dialog"
+    data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                {{globalServ.getGlobalNames('Choosethefields')}}
+                <i class="fa-solid fa-xmark  fs-4" id="close_model"
+                    data-bs-dismiss="modal"  (click)="close()"
+                    aria-label="Close"></i>
+            </div>
+            <div class="modal-body row">
+                <div class="col-md-4 col-sm-4 p-2"
+                    *ngFor="let colKey of colKeys">
+                    <input type="checkbox" class="form-check-input"
+                        [checked]="colKey.view"
+                        (change)="toggleColumnVisibility(colKey.key, $event)">
+                    <span class="ms-1"> {{globalServ.showLabel(colKey.key)}}
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-bs-dismiss="modal"
+                    aria-label="Close" (click)="apply()">
+                    {{globalServ.getGlobalNames('apply')}}</button>
+            </div>
+        </div>
+    </div>
+</div>

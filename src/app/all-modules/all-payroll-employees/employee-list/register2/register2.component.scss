@@ -1,0 +1,155 @@
+.input-group-custom {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e3e3e3;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    padding: 0.375rem 0.75rem;
+}
+
+.inputwid {
+    margin: 3px;
+    height: 36px;
+}
+
+.columnName {
+    color: #001234;
+    font-size: 19.064903259277344px;
+    line-height: 150%;
+    font-weight: 400;
+    position: relative;
+}
+
+label {
+    // color: #999a9b;
+    font-size: 12.674508094787598px;
+    line-height: 21.12px;
+    font-weight: 500;
+    position: relative;
+}
+
+::placeholder {
+    color: rgba(47, 47, 48, 0.25);
+    font-size: 12.341344833374023px;
+}
+
+.emp-profile-img-wrap {
+    height: 130px;
+    // position: absolute;
+    // width: 120px;
+    background: #fff;
+    overflow: hidden;
+}
+
+
+.emp-profile-img-wrap img {
+    // border-radius: 50%;
+    height: 130px;
+    width: 120px;
+    object-fit: contain;
+    border-radius: 7px 0px 0px 7px;
+
+}
+
+.emp-profile-img-wrap.edit-img {
+    border-radius: 50%;
+    margin: 0 auto 30px;
+    position: relative;
+}
+
+.emp-profile-img-wrap.edit-img .fileupload.btn {
+    left: 0;
+}
+
+.img-box {
+    // border-radius: 10.89px;
+    border-radius: 0 7px 7px 0px;
+    border-style: solid;
+    border: 2px solid;
+    border-color: #f3f4fa;
+    border-width: 0.68px;
+    height: 130px;
+    margin-left: -13px;
+}
+
+
+.drop-your-images-here-or-browse {
+    font-size: 13px;
+    line-height: 150%;
+    font-weight: 400;
+
+}
+
+.drop-your-images-here-or-browse-span {
+    color: #b3b3b3;
+    font-size: 13px;
+    line-height: 150%;
+    font-weight: 400;
+}
+
+.drop-your-images-here-or-browse-span2 {
+    color: #475bb4;
+    font-size: 13px;
+    line-height: 150%;
+    font-weight: 400;
+    text-decoration: underline;
+    cursor: pointer;
+    }
+    
+    .supports-jpg-png-of-300-x-300-size {
+        color: #b3b3b3;
+        font-size: 9.010266304016113px;
+        line-height: 150%;
+        font-weight: 200;
+    }
+    
+    .opPayroll {
+        background: #f4f6ff;
+        border-radius: 15px;
+        flex-shrink: 0;
+    }
+    
+    .note {
+        color: #000000;
+        text-align: left;
+        font-size: 14px;
+        font-weight: 500;
+}
+
+.payroll-setup-is-optional-and-can-be-done-in-later-insider-the-application {
+    color: #5c5959;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+@media only screen and (max-width: 767.98px) {
+    .table-leftblock {
+        // border-right: 1px solid #ccc;
+        padding: 10px;
+        // background: #F3F4F7;
+    }
+
+        .table-rightblock {
+            // border: 1px solid #ccc;
+            padding: 10px;
+            // background: #F3F4F7;
+        }
+}
+
+@media only screen and (min-width: 767.99px) {
+    .table-leftblock {
+        // border-right: 1px solid #ccc;
+        padding: 10px;
+        // background: #F3F4F7;
+        // border-radius: 5px 0px 0px 5px;
+    }
+
+        .table-rightblock {
+            // border: 1px solid #ccc;
+            padding: 10px;
+            // background: #F3F4F7;
+            // border-radius: 0px 5px 5px 0px;
+        }
+        }

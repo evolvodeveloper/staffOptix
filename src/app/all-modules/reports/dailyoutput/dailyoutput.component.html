@@ -1,0 +1,173 @@
+<!-- Page Content -->
+<div class="content container-fluid">
+
+    <!-- Page Header -->
+    <div class="mb-2">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="d-flex align-items-baseline">
+                    <i style="font-size:20px" class="fa fa-arrow-left"
+                        (click)="back()" aria-label="back"></i>
+                    <h3 class="ms-4 page-title">Daily Output</h3>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- /Page Header -->
+
+    <!-- Search Filter -->
+    <div class="row filter-row">
+        <div class="col-sm-6 col-md-3">
+            <div class="form-floating">
+                <select id="project" class="form-select"
+                    [(ngModel)]="reportObj.category"
+                    (change)="getEmpByCategory(reportObj.category)">
+                    <option [value]="cat.categoryCode"
+                        *ngFor="let cat of categorys">{{cat.categoryCode}}</option>
+                </select>
+                <label>Project</label>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-3 d-flex"
+            [ngClass]="{'d-flex':!stopSpinner}">
+            <div class="form-floating" *ngIf="stopSpinner">
+                <select id="employee" class="form-select"
+                    [(ngModel)]="reportObj.empCode" (change)="modified()">
+                    <option [value]="emp.employeeCode"
+                        *ngFor="let emp of employee">{{emp.employeeName}} -
+                        {{emp.employeeCode}}</option>
+                </select>
+                <label>Employee</label>
+            </div>
+            <div id="loading" *ngIf="!stopSpinner"></div>
+        </div>
+
+        <div class="col-sm-6 col-md-3">
+            <div class="form-floating">
+                <select id="payroll_types" class="form-select"
+                    [(ngModel)]="reportObj.payrollType" (change)="modified()">
+                    <option [value]="Ptypes.code"
+                        *ngFor="let Ptypes of pytypes">{{Ptypes.name}}</option>
+                </select>
+                <label>Payroll Type</label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-floating">
+                <input id="selectedDateRange" type="text" ngxDaterangepickerMd
+                    [(ngModel)]="selectedDateRange" (change)="modified()"
+                    class="form-control" />
+                <label>Date From & To</label>
+            </div>
+        </div>
+
+    </div>
+    <div class="row g-2 mb-2 mt-2">
+        <div class="col-sm-6 col-lg-2 ">
+            <label class="form-label ms-2">Show entries</label>
+            <select class="form-select" (change)="resultsPerPage($event)">
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="all">All</option>
+            </select>
+        </div>
+        <div class="col-md  d-flex justify-content-end align-items-end">
+            <button id="save_pdf" class="btn add-btn float-end me-4"
+                [disabled]="reportsList.length === 0"
+                (click)="savePDF()">Save as PDF</button>
+            <button id="save_excel" class="btn add-btn float-end me-4"
+                [disabled]="reportsList.length === 0"
+                (click)="saveExcel()">Save as Excel</button>
+            <button id="submit_daily_output_report"
+                class="btn add-btn float-end me-4"
+                (click)="submit()">Submit</button>
+        </div>
+    </div>
+    <!-- /Search Filter -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive card p-3">
+                <table datatable
+                    class="table table-hover custom-table mb-0 datatable">
+                    <thead class="thead-all">
+                        <tr class="tr-th-all">
+                            <!-- <th>#</th> -->
+                            <!-- <th>rw Number</th> -->
+                            <th>Date</th>
+                            <th *ngIf="reportObj.empCode === 'ALL'">Emp Id</th>
+                            <th *ngIf="reportObj.empCode === 'ALL'">Emp
+                                Name</th>
+                            <th *ngIf="reportObj.payrollType === 'ALL'">Payroll
+                                Type</th>
+                            <th
+                                *ngIf="reportObj.category === 'ALL'">Project</th>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <!-- <th class="text-right">Action</th> -->
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="rows.length === 0 && message === 'modified'">
+                        <tr
+                            style=" text-align: center; height: 150px;">
+                            <td colspan="7">
+                                {{globalServ.showGlobalErrors('notFound')}}
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody
+                        *ngIf="rows.length === 0 && message === 'clickOnsubmit'">
+                        <tr
+                            style=" text-align: center; height: 150px;">
+                            <td colspan="7">
+                                {{global.showGlobalErrors('greatChoices')}}
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="rows.length === 0 && message === 'error'">
+                        <tr
+                            style=" text-align: center; height: 150px;">
+                            <td colspan="7">
+                                {{globalServ.showGlobalErrors('sorry')}}
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="rows.length > 0">
+                        <tr class="dasboard-td"
+                            *ngFor="let rw of rows| paginate: config; let i=index;">
+                            <!-- <td>{{i+1}}</td> -->
+                            <!-- <td><a routerLink = "/accounts/rw-view">{{rw.number}}</a></td> -->
+                            <td>{{rw.dateCode | date: dateFormat }}</td>
+                            <td
+                                *ngIf="reportObj.empCode === 'ALL'">{{rw.employeeId}}</td>
+                            <td
+                                *ngIf="reportObj.empCode === 'ALL'">{{rw.employeeName}}</td>
+                            <td
+                                *ngIf="reportObj.payrollType === 'ALL'">{{rw.payrollType}}</td>
+                            <td
+                                *ngIf="reportObj.category === 'ALL'">{{rw.categoryCode}}</td>
+                            <td>{{rw.itemCode}}</td>
+                            <td>{{rw.quantity}}</td>
+                        </tr>
+                        <tr *ngIf="rows.length === 0">
+                            <td colspan="10">
+                                <h5 style="text-align: center;">No data
+                                    found</h5>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+                <div *ngIf="rows.length > config.itemsPerPage"
+                    class="text-center mt-3">
+                    <pagination-controls
+                        (pageChange)="pageChanged($event)"></pagination-controls>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Page Content -->

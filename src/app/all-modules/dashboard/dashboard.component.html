@@ -1,0 +1,703 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card-group m-b-30" style="gap: 20px">
+      <div class="card RE-card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-3">
+            <div>
+              <span
+                class="d-block card-tittle">{{globalServ.getGlobalNames('rpe')}}</span>
+            </div>
+          </div>
+          <h3 class="mb-3">{{ data.attendanceReport?.reportingEmployees }}</h3>
+          <div class="progress mb-2" style="height: 5px">
+            <div
+              class="progress-bar"
+              role="progressbar"
+              [ngStyle]="{
+      'background-color': (data.attendanceReport?.reportingEmployees / data.attendanceReport?.totalEmployees) * 100 >= 25 ? '#25bb00' : '#b74c72',
+      'width.%': (data.attendanceReport?.reportingEmployees / data.attendanceReport?.totalEmployees) * 100
+                  }"
+              style="width: 100%; background: #0080fc"
+              aria-valuenow="40"
+              aria-valuemin="0"
+              aria-valuemax="100"></div>
+          </div>
+          <p class="mb-0 TE">
+            {{globalServ.getGlobalNames('TotalEmployees')}} {{
+            data.attendanceReport?.totalEmployees }}
+          </p>
+        </div>
+      </div>
+
+      <div class="card" id="present-card"
+        [ngStyle]="{ 'border-color': (data.attendanceReport?.present /
+                data.attendanceReport?.reportingEmployees) *
+                100  >= 25 ? '#25bb00' : '#b74c72' }">
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-3">
+            <div>
+              <span
+                class="d-block card-tittle">{{globalServ.getGlobalNames('present')}}
+              </span>
+            </div>
+            <div *ngIf="data.attendanceReport">
+              <span
+                class="text-white"
+                [ngStyle]="{ 'background': (data.attendanceReport?.present /
+                data.attendanceReport?.reportingEmployees) *
+                100  >= 25 ? '#25bb00' : '#b74c72' }"
+                style="
+                  position: static;
+                  border-radius: 4px;
+                  padding: 9px;
+                  font-size: 10px;
+                ">{{
+                (data.attendanceReport?.present /
+                data.attendanceReport?.reportingEmployees) *
+                100 | number : "1.2-2"
+                }}%</span>
+            </div>
+          </div>
+          <h3 class="mb-3">{{ data.attendanceReport?.present }}</h3>
+          <div class="progress mb-2" style="height: 5px">
+            <div
+              class="progress-bar "
+              role="progressbar"
+              [ngStyle]="{
+      'background-color': (data.attendanceReport?.present / data.attendanceReport?.reportingEmployees) * 100 >= 25 ? '#25bb00' : '#b74c72',
+      'width.%': (data.attendanceReport?.present / data.attendanceReport?.reportingEmployees) * 100
+                  }"
+              aria-valuenow="40"
+              aria-valuemin="0"
+              aria-valuemax="100"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="onLeave-card"
+        [ngStyle]="{ 'border-color': (data.attendanceReport?.leave /
+                data.attendanceReport?.reportingEmployees) *
+                100  <= 25 ? '#25bb00' : '#b74c72' }">
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-3">
+            <div>
+              <span
+                class="d-block card-tittle">{{globalServ.showLabel('OnLeave')}}</span>
+            </div>
+            <div *ngIf="data.attendanceReport">
+              <span
+                class="text-white"
+                [ngStyle]="{ 'background': (data.attendanceReport?.leave /
+                data.attendanceReport?.reportingEmployees) *
+                100  <= 25 ? '#25bb00' : '#b74c72' }"
+                style="
+                  position: static;
+                  border-radius: 4px;
+                  padding: 9px;
+                  font-size: 10px;
+                ">{{
+                (data.attendanceReport?.leave /
+                data.attendanceReport?.reportingEmployees) *
+                100 | number : "1.2-2"
+                }}%</span>
+            </div>
+          </div>
+          <h3 class="mb-3">{{ data.attendanceReport?.leave }}</h3>
+          <div class="progress mb-2" style="height: 5px">
+            <div
+              class="progress-bar"
+              role="progressbar"
+              style="background: #bb0043"
+              [ngStyle]="{
+                'width.%':
+                  (data.attendanceReport?.leave /
+                    data.attendanceReport?.reportingEmployees) *
+                  100,
+                   'background-color': (data.attendanceReport?.leave / data.attendanceReport?.reportingEmployees) * 100 <= 25 ? '#25bb00' : '#b74c72'
+              }"
+              aria-valuenow="40"
+              aria-valuemin="0"
+              aria-valuemax="100"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card" id="late-comers-card"
+        [ngStyle]="{ 'border-color': (data.attendanceReport?.late /
+                data.attendanceReport?.reportingEmployees) *
+                100  <= 25 ? '#25bb00' : '#b74c72' }">
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-3">
+            <div>
+              <span class="d-block card-tittle">
+                {{globalServ.showLabel('LateComers')}}</span>
+            </div>
+            <div *ngIf="data.attendanceReport">
+              <span
+                class="text-white"
+                [ngStyle]="{ 'background': (data.attendanceReport?.late /
+                data.attendanceReport?.reportingEmployees) *
+                100  <= 25 ? '#25bb00' : '#b74c72' }"
+                style="
+                  position: static;
+                  border-radius: 4px;
+                  padding: 9px;
+                  font-size: 10px;
+                ">{{
+                (data.attendanceReport?.late /
+                data.attendanceReport?.reportingEmployees) *
+                100 | number : "1.2-2"
+                }}%</span>
+            </div>
+          </div>
+          <h3 class="mb-3">{{ data.attendanceReport?.late }}</h3>
+          <div class="progress mb-2" style="height: 5px">
+            <div
+              class="progress-bar"
+              role="progressbar"
+              [ngStyle]="{
+                'width.%':
+                  (data.attendanceReport?.late /
+                    data.attendanceReport?.reportingEmployees) *
+                  100,
+                  'background-color': (data.attendanceReport?.late / data.attendanceReport?.reportingEmployees) * 100 <= 25 ? '#25bb00' : '#b74c72'
+              }"
+              aria-valuenow="40"
+              aria-valuemin="0"
+              aria-valuemax="100"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card" id="absent-card"
+        [ngStyle]="{ 'border-color': (data.attendanceReport?.notReported  /
+                data.attendanceReport?.reportingEmployees) *
+                100  <= 25 ? '#25bb00' : '#b74c72' }">
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-3">
+            <div>
+              <span
+                class="d-block card-tittle">{{globalServ.getGlobalNames('Absent')}}</span>
+            </div>
+            <div *ngIf="data.attendanceReport">
+              <span
+                class="text-white"
+                [ngStyle]="{ 'background': (data.attendanceReport?.notReported/
+                data.attendanceReport?.reportingEmployees) *
+                100  <= 25 ? '#25bb00' : '#b74c72' }"
+                style="
+                  position: static;
+                  border-radius: 4px;
+                  padding: 9px;
+                  font-size: 10px;
+                ">{{
+                (data.attendanceReport?.notReported /
+                data.attendanceReport?.reportingEmployees) *
+                100 | number : "1.2-2"
+                }}%</span>
+            </div>
+          </div>
+          <h3 class="mb-3">{{ data.attendanceReport?.notReported }}</h3>
+          <div class="progress mb-2" style="height: 5px">
+            <div
+              class="progress-bar"
+              role="progressbar"
+              [ngStyle]="{
+                'width.%':
+                  (data.attendanceReport?.notReported /
+                    data.attendanceReport?.reportingEmployees) *
+                  100,
+                   'background-color': (data.attendanceReport?.notReported / data.attendanceReport?.reportingEmployees) * 100 <= 25 ? '#25bb00' : '#b74c72'
+              }"
+              aria-valuenow="40"
+              aria-valuemin="0"
+              aria-valuemax="100"></div>
+          </div>
+        </div>
+      </div>
+      <div class="dropdown profile-action" style="top: auto;right: 0px;">
+        <a
+          class="action-icon dropdown-toggle"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"><i class="material-icons">more_vert</i></a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item">
+            <label for="date">{{globalServ.getGlobalNames('date')}}</label>
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="date"
+              (change)="dateModified()" />
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12 col-lg-12 col-xl-4 d-flex">
+    <div
+      class="card flex-fill dash-statistics"
+      style="
+        background: #fcfcfc;
+        border-radius: 12px;
+        border-style: solid;
+        border-color: #c7ddff;
+        border-width: 1px;
+      ">
+      <div class="card-body">
+        <div echarts [options]="option" class="demo-chart-600"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-12 col-lg-6 col-xl-4 d-flex">
+    <div
+      class="card flex-fill"
+      style="
+        background: #fcfcfc;
+        border-radius: 12px;
+        border-style: solid;
+        border-color: #c7ddff;
+        border-width: 1px;
+      ">
+      <div class="card-body">
+        <div echarts [options]="chart2_options" class="demo-chart-600"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-12 col-lg-6 col-xl-4 d-flex">
+    <div
+      class="card flex-fill"
+      style="
+        background: #fcfcfc;
+        border-radius: 12px;
+        border-style: solid;
+        border-color: #c7ddff;
+        border-width: 1px;
+      ">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <h4 class="card-title ms-3" style="font-size: 15px">
+            {{globalServ.showLabel('empNotClock')}}</h4>
+
+          <span
+            class="badge ml-2"
+            style="
+              width: 32px;
+              height: 32px;
+              position: static;
+              background: #b74c72;
+              border-radius: 4px;
+              padding: 9px;
+            ">{{ data.absents?.length }}</span>
+        </div>
+        <div class="leave-info-box" *ngIf="data.absents && data.absents[0]">
+          <div
+            class="media row d-flex align-items-center justify-content-between">
+            <!-- <a routerLink="/emp-profile" class="avatar"
+              ><img alt="" src="assets/img/avatar-21.jpg"
+            /></a> -->
+            <div class="col-5 media-body">
+              <div class="text-sm my-0">{{ data.absents[0].employeeName }}</div>
+              <div class="text-success" style="font-size: x-small">
+                {{ data.absents[0].designation }}
+              </div>
+            </div>
+            <div class="col-3 text-sm">
+              {{ data.absents[0].shiftCode }}
+            </div>
+            <div class="col-4 text-end">
+              <span class="badge bg-inverse-success"
+                *ngIf=" data.absents[0].employeeStatus === 'Reported'">{{globalServ.getGlobalNames('Leave')}}</span>
+              <span class="badge bg-inverse-danger"
+                *ngIf=" data.absents[0].employeeStatus !== 'Reported'">{{
+                data.absents[0].employeeStatus}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="leave-info-box" *ngIf="data.absents && data.absents[1]">
+          <div
+            class="media d-flex row align-items-center justify-content-between">
+            <!-- <a routerLink="/emp-profile" class="avatar"
+              ><img alt="" src="assets/img/avatar-21.jpg"
+            /></a> -->
+            <div class="media-body col-5">
+              <div class="text-sm my-0">{{ data.absents[1].employeeName }}</div>
+              <div class="text-success" style="font-size: x-small">
+                {{ data.absents[1].designation }}
+              </div>
+            </div>
+            <div class="col-3 text-sm">
+              {{ data.absents[1].shiftCode }}
+            </div>
+            <div class="col-4 text-end">
+              <span class="badge bg-inverse-success"
+                *ngIf=" data.absents[1].employeeStatus === 'Reported'">{{globalServ.getGlobalNames('Leave')}}</span>
+              <span class="badge bg-inverse-danger"
+                *ngIf=" data.absents[1].employeeStatus !== 'Reported'">{{
+                data.absents[1].employeeStatus}}</span>
+
+            </div>
+          </div>
+        </div>
+        <div class="leave-info-box" *ngIf="data.absents && data.absents[2]">
+          <div
+            class="media d-flex row align-items-center justify-content-between">
+            <!-- <a routerLink="/emp-profile" class="avatar"
+              ><img alt="" src="assets/img/avatar-21.jpg"
+            /></a> -->
+            <div class="media-body col-5">
+              <div class="text-sm my-0">{{ data.absents[2].employeeName }}</div>
+              <div class="text-success" style="font-size: x-small">
+                {{ data.absents[2].designation }}
+              </div>
+            </div>
+            <div class="col-3 text-sm">
+              {{ data.absents[2].shiftCode }}
+            </div>
+            <div class="col-4 text-end">
+              <span class="badge bg-inverse-success"
+                *ngIf=" data.absents[2].employeeStatus === 'Reported'">{{globalServ.getGlobalNames('Leave')}}</span>
+              <span class="badge bg-inverse-danger"
+                *ngIf=" data.absents[2].employeeStatus !== 'Reported'">{{
+                data.absents[2].employeeStatus}}</span>
+
+            </div>
+          </div>
+        </div>
+        <div class="leave-info-box" *ngIf="data.absents && data.absents[3]">
+          <div
+            class="media d-flex row align-items-center justify-content-between">
+            <div class="media-body col-5">
+              <div class="text-sm my-0">{{ data.absents[3].employeeName }}</div>
+              <div class="text-success" style="font-size: x-small">
+                {{ data.absents[3].designation }}
+              </div>
+            </div>
+            <div class="col-3 text-sm">
+              {{ data.absents[3].shiftCode }}
+            </div>
+            <div class="col-4 text-end">
+              <span class="badge bg-inverse-success"
+                *ngIf=" data.absents[3].employeeStatus === 'Reported'">{{globalServ.getGlobalNames('Leave')}}</span>
+              <span class="badge bg-inverse-danger"
+                *ngIf=" data.absents[3].employeeStatus !== 'Reported'">{{
+                data.absents[3].employeeStatus}}</span>
+
+            </div>
+          </div>
+        </div>
+        <div *ngIf="data.absents?.length > 4"
+          class="card-footer d-flex justify-content-center">
+          <a
+            class="text-primary"
+            style="cursor: pointer"
+            (click)="loadMore('absents', 'Not clocked in Employees', data.absents)">{{globalServ.showLabel('LoadMore')}}</a>
+        </div>
+
+        <span *ngIf="data.absents?.length === 0" style="display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;">
+          {{globalServ.showLabel('noabsentToday')}}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6 d-flex">
+    <div
+      class="card flex-fill"
+      style="
+        background: #fcfcfc;
+        border-radius: 8px;
+        border-style: solid;
+        border-color: #c7ddff;
+        border-width: 1px;
+        position: relative;
+      ">
+      <div class="card-header">
+        <h3
+          class="early-check-ins mb-0">{{globalServ.getGlobalNames('Earlycheck-ins')}}
+        </h3>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-nowrap mb-0">
+            <thead
+              style="
+                background: #e5f2fe;
+                border-radius: 4px 4px 0px 0px !important;
+                border-style: solid;
+                border-color: #c7ddff;
+                border-width: 1px;
+              ">
+              <tr class="tr-th-all">
+                <th
+                  class="text-start">{{globalServ.getGlobalNames('empCode')}}</th>
+                <th>{{globalServ.getGlobalNames('name')}}</th>
+                <th> {{globalServ.getGlobalNames('designation')}}</th>
+                <th> {{globalServ.getGlobalNames('IsEarlyby')}}</th>
+                <th> {{globalServ.getGlobalNames('inTime')}}</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="data.early_checkins.length !== 0">
+              <tr
+                class="dasboard-td"
+                style="
+                  border-color: #c7ddff;
+                  border-style: solid;
+                  border-width: 0;
+                  background: #fff;
+                "
+                *ngFor="let early of data.early_checkins; let i = index">
+                <ng-container *ngIf="i < 5">
+                  <td class="text-start">
+                    <a>{{ early.employeeCode }}</a>
+                  </td>
+                  <td>
+                    <h2>
+                      <a>{{ early.employeeName }}</a>
+                    </h2>
+                  </td>
+                  <td>{{ early.designation }}</td>
+                  <td>{{ early.entryHrs1 }}</td>
+                  <td>
+                    <span class="badge bg-inverse-Early">{{early.inTime}}</span>
+                  </td>
+                </ng-container>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+        <span *ngIf="data.early_checkins.length === 0" style="display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;">
+          {{globalServ.showLabel('noempArrived')}}
+        </span>
+      </div>
+      <div
+        *ngIf="data.early_checkins?.length > 1"
+        class="card-footer d-flex justify-content-center">
+        <a
+          style="cursor: pointer"
+          (click)="
+            loadMore('earlycheckins', 'Total Early comers', data.early_checkins)
+          "> {{globalServ.showLabel('viewEalry')}} </a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 d-flex">
+    <div
+      class="card flex-fill"
+      style="
+        background: #fcfcfc;
+        border-radius: 8px;
+        border-style: solid;
+        border-color: #c7ddff;
+        border-width: 1px;
+        position: relative;
+      ">
+      <div class="card-header">
+        <h3 class="early-check-ins mb-0">{{globalServ.showLabel('LateComers')}}
+        </h3>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-nowrap mb-0">
+            <thead
+              style="
+                background: #e5f2fe;
+                border-radius: 4px 4px 0px 0px !important;
+                border-style: solid;
+                border-color: #c7ddff;
+                border-width: 1px;
+              ">
+              <tr class="tr-th-all">
+                <th class="text-start">{{globalServ.getGlobalNames('empCode')}}
+                </th>
+                <th>{{globalServ.getGlobalNames('name')}}</th>
+                <th>{{globalServ.getGlobalNames('designation')}}</th>
+                <th>{{globalServ.getGlobalNames('isLateBy')}} </th>
+                <th> {{globalServ.getGlobalNames('inTime')}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                class="dasboard-td"
+                style="
+                  border-color: #c7ddff;
+                  border-style: solid;
+                  border-width: 0;
+                  background: #fff;
+                "
+                *ngFor="let early of data.late_comers; let i = index">
+                <ng-container *ngIf="i < 5">
+                  <td class="text-start">
+                    <a>{{ early.employeeCode }}</a>
+                  </td>
+                  <td>
+                    <h2>
+                      <a>{{ early.employeeName }}</a>
+                    </h2>
+                  </td>
+                  <td>{{ early.designation }}</td>
+                  <td>{{ early.entryHrs1 }}</td>
+                  <td>
+                    <span class="badge bg-inverse-danger">{{
+                      early.inTime
+                      }}</span>
+                  </td>
+                </ng-container>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <span *ngIf="data.late_comers.length === 0" style="display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;">
+          {{globalServ.showLabel('noLateCommers')}}
+        </span>
+      </div>
+      <div
+        *ngIf="data.late_comers?.length > 1"
+        class="card-footer d-flex justify-content-center">
+        <a
+          style="cursor: pointer"
+          (click)="
+            loadMore('Latecomers', 'Total Late comers', data.late_comers)
+          "> {{globalServ.showLabel('Viewalllatecomers')}} </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md d-flex">
+    <div
+      class="card flex-fill"
+      style="
+        background: #fcfcfc;
+        border-radius: 8px;
+        border-style: solid;
+        border-color: #c7ddff;
+        border-width: 1px;
+        position: relative;
+      ">
+      <div class="card-header">
+        <h3
+          class="early-check-ins mb-0">{{globalServ.getGlobalNames('EmployeeAtten')}}</h3>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table mb-0">
+            <thead
+              style="
+                background: #e5f2fe;
+                border-radius: 4px 4px 0px 0px !important;
+                border-style: solid;
+                border-color: #c7ddff;
+                border-width: 1px;
+              ">
+              <tr class="tr-th-all">
+                <th>{{globalServ.getGlobalNames('employee')}}</th>
+                <th
+                  class="text-left">{{globalServ.getGlobalNames('shift')}}</th>
+                <th class="text-center">
+                  {{globalServ.getGlobalNames('inTime')}}</th>
+                <th class="text-center">
+                  {{globalServ.getGlobalNames('outTime')}}</th>
+                <th
+                  class="text-center">{{globalServ.getGlobalNames('totalHours')}}</th>
+                <th
+                  class="text-center">{{globalServ.getGlobalNames('EffectiveHrs')}}</th>
+                <th
+                  class="text-center">{{globalServ.getGlobalNames('EnteredStatus ')}}</th>
+                <th
+                  class="text-center">{{globalServ.getGlobalNames('status')}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                class="dasboard-td"
+                style="
+                  border-color: #c7ddff;
+                  border-style: solid;
+                  border-width: 0;
+                  background: #fff;
+                "
+                *ngFor="let e of data.employeeLoginDetails; let i = index">
+                <ng-container *ngIf="i < 5">
+                  <td>
+                    <h2 class="table-avatar">
+                      <a>{{ e.employeeName }}
+                        <span>{{ e.employeeCode }}</span></a>
+                    </h2>
+                  </td>
+                  <td class="text-left">{{ e.shift }}</td>
+                  <td class="text-center">{{ e.inTime ? (e.inTime |
+                    timeFormater) : ''}}</td>
+                  <td class="text-center">{{ e.outTime ? (e.outTime |
+                    timeFormater) : ''}}</td>
+                  <td class="text-center">{{ e.totalHours1 }}</td>
+                  <td class="text-center">{{ e.effectiveHrs1 }}</td>
+                  <td class="text-center">
+                    <span
+                      *ngIf="e.entryStatus === 'LATE'"
+                      class="badge bg-inverse-danger">{{ e.entryStatus }}</span>
+                    <span
+                      *ngIf="e.entryStatus === 'IN_TIME'"
+                      class="badge bg-inverse-success">{{ e.entryStatus
+                      }}</span>
+                    <span
+                      *ngIf="e.entryStatus === 'EARLY'"
+                      class="badge bg-inverse-Early">{{ e.entryStatus }}</span>
+                    <span
+                      *ngIf="e.entryStatus === 'UNASSIGNED'"
+                      class="badge bg-inverse-warning">{{ e.entryStatus
+                      }}</span>
+                    <span
+                      *ngIf="e.entryStatus === 'OD'"
+                      class="badge bg-inverse-OD">{{ e.entryStatus }}</span>
+                    <span
+                      *ngIf="e.entryStatus === 'WEEK OFF'"
+                      class="badge bg-inverse-WeekOff">{{ e.entryStatus
+                      }}</span>
+                  </td>
+                  <td class="text-center">
+                    <span
+                      *ngIf="e.status !== 'IN'"
+                      class="badge bg-inverse-danger">{{ e.status }}</span>
+                    <span
+                      *ngIf="e.status === 'IN'"
+                      class="badge bg-inverse-success">{{ e.status }}</span>
+                  </td>
+                </ng-container>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div
+        *ngIf="data.employeeLoginDetails?.length > 5"
+        class="card-footer d-flex justify-content-center">
+        <a
+          style="cursor: pointer"
+          (click)="
+            loadMore(
+              'employeeLoginDetails',
+              'Total Employees Attendance',
+              data.employeeLoginDetails
+            )
+          ">{{globalServ.showLabel('ViewallempAtt')}}</a>
+      </div>
+    </div>
+  </div>
+</div>

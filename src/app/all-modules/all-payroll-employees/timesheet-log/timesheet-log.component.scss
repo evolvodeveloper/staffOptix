@@ -1,0 +1,45 @@
+.tab-content {
+    padding-top: 0px;
+}
+.nav-pills .nav-link,
+.nav-pills .show>.nav-link {
+    background-color: #cfdbff;
+    min-width: 100px;
+}
+
+.form-floating>.form-select {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    height: 40px;
+}
+
+.form-floating>.form-control {
+    height: 40px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+label {
+    font-size: small;
+}
+
+.nav-pills .nav-link,
+.nav-pills .show>.nav-link {
+    background-color: #cfdbff;
+}
+.nav-pills .nav-link.active,
+.nav-pills .show>.nav-link {
+    color: #fff;
+    // background-color: #667eea;
+    background-color: #5470C6;
+}
+
+.nav-pills .nav-link {
+    background: none;
+    border: 0;
+    border-radius: var(--mo-nav-pills-border-radius);
+    color: #828393;
+    font-size: small;
+    background-color: #cfdbff;
+    // font-weight: 600;
+}

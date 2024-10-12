@@ -1,0 +1,578 @@
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col-sm-12 col-lg-8 d-flex align-items-baseline">
+            <i style="font-size:20px" class="fa fa-arrow-left"
+                routerLink="/dashboard" aria-label="back"></i>
+            <h3 class="page-title ms-4">{{view ? 'View' : update ? 'Update' :
+                'Create'}} Employee</h3>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <form [formGroup]="employeeForm" novalidate>
+            <div class="row g-2 mb-3">
+                <div class="col-md" *ngIf=" view || update">
+                    <div class="form-floating">
+                        <input type="text" class="form-control"
+                            [formControl]="employeeForm.controls.employeeid"
+                            readonly>
+                        <label>
+                            Employee ID&nbsp;<span
+                                style="color: red; margin-left: 1px">*</span>
+                        </label>
+                        <div
+                            *ngIf="employeeForm.controls['employeeid'].invalid && (employeeForm.controls['employeeid'].dirty ||
+                                employeeForm.controls['employeeid'].touched)"
+                            style="padding: 0px">
+                            <div class="ms-2"
+                                *ngIf="employeeForm.controls['employeeid'].errors.required"
+                                style="color: #dc3545">
+                                Employee ID is required.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input  type="text"
+                            class="form-control" id="employeeName"
+                            maxlength={{charLimit}}
+                            [formControl]="employeeForm.controls.employeeName">
+                        <label for="employeeName">
+                            Employee Name&nbsp;<span
+                                style="color: red; margin-left: 1px">*</span>
+                        </label>
+
+                        <div
+                            *ngIf="employeeForm.controls['employeeName'].invalid && (employeeForm.controls['employeeName'].dirty ||
+                                employeeForm.controls['employeeName'].touched)"
+                            style="padding: 0px">
+                            <div class="ms-2"
+                                *ngIf="employeeForm.controls['employeeName'].errors.required"
+                                style="color: #dc3545">
+                                Employee Name is required.
+                            </div>
+                        </div>
+                        <div
+                            *ngIf="employeeForm.controls['employeeName'].value?.length > charLimit - 1"
+                            style="color: #dc3545">{{globalServ.showGlobalErrors('max')}} {{ charLimit }}  {{globalServ.showGlobalErrors('char')}}
+                        </div>
+
+                         <div
+                *ngIf="employeeForm.get('employeeName').hasError('invalidFormat')"
+                style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+                    </div>
+                </div>
+                <!-- </div>
+            <div class="row g-2 mb-3"> -->
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <select class="form-select"
+                            [formControl]="employeeForm.controls.designation">
+                            <option value>Un Select</option>
+                            <option [value]="desg.designation"
+                                *ngFor="let desg of designationList">
+                                {{desg.designation}}</option>
+                        </select>
+                        <label>Designation</label>
+                    </div>
+                </div>
+
+                <div class="col-md-3" *ngIf="view || update">
+                    <div class="form-floating">
+                        <input type="text" class="form-control"
+                            [formControl]="employeeForm.controls.userName">
+
+                        <label>Username</label>
+
+                    </div>
+                </div>
+                <!-- </div>
+            <div class="row g-2 mb-3"> -->
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="email" class="form-control" [email]="true"
+                            [class.invalid]="
+              employeeForm.get('email').invalid &&
+              employeeForm.get('email').touched
+            "
+                            (keyup)="onEmailChange(employeeForm.controls.email.value)"
+                            [formControl]="employeeForm.controls.email">
+                        <label>Email&nbsp;<span
+                                style="color: red; margin-left: 1px">*</span></label>
+                        <small
+                            *ngIf="showSuccessEmailToolTip === 'EMAIL ALREADY EXIST' &&   !employeeForm.get('email').invalid"
+                            class="text-danger">Email Already Exists</small>
+                        <small
+                            *ngIf="employeeForm.get('email').invalid"
+                            class="text-danger">Please enter valid Email
+                        </small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" class="form-control"
+                            [formControl]="employeeForm.controls.address">
+                        <label>Address</label>
+                    </div>
+                </div>
+                <!-- </div>
+            <div class="row g-2 mb-3"> -->
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <select class="form-select"
+                            [formControl]="employeeForm.controls.deptCode">
+                            <option value>Un Select</option>
+                            <option [value]="dept.deptCode"
+                                *ngFor="let dept of departmentList">
+                                {{dept.deptCode}}</option>
+                        </select>
+                        <label>Department Code&nbsp;<span
+                                style="color: red; margin-left: 1px">*</span></label>
+                        <div
+                            *ngIf="employeeForm.controls['deptCode'].invalid && (employeeForm.controls['deptCode'].dirty ||
+                        employeeForm.controls['deptCode'].touched)"
+                            style="padding: 0px">
+                            <div
+                                *ngIf="employeeForm.controls['deptCode'].errors.required"
+                                style="color: #dc3545">
+                                Department is required.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" class="form-control"
+                            [formControl]="employeeForm.controls.contactNo">
+                        <label>Contact Number&nbsp;<span
+                                style="color: red; margin-left: 1px">*</span></label>
+                        <div
+                            *ngIf="employeeForm.controls['contactNo'].invalid && (employeeForm.controls['contactNo'].dirty ||
+                        employeeForm.controls['contactNo'].touched)"
+                            style="padding: 0px">
+                            <div
+                                *ngIf="employeeForm.controls['contactNo'].errors.required"
+                                style="color: #dc3545">
+                                Contact Number is required.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- </div>
+            <div class="row g-2 mb-3"> -->
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="date" class="form-control"
+                            [formControl]="employeeForm.controls.joinDate">
+                        <label>Joining Date</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" max="{{today}}"
+                            [formControl]="employeeForm.controls.dob">
+                        <label>Employee Dob&nbsp;<span
+                                style="color: red; margin-left: 1px">*</span></label>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-2">
+                <input class="form-check-input" id="isactive" color="primary"
+                    type="checkbox"
+                    [formControl]="employeeForm.controls.isactive">
+                <label class="ms-2 form-check-label">
+                    Active
+                </label>
+                <!-- <mat-slide-toggle class="example-margin" id="isactive" color="primary"
+                    [formControl]="employeeForm.controls.isactive">
+                    Active
+                </mat-slide-toggle> -->
+            </div>
+            <!-- 
+            <div class="mt-2">
+                 <input class="form-check-input"  id="isactive" color="primary" type="checkbox" [formControl]="employeeForm.controls.isAdmin">
+                    <label class="ms-2 form-check-label">
+                  Is Admin
+                    </label>
+                
+            </div> -->
+            <br>
+            <table
+                class="table table-striped table-nowrap custom-table mt-3 mb-0 datatable">
+                <thead>
+                    <tr class="d-flex justify-content-between">
+                        <div>
+                            <h4 [hidden]="view" class="mt-2 mb-1"> Employee
+                                Details</h4>
+                        </div>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    <div class="row m-0">
+                        <div class="col-md-11">
+                            <div class="row g-2 m-0">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select"
+                                            [formControl]="employeeForm.controls.identificationType">
+                                            <option
+                                                *ngFor="let i of identificationTypes"
+                                                [value]="i.code">
+                                                {{i.name}}</option>
+                                        </select>
+                                        <label> Identification Type </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4"
+                                    *ngIf="employeeForm.controls.identificationType.value">
+                                    <div class="form-floating">
+                                        <input class="form-control"
+                                            [formControl]="employeeForm.controls.identificationNumber"
+                                            type="text" />
+                                        <label>Enter Number</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <div class="form-floating">
+                                            <input class="form-control"
+                                                [formControl]="employeeForm.controls.address1"
+                                                type="text" />
+                                            <label>Address 1</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <div class="form-floating">
+                                            <input class="form-control"
+                                                [formControl]="employeeForm.controls.address2"
+                                                type="text" />
+                                            <label>Address 2</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <div class="form-floating">
+                                            <input class="form-control"
+                                                [formControl]="employeeForm.controls.city"
+                                                type="text" />
+                                            <label>City</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select"
+                                            [formControl]="employeeForm.controls.state">
+                                            <option value selected disabled>
+                                                Select State</option>
+                                            <option
+                                                *ngFor="let state of selectState"
+                                                [value]="state.code">
+                                                {{state.name}}
+                                            </option>
+                                        </select>
+                                        <label>State</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select"
+                                            [formControl]="employeeForm.controls.gender">
+                                            <option value selected disabled>
+                                                Select Gender</option>
+                                            <option *ngFor="let g of genders"
+                                                [value]="g.code">{{g.name}}
+                                            </option>
+                                        </select>
+                                        <label>Gender</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select"
+                                            [formControl]="employeeForm.controls.maritalStatus">
+                                            <option value selected disabled>
+                                                Select Marital Status</option>
+                                            <option
+                                                *ngFor="let m of maritalStatus"
+                                                [value]="m.code">{{m.name}}
+                                            </option>
+                                        </select>
+                                        <label>Marital Status</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="input-group">
+
+                                        <div class="form-floating">
+                                            <input class="form-control"
+                                                [formControl]="employeeForm.controls.emergencyContactName"
+                                                type="text" />
+                                            <label>Emergency Contact Name</label>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="input-group">
+
+                                        <div class="form-floating">
+                                            <input class="form-control"
+                                                [formControl]="employeeForm.controls.emergencyContactNumber"
+                                                type="number" />
+                                            <label>Emergency Contact Number</label>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="input-group">
+
+                                        <div class="form-floating">
+                                            <input class="form-control"
+                                                [formControl]="employeeForm.controls.relationshipWithEmp"
+                                                type="text" />
+                                            <label>RelationShip with employee</label>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- </tr> -->
+
+                </tbody>
+            </table>
+
+            <table
+                class="table table-striped table-nowrap custom-table mb-0 datatable">
+                <thead>
+                    <tr class="d-flex justify-content-between">
+                        <div>
+                            <h4 [hidden]="view" class="mt-2 mb-1">Add Employee
+                                Family Details</h4>
+                        </div>
+                        <div>
+                            <button type="button" [hidden]="view"
+                                (click)="addKids()"
+                                *ngIf="employeeForm.controls.maritalStatus.value === 'married'"
+                                class="btn add-btn d-flex"><i
+                                    class="material-icons me-2 fs-5">add</i> Add
+                                Kids
+                            </button>
+                        </div>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    <div class="row g-2 m-0">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <div class="form-floating">
+                                    <input class="form-control"
+                                        [formControl]="employeeForm.controls.fatherName"
+                                        type="text" />
+                                    <label>Father Name</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <div class="form-floating">
+                                    <input class="form-control"
+                                        [formControl]="employeeForm.controls.fatherDob"
+                                        type="date" />
+                                    <label>Father Dob</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <div class="form-floating">
+                                    <input class="form-control"
+                                        [formControl]="employeeForm.controls.motherName"
+                                        type="text" />
+                                    <label>Mother Name</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <div class="form-floating">
+                                    <input class="form-control"
+                                        [formControl]="employeeForm.controls.motherDob"
+                                        type="date" />
+                                    <label>Mother Dob</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4"
+                            *ngIf="employeeForm.controls.maritalStatus.value === 'married'">
+                            <div class="input-group">
+                                <div class="form-floating">
+                                    <input class="form-control"
+                                        [formControl]="employeeForm.controls.spouseName"
+                                        type="text" />
+                                    <label>Spouse Name</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4"
+                            *ngIf="employeeForm.controls.maritalStatus.value === 'married'">
+                            <div class="input-group">
+                                <div class="form-floating">
+                                    <input class="form-control"
+                                        [formControl]="employeeForm.controls.spouseDob"
+                                        type="date" />
+                                    <label>Spouse Date</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row m-0 mb-3"
+                        *ngFor="let c of kidDetails;let i = index"
+                        style="border-bottom: 1px dashed #ccc;">
+                        <div class="col-md-11">
+                            <div class="row g-2 m-0">
+
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <div class="form-floating">
+                                            <input class="form-control"
+                                                [ngModelOptions]="{standalone: true}"
+                                                [(ngModel)]="c.kid1Name"
+                                                type="text" />
+                                            <label>Kid{{i+1}} Name&nbsp;<span
+                                                    style="color: red; margin-left: 1px">*</span></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <div class="form-floating">
+                                            <input class="form-control"
+                                                [ngModelOptions]="{standalone: true}"
+                                                [(ngModel)]="c.kid1Dob"
+                                                type="date" />
+                                            <label>Kid{{i+1}} Dob</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select"
+                                            [ngModelOptions]="{standalone: true}"
+                                            [(ngModel)]="c.kid1Gender">
+                                            <option value selected disabled>
+                                                Select Gender</option>
+                                            <option *ngFor="let g of genders"
+                                                [value]="g.code">{{g.name}}
+                                            </option>
+                                        </select>
+                                        <label>Kid {{i+1}}Gender</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1 text-center">
+                            <i
+                                class="fa-solid fa-trash fs-5 mt-3 text-danger c-ptr"
+                                [hidden]="view"
+                                (click)="removeKids(i,EmployeeDetails)"></i>
+                        </div>
+                    </div>
+                    <!-- </tr> -->
+                </tbody>
+            </table>
+
+            <!-- <div class="row g-2 mb-3">
+                <div class="col-md">
+                    <div class="form-group">
+                        <label class="ms-1">
+                            Roles&nbsp;<span style="color: red; margin-left: 1px">*</span>
+                        </label>
+                        <ng-select [items]="roleCodeList"  [multiple]="true"
+                            [formControl]="employeeForm.controls.roles">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" [formControl]="employeeForm.controls.category">
+                        <label>Project</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-2 mb-3">
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" [formControl]="employeeForm.controls.icon">
+                        <label>Icon</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" [formControl]="employeeForm.controls.priority">
+                        <label>Priorities</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-2 mb-3">
+                <div class="col-lg-6 col-sm-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" [formControl]="employeeForm.controls.application">
+                        <label for="floatingInputGrid">Application</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch"
+                    [formControl]="employeeForm.controls.active">
+                <label class="form-check-label">Active</label>
+            </div> -->
+
+            <div class="row mt-4">
+                <div class="col-lg-6 col-sm-12">
+                    <button (click)="cancel()"
+                        class="btn delete-btn me-1 float-start">Cancel</button>
+                </div>
+                <div class="col-lg-6 col-sm-12">
+                    <button
+                        [disabled]="employeeForm.pristine || employeeForm.invalid"
+                        [hidden]="view || update" (click)="create()"
+                        class="btn add-btn float-end">Create</button>
+                    <button *ngIf="update" (click)="Update()"
+                        [disabled]="employeeForm.pristine || employeeForm.invalid || showSuccessEmailToolTip === 'EMAIL ALREADY EXIST'"
+                        class="btn add-btn float-end">Update</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

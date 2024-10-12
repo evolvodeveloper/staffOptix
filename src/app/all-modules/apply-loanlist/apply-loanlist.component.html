@@ -1,0 +1,447 @@
+
+<div class="container-xxl">
+
+    <div class="page-header">
+        <div class="row">
+            <div class="col-sm-12 col-lg-8 d-flex align-items-baseline">
+                <i style="font-size:20px" class="fa fa-arrow-left me-4"
+                    routerLink="/dashboard" aria-label="back"></i>
+                <h3
+                    class="page-title">{{global.showLabel("loanAppHeader")}}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- <form> -->
+            <div class="row mb-3">
+                <div class="col-sm-12 col-lg-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" *ngIf="firstTab"
+                            placeholder="{{global.showPlaceholder('searchByAppId')}}"
+                            (keyup)="updateFilter1($event)"
+                            style="border-radius: 8px 0px 0px 8px;height: calc(2.5rem + calc(var(--mo-border-width) * 2));">
+
+                        <input type="text" class="form-control"
+                            *ngIf="secondTab"
+                            placeholder="{{global.showPlaceholder('searchByAppIdemp')}}"
+                            (keyup)="updateFilter($event)"
+                            style="border-radius: 8px 0px 0px 8px;height: calc(2.5rem + calc(var(--mo-border-width) * 2));">
+                        <span class="input-group-text" id="basic-addon1">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-lg-2">
+                    <!-- <select class="form-select" [(ngModel)]="selected_userType"
+                    (change)="changeData($event.target.value)">
+                    <option *ngFor="let user of usertypeList"
+                        [value]="user.userType">{{user.userType}}</option>
+                </select> -->
+                </div>
+
+                <div class="col-lg-3">
+                </div>
+
+                <div class="col-lg-2">
+                    <button id="add_user" type="button" *ngIf="this.userProfile"
+                        class="btn add-btn float-end d-flex"
+                        (click)="create()"><i
+                            class="material-icons">add</i>
+                        {{global.showLabel("ApplyLoan")}}</button>
+                </div>
+
+                <div class="col-sm-6 col-lg-2 mt-30px">
+                    <label class="form-label ms-2">
+                        {{global.getGlobalNames('ShowEntries')}}</label>
+                    <select class="form-select" *ngIf="firstTab"
+                        (change)="resultsPerPage1($event)">
+                        <!-- <option value="10">10</option> -->
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="all">All</option>
+                    </select>
+                    <select class="form-select" *ngIf="secondTab"
+                        (change)="resultsPerPage($event)">
+                        <!-- <option value="10">10</option> -->
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="all">All</option>
+                    </select>
+                </div>
+            </div>
+            <!-- </form> -->
+
+            <div class="card card-border-style p-3">
+                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist"
+                    *ngIf="hasPermissionToApprove">
+                    <li class="nav-item" role="presentation">
+                        <button (click)="tab1()" class="nav-link active"
+                            id="pills-userLoan-tab"
+                            data-bs-toggle="pill"
+                            data-bs-target="#pills-userLoan"
+                            type="button"
+                            role="tab" aria-controls="pills-userLoan"
+                            aria-selected="true">
+                            {{global.showLabel("LoanApplication")}}</button>
+                    </li>
+                    <li class="nav-item ms-2" role="presentation">
+                        <button (click)="tab2()" class="nav-link"
+                            id="pills-empLoan-tab"
+                            data-bs-toggle="pill"
+                            data-bs-target="#pills-empLoan"
+                            type="button"
+                            role="tab" aria-controls="pills-empLoan"
+                            aria-selected="false">
+                            {{global.showLabel("EmployeesLoanApplication")}}</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade  show active" id="pills-userLoan"
+                        role="tabpanel"
+                        aria-labelledby="pills-userLoan-tab" tabindex="0">
+                        <div class="table-responsive ">
+                            <table
+                                class="table table-hover table-nowrap custom-table mb-0 datatable">
+                                <thead class="thead-all">
+                                    <tr class="tr-th-all">
+                                        <th scope="col">
+                                            {{global.showLabel("LoanApplicationId")}}</th>
+                                        <th scope="col">
+                                            {{global.showLabel("LoanName")}}</th>
+                                        <th scope="col"
+                                            class="text-center">{{global.showLabel("LoanAmount")}}</th>
+                                        <th scope="col"
+                                            class="text-center">{{global.getGlobalNames('status')}}</th>
+                                        <th scope="col"
+                                            class="text-center">{{global.getGlobalNames('action')}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="usersRecords.length === 0">
+                                    <tr
+                                        style=" text-align: center; height: 150px;">
+                                        <td colspan="8">
+                                            {{global.showGlobalErrors('notFound')}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody *ngIf="usersRecords.length > 0">
+                                    <tr class="dasboard-td"
+                                        *ngFor="let row of usersRecords | paginate: config; let i = index">
+                                        <!-- <ng-container
+                                            *ngIf="row.status !== 'REJECTED'"> -->
+                                        <td>
+                                            <h2 style="padding: 8px 0px;"
+                                                *ngIf="row.status !== 'APPROVED'">{{row.loanApplicationId}}</h2>
+                                            <h2
+                                                *ngIf="row.status === 'APPROVED'"
+                                                class="table-avatar blue-link"
+                                                style="padding: 8px 0px;"
+                                                data-bs-target="#showLoanDEtails"
+                                                data-bs-toggle="modal"
+                                                (click)="goto(row)">
+                                                <a>
+                                                    {{row.loanApplicationId}}</a>
+                                            </h2>
+                                        </td>
+                                        <td>{{row.loanCode}}</td>
+                                        <td
+                                            class="text-center">{{row.loanAmount}}</td>
+                                        <td
+                                            class="text-center">{{row.status}}</td>
+
+                                        <!-- <td class="text-center">
+                                                <i *ngIf="row.approved"
+                                                    class="fa-solid fa-circle"
+                                                    style="color: #55CE63;"></i>
+                                                <i *ngIf="!row.approved"
+                                                    class="fa-solid fa-circle"
+                                                    style="color: #f62d51;"></i>
+                                            </td> -->
+
+                                        <td class="text-center">
+                                            <div class="btn-group"
+                                                role="group">
+                                                <span
+                                                    *ngIf="row.status !== 'APPROVED' && row.status !== 'REJECTED'">
+                                                    <button id="view_user"
+                                                        type="button"
+                                                        class="btn btn-light me-1 text-info"
+                                                        placement="top"
+                                                        ngbTooltip="View"
+                                                        (click)="viewData(row)">
+                                                        <i
+                                                            class="fa-solid fa-eye"></i>
+                                                    </button>
+                                                    <button type="button"
+                                                        id="edit_user"
+                                                        *ngIf="hasPermissionToUpdate"
+                                                        class="btn btn-light me-1 text-secondary"
+                                                        placement="top"
+                                                        ngbTooltip="Edit"
+                                                        (click)="editData(row)">
+                                                        <i
+                                                            class="fa-solid fa-pen"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <!-- </ng-container> -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div
+                                *ngIf="usersRecords.length > config1.itemsPerPage"
+                                class="text-center mt-3">
+                                <pagination-controls
+                                    (pageChange)="pageChanged1($event)"></pagination-controls>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="pills-empLoan"
+                        role="tabpanel"
+                        aria-labelledby="pills-empLoan-tab" tabindex="0">
+                        <div class="table-responsive ">
+                            <table
+                                class="table table-hover table-nowrap custom-table mb-0 datatable">
+                                <thead class="thead-all">
+                                    <tr class="tr-th-all">
+                                        <th scope="col">
+                                            {{global.showLabel("LoanApplicationId")}}</th>
+                                        <th scope="col">
+                                            {{global.getGlobalNames('employee')}}</th>
+                                        <th scope="col">
+                                            {{global.showLabel("LoanName")}}</th>
+                                        <th scope="col"
+                                            class="text-center">{{global.showLabel("LoanAmount")}}</th>
+                                        <th scope="col"
+                                            class="text-center">{{global.getGlobalNames('status')}}</th>
+                                        <th scope="col"
+                                            class="text-center">{{global.getGlobalNames('action')}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="allRecords.length === 0">
+                                    <tr
+                                        style=" text-align: center; height: 150px;">
+                                        <td colspan="8">
+                                            {{global.showGlobalErrors('notFound')}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody *ngIf="allRecords.length > 0">
+                                    <tr class="dasboard-td"
+                                        *ngFor="let row of allRecords | paginate: config; let i = index">
+                                        <ng-container
+                                            *ngIf="row.status !== 'REJECTED'">
+                                            <td>
+                                                <h2 style="padding: 8px 0px;"
+                                                    *ngIf="row.status !== 'APPROVED'">{{row.loanApplicationId}}</h2>
+                                                <h2
+                                                    *ngIf="row.status === 'APPROVED'"
+                                                    class="table-avatar blue-link"
+                                                    style="padding: 8px 0px;"
+                                                    data-bs-target="#showLoanDEtails"
+                                                    data-bs-toggle="modal"
+                                                    (click)="goto(row)">
+                                                    <a>
+                                                        {{row.loanApplicationId}}</a>
+                                                </h2>
+                                            </td>
+                                            <td>{{row.employeeCode}}</td>
+
+                                            <td>{{row.loanCode}}</td>
+                                            <td
+                                                class="text-center">{{row.loanAmount}}</td>
+                                            <td
+                                                class="text-center">{{row.status}}</td>
+
+                                            <!-- <td class="text-center">
+                                                <i *ngIf="row.approved"
+                                                    class="fa-solid fa-circle"
+                                                    style="color: #55CE63;"></i>
+                                                <i *ngIf="!row.approved"
+                                                    class="fa-solid fa-circle"
+                                                    style="color: #f62d51;"></i>
+                                            </td> -->
+
+                                            <td class="text-center">
+                                                <div class="btn-group"
+                                                    role="group">
+                                                    <span
+                                                        *ngIf="row.status !== 'APPROVED' && row.status !== 'REJECTED'">
+
+                                                        <button id="view_user"
+                                                            type="button"
+                                                            class="btn btn-light me-1 text-info"
+                                                            placement="top"
+                                                            ngbTooltip="View"
+                                                            (click)="viewData(row)">
+                                                            <i
+                                                                class="fa-solid fa-eye"></i>
+                                                        </button>
+                                                        <button type="button"
+                                                            id="approve_user"
+                                                            *ngIf="hasPermissionToApprove"
+                                                            class="btn btn-light me-1 text-success"
+                                                            placement="top"
+                                                            ngbTooltip="Approve"
+                                                            (click)="approveRecord(row)">
+                                                            <i
+                                                                class="fa-solid fa-circle-check"></i>
+                                                        </button>
+                                                        <button type="button"
+                                                            id="approve_user"
+                                                            *ngIf="hasPermissionToApprove"
+                                                            class="btn btn-light me-1 text-danger"
+                                                            placement="top"
+                                                            ngbTooltip="Reject"
+                                                            (click)="rejectRecord(row)">
+                                                            <i
+                                                                class="fa-solid fa-times"></i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                        </ng-container>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div *ngIf="allRecords.length > config.itemsPerPage"
+                                class="text-center mt-3">
+                                <pagination-controls
+                                    (pageChange)="pageChanged($event)"></pagination-controls>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div [app-apply-loan]="loanApplication"
+                (loanApplicationEvent)="loanApplicationEvent()"></div>
+
+            <div id="showLoanDEtails" class="modal custom-modal fade"
+                role="dialog" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered modal-lg"
+                    role="dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {{global.showLabel("LoanInformation")}}</h5>
+                            <i class="fa-solid fa-xmark fs-4"
+                                id="close_model" data-bs-dismiss="modal"
+                                (click)="closeModel('dismiss')"></i></div>
+                        <div class="modal-body">
+                            <div class="row">
+
+                                <table
+                                    class="table table-nowrap custom-table mb-0">
+                                    <thead class="thead-all">
+                                        <tr class="tr-th-all">
+                                            <th
+                                                class="text-center"
+                                                colspan="4">
+                                                {{global.showLabel("LoanDetails")}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="dasboard-td">
+                                            <td scope="col">
+                                                {{global.getGlobalNames('employeeCode')}}
+                                                :
+                                            </td>
+                                            <td
+                                                class
+                                                scope="col">{{loanDetails?.employeeCode}}
+                                            </td>
+                                            <td scope="col">
+                                                {{global.showLabel("LoanApplicationId")}}
+                                                :
+                                            </td>
+                                            <td
+                                                class="text-end"
+                                                scope="col">{{loanDetails?.loanApplicationId}}
+                                            </td>
+                                        </tr>
+                                        <tr class="dasboard-td">
+                                            <td scope="col">
+                                                {{global.showLabel("LoanName")}}
+                                                :
+                                            </td>
+                                            <td
+                                                class
+                                                scope="col">{{loanDetails?.loanCode}}
+                                            </td>
+                                            <td scope="col">
+                                                {{global.showLabel("LoanAmount")}}
+                                                :
+                                            </td>
+                                            <td
+                                                class="text-end"
+                                                scope="col">{{loanDetails?.loanAmount}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <table
+                                    class="table table-nowrap custom-table mt-2">
+                                    <thead class="thead-all">
+                                        <tr class="tr-th-all">
+                                            <th
+                                                class="text-center">
+                                                {{global.showLabel("LoanInstalment")}}</th>
+                                            <th
+                                                class="text-center">
+                                                {{global.showLabel("NumberofEMI")}}</th>
+                                            <th
+                                                class="text-center">
+                                                {{global.showLabel("EMICompleted")}}</th>
+                                            <th
+                                                class="text-center">
+                                                {{global.showLabel("RecoveredAmount")}}</th>
+                                            <th
+                                                class="text-center">
+                                                {{global.showLabel("BalanceAmount")}}</th>
+                                            <th
+                                                class="text-center">{{global.getGlobalNames('status')}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="dasboard-td">
+                                            <td scope="col" class="text-center">
+                                                {{loanDetails?.loanInstalment}}
+                                            </td>
+
+                                            <td scope="col" class="text-center">
+                                                {{loanDetails?.totalNoOfEmis}}
+                                            </td>
+                                            <td scope="col" class="text-center">
+                                                {{loanDetails?.noOfEmisCompleted}}
+                                            </td>
+                                            <td scope="col" class="text-center">
+                                                {{loanDetails?.loanRecovered}}
+                                            </td>
+                                            <td scope="col" class="text-center">
+                                                {{loanDetails?.loanBalance}}
+                                            </td>
+                                            <td scope="col" class="text-center">
+                                                {{loanDetails?.isClosed ===
+                                                false ?
+                                                'Active' : 'Closed'}}
+                                            </td>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

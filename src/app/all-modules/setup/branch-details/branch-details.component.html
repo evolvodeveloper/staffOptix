@@ -1,0 +1,558 @@
+ <div class="content container-fluid">
+  <div class="mb-2">
+    <div class="row">
+      <div class="col-sm-12 d-flex justify-content-between">
+        <div class="d-flex align-items-baseline">
+          <i style="font-size:20px;" class="fa fa-arrow-left"
+            routerLink="/setup" aria-label="back"></i>
+          <h3
+            class="ms-4 page-title">{{globalServ.showLabel('branchHeader')}}</h3>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-3">
+  <div class="col-sm-12 col-lg-3">
+    <div class="input-group">
+      <input
+        type="text"
+        id="filter"
+        class="form-control"
+        placeholder="{{globalServ.showGlobalplaceholders('search')}}"
+        [(ngModel)]="searchedFor"
+        (keyup)="updateFilter($event)"
+        style="border-radius: 8px 0px 0px 8px" />
+      <span class="input-group-text" id="basic-addon1">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </span>
+    </div>
+  </div>
+
+  <div class="col-lg-3"></div>
+  <div class="col-lg-2"></div>
+  <div class="col-lg-2">
+    <button id="branchBtn" *ngIf="hasPermissionToUpdate" type="button"
+      class="btn add-btn  float-end d-flex" data-bs-target="#branch_info"
+      data-bs-toggle="modal" (click)="add()"><i
+        class="material-icons me-2">add</i>{{globalServ.getGlobalNames('add')}}
+      {{globalServ.showLabel('branchHeader')}}</button>
+  </div>
+  <div class="col-sm-6 col-lg-2 mt-30px">
+    <label class="form-label ms-2"
+      for="showEntry">{{globalServ.getGlobalNames('ShowEntries')}}</label>
+    <select class="form-select" id="showEntry"
+      (change)="resultsPerPage($event)">
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+      <option value="all">All</option>
+    </select>
+  </div>
+
+</div>
+
+<div class="row">
+  <div class="col-md-12 d-flex">
+    <div class="card card-border-style flex-fill">
+      <div class="card-body">
+        <!-- <h3 class="card-title">Branch Information</h3> -->
+        <div class="table-responsive">
+          <table
+            class="table table-hover table-nowrap custom-table mb-0 datatable">
+            <thead class="thead-all">
+              <tr class="tr-th-all">
+                <th scope="col">{{globalServ.showLabel('branchHeader')}}</th>
+                <th scope="col">{{globalServ.showLabel('phoneNbr')}}</th>
+                <!-- <th scope="col">Address</th> -->
+                <th scope="col">{{globalServ.showLabel('city')}}</th>
+                <th scope="col">{{globalServ.showLabel('dateFormat')}} </th>
+                <th scope="col"
+                  class="text-center">{{globalServ.showLabel('branchLock')}}</th>
+                <th scope="col"
+                  class="text-center">{{globalServ.getGlobalNames('active')}}</th>
+                <th scope="col"
+                  class="text-center">{{globalServ.showLabel('headOfc')}}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody *ngIf="branchs.length === 0">
+              <tr
+                style=" text-align: center; height: 150px;">
+                <td colspan="9">
+                  {{globalServ.showGlobalErrors('notFound')}} </td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="branchs.length > 0">
+              <tr class="dasboard-td"
+                *ngFor="let row of branchs; let i = index">
+                <td>{{ row.branchName }}</td>
+                <td>{{ row.phoneNo }}</td>
+                <!-- <td>{{ row.address }}</td> -->
+                <td>{{ row.city }}</td>
+
+                <td>{{ row.dateFormat }}</td>
+                <td class="text-center">
+                  <i
+                    *ngIf="row.branchLock"
+                    class="fa-solid fa-circle"
+                    style="color: #55ce63"></i>
+                  <i
+                    *ngIf="!row.branchLock"
+                    class="fa-solid fa-circle"
+                    style="color: #f62d51"></i>
+                </td>
+                <td class="text-center">
+                  <i
+                    *ngIf="row.isactive"
+                    class="fa-solid fa-circle"
+                    style="color: #55ce63"></i>
+                  <i
+                    *ngIf="!row.isactive"
+                    class="fa-solid fa-circle"
+                    style="color: #f62d51"></i>
+                </td>
+                <td class="text-center">
+                  <i
+                    *ngIf="row.headoffice"
+                    class="fa-solid fa-circle"
+                    style="color: #55ce63"></i>
+                  <i
+                    *ngIf="!row.headoffice"
+                    class="fa-solid fa-circle"
+                    style="color: #f62d51"></i>
+                </td>
+
+                <td class="text-right">
+                  <div class>
+                    <i
+                      class="material-icons"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false">more_vert</i>
+                    <ul class="dropdown-menu">
+                      <li>
+                        <a
+                          class="dropdown-item"
+                          data-bs-target="#branch_info"
+                          data-bs-toggle="modal"
+                          (click)="showBranchModel(row, 'view')">{{globalServ.getGlobalNames('view')}}</a>
+                      </li>
+                      <li *ngIf="hasPermissionToUpdate">
+                        <a
+                          class="dropdown-item"
+                          data-bs-target="#branch_info"
+                          data-bs-toggle="modal"
+                          (click)="showBranchModel(row, 'edit')">{{globalServ.getGlobalNames('update')}}</a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="branchs.length > config.itemsPerPage" class="text-center mt-3">
+  <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+</div>
+
+<div id="branch_info" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{globalServ.showLabel('branchInfo')}} </h5>
+        <i class="fa-solid fa-xmark  fs-4" id="close_model"
+          data-bs-dismiss="modal"
+          (click)="closeModel('dismiss')"></i>
+        <!-- <button
+          type="button"
+          class="close"
+           data-bs-dismiss="modal"
+          (click)="closeModel('dismiss')"
+          aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="branchForm">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>{{globalServ.showLabel('branchCode')}}&nbsp;<span
+                        style="color: red; margin-left: 1px">*</span></label>
+                    <input
+                      type="text"
+                      placeholder="{{globalServ.showPlaceholder('branchCode')}}"
+                      class="form-control"
+                      [formControl]="branchForm.controls.branchCode" />
+                    <div
+                      *ngIf="branchForm.controls['branchCode'].invalid && (branchForm.controls['branchCode'].dirty ||
+                    branchForm.controls['branchCode'].touched)"
+                      style="padding: 0px">
+                      <div
+                        *ngIf="branchForm.controls['branchCode'].errors.required"
+                        style="color: #dc3545">
+                        {{globalServ.showLabel('branchCode')}}
+                        {{globalServ.showGlobalErrors('required')}}</div>
+                    </div>
+                    <div
+                      *ngIf="branchForm.get('branchCode').hasError('invalidFormat')"
+                      style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>{{globalServ.showLabel('branchName')}}&nbsp;<span
+                        style="color: red; margin-left: 1px">*</span></label>
+                    <input
+                      type="text"
+                      placeholder="{{globalServ.showPlaceholder('branchName')}}"
+                      class="form-control"
+                      [formControl]="branchForm.controls.branchName" />
+                    <div
+                      *ngIf="branchForm.controls['branchName'].invalid && (branchForm.controls['branchName'].dirty ||
+                    branchForm.controls['branchName'].touched)"
+                      style="padding: 0px">
+                      <div
+                        *ngIf="branchForm.controls['branchName'].errors.required"
+                        style="color: #dc3545">
+                        {{globalServ.showLabel('branchName')}}
+                        {{globalServ.showGlobalErrors('required')}}</div>
+                    </div>
+                    <div
+                      *ngIf="branchForm.get('branchName').hasError('invalidFormat')"
+                      style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>{{globalServ.getGlobalNames('shortName')}}</label>
+                    <input
+                      type="text"
+                      placeholder="{{globalServ.showPlaceholder('shortName')}}"
+                      class="form-control"
+                      maxlength="3"
+                      [formControl]="branchForm.controls.shortName" />
+                    <div
+                      *ngIf="branchForm.get('shortName').hasError('invalidFormat')"
+                      style="color: #dc3545">
+                      {{globalServ.showGlobalErrors('specialChar')}}</div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>{{globalServ.showLabel('phoneNbr')}}</label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      placeholder="{{globalServ.showPlaceholder('phoneNbr')}}"
+                      [formControl]="branchForm.controls.phoneNo" />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>{{globalServ.showLabel('branchAddress')}}</label>
+                    <textarea
+                      type="text"
+                      resizable="auto"
+                      placeholder="{{globalServ.showPlaceholder('branchAddress')}}"
+                      class="form-control"
+                      [formControl]="branchForm.controls.address"></textarea>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>{{globalServ.showLabel('dateFormat')}}</label>
+                    <select
+                      class="select form-select"
+                      [formControl]="branchForm.controls.dateFormat">
+                      <option>-</option>
+                      <option *ngFor="let d of dateFormats" [value]="d">
+                        {{ d }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>{{globalServ.showLabel('mobileDateFormat')}}</label>
+                    <select
+                      class="select form-select"
+                      [formControl]="branchForm.controls.mobDateFormat">
+                      <option [value]="null">-</option>
+                      <option *ngFor="let d of dateFormats" [value]="d">
+                        {{ d }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group col-md-6 ">
+                  <label> {{globalServ.showLabel('timeZone')}}&nbsp;<span
+                      style="color: red; margin-left: 1px">*</span></label>
+                  <ng-select [items]="timezones" bindLabel="t" bindValue="t"
+                    [multiple]="false"
+                    placeholder="Select" class="ngSelectform"
+                    [formControl]="branchForm.controls.timezone">
+                  </ng-select>
+                  <div
+                    *ngIf="branchForm.controls['timezone'].invalid && (branchForm.controls['timezone'].dirty ||
+                    branchForm.controls['timezone'].touched)"
+                    style="padding: 0px">
+                    <div
+                      *ngIf="branchForm.controls['timezone'].errors.required"
+                      style="color: #dc3545">
+                      {{globalServ.showLabel('timeZone')}}
+                      {{globalServ.showGlobalErrors('required')}}</div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label> {{globalServ.showLabel('dayClosingTime')}} </label>
+                    <input
+                      type="time"
+                      step="2"
+                      placeholder="{{globalServ.showPlaceholder('dayClosingTime')}}"
+                      class="form-control"
+                      [formControl]="branchForm.controls.dayClosingTime" />
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>{{globalServ.showLabel('priority')}} </label>
+                    <input
+                      type="number"
+                      placeholder="{{globalServ.showPlaceholder('priority')}}"
+                      class="form-control"
+                      [formControl]="branchForm.controls.priority" />
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>{{globalServ.showLabel('Theme')}} </label>
+                    <select
+                      class="select form-select"
+                      [formControl]="branchForm.controls.theme">
+                      <option></option>
+                      <option
+                        *ngFor="let theme of themes"
+                        [value]="theme.code">
+                        {{ theme.name }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>{{globalServ.showLabel('tin')}}</label>
+                    <input
+                      type="text"
+                      placeholder="{{globalServ.showPlaceholder('tin')}}"
+                      class="form-control"
+                      [formControl]="branchForm.controls.tin" />
+                  </div>
+
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>{{globalServ.showLabel('bankDetails')}}</label>
+                    <textarea
+                      type="text"
+                      rows="5"
+                      placeholder="{{globalServ.showPlaceholder('bankDetails')}}"
+                      style="height: auto;"
+                      class="form-control"
+                      [formControl]="branchForm.controls.bankDetails"></textarea>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>{{globalServ.showLabel('qrCode')}}</label>
+                    <input
+                      type="file" accept="image/*"
+                      class="form-control" (change)="onSelectFile($event)"
+                      [formControl]="branchForm.controls.qrName" />
+                  </div>
+
+                  <div class="form-group">
+                    <label>Upload Stamp</label>
+                    <input 
+                      type="file" accept="image/*"
+                      class="form-control" (change)="onSelectFile_Stamp($event)"
+                      [formControl]="branchForm.controls.stampName" />
+                  </div>
+
+                 
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>{{globalServ.showLabel('city')}}</label>
+                    <input
+                      type="text"
+                      placeholder="{{globalServ.showPlaceholder('city')}}"
+                      class="form-control"
+                      [formControl]="branchForm.controls.city" />
+                  </div>
+                </div>
+                <div class="form-group col-md-6 ">
+                  <label>{{globalServ.showLabel('State')}}&nbsp;<span
+                      style="color: red; margin-left: 1px">*</span></label>
+                  <ng-select [items]="stateNames" bindLabel="state"
+                    bindValue="state" [multiple]="false"
+                    placeholder="{{globalServ.showPlaceholder('State')}}"
+                    class="ngSelectform"
+                    [formControl]="branchForm.controls.state">
+                  </ng-select>
+                  <div
+                    *ngIf="branchForm.controls['state'].invalid && (branchForm.controls['state'].dirty ||
+                    branchForm.controls['state'].touched)"
+                    style="padding: 0px">
+                    <div
+                      *ngIf="branchForm.controls['state'].errors.required"
+                      style="color: #dc3545">
+                      {{globalServ.showLabel('State')}}
+                      {{globalServ.showGlobalErrors('required')}}</div>
+                  </div>
+                </div>
+                <div class="form-group col-md-6 ">
+                  <label>{{globalServ.showLabel('Country')}}&nbsp;<span
+                      style="color: red; margin-left: 1px">*</span></label>
+                  <ng-select [items]="countryNames" bindLabel="country"
+                    bindValue="country" [multiple]="false"
+                    (change)="getStatesForThatCmp(branchForm.controls.country.value)"
+                    placeholder="{{globalServ.showPlaceholder('Country')}}"
+                    class="ngSelectform"
+                    [formControl]="branchForm.controls.country">
+                  </ng-select>
+                  <div
+                    *ngIf="branchForm.controls['country'].invalid && (branchForm.controls['country'].dirty ||
+                    branchForm.controls['country'].touched)"
+                    style="padding: 0px">
+                    <div
+                      *ngIf="branchForm.controls['country'].errors.required"
+                      style="color: #dc3545">
+                      {{globalServ.showLabel('Country')}}
+                      {{globalServ.showGlobalErrors('required')}}</div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>{{globalServ.showLabel('zipCode')}}</label>
+                    <input
+                      placeholder="{{globalServ.showPlaceholder('enterZip')}}"
+                      type="number" maxlength="6"
+                      class="form-control"
+                      [formControl]="branchForm.controls.zipCode" />
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group mb-2">
+                    <input
+                      class="form-check-input me-2"
+                      type="checkbox"
+                      value
+                      id="flexCheckDefault"
+                      [formControl]="branchForm.controls.branchLock" />
+                    <label>{{globalServ.showLabel('branchLock')}}</label>
+                  </div>
+                  <!-- </div>
+                           <div class="col-md-6"> -->
+                  <div class="form-group">
+
+                    <input
+                      class="form-check-input me-2"
+                      type="checkbox"
+                      value
+                      id="flexCheckDefault"
+                      (change)="checkHeadOffice()"
+                      [formControl]="branchForm.controls.headoffice" />
+                    <label>{{globalServ.showLabel('headOffice')}}</label>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+
+                    <input
+                      class="form-check-input me-2"
+                      type="checkbox"
+                      value
+                      id="flexCheckDefault"
+                      [formControl]="branchForm.controls.isactive" />
+                    <label>{{globalServ.showLabel('activeBranch')}}</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-2">
+                  <label ng for="qrcode">{{globalServ.showLabel('branchQr')}}</label>
+                  <img *ngIf="img.imageByte !== null && img.imageByte"
+                    style="width: 100px; height: 100px;  object-fit: contain;"
+                    src="{{img.image}}" alt="Qr Code">
+                  <div *ngIf="!img.imageByte"
+                    style="width: 100px;margin-left: 2%; display: flex;align-items: center; text-align: center; height: 100px; background-color: lightgray; object-fit: contain;">
+                    {{globalServ.showLabel('qrCode')}}
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <label ng for="stamp">{{globalServ.showLabel('branchStamp')}} </label>
+                  <img *ngIf="stampImg.imageByte !== null && stampImg.imageByte"
+                  style="width: 100px; height: 100px;  object-fit: contain;"
+                  src="{{stampImg.image}}" alt="Stamp Code">
+                <div *ngIf="!stampImg.imageByte"
+                  style="width: 100px;margin-left: 2%; display: flex;align-items: center; text-align: center; height: 100px; background-color: lightgray; object-fit: contain;">
+                  {{globalServ.showLabel('uploadStamp')}}
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-2" *ngIf="!branchview">
+            <button
+              type="button"
+              class="btn delete-btn"
+              data-bs-dismiss="modal"
+              aria-label="Close">
+              <span aria-hidden="true"
+                (click)="closeModel('dismiss')">{{globalServ.getGlobalNames('close')}}</span>
+            </button>
+            <button *ngIf="branchupdate" class="btn add-btn"
+              [disabled]="branchForm.pristine|| branchForm.invalid"
+              (click)="submit()">{{globalServ.getGlobalNames('update')}}</button>
+            <button *ngIf="!branchupdate" class="btn add-btn"
+              [disabled]="branchForm.pristine|| branchForm.invalid"
+              (click)="create()">{{globalServ.getGlobalNames('submit')}}</button>
+          </div>
+
+          <div class="mt-2 d-flex justify-content-center " *ngIf="branchview">
+            <button
+              type="button"
+              class="btn delete-btn"
+              data-bs-dismiss="modal" (click)="closeModel('dismiss')"
+              aria-label="Close">
+              {{globalServ.getGlobalNames('close')}}
+            </button>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

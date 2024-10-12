@@ -1,0 +1,267 @@
+<div class="page-header">
+  <div class="row align-items-center">
+    <div class="col-sm-12 col-lg-8">
+      <div class="d-flex align-items-baseline">
+        <i
+          style="font-size: 20px"
+          class="fa fa-arrow-left"
+          (click)="back()"
+          aria-label="back"></i>
+        <h3
+          class="ms-4 page-title">{{globalServ.showLabel('capPolicyHeader')}}</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-3 mb-3">
+  <div class="col-sm-12 col-lg-3 col-md-6 mb-1">
+    <div class="input-group">
+      <input
+        type="text"
+        id="filter"
+        class="form-control"
+        placeholder="{{globalServ.showGlobalplaceholders('search')}}"
+        [(ngModel)]="searchedFor"
+        (keyup)="updateFilter($event)"
+        style="
+          border-radius: 8px 0px 0px 8px;
+          height: 55px;
+          height: calc(2.5rem + calc(var(--mo-border-width) * 2));
+        " />
+      <span class="input-group-text" id="basic-addon1">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </span>
+    </div>
+  </div>
+  <div class="col-lg-2"></div>
+
+  <!-- *ngIf="!hasPermissionToUpdate" -->
+
+  <div class="col-sm-6 col-md-6 col-lg-5">
+    <a class="btn add-btn" (click)="addPolicy()"
+      *ngIf="hasPermissionToUpdate"><i class="fa fa-plus"></i>
+      {{globalServ.getGlobalNames('addPolicy')}}
+    </a>
+  </div>
+  <div class="col-sm-6 col-md-6 col-lg-2 mt-30px">
+    <label class="form-label">{{globalServ.getGlobalNames('records')}}</label>
+    <select class="form-select" (change)="resultsPerPage($event)">
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+      <option value="all">All</option>
+    </select>
+  </div>
+</div>
+
+<div class="table-responsive card p-3">
+  <table class="table table-hover table-nowrap custom-table mb-0 datatable">
+    <thead class="thead-all">
+      <tr class="tr-th-all">
+        <th scope="col"></th>
+        <th scope="col">{{globalServ.showLabel('captureCode')}}</th>
+        <th scope="col" class="text-center">{{globalServ.showLabel('bio')}}</th>
+        <th scope="col" class="text-center">{{globalServ.showLabel('web')}}</th>
+        <th scope="col"
+          class="text-center">{{globalServ.showLabel('mobile')}}</th>
+
+        <th scope="col"
+          class="text-center">{{globalServ.getGlobalNames('isDefault')}}</th>
+        <th scope="col"
+          class="text-center">{{globalServ.getGlobalNames('active')}}</th>
+        <th scope="col"
+          class="text-center">{{globalServ.getGlobalNames('action')}}</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="capturePolicies.length === 0">
+      <tr style="text-align: center; height: 150px">
+        <td colspan="8">
+          {{globalServ.showGlobalErrors('notFound')}}
+        </td>
+      </tr>
+    </tbody>
+    <tbody *ngIf="capturePolicies.length > 0">
+      <ng-container
+        *ngFor="let row of capturePolicies | paginate : config; let i = index">
+        <tr
+          class="dasboard-td">
+          <td>
+            <small *ngIf="row.geofence.length>0 || row.ipRange.length>0"><i
+                *ngIf="!row.expand"
+                class="fa fa-angle-up fs-5"
+                aria-hidden="true"
+                (click)="expandRow(row)"></i></small>
+            <small><i
+                *ngIf="row.expand"
+                class="fa fa-angle-down fs-5"
+                aria-hidden="true"
+                (click)="collapseRow(row)"></i></small>
+          </td>
+          <td>{{ row.captureCode }}</td>
+          <td class="text-center">
+            <i
+              *ngIf="row.allowBiometric"
+              class="fa-solid fa-circle"
+              style="color: #55ce63"></i>
+            <i
+              *ngIf="!row.allowBiometric"
+              class="fa-solid fa-circle"
+              style="color: #f62d51"></i>
+          </td>
+          <td class="text-center">
+            <i
+              *ngIf="row.allowWebCheckin"
+              class="fa-solid fa-circle"
+              style="color: #55ce63"></i>
+            <i
+              *ngIf="!row.allowWebCheckin"
+              class="fa-solid fa-circle"
+              style="color: #f62d51"></i>
+          </td>
+          <td class="text-center">
+            <i
+              *ngIf="row.allowMobileCheckin"
+              class="fa-solid fa-circle"
+              style="color: #55ce63"></i>
+            <i
+              *ngIf="!row.allowMobileCheckin"
+              class="fa-solid fa-circle"
+              style="color: #f62d51"></i>
+          </td>
+          <td class="text-center">
+            <i
+              *ngIf="row.isDefault"
+              class="fa-solid fa-circle"
+              style="color: #55ce63"></i>
+            <i
+              *ngIf="!row.isDefault"
+              class="fa-solid fa-circle"
+              style="color: #f62d51"></i>
+          </td>
+          <td class="text-center">
+            <i
+              *ngIf="row.active"
+              class="fa-solid fa-circle"
+              style="color: #55ce63"></i>
+            <i
+              *ngIf="!row.active"
+              class="fa-solid fa-circle"
+              style="color: #f62d51"></i>
+          </td>
+          <td style="text-align: center">
+            <div class="btn-group me-2" role="group" aria-label="Second group">
+              <button
+                type="button"
+                class="btn btn-light me-1 text-info"
+                placement="top"
+                ngbTooltip="View"
+                (click)="viewData(row)">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+              <button
+                type="button"
+                *ngIf="hasPermissionToUpdate"
+                class="btn btn-light me-1 text-secondary"
+                placement="top"
+                ngbTooltip="Edit"
+                (click)="editData(row)">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+              <!-- *ngIf="!hasPermissionToUpdate" -->
+              <!-- <button type="button"  *ngIf="hasPermissionToUpdate" class="btn btn-light me-1 text-danger" placement="top" ngbTooltip="Delete">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button> -->
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="row.expand" style="transition: width 2s;">
+
+          <td colspan="8" class="p-3">
+            <div class="table-responsive">
+              <ng-container *ngIf="row.geofence.length>0">
+                <h4 class="mt-0 c-ptr" (click)="oncontatbl()"><i
+                    class="fa fa-angle-right" *ngIf="!isShown"></i>
+                  <i class="fa fa-angle-down " aria-hidden="true"
+                    *ngIf="isShown"></i>
+                  {{globalServ.showLabel('geofence')}}</h4>
+                <table class="table  table-nowrap custom-table mb-0 datatable"
+                  *ngIf="isShown">
+                  <thead class="thead-all">
+                    <tr class="tr-th-all">
+                      <th scope="col">{{globalServ.showLabel('geoLoc')}} </th>
+                      <th scope="col">{{globalServ.showLabel('lat')}}</th>
+                      <th scope="col">{{globalServ.showLabel('radius')}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let c of row.geofence">
+                      <td>{{c.geolocationCode}}</td>
+                      <td>{{c.latLong}}</td>
+                      <td>{{c.radius}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </ng-container>
+              <ng-container *ngIf="row.ipRange.length>0">
+                <hr>
+                <h4 class="mt-0 c-ptr" (click)="oncontatblForIp()"><i
+                    class="fa fa-angle-right" *ngIf="!isShownForIp"></i>
+                  <i class="fa fa-angle-down " aria-hidden="true"
+                    *ngIf="isShownForIp"></i>
+                  {{globalServ.showLabel('ipRange')}}</h4>
+                <table class="table  table-nowrap custom-table mb-0 datatable"
+                  *ngIf="isShownForIp">
+                  <thead class="thead-all">
+                    <tr class="tr-th-all">
+                      <th scope="col">{{globalServ.showLabel('ipStart')}}</th>
+                      <th scope="col">{{globalServ.showLabel('ipEnd')}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let c of row.ipRange">
+                      <td>{{c.ipStart}}</td>
+                      <td>{{c.ipEnd}}</td>
+
+                    </tr>
+                  </tbody>
+                </table>
+              </ng-container>
+              <ng-container *ngIf="row.policyMembersDTOs.length>0">
+                <hr>
+                <h4 class="mt-0 c-ptr" (click)="onPolicyMembers()"><i
+                    class="fa fa-angle-right" *ngIf="!isShownForMem"></i>
+                  <i class="fa fa-angle-down " aria-hidden="true"
+                    *ngIf="isShownForMem"></i>
+                  {{globalServ.showLabel('policyMem')}}</h4>
+                <table class="table  table-nowrap custom-table mb-0 datatable"
+                  *ngIf="isShownForMem">
+                  <thead class="thead-all">
+                    <tr class="tr-th-all">
+                      <th scope="col">{{globalServ.showLabel('memCode')}}</th>
+                      <th scope="col">{{globalServ.showLabel('memType')}}</th>
+                      <th scope="col"> {{globalServ.showLabel('memType')}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let c of row.policyMembersDTOs">
+                      <td>{{c.memberCode}}</td>
+                      <td>{{c.memberType}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </ng-container>
+
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+  <div
+    *ngIf="capturePolicies.length > config.itemsPerPage"
+    class="text-center mt-3">
+    <pagination-controls
+      (pageChange)="pageChanged($event)"></pagination-controls>
+  </div>
+</div>

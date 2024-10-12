@@ -1,0 +1,476 @@
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col-sm-12 col-lg-8">
+            <div class="d-flex align-items-baseline">
+                <i style="font-size:20px" class="fa fa-arrow-left"
+                    (click)="back()" aria-label="back"></i>
+                <h3
+                    class="ms-4 page-title">{{globalServ.showLabel('trackingPolicyHeader')}}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card p-3">
+    <div class="row col-md-12 justify-content-center">
+        <div class="col-md-9 nav nav-pills   d-flex text-center" id="pills-tab"
+            role="tablist">
+            <section class="col-md col-sm nav-item m-2" (click)="tab1()"
+                style="flex-grow: 1; flex-basis: auto;cursor: pointer;">
+                <span class="nav-link" id="pills-policyInfo-tab"
+                    [ngClass]="{'active' :this.policyTab }"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-policyInfo"
+                    role="tab"
+                    aria-controls="pills-policyInfo"
+                    aria-selected="true">
+                    <span
+                        class="circle">1</span>{{globalServ.showLabel('policyInfo')}}</span>
+            </section>
+
+            <section class="col-md col-sm  nav-item  m-2" (click)="tab2()"
+                style="flex-grow: 1; flex-basis: auto;cursor: pointer;">
+                <span class="nav-link" id="pills-noAttendance-tab"
+                    [ngClass]="{'active' :this.noattendanceTab}"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-noAttendance"
+                    role="tab"
+                    aria-controls="pills-noAttendance"
+                    aria-selected="true">
+                    <span
+                        class="circle">2</span>{{globalServ.showLabel('NoAttendance')}}</span>
+            </section>
+
+            <section class="col-md col-sm  nav-item  m-2" (click)="tab3()"
+                style="flex-grow: 1; flex-basis: auto; cursor: pointer;">
+                <span class="nav-link" id="pills-lateArrival-tab"
+                    [ngClass]="{'active' :this.LateTab}"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-lateArrival"
+                    role="tab"
+                    aria-controls="pills-lateArrival"
+                    aria-selected="true">
+                    <span
+                        class="circle">3</span>{{globalServ.showLabel('lateArrival')}}</span>
+            </section>
+
+            <section class="col-md col-sm nav-item  m-2" (click)="tab4()"
+                style="flex-grow: 1; flex-basis: auto;cursor: pointer;">
+                <span class="nav-link" id="pills-workHrs-tab"
+                    [ngClass]="{'active' :this.workHrsTab}"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-workHrs"
+                    role="tab"
+                    aria-controls="pills-workHrs"
+                    aria-selected="true">
+                    <span
+                        class="circle">4</span>{{globalServ.showLabel('wkHours')}}</span>
+            </section>
+        </div>
+    </div>
+
+    <div class="tab-content" id="pills-tabContent">
+        <div
+            class="tab-pane fade " [ngClass]="{'show active' :this.policyTab }"
+            id="pills-policyInfo"
+            role="tabpanel"
+            aria-labelledby="pills-policyInfo-tab"
+            tabindex="0">
+            <form [formGroup]="trackingPolicyForm">
+                <div class="form-group col-md-4">
+                    <label class="text-sm mb-1">
+                        {{globalServ.showLabel('polName')}}
+                    </label>
+                    <input type="text" class="form-control"
+                        [formControl]="trackingPolicyForm.controls.policyCode">
+                </div>
+                <div class="col-md-12">
+
+                    <div class="m-2 mt-5">
+                        <button (click)="back()"
+                            class="btn delete-btn">{{globalServ.getGlobalNames('cancel')}}
+                        </button>
+                        <button [disabled]="trackingPolicyForm.invalid"
+                            *ngIf="!view"
+                            (click)="forward()"
+                            class="btn add-btn">{{globalServ.getGlobalNames('continue')}}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div
+            class="tab-pane fade" [ngClass]="{'show active' :this.LateTab }"
+            id="pills-lateArrival"
+            role="tabpanel"
+            aria-labelledby="pills-lateArrival-tab"
+            tabindex="0">
+            <form [formGroup]="lateArrivalPolicyForm">
+                <div class="row col-md-12 ms-2">
+
+                    <div class="d-flex mb-4">
+                        <div>
+                            <input type="checkbox" class="form-check-input me-2"
+                                (change)="checkPenalize(lateArrivalPolicyForm.controls.penalizeForLateArrival.value)"
+                                [formControl]="lateArrivalPolicyForm.controls.penalizeForLateArrival">
+                        </div>
+                        <div>
+                            {{globalServ.showLabel('penalizeForLateArrival')}}
+                        </div>
+                    </div>
+                    <section
+                        *ngIf="lateArrivalPolicyForm.controls.penalizeForLateArrival.value">
+                        <div class="row">
+                            <div class="col-md-12 d-flex align-items-baseline">
+                                <input type="number"
+                                    placeholder="{{globalServ.showPlaceholder('graceTime')}}"
+                                    class="form-control widthFit me-2"
+                                    [formControl]="lateArrivalPolicyForm.controls.graceTimeInMin">
+                                &nbsp;<span
+                                    style="color: #f62d51">*</span>
+                                {{globalServ.showLabel('graceTimeInMin')}}
+                            </div>
+
+                            <div class="col-md-12 mt-4">
+                                {{globalServ.showLabel('defineDeduction')}}
+                            </div>
+                            <div class="ms-2">
+                                <div class="col-md-12 d-flex mt-2">
+                                    <input type="radio"
+                                        name="deductForLateTime"
+                                        id="deductForLateTime" [value]="true"
+                                        class="form-check-input me-2"
+                                        (change)="deductForLateTime(lateArrivalPolicyForm.controls.deductForLateTime.value)"
+                                        [formControl]="lateArrivalPolicyForm.controls.deductForLateTime">
+                                    {{globalServ.showLabel('deductForLateTime')}}
+                                </div>
+
+                                <div class="col-md-12 d-flex mt-2 ">
+                                    <input type="radio" name="deductForLateTime"
+                                        id="deductForLateTime"
+                                        [value]="false"
+                                        (change)="deductForLateTime(lateArrivalPolicyForm.controls.deductForLateTime.value)"
+                                        class="form-check-input me-2"
+                                        [formControl]="lateArrivalPolicyForm.controls.deductForLateTime">
+                                    {{globalServ.showLabel('allowedNoOfTimesLate')}}
+                                </div>
+                                <ng-container
+                                    *ngIf="lateArrivalPolicyForm.controls.deductForLateTime.value === false">
+                                    <div
+                                        class="col-md-12 mt-2 d-flex align-items-baseline ">
+                                        {{globalServ.splitLabelDescription('timeframe').before}}
+                                        &nbsp;<span
+                                            style="color: #f62d51">*</span>
+                                        <input type="number"
+                                            class="form-control widthFit mx-2"
+                                            [formControl]="lateArrivalPolicyForm.controls.allowedNoOfTimesLate">
+                                        {{globalServ.splitLabelDescription('timeframe').after}}
+                                        &nbsp;<span
+                                            style="color: #f62d51">*</span>
+                                        <select name id
+                                            class="form-select widthFit  mx-2"
+                                            [formControl]="lateArrivalPolicyForm.controls.timeframe">
+                                            <option value="week">Week</option>
+                                            <option value="month">Month</option>
+                                        </select>
+                                    </div>
+                                    <section
+                                        class="mb-3">
+                                        <div
+                                            *ngFor="let rule of lateArrivalPolicyRules;let i= index;"
+                                            class="d-flex align-items-baseline my-3">
+                                            <ng-container
+                                                *ngIf="rule.status !=='DELETED'">
+                                                {{globalServ.splitLabelDescription('lateLessThanInHrs').before}}
+                                                <input type="number"
+                                                    placeholder="eg. 2"
+                                                    class="form-control widthFit mx-2"
+                                                    [(ngModel)]="rule.lateLessThanInHrs"
+                                                    [disabled]="view"
+                                                    [ngModelOptions]="{standalone: true}">{{globalServ.splitLabelDescription('lateLessThanInHrs').after}}
+                                                {{globalServ.splitLabelDescription('daysOfLeaveToDeduct').before}}
+                                                <input type="number"
+                                                    class="form-control widthFit mx-2"
+                                                    placeholder="eg. 0.5"
+                                                    [(ngModel)]="rule.daysOfLeaveToDeduct"
+                                                    [disabled]="view"
+                                                    [ngModelOptions]="{standalone: true}">{{globalServ.splitLabelDescription('daysOfLeaveToDeduct').after}}
+                                                <div class="circle ms-2"
+                                                    [hidden]="view"
+                                                    style="border-color: red;"
+                                                    (click)="deleteDeductRule(i,row)"><i
+                                                        class="fa fa-minus text-danger"
+                                                        aria-hidden="true"></i></div>
+                                            </ng-container>
+
+                                        </div>
+                                        <span (click)="adddeductForLateTime()"
+                                            [hidden]="view"
+                                            class="text-primary mt-2"
+                                            style="cursor: pointer;">
+                                            {{globalServ.showLabel('addDedPolicy')}}
+                                        </span>
+
+                                    </section>
+                                </ng-container>
+
+                            </div>
+                            <div class="col-md-12 d-flex mt-4">
+                                <input type="checkbox"
+                                    class="form-check-input me-2"
+                                    [formControl]="lateArrivalPolicyForm.controls.adjustAgainstLeaves">
+                                {{globalServ.showLabel('adjustAgainstLeaves')}}
+                            </div>
+                            <div class="col-md-12 d-flex mt-4">
+                                <input type="checkbox"
+                                    class="form-check-input me-2"
+                                    [formControl]="lateArrivalPolicyForm.controls.ignorePenalizationIfHrsCovered">
+                                {{globalServ.showLabel('ignorePenalizationIfHrsCovered')}}
+                            </div>
+                        </div>
+                    </section>
+                    <div class="col-md-12">
+                        <div class="m-2 mt-5">
+                            <button (click)="previous()"
+                                class="btn add-btn float-start">{{globalServ.getGlobalNames('previous')}}</button>
+                            <button [disabled]="lateArrivalPolicyForm.invalid"
+                                *ngIf="!view"
+                                (click)="forward()"
+                                class="btn add-btn">{{globalServ.getGlobalNames('continue')}}</button>
+                            <button *ngIf="view" (click)="forward()"
+                                class="btn add-btn">{{globalServ.getGlobalNames('next')}}</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div
+            class="tab-pane fade"
+            [ngClass]="{'show active' :this.noattendanceTab }"
+            id="pills-noAttendance"
+            role="tabpanel"
+            aria-labelledby="pills-noAttendance-tab"
+            tabindex="0">
+            <form [formGroup]="noAttendancePolicyForm">
+                <div class="row col-md-12 ms-2">
+                    <div>
+                        {{globalServ.showLabel('goDeduct')}}
+                        <span class="ms-4 block"
+                            id="goDeduct">
+                            <span id="goDeduct" class="me-4 mt-2">
+                                <input
+                                    type="radio" id="goDeduct"
+                                    name="goDeductquestion"
+                                    class="form-check-input me-2"
+                                    [value]="false"
+                                    [formControl]="noAttendancePolicyForm.controls.goDeduct"
+                                    (change)="goDeduct(noAttendancePolicyForm.controls.goDeduct.value)">
+                                {{globalServ.showLabel('goDeduct_no')}}</span>
+
+                            <span id="goDeduct" class="block"><input
+                                    type="radio"
+                                    name="goDeductquestion" id="goDeduct"
+                                    class="form-check-input me-2"
+                                    [value]="true"
+                                    [formControl]="noAttendancePolicyForm.controls.goDeduct"
+                                    (change)="goDeduct(noAttendancePolicyForm.controls.goDeduct.value)">{{globalServ.showLabel('goDeduct_yes')}}</span>
+                        </span>
+                    </div>
+                    <div *ngIf="noAttendancePolicyForm.controls.goDeduct.value">
+                        <div class="mt-3 d-flex align-items-baseline ">
+                            <!-- How many days of salary ? -->
+                            {{globalServ.splitLabelDescription('deductDaysOfSalary').before}}
+                            <input type="number"
+                                id="deductDaysOfSalary"
+                                placeholder="eg. 1"
+                                class="form-control widthFit mx-2"
+                                [formControl]="noAttendancePolicyForm.controls.deductDaysOfSalary">
+                            {{globalServ.splitLabelDescription('deductDaysOfSalary').after}}
+                        </div>
+                        <div class="mt-3">
+                            {{globalServ.showLabel('adjust_against_leaves')}}
+                            <span class="ms-4 block"
+                                id="adjust_against_leaves">
+                                <span id="adjust_against_leaves" class="me-4">
+                                    <input
+                                        type="radio" id="adjust_against_leaves"
+                                        name="adjust_against_leaves"
+                                        class="form-check-input me-2"
+                                        [value]="false"
+                                        [formControl]="noAttendancePolicyForm.controls.adjustAgainstLeaves">
+                                    {{globalServ.showLabel('adjust_against_leaves_Lop')}}</span>
+
+                                <span id="adjust_against_leaves"
+                                    class="block"><input type="radio"
+                                        class="form-check-input me-2"
+                                        name="adjust_against_leaves"
+                                        id="adjust_against_leaves"
+                                        [value]="true"
+                                        [formControl]="noAttendancePolicyForm.controls.adjustAgainstLeaves">{{globalServ.showLabel('adjust_against_leaves_Avalible')}}</span>
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="m-2 mt-5">
+                        <button (click)="previous()"
+                            class="btn add-btn float-start">{{globalServ.getGlobalNames('previous')}}</button>
+                        <button [disabled]="noAttendancePolicyForm.invalid"
+                            *ngIf="!view"
+                            (click)="forward()"
+                            class="btn add-btn">{{globalServ.getGlobalNames('continue')}}</button>
+                        <button *ngIf="view" (click)="forward()"
+                            class="btn add-btn">{{globalServ.getGlobalNames('next')}}</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+        <div
+            class="tab-pane fade" [ngClass]="{'show active' :this.workHrsTab }"
+            id="pills-workHrs"
+            role="tabpanel"
+            aria-labelledby="pills-workHrs-tab"
+            tabindex="0">
+            <form [formGroup]="workingHrsPolicyForm">
+                <div class="row col-md-12">
+                    <!-- <div class="ms-2"> -->
+                    <div class="d-flex mb-4 ms-3">
+                        <div>
+                            <input type="checkbox"
+                                class="form-check-input me-2"
+                                (change)="penalize_for_less_hours(workingHrsPolicyForm.controls.penalizeForLessHours.value)"
+                                [formControl]="workingHrsPolicyForm.controls.penalizeForLessHours">
+                        </div>
+                        <div>
+                            {{globalServ.showLabel('penalize_for_less_hours')}}
+                        </div>
+                    </div>
+
+                    <div class="ms-3">
+                        <div class="ms-2 d-flex align-items-baseline "
+                            *ngIf="workingHrsPolicyForm.controls.penalizeForLessHours.value">
+                            {{globalServ.showLabel('workHrstimeframe')}}&nbsp;<span
+                                style="color: #f62d51"
+                                *ngIf="workingHrsPolicyForm.controls['timeframe']?.errors?.required">*</span>
+                            <div>
+                                <select name id
+                                    class="form-select widthFit  mx-2"
+                                    [formControl]="workingHrsPolicyForm.controls.timeframe">
+                                    <option value="day">Day</option>
+                                    <option value="week">Week</option>
+                                    <option value="month">Month</option>
+                                </select>
+                                <div
+                                    *ngIf="workingHrsPolicyForm.controls['timeframe'].invalid &&
+                    (workingHrsPolicyForm.controls['timeframe'].dirty ||
+                      workingHrsPolicyForm.controls['timeframe'].touched)"
+                                    style="padding: 0px">
+                                    <div
+                                        *ngIf="workingHrsPolicyForm.controls['timeframe'].errors.required"
+                                        style="color: #dc3545">
+                                        {{globalServ.getGlobalNames('timeFrame')}}
+                                        {{globalServ.showGlobalErrors('required')}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <ng-container
+                            *ngIf="workingHrsPolicyForm.controls.penalizeForLessHours.value">
+                            <div class="ms-2">
+                                {{globalServ.showLabel('defineShortage')}}
+                                <div class="ms-4 block"
+                                    id="definePolicy">
+                                    <div id="definePolicy" class="me-4 mt-2">
+                                        <input
+                                            type="radio" id="definePolicy"
+                                            name="definePolicyques"
+                                            class="form-check-input me-2"
+                                            [value]="true"
+                                            (change)="deductionRules(workingHrsPolicyForm.controls.deductOnlyForShortage.value)"
+                                            [formControl]="workingHrsPolicyForm.controls.deductOnlyForShortage">
+                                        {{globalServ.showLabel('deductOnlyForShortage')}}
+                                        {{workingHrsPolicyForm.controls.timeframe.value}}</div>
+
+                                    <div id="definePolicy">
+                                        <input
+                                            type="radio"
+                                            name="definePolicyques"
+                                            (change)="deductionRules(workingHrsPolicyForm.controls.deductOnlyForShortage.value)"
+                                            class="form-check-input me-2"
+                                            id="definePolicy"
+                                            [value]="false"
+                                            [formControl]="workingHrsPolicyForm.controls.deductOnlyForShortage">{{globalServ.showLabel('definePolicy')}}</div>
+                                </div>
+                            </div>
+
+                            <section class="mb-3"
+                                *ngIf="workingHrsPolicyForm.controls.deductOnlyForShortage.value === false">
+                                <div
+                                    *ngFor="let rule of workingHrsPolicyRules;let i= index;"
+                                    class="d-flex align-items-baseline mt-2 ms-2">
+                                    <ng-container
+                                        *ngIf="rule.status !=='DELETED'">
+                                        {{globalServ.splitLabelDescription('pct_shift_hours_threshold').before}}
+                                        {{workingHrsPolicyForm.controls.timeframe.value}}
+                                        {{globalServ.splitLabelDescription('pct_shift_hours_threshold').after}}
+                                        <input type="number"
+                                            class="form-control widthFit mx-2"
+                                            placeholder="eg. 95"
+                                            [disabled]="view"
+                                            [(ngModel)]="rule.pctShiftHoursThreshold"
+                                            [ngModelOptions]="{standalone: true}">{{globalServ.splitLabelDescription('pct_shift_hours_threshold').after1}}
+
+                                        {{globalServ.splitLabelDescription('days_to_deduct').before}}
+                                        <input type="number"
+                                            placeholder="eg. 0.25"
+                                            class="form-control widthFit mx-2"
+                                            [(ngModel)]="rule.daysToDeduct"
+                                            [disabled]="view"
+                                            [ngModelOptions]="{standalone: true}">{{globalServ.splitLabelDescription('days_to_deduct').after}}
+                                        <!-- {{globalServ.splitLabelDescription('pct_shift_hours_threshold').before}}
+                                    <input type="number"
+                                        class="form-control widthFit mx-2"
+                                        placeholder="eg. 0.5"
+                                        [(ngModel)]="rule.pctShiftHoursThreshold"
+                                        [ngModelOptions]="{standalone: true}">{{globalServ.splitLabelDescription('pct_shift_hours_threshold').after}} -->
+                                        <div class="circle ms-2" [hidden]="view"
+                                            style="border-color: red;"
+                                            (click)="deleteworkingHrsPolicy(i,row)"><i
+                                                class="fa fa-minus text-danger"
+                                                aria-hidden="true"></i></div>
+                                    </ng-container>
+
+                                </div>
+                                <span (click)="addworkingHrsPolicyRules()"
+                                    [hidden]="view"
+                                    class="text-primary"
+                                    style="cursor: pointer;">
+                                    {{globalServ.showLabel('addWorkHrs')}}
+                                </span>
+                            </section>
+                        </ng-container>
+                    </div>
+
+                </div>
+                <div class="col-md-12">
+                    <div class="m-2 mt-5">
+                        <button (click)="previous()"
+                            class="btn add-btn float-start">{{globalServ.getGlobalNames('previous')}}</button>
+                        <button
+                            [disabled]="trackingPolicyForm.invalid|| noAttendancePolicyForm.invalid || lateArrivalPolicyForm.invalid || workingHrsPolicyForm.invalid"
+                            *ngIf="!view && !update" (click)="submit()"
+                            class="btn add-btn">{{globalServ.getGlobalNames('SaveClose')}}</button>
+                        <button
+                            [disabled]="trackingPolicyForm.invalid|| noAttendancePolicyForm.invalid || lateArrivalPolicyForm.invalid || workingHrsPolicyForm.invalid"
+                            *ngIf="update" (click)="Update()"
+                            class="btn add-btn">{{globalServ.getGlobalNames('UpdateClose')}}</button>
+                        <button (click)="back()" *ngIf="view"
+                            class="btn delete-btn"
+                            style="float:right">{{globalServ.getGlobalNames('close')}}</button>
+                    </div>
+                </div>
+            </form>
+        </div>

@@ -1,0 +1,662 @@
+<div class="container-xxl">
+  <!-- <div class="card mb-0" *ngIf="employee_details"> -->
+  <div class="row customecard justify-content-center " *ngIf="employee_details">
+    <!-- <div class="col-md-12"> -->
+    <div class="col-md-2 d-flex  justifyMeCenter align-item-center ">
+      <span style="padding:5px;width: 90%;" *ngIf="!profilePic">
+        <span
+          style="background: #23539B;  border-radius: 7px; height: 100%; display: flex; justify-content: center; align-items: center; font-size: 80px; color: white;">
+          {{shortName}}
+        </span>
+      </span>
+      <span *ngIf="profilePic"
+        style="display: grid; place-items: center; padding: 3%;">
+        <img
+          [src]="profilePic"
+          alt="user image"
+          style="object-fit: contain;border-radius: 7px;"
+          class="img-fluid" />
+      </span>
+    </div>
+    <div class="row col-md-10  p-3 centerme">
+      <div class="col-md-12">
+        <h2 class="user-name  text-capitalize">
+          {{ employee_details?.employeeMaster?.employeeName }}
+        </h2>
+
+      </div>
+      <div class="col-md-5">
+        <div class="profile-info-left">
+          <div class="staff-id">
+            {{globalServ.getGlobalNames('employeeCode')}} :<span
+              class="danger-color">
+              {{ employee_details?.employeeMaster?.employeeCode }}</span>
+          </div>
+
+          <div class="staff-id">
+            {{globalServ.getGlobalNames('designation')}} :<span
+              class="danger-color">
+              {{ employee_details?.employeeMaster?.designation }}</span>
+          </div>
+          <div class="staff-id">
+            {{globalServ.getGlobalNames('department')}} :<span
+              class="danger-color">
+              {{ employee_details?.employeeMaster?.deptCode }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="personal-info">
+          <div class="staff-id">
+            {{globalServ.showLabel('phone')}} :<span class="danger-color">
+              {{ employee_details?.employeeMaster.contactNo
+              ? employee_details?.employeeMaster?.contactNo
+              : "-" }}</span>
+          </div>
+
+          <div class="staff-id">
+            {{globalServ.showLabel('email')}} :<span class="danger-color">
+              {{ employee_details?.employeeMaster.email
+              ? employee_details?.employeeMaster?.email
+              : "-"}}</span>
+          </div>
+          <div class="staff-id">
+            {{globalServ.showLabel('dateofJoining')}} :<span
+              class="danger-color">
+              {{ employee_details?.employeeMaster?.joinDate
+              ? (employee_details?.employeeMaster?.joinDate| date:
+              dateFormat )
+              : "-" }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- </div> -->
+  </div>
+  <!-- </div> -->
+</div>
+
+<br />
+
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+      <!-- <div class="col-12"> -->
+
+      <div class="col-md-12">
+        <ul
+          class="nav nav-pills  flex-sm-row mb-4"
+          id="pills-tab"
+          role="tablist">
+          <li class="nav-item me-3" role="presentation">
+            <button
+              class="nav-link active"
+              id="pills-profile-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#pills-profile"
+              type="button"
+              role="tab"
+              aria-controls="pills-profile"
+              aria-selected="true">
+              {{globalServ.showLabel('profile')}}
+            </button>
+          </li>
+
+          <li class="nav-item me-3" role="presentation">
+            <button
+              class="nav-link"
+              id="pills-payroll-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#pills-payroll"
+              type="button"
+              role="tab"
+              aria-controls="pills-payroll"
+              aria-selected="false">
+              {{globalServ.getGlobalNames('payroll')}}
+            </button>
+          </li>
+          <li class="nav-item me-3" role="presentation">
+            <button
+              class="nav-link"
+              id="pills-doucuments-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#pills-doucuments"
+              type="button"
+              role="tab"
+              aria-controls="pills-doucuments"
+              aria-selected="false">
+              {{globalServ.showLabel('documents')}}
+            </button>
+          </li>
+          <li class="nav-item me-3" role="presentation">
+            <button
+              class="nav-link"
+              id="pills-expenses-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#pills-expenses"
+              type="button"
+              role="tab"
+              aria-controls="pills-expenses"
+              aria-selected="false">
+              {{globalServ.showLabel('expenses')}}
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <div class="tab-content" id="pills-tabContent">
+        <div
+          class="tab-pane fade show active"
+          id="pills-profile"
+          role="tabpanel"
+          aria-labelledby="pills-profile-tab"
+          tabindex="0">
+          <div class="row">
+            <div class="col-xl-4 col-lg-5 col-md-5">
+              <!-- About User -->
+              <div class="card mb-4">
+                <div class="card-body">
+                  <small
+                    class="card-text text-uppercase fw-medium">{{globalServ.showLabel('about')}}</small>
+                  <ul class="list-unstyled my-3 py-1">
+                    <li class="d-flex align-items-center mb-3">
+                      <!-- <i class="fa fa-user icon" aria-hidden="true"></i> -->
+                      <span
+                        class="fw-medium mx-2">{{globalServ.showLabel('fullName')}}:</span>
+                      <span class=" mx-2"> {{
+                        employee_details?.employeeMaster?.employeeName}}, {{
+                        employee_details?.employeeMaster?.lastName}}</span>
+                    </li>
+
+                    <li class="d-flex align-items-center mb-3">
+                      <i class="mdi mdi-check mdi-24px"></i><span
+                        class="fw-medium mx-2">{{globalServ.showLabel('dob')}}:</span>
+                      <span class="mx-2"> {{
+                        employee_details?.employeeDetails?.dob
+                        ? (employee_details?.employeeDetails?.dob |
+                        date:dateFormat)
+                        : "--/--/----"}}</span>
+                    </li>
+                    <li class="d-flex align-items-center mb-3">
+                      <i class="mdi mdi-check mdi-24px"></i><span
+                        class="fw-medium mx-2">{{globalServ.getGlobalNames('roles')}}:</span>
+                      <span class="mx-2"
+                        [innerHTML]="userProfile?.rolesWithBr"></span>
+                    </li>
+                    <li class="d-flex align-items-center mb-3">
+                      <i class="mdi mdi-star-outline mdi-24px"></i><span
+                        class="fw-medium mx-2">{{globalServ.getGlobalNames('location')}}:</span>
+                      <span class="mx-2">{{
+                        employee_details?.employeeMaster?.locationCode}} </span>
+                    </li>
+                    <li class="d-flex align-items-center mb-3">
+                      <i class="mdi mdi-flag-outline mdi-24px"></i><span
+                        class="fw-medium mx-2">{{globalServ.getGlobalNames('project')}}:</span>
+                      <span class="mx-2">{{
+                        employee_details?.employeeMaster?.projectCode}}</span>
+                    </li>
+                    <li class="d-flex align-items-center mb-3">
+                      <i class="mdi mdi-phone-outline mdi-24px"></i><span
+                        class="fw-medium mx-2">{{globalServ.showLabel('address')}}:</span>
+                      <span class=" mx-2">{{
+                        employee_details?.employeeDetails?.address1}}</span>
+                    </li>
+                    <li class="d-flex align-items-center mb-3">
+                      <i class="mdi mdi-message-outline mdi-24px"></i><span
+                        class="fw-medium mx-2">{{globalServ.showLabel('city')}}:</span>
+                      <span class=" mx-2">{{
+                        employee_details?.employeeDetails?.city}}</span>
+                    </li>
+                    <li class="d-flex align-items-center mb-3">
+                      <i class="mdi mdi-email-outline mdi-24px"></i><span
+                        class="fw-medium mx-2">{{globalServ.showLabel('state')}}:</span>
+                      <span class=" mx-2">{{
+                        employee_details?.employeeDetails?.state}}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <!-- Overview -->
+              <!-- <div class="card mb-4">
+                <div class="card-body">
+                  <small
+                    class="card-text text-uppercase fw-medium">Overview</small>
+                  <ul class="list-unstyled mb-0 mt-3 pt-1">
+                    <li class="d-flex align-items-center mb-3">
+                      <i class="mdi mdi-check mdi-24px"></i><span
+                        class="fw-medium mx-2">Task Compiled:</span>
+                      <span class="fw-medium mx-2">13.5k</span>
+                    </li>
+                    <li class="d-flex align-items-center mb-3">
+                      <i class="mdi mdi-account-outline mdi-24px"></i><span
+                        class="fw-medium mx-2">Projects Compiled:</span>
+                      <span class="fw-medium mx-2">146</span>
+                    </li>
+                    <li class="d-flex align-items-center">
+                      <i class="mdi mdi-view-grid-outline mdi-24px"></i><span
+                        class="fw-medium mx-2">Connections:</span>
+                      <span class="fw-medium mx-2">897</span>
+                    </li>
+                  </ul>
+                </div>
+              </div> -->
+              <!--/ Profile Overview -->
+            </div>
+            <div class="col-xl-8 col-lg-7 col-md-7">
+              <div class="card card-action mb-4">
+                <div class="card-header align-items-center">
+                  <div class="d-flex justify-content-center">
+                    <h5 class="card-action-title mb-0">
+                      <i
+                        class="mdi mdi-format-list-bulleted mdi-24px me-2"></i>Overall
+                      Employee Report
+                    </h5>
+                  </div>
+                  <div class="card-action-element"></div>
+                </div>
+                <div class="card-body pt-3 pb-0">
+                  <div echarts [options]="option" class="demo-chart"></div>
+                </div>
+              </div>
+              <!--/ Activity Timeline -->
+              <!-- <div class="row">
+                <div class="col-lg-12 col-xl-6">
+                  <div class="card card-action mb-4">
+                    <div class="card-header align-items-center">
+                      <div class="d-flex justify-content-between">
+                        <h5 class="card-action-title mb-0">
+                          <i
+                            class="mdi mdi-format-list-bulleted mdi-24px me-2"></i>OT
+                          Report
+                        </h5>
+
+                        <div class="dropdown">
+                          <i
+                            class="fa-solid fa-ellipsis-vertical p-0"
+                            data-bs-toggle="dropdown"></i>
+                          <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                              <a class="dropdown-item">View More</a>
+                            </li>
+
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <li class="d-flex align-items-center mb-3">
+                        <i class="mdi mdi-phone-outline mdi-24px"></i><span
+                          class="fw-medium mx-2">OT Hours:</span>
+                        <span class="fw-medium mx-2">12hrs</span>
+                      </li>
+                      <li class="d-flex align-items-center mb-3">
+                        <i class="mdi mdi-message-outline mdi-24px"></i><span
+                          class="fw-medium mx-2">OT Date:</span>
+                        <span class="fw-medium mx-2">12-12-23</span>
+                      </li>
+                      <li class="d-flex align-items-center mb-3">
+                        <i class="mdi mdi-email-outline mdi-24px"></i><span
+                          class="fw-medium mx-2">OT Time:</span>
+                        <span class="fw-medium mx-2">1:22pm</span>
+                      </li>
+                      <li class="d-flex align-items-center mb-3">
+                        <i class="mdi mdi-email-outline mdi-24px"></i><span
+                          class="fw-medium mx-2">Total Hours:</span>
+                        <span class="fw-medium mx-2">5hrs</span>
+                      </li>
+                    </div>
+                  </div>
+                </div>
+                 <div class="col-lg-12 col-xl-6">
+                  <div class="card card-action mb-4">
+                    <div class="card-header align-items-center">
+                      <div class="d-flex justify-content-between">
+                        <h5 class="card-action-title mb-0">
+                          <i
+                            class="mdi mdi-format-list-bulleted mdi-24px me-2"></i>Shift
+                          Report
+                        </h5>
+
+                        <div class="dropdown">
+                          <i
+                            class="fa-solid fa-ellipsis-vertical p-0"
+                            data-bs-toggle="dropdown"></i>
+                          <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                              <a class="dropdown-item">View More</a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                     <div class="card-body">
+                      <li class="d-flex align-items-center mb-3">
+                        <i class="mdi mdi-email-outline mdi-24px"></i><span
+                          class="fw-medium mx-2">Shift Name:</span>
+                        <span class="fw-medium mx-2">Defualt</span>
+                      </li>
+                      <li class="d-flex align-items-center mb-3">
+                        <i class="mdi mdi-phone-outline mdi-24px"></i><span
+                          class="fw-medium mx-2">In Date:</span>
+                        <span class="fw-medium mx-2">12-12-23</span>
+                      </li>
+                      <li class="d-flex align-items-center mb-3">
+                        <i class="mdi mdi-message-outline mdi-24px"></i><span
+                          class="fw-medium mx-2">Out Date:</span>
+                        <span class="fw-medium mx-2">12-12-23</span>
+                      </li>
+                      <li class="d-flex align-items-center mb-3">
+                        <i class="mdi mdi-email-outline mdi-24px"></i><span
+                          class="fw-medium mx-2">In Time:</span>
+                        <span class="fw-medium mx-2">1:22pm</span>
+                      </li>
+                      <li class="d-flex align-items-center mb-3">
+                        <i class="mdi mdi-email-outline mdi-24px"></i><span
+                          class="fw-medium mx-2">Out Time:</span>
+                        <span class="fw-medium mx-2">5hrs</span>
+                      </li>
+                    </div> 
+                  </div>
+                </div> 
+              </div>-->
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile ends -->
+
+        <!-- payroll starts-->
+        <div
+          class="tab-pane fade"
+          id="pills-payroll"
+          role="tabpanel"
+          aria-labelledby="pills-payroll-tab"
+          tabindex="0">
+          <div class="row mt-3 mb-3">
+            <div
+              class="col-lg-10 col-md-10 col-sm-12 d-flex align-items-baseline">
+              <p>{{globalServ.showLabel('reqPayslipMonth')}}.</p>
+              <div class="col-md-2 ms-2">
+                <input
+                  class="form-control "
+                  type="month"
+                  style="height: calc(2.5rem + calc(var(--mo-border-width)* 2));"
+                  placeholder="{{globalServ.showGlobalplaceholders('Month/YYYY')}}"
+                  [(ngModel)]="fulldate" (change)="getPayslip()" />
+              </div>
+            </div>
+            <div class="col-md" *ngIf="pdfSrc">
+              <button class="btn add-btn" (click)="savePdf()">
+                {{globalServ.showLabel('Download')}}<i
+                  class="fa fa-download"></i>
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 pdfBlock">
+              <pdf-viewer [src]="pdfSrc" [render-text]="true"
+                [external-link-target]="'blank'" [autoresize]="true"
+                [stick-to-page]="false" [fit-to-page]='false' [zoom]="0.5"
+                [original-size]="false" [show-all]="true"
+                [zoom-scale]="'page-width'"
+                style="position: unset;     scrollbar-width: none;
+"></pdf-viewer>
+            </div>
+          </div>
+        </div>
+
+        <!-- payroll ends -->
+        <!-- Doucuments starts -->
+        <div
+          class="tab-pane fade"
+          id="pills-doucuments"
+          role="tabpanel"
+          aria-labelledby="pills-doucuments-tab"
+          tabindex="0">
+          <ng-container>
+            <div class="columnName">{{globalServ.showLabel('uploadEmpDOcs')}}
+              (accepts only .png, .jpg, .jpeg, .pdf files)</div>
+            <div class="row ">
+              <div class="startDiv card col-xl-3 col-sm-6 col-12"
+                *ngFor="let fileInput  of empDoc ;let i = index">
+                <p class="w-100" [ngClass]="{'mt-1' :!fileInput.imageByteCode}"
+                  style="color: #6990f2;"><span>{{
+                    fileInput.documentName }}</span>
+                  <span class="float-end" data-bs-toggle="modal"
+                    *ngIf="fileInput.imageByteCode"
+                    data-bs-target="#previewFile"
+                    data-placement="right" (click)="previewRow(fileInput)"><i
+                      class='fa fa-eye'></i></span> </p>
+                <div *ngIf="!fileInput.imageByteCode" class="w-100">
+                  <div class="uploaddiv"
+                    (click)="openFileInput(fileInput.documentId)">
+                    <input
+                      type="file"
+                      class="file-input"
+                      name="file"
+                      [id]="fileInput.documentId"
+                      accept=".pdf, .png, .jpg, .jpeg"
+                      (change)="getBase64($event, fileInput)"
+                      style="display: none" />
+                    <i
+                      class="fas fa-cloud-upload-alt d-flex justify-content-center"
+                      style="color: #6990f2; font-size: 50px;"></i>
+                    <p value="Upload Images" class="ms-2"
+                      style="color: #6990f2; font-size: 16px;">&nbsp;{{globalServ.showLabel('browseFiles')}}
+                    </p>
+                  </div>
+                </div>
+                <div class="text-center" *ngIf="fileInput.imageByteCode"
+                  (click)="openFileInput(fileInput.documentId)">
+                  <input
+                    type="file"
+                    class="file-input"
+                    name="file"
+                    [id]="fileInput.documentId"
+                    accept=".pdf, .png, .jpg, .jpeg"
+                    (change)="getBase64($event, fileInput)"
+                    style="display: none" />
+                  <i class=" text-success fa-solid fa-circle-check"
+                    style="font-size: x-large;"></i>
+                  <p>{{fileInput.fileName | decreaseText :6}}
+                    {{globalServ.getGlobalNames('uploaded')}} </p>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <div class="row float-end">
+            <div class="col-md-12">
+              <button id="submit" class="btn add-btn"
+                [disabled]="!modifiedDocuments"
+                (click)="submitDocuments()" type="submit">
+                {{globalServ.getGlobalNames('submit')}}</button>
+            </div>
+          </div>
+        </div>
+        <!-- Doucuments Ends -->
+
+        <!-- Expenses starts -->
+        <div
+          class="tab-pane fade"
+          id="pills-expenses"
+          role="tabpanel"
+          aria-labelledby="pills-expenses-tab"
+          tabindex="0">
+          <div class="card card-border-sty p-3">
+            <div class="row mt-3 mb-3">
+              <div class="col-sm-12 col-lg-3 col-md-6 mb-1">
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="filter"
+                    class="form-control"
+                    placeholder="{{globalServ.showGlobalplaceholders('searchExpType')}}"
+                    [(ngModel)]="searchedFor"
+                    (keyup)="updateFilter($event)"
+                    style="
+                        border-radius: 8px 0px 0px 8px;
+                        height: 55px;
+                        height: calc(2.5rem + calc(var(--mo-border-width) * 2));
+                      " />
+                  <!-- <input
+                    *ngIf="secondTab"
+                    type="text"
+                    class="form-control"
+                    placeholder="search by employee name"
+                    [(ngModel)]="searchedForunassign"
+                    (keyup)="updateFilter1($event)"
+                    style="border-radius: 8px 0px 0px 8px" /> -->
+                  <span class="input-group-text" id="basic-addon1">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-6 col-sm-12">
+                <input
+                  class="form-control"
+                  type="month"
+                  style="height: calc(2.5rem + calc(var(--mo-border-width)* 2));"
+                  placeholder="{{globalServ.showGlobalplaceholders('Month/YYYY')}}"
+                  [(ngModel)]="fulldate" (change)="dateChange()" />
+              </div>
+
+              <!-- <div class="col-lg-2 col-md-6 col-sm-12" *ngIf="secondTab">
+                <div class="" *ngIf="stopSpinner">
+                  <label>Employee</label>
+                  <select
+                    id="employee"
+                    class="form-select"
+                    [(ngModel)]="reportObj.employeeCode"
+                    (change)="modified()">
+                    <option
+                      [value]="emp.employeeCode"
+                      *ngFor="let emp of employees_list">
+                      {{ emp.employeeName }} - {{ emp.employeeCode }}
+                    </option>
+                  </select>
+                </div>
+                <div id="loading" *ngIf="!stopSpinner"></div>
+              </div> -->
+
+              <div class="col-sm-6 col-md-6 col-lg-5">
+                <!-- <a class="btn add-btn" (click)="addExpense()"><i
+                    class="fa fa-plus"></i>
+                  Add Expense
+                </a> -->
+              </div>
+              <div class="col-sm-6 col-md-6 col-lg-2 mt-30px">
+                <label
+                  class="form-label">{{globalServ.getGlobalNames('ShowEntries')}}</label>
+                <select class="form-select" (change)="resultsPerPage($event)">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="all">All</option>
+                </select>
+              </div>
+            </div>
+
+            <div class id>
+              <div class="table-responsive">
+                <table
+                  class="table table-hover small table-nowrap custom-table mb-0 datatable">
+                  <thead class="thead-all">
+                    <tr class="tr-th-all">
+                      <th scope="col"
+                        class="text-center">{{globalServ.getGlobalNames('date')}}</th>
+                      <th scope="col"
+                        class="text-center">{{globalServ.showLabel('title')}}</th>
+                      <th scope="col"
+                        class="text-center">{{globalServ.showLabel('ExpenseType')}}</th>
+                      <th scope="col" class="text-center">
+                        {{globalServ.getGlobalNames('amount')}}</th>
+                      <th scope="col"
+                        class="text-center">{{globalServ.showLabel('Notes')}}</th>
+                      <th scope="col"
+                        class="text-center">{{globalServ.getGlobalNames('status')}}</th>
+                      <!-- <th scope="col" class="text-center">Claimed</th> -->
+                      <!-- <th scope="col" class="text-center">Action</th> -->
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="rows.length === 0">
+                    <tr
+                      style=" text-align: center; height: 150px;">
+                      <td colspan="7">
+                        {{globalServ.showGlobalErrors('norecords')}}
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="rows.length > 0">
+                    <ng-container
+                      *ngFor="let row of rows | paginate : config; let i = index">
+                      <tr class="dasboard-td">
+                        <td class="text-center">
+                          {{ row.billDate | date : dateFormat }}
+                        </td>
+                        <td class="text-center">{{ row.title }}</td>
+                        <td class="text-center">
+                          {{ row.subcategoryCode }}
+                        </td>
+                        <td class="text-center">
+                          {{ row.totalAmt }}
+                        </td>
+                        <td class="text-center"
+                          style="text-wrap: balance;">{{row.notes }}</td>
+                        <td *ngIf="row.status === 'NEW'"
+                          class=" text-center text-primary">{{row.status}}</td>
+                        <td *ngIf="row.status === 'APPROVED'"
+                          class=" text-center text-success">{{row.status}}</td>
+                        <td *ngIf="row.status === 'CLAIMED'"
+                          class=" text-center text-info">{{row.status}}</td>
+                        <td *ngIf="row.status === 'CANCELLED'"
+                          class=" text-center text-danger">{{row.status}}</td>
+                        <td *ngIf="row.status === 'REJECTED'"
+                          class=" text-center text-danger">{{row.status}}</td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+                <div
+                  *ngIf="rows.length > config.itemsPerPage"
+                  class="text-center mt-3">
+                  <pagination-controls
+                    (pageChange)="pageChanged($event)"></pagination-controls>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- </div> -->
+    </div>
+  </div>
+</div>
+<div id="previewFile" class="modal custom-modal fade" role="dialog"
+  data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="dialog">
+    <div class="modal-content">
+      <ng-container *ngIf="PreviewObject?.fileType === 'pdf'">
+        <embed [src]="PreviewObject?.fileContent" type="application/pdf"
+          width="100%" height="600px" />
+
+      </ng-container>
+      <ng-container
+        *ngIf="PreviewObject?.fileType === 'png' || PreviewObject?.fileType === 'jpg'|| PreviewObject?.fileType === 'jpeg'">
+        <div style="overflow: auto;">
+          <img width="100%" [src]="PreviewObject?.imageByteCode " alt>
+        </div>
+      </ng-container>
+      <div class="my-2 text-center">
+        <button
+          id="previewFile_close"
+          type="button"
+          class="btn delete-btn closeDesig"
+          data-bs-dismiss="modal"
+          aria-label="Close"> {{globalServ.getGlobalNames('cancel')}}</button>
+
+      </div>
+    </div>
+  </div>
+</div>

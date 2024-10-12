@@ -1,0 +1,50 @@
+.cardWidth {
+    @media (min-width: 992px) {
+        width: 50%;
+}
+}
+.customecard {
+    background: white;
+    border: 1px solid #ededed;
+    border-radius: 0.375rem;
+    box-shadow: 0 0.125rem 1rem -10px;
+}
+.custom-modal {
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .centerme {
+        text-align: center;
+        justify-content: center;
+        }
+        }
+        
+        .iconsStyle {
+            font-size: 12px !important;
+            font-size: 45px;
+            background: #fff;
+            background: rgb(200 199 197 / 55%);
+            padding: 7px;
+            -moz-border-radius: 100%;
+            -o-border-radius: 100%;
+            border-radius: 100%;
+            text-align: center;
+            display: table-cell;
+            vertical-align: middle;
+            width: 20px;
+            height: 20px;
+            -moz-transition: .5s;
+            -webkit-transition: .5s;
+            -o-transition: .5s;
+            transition: .5s;
+}
+.imputStyle {
+    display: block;
+    outline: none;
+    border: none;
+    width: 40%;
+    font-size: 16px;
+    margin-bottom: 1px;
+    border-bottom: 1px solid #333;
+}

@@ -1,0 +1,402 @@
+<div class="page-header">
+  <div class="row align-items-center">
+    <div class="col-sm-12 col-lg-8">
+      <div class="d-flex align-items-baseline">
+        <i
+          style="font-size: 20px"
+          class="fa fa-arrow-left"
+          (click)="cancel()"
+          aria-label="back"></i>
+        <h3 class="ms-4 page-title">
+          {{ view ? globalServ.getGlobalNames('view') : (update ?
+          globalServ.getGlobalNames('update')
+          :globalServ.getGlobalNames('create')) }}
+          {{globalServ.showLabel('salaryComponent')}}
+        </h3>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card p-3">
+  <div class="row " [formGroup]="salaryStructureForm">
+    <div class="col-md-4 col-lg-4">
+      <label class="col-form-label">
+        {{globalServ.showLabel('componentCode')}}
+        <span
+          class="text-danger">*</span></label>
+      <input
+        class="form-control"
+        type="text"
+        maxlength="{{ charLimit }}"
+        [class.invalid]="
+              salaryStructureForm.get('componentCode').invalid &&
+              salaryStructureForm.get('componentCode').touched
+            "
+        formControlName="componentCode" />
+      <div
+        *ngIf="
+              salaryStructureForm.get('componentCode').invalid &&
+              salaryStructureForm.get('componentCode').touched
+            ">
+        <small
+          *ngIf="
+                salaryStructureForm.get('componentCode').invalid &&
+                salaryStructureForm.get('componentCode').touched
+              "
+          class="text-danger">
+          {{globalServ.showLabel('componentCode')}}
+          {{globalServ.showGlobalErrors('required')}}
+        </small>
+      </div>
+      <div
+        *ngIf="salaryStructureForm.get('componentCode').hasError('invalidFormat')"
+        style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+    </div>
+    <div class="col-md-4 col-lg-4">
+      <label class="col-form-label">{{globalServ.showLabel('componentType')}}
+        <span class="text-danger">*</span></label>
+      <select
+        class="form-select"
+        [class.invalid]="
+              salaryStructureForm.get('componentType').invalid &&
+              salaryStructureForm.get('componentType').touched
+            "
+        formControlName="componentType">
+        <option [value] selected
+          disabled>{{globalServ.showLabel('componentType')}}</option>
+        <option *ngFor="let pc of componentType"
+          [value]="pc">
+          {{ pc }}
+        </option>
+      </select>
+      <div
+        *ngIf="
+              salaryStructureForm.get('componentType').invalid &&
+              salaryStructureForm.get('componentType').touched
+            ">
+        <small
+          *ngIf="
+                salaryStructureForm.get('componentType').invalid &&
+                salaryStructureForm.get('componentType').touched
+              "
+          class="text-danger">
+          {{globalServ.showLabel('componentType')}}
+          {{globalServ.showGlobalErrors('required')}}
+        </small>
+      </div>
+    </div>
+
+    <!-- <div class="col-md-6 col-lg-6">
+          <label class="col-form-label">Payroll <span
+              class="text-danger">*</span></label>
+          <select
+            class="form-select"
+            [class.invalid]="
+              salaryStructureForm.get('payrollCode').invalid &&
+              salaryStructureForm.get('payrollCode').touched
+            "
+            formControlName="payrollCode">
+            <option [value] selected disabled>Select Payroll</option>
+            <option *ngFor="let pc of payrollsetups"
+              [value]="pc.payrollCode">
+              {{ pc.payrollCode }}
+            </option>
+          </select>
+          <div
+            *ngIf="
+              salaryStructureForm.get('payrollCode').invalid &&
+              salaryStructureForm.get('payrollCode').touched
+            ">
+            <small
+              *ngIf="
+                salaryStructureForm.get('payrollCode').invalid &&
+                salaryStructureForm.get('payrollCode').touched
+              "
+              class="text-danger">Payroll required</small>
+          </div>
+      </div> -->
+
+    <div class="col-md-4 col-lg-4">
+      <label class="col-form-label">{{globalServ.getGlobalNames('timeFrame')}}
+        <span
+          class="text-danger">*</span></label>
+      <select
+        class="form-select"
+        [class.invalid]="
+              salaryStructureForm.get('timeframe').invalid &&
+              salaryStructureForm.get('timeframe').touched
+            "
+        formControlName="timeframe">
+        <option [value] selected
+          disabled>{{globalServ.getGlobalNames('timeFrame')}}</option>
+        <option *ngFor="let tf of timeframe"
+          [value]="tf.code">
+          {{ tf.name }}
+        </option>
+      </select>
+      <div
+        *ngIf="
+              salaryStructureForm.get('timeframe').invalid &&
+              salaryStructureForm.get('timeframe').touched
+            ">
+        <small
+          *ngIf="
+                salaryStructureForm.get('timeframe').invalid &&
+                salaryStructureForm.get('timeframe').touched
+              "
+          class="text-danger">
+          {{globalServ.getGlobalNames('timeFrame')}}
+          {{globalServ.showGlobalErrors('required')}}
+        </small>
+      </div>
+    </div>
+
+    <div class="row m-3">
+      <div class="form-check col-md-12 my-auto mb-2">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="maxLimitInYrQuestion"
+          (change)="maxLimitInYrQuestions()"
+          formControlName="maxLimitInYrQuestion" />
+        <label class="form-check-label"
+          for="maxLimitInYrQuestion">{{globalServ.showLabel('maxLimitInYrQuestion')}}
+        </label>
+      </div>
+
+      <div class="col-md-6 col-lg-6" style="padding-left: 0px;">
+        <label
+          class="col-form-label">{{globalServ.showLabel('maxLimitInYr')}}</label>
+        <input type="number" class="form-control" id="maxLimitInYr"
+          formControlName="maxLimitInYr">
+      </div>
+
+      <div class="form-check  col-md-6 col-lg-6 mt-3 d-flex align-items-center">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="xfrUnusedToAllowance"
+          formControlName="xfrUnusedToAllowance" />
+        <label class="form-check-label ms-2"
+          for="xfrUnusedToAllowance ">{{globalServ.showLabel('xfrUnusedToAllowance')}}
+        </label>
+      </div>
+      <div class="form-check col-md-6 mt-2">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          (change)="deduction()"
+          id="isDeduction"
+          formControlName="isDeduction" />
+        <label class="form-check-label"
+          for="isDeduction">{{globalServ.showLabel('isDeduction')}} </label>
+      </div>
+
+      <div
+        class="form-check col-md-6 mt-2 ">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="isDeductionCompanyPayable"
+          formControlName="isDeductionCompanyPayable" />
+        <label class="form-check-label"
+          for="isDeductionCompanyPayable">{{globalServ.showLabel('isDeductionCompanyPayable')
+          }}</label>
+      </div>
+
+      <div class="form-check col-md-6 mt-2">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="isTaxable"
+          formControlName="isTaxable" />
+        <label class="form-check-label"
+          for="isTaxable">{{globalServ.showLabel('isTaxable')}} </label>
+      </div>
+
+      <div class="form-check col-md-6 mt-2 ">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="includeInTotalSalCalc"
+          formControlName="includeInTotalSalCalc" />
+        <label class="form-check-label"
+          for="includeInTotalSalCalc">{{globalServ.showLabel('includeInTotalSalCalc')}}
+        </label>
+      </div>
+      <div class="form-check col-md-6 mt-2 ">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="includeInCtcCalc"
+          formControlName="includeInCtcCalc" />
+        <label class="form-check-label"
+          for="includeInCtcCalc">{{globalServ.showLabel('includeInCtcCalc')}}
+        </label>
+      </div>
+      <!-- 
+      <div class="form-check col-md-6 mt-2 ">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="isDerived"
+          formControlName="isDerived" />
+        <label class="form-check-label"
+          for="isDerived">{{globalServ.showLabel('isDerived')}}</label>
+      </div> -->
+
+      <div class="form-check col-md-6 mt-2 ">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="isProrata"
+          formControlName="isProrata" />
+        <label class="form-check-label" for="isProrata">
+          {{globalServ.showLabel('isProrata')}}</label>
+      </div>
+
+      <div class="form-check col-md-6 mt-2 ">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="isCommission"
+          formControlName="isCommission" />
+        <label class="form-check-label"
+          for="isCommission">{{globalServ.showLabel('isCommission') }}</label>
+      </div>
+
+      <div class="form-check col-md-10 mt-2  mb-3">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="isactive"
+          formControlName="isactive" />
+        <label class="form-check-label" for="isactive">
+          {{globalServ.getGlobalNames('active')}}
+        </label>
+      </div>
+      <div class="my-1" *ngIf="rulesList">
+        {{globalServ.showLabel('definerules') }}
+      </div>
+      <div class="row my-2"
+        *ngIf="rulesList?.array.length === 0 && rulesList?.form.calcType && rulesList?.form.calcType !== ''">
+        <div class="d-flex"
+          [ngStyle]="{ 'color': rulesList?.form.isactive ? '' : 'red'  }">
+          1. <span class="mx-2">
+            <b>{{salaryStructureForm.get('componentCode').value}}</b></span>
+          {{globalServ.getGlobalNames('is')}}
+          <span class="mx-2" *ngIf="rulesList?.form.calcType === 'pct'">
+            <b> {{rulesList?.form.percentage}}</b> %</span>
+          <span *ngIf="rulesList?.form.calcType === 'fixed'">
+            <b class="mx-2">{{rulesList?.form.fixedAmount}}</b>
+            {{globalServ.getGlobalNames('fixedAmount')}}</span>
+          <span class="mx-2" *ngIf="rulesList?.form.calcType === 'pct'">
+            {{globalServ.getGlobalNames('of')}}
+            <b class="mx-2">{{rulesList?.form.parentComponentCode}} </b></span>
+          <span class="mx-2" *ngIf="rulesList?.form.calcType === 'remainder'">
+               {{globalServ.showLabel('remainBal') }}</span>
+        </div>
+      </div>
+
+      <!-- for list -->
+      <div class="my-2" *ngIf="rulesList?.array.length > 0">
+        <ng-container *ngFor="let item of rulesList?.array;let i = index">
+          <div class="row" [ngStyle]="{ 'color': item.isactive ? '' : 'red'  }">
+            <div class="d-flex"> {{i +1}}. {{globalServ.getGlobalNames('If')}}
+              <span class="mx-2"> <b>
+                  {{item.comparatorComponent}} </b> </span>
+              {{globalServ.getGlobalNames('is')}}
+              <span class="mx-2">{{item.comparator}} <span class="ms-2">
+                  {{item.param1Value}}</span> </span>
+              <span *ngIf="item.comparator === 'BETWEEN'"
+                class="mx-2">{{globalServ.getGlobalNames('and')}}
+                <b class="mx-2"> {{item.param1Value}}</b></span>
+              {{globalServ.getGlobalNames('then')}} <b class="mx-2">
+                {{item.componentCode}} </b> {{globalServ.getGlobalNames('is')}}
+              <span *ngIf="item.calcType === 'pct'">
+                <b class="mx-2"> {{item.percentage}}</b> %</span>
+              <span *ngIf="item.calcType === 'fixed'">
+                <b class="mx-2">{{item.fixedAmount}}</b>
+                {{globalServ.getGlobalNames('fixedAmount')}}</span>
+              <span *ngIf="item.calcType === 'pct'"> <span class="ms-2">
+                  {{globalServ.getGlobalNames('of')}}
+                </span>
+                <b class="mx-2">{{item.parentComponentCode}} </b></span>
+                <span class="mx-2" *ngIf="item.calcType === 'remainder'">
+              {{globalServ.showLabel('remainBal') }}</span></div>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- <div class="row"
+        *ngIf="rulesList?.array.length === 0 && rulesList?.form.calcType && rulesList?.form.calcType !== ''">
+        <div class="col-md-12">
+          <div class="table-responsive card p-3">
+            <table id="datatable"
+              class="table table-hover custom-table mb-0 datatable">
+              <thead class="thead-all">
+                <tr class="tr-th-all">
+                  <th>Calculation Type</th>
+                  <th>Type Amount </th>
+                  <th>Parent Component</th>
+                  <th>Comparator Component</th>
+                  <th>Comparator</th>
+                  <th>Param1 Value </th>
+                  <th>Param2 Value </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="dasboard-td">
+                  <td>{{rulesList?.form.calcType}}</td>
+                  <td>
+                    <span *ngIf="rulesList?.form.calcType === 'pct'">
+                      {{rulesList?.form.percentage}}</span>
+                    <span *ngIf="rulesList?.form.calcType === 'fixed'">
+                      {{rulesList?.form.fixedAmount}}</span>
+                  </td>
+                  <td> {{rulesList?.form.parentComponentCode}}</td><td></td>
+                  <td></td><td></td><td></td>
+        
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div> -->
+
+      <div class="row col-md-12">
+        <button *ngIf="!view"
+          [disabled]="salaryStructureForm.invalid"
+          (click)="addRules()"
+          class="btn add-btn">{{globalServ.showLabel('addRules')}}
+        </button>
+      </div>
+    </div>
+    <div class="row mt-3 mb-3" *ngIf="!view">
+      <div class="col-lg-6 col-sm-12">
+        <button (click)="cancel()"
+          class="btn delete-btn float-start">
+          {{globalServ.getGlobalNames('cancel')}}
+        </button>
+      </div>
+      <div class="col-lg-6 col-sm-12">
+        <button *ngIf="!update && !view"
+          [disabled]="salaryStructureForm.invalid"
+          (click)="submit()"
+          class="btn add-btn"> {{globalServ.getGlobalNames('submit')}}
+        </button>
+        <button *ngIf="update && !view"
+          [disabled]=" salaryStructureForm.invalid"
+          (click)="Update()"
+          class="btn add-btn"> {{globalServ.getGlobalNames('update')}}
+        </button>
+      </div>
+    </div>
+    <div class="col-lg-12 col-sm-12 d-flex justify-content-center "
+      *ngIf="view">
+      <button (click)="cancel()"
+        class="btn delete-btn float-start">
+        {{globalServ.getGlobalNames('cancel')}}
+      </button>
+    </div>
+  </div>

@@ -1,0 +1,422 @@
+<div class="content container-fluid">
+    <div class="mb-2">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="d-flex align-items-baseline">
+                    <i style="font-size:20px" class="fa fa-arrow-left"
+                        (click)="back()" aria-label="back"></i>
+                    <h3 class="ms-4 page-title">
+                        {{global.showLabel('BiometricLogHeader')}}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 col-md-3">
+            <label> {{global.getGlobalNames('department')}}</label>
+            <div class="form-floating mt-1">
+                <select class="form-select" id="departments"
+                    [(ngModel)]="reportObj.department"
+                    (change)="getEmpByDepartments()">
+                    <option [value]="dtypes.deptCode"
+                        *ngFor="let dtypes of departments_list">{{dtypes.deptName}}</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- <div class="col-sm-6 col-md-3" [ngClass]="{'d-flex':!stopSpinner}">
+            <label>Employee</label>
+            <div class="form-floating mt-1" *ngIf="stopSpinner">
+                <select id="employee" class="form-select"
+                    [(ngModel)]="reportObj.employeeCode">
+                    <option value="ALL" *ngIf="employees_list.length > 0">ALL</option>
+                    <option [value]="emp.employeeMaster.employeeCode"
+                        *ngFor="let emp of employees_list">{{emp.employeeMaster.employeeName}}</option>
+                </select>
+            </div>
+            <div id="loading" *ngIf="!stopSpinner"></div>
+        </div> -->
+
+        <div class="col-sm-6 col-md-3" [ngClass]="{'d-flex':!stopSpinner}">
+            <div class *ngIf="stopSpinner">
+                <label>{{global.getGlobalNames('employee')}}</label>
+                <ng-select
+                    [items]="employees_list"
+                    bindLabel="mergeName"
+                    bindValue="employeeCode"
+                    [multiple]="false"
+                    id="emp"
+                    placeholder="Select an employee"
+                    class="ngSelectform"
+                    [(ngModel)]="reportObj.employeeCode">
+                </ng-select>
+            </div>
+            <div id="loading" *ngIf="!stopSpinner"></div>
+        </div>
+        <div class="col-md-3">
+            <label>{{global.getGlobalNames('dateFromandTo')}}</label>
+            <div class="form-floating mt-1">
+                <input id="selectedDateRange" type="text" ngxDaterangepickerMd
+                    [maxDate]="maxDate"
+                    [(ngModel)]="selectedDateRange" class="form-control" />
+            </div>
+        </div>
+
+    </div>
+    <div class="row g-2 mb-2 mt-2 justify-content-between">
+        <div class="col-sm-6 col-lg-3 d-flex align-items-end">
+            <div class="input-group">
+                <input type="text" class="form-control"
+                    placeholder="{{global.showGlobalplaceholders('search')}}"
+                    [(ngModel)]="searchInAll" *ngIf="firstTab"
+                    (keyup)="updateFilter($event)"
+                    style="border-radius: 8px 0px 0px 8px; 
+    height: calc(2.25rem + calc(var(--mo-border-width) * 2));">
+                <input type="text" class="form-control"
+                    placeholder="{{global.showGlobalplaceholders('search')}}"
+                    [(ngModel)]="searchInFailed" *ngIf="secondTab"
+                    (keyup)="updateFilterfailed($event)"
+                    style="border-radius: 8px 0px 0px 8px; 
+    height: calc(2.25rem + calc(var(--mo-border-width) * 2));">
+                <span class="input-group-text" id="basic-addon1">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+            </div>
+        </div>
+        <div
+            class="col-sm-6 col-md-3 d-flex align-items-end justify-content-end">
+            <button
+                id="biometricExcel"
+                class="btn add-btn float-end mx-2"
+                (click)="saveExcel()">
+                {{global.getGlobalNames('saveAsExcel')}}
+            </button>
+            <button id="biometric_submit"
+                class="btn add-btn float-end me-4"
+                (click)="getRecords()">{{global.getGlobalNames('submit')}}</button>
+        </div>
+        <!-- <div class="col-sm-6 col-lg-2 ">
+            <label class="form-label ms-2">Show entries</label>
+            <select class="form-select" *ngIf="firstTab"
+                (change)="resultsPerPage($event)">
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="all">All</option>
+            </select>
+            <select class="form-select" *ngIf="secondTab"
+                (change)="resultsPerPagefailed($event)">
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="all">All</option>
+            </select>
+        </div> -->
+    </div>
+    <div class="card card-border-style p-3">
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button (click)="tabOne()" class="nav-link active"
+                    id="pills-records-tab" data-bs-toggle="pill"
+                    data-bs-target="#pills-records" type="button" role="tab"
+                    aria-controls="pills-records" aria-selected="true">
+                    {{global.showLabel('AllLogs')}}</button>
+            </li>
+            <li class="nav-item ms-2" role="presentation">
+                <button (click)="tabTwo()" class="nav-link"
+                    id="pills-failed-tab" data-bs-toggle="pill"
+                    data-bs-target="#pills-failed" type="button" role="tab"
+                    aria-controls="pills-failed" aria-selected="false">
+                    {{global.showLabel('FailedLogs')}}</button>
+            </li>
+        </ul>
+
+        <div class="tab-content " id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-records"
+                role="tabpanel" aria-labelledby="pills-records-tab"
+                tabindex="0">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table datatable
+                                class="table table-hover custom-table mb-0 m-auto datatable"
+                                style="width: 80%;">
+                                <thead class="thead-all">
+                                    <tr class="tr-th-all">
+                                        <th
+                                            scope="col">{{global.getGlobalNames('date')}}
+                                            <i class="fa fa-sort"
+                                                data-column="dateCode"
+                                                (click)="sortData('dateCode')"
+                                                [ngClass]="{'asc': sortColumn === 'dateCode' && sortOrder === 'asc',
+                                'desc': sortColumn === 'dateCode' && sortOrder === 'desc'}"></i></th>
+                                        <th
+                                            scope="col">{{global.getGlobalNames('empCode')}}
+                                            <i
+                                                class="fa fa-sort"
+                                                data-column="employeeCode"
+                                                (click)="sortData('employeeCode')"
+                                                [ngClass]="{'asc': sortColumn === 'employeeCode' && sortOrder === 'asc',
+                                'desc': sortColumn === 'employeeCode' && sortOrder === 'desc'}"></i></th>
+                                        <th
+                                            scope="col">{{global.getGlobalNames('empName')}}
+                                            <i
+                                                class="fa fa-sort"
+                                                data-column="employeeName"
+                                                (click)="sortData('employeeName')"
+                                                [ngClass]="{'asc': sortColumn === 'employeeName' && sortOrder === 'asc',
+                                'desc': sortColumn === 'employeeName' && sortOrder === 'desc'}"></i></th>
+                                        <th
+                                            scope="col">{{global.getGlobalNames('time')}}
+                                            <i class="fa fa-sort"
+                                                data-column="attTime"
+                                                (click)="sortData('attTime')"
+                                                [ngClass]="{'asc': sortColumn === 'attTime' && sortOrder === 'asc',
+                                'desc': sortColumn === 'attTime' && sortOrder === 'desc'}"></i></th>
+                                        <th scope="col"
+                                            class="text-center">{{global.getGlobalNames('IN/OUT')}}
+                                            <i class="fa fa-sort"
+                                                data-column="status"
+                                                (click)="sortData('status')"
+                                                [ngClass]="{'asc': sortColumn === 'status' && sortOrder === 'asc',
+                                'desc': sortColumn === 'status' && sortOrder === 'desc'}"></i></th>
+                                        <th scope="col"
+                                            class="text-center">{{global.getGlobalNames('DeviceId')}}
+                                        </th>
+                                        <th
+                                            scope="col">{{global.showLabel('Processed')}}</th>
+                                        <th
+                                            scope="col">{{global.getGlobalNames('status')}}</th>
+                                        <th
+                                            scope="col">{{global.getGlobalNames('Comment')}}</th>
+
+                                        <th scope="col" class="text-center"
+                                            *ngIf="hasPermissionToUpdate">{{global.getGlobalNames('action')}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="rows.length === 0">
+                                    <tr
+                                        style=" text-align: center; height: 150px;">
+                                        <td colspan="10">
+                                            {{global.showGlobalErrors('notFound')}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody *ngIf="rows.length > 0">
+                                    <tr class="dasboard-td"
+                                        [ngStyle]="{ 'background': row.attStatus === 'FAILED'? ' #f8d7da' : ''  }"
+                                        *ngFor="let row of rows ; let i=index;">
+                                        <td class>{{row.dateCode | date:
+                                            dateFormat}}</td>
+                                        <td class>{{row.employeeCode}}</td>
+                                        <td>{{row.employeeName}}</td>
+                                        <td class>{{row.attTime ? (row.attTime |
+                                            timeFormater): ''}}</td>
+                                        <td class="text-center">
+                                            <span
+                                                *ngIf="!row.isedit">{{row.modifyStatus}}</span>
+                                            <span *ngIf="row.isedit">
+                                                <select
+                                                    class=" form-select form-selectt"
+                                                    style="width: fit-content;"
+                                                    [(ngModel)]="row.modifyStatus">
+                                                    <option selected
+                                                        disabled>-</option>
+                                                    <option
+                                                        value="IN">{{global.getGlobalNames('IN')}}</option>
+                                                    <option
+                                                        value="OUT">{{global.getGlobalNames('OUT')}}</option>
+                                                </select>
+                                            </span>
+                                        </td>
+                                        <td
+                                            class="text-center">{{row.deviceId}}</td>
+                                        <td class="text-center">
+                                            <i
+                                                *ngIf="row.isProcessed"
+                                                class="fa-solid fa-circle"
+                                                style="color: #55ce63"></i>
+                                            <i
+                                                *ngIf="!row.isProcessed"
+                                                class="fa-solid fa-circle"
+                                                style="color: #f62d51"></i>
+
+                                        </td>
+                                        <td class>{{row.attStatus}}</td>
+                                        <td class>{{row.comments}}</td>
+                                        <td class="text-center"
+                                            *ngIf="hasPermissionToUpdate">
+                                            <div class="btn-group" role="group">
+                                                <button type="button"
+                                                    *ngIf="!row.isedit && hasPermissionToUpdate"
+                                                    class="btn btn-sm btn-primary edit-button"
+                                                    data-toggle="tooltip"
+                                                    title="Edit"
+                                                    (click)="editData(row)">
+                                                    {{global.getGlobalNames('edit')}}
+                                                </button>
+                                                <button type="button"
+                                                    *ngIf="row.isedit && hasPermissionToUpdate"
+                                                    class="btn btn-sm btn-success me-1 edit-button"
+                                                    data-toggle="tooltip"
+                                                    title="Edit"
+                                                    (click)="saveRow(row, i)">
+                                                    {{global.getGlobalNames('save')}}
+                                                </button>
+                                                <button type="button"
+                                                    *ngIf="row.isedit && hasPermissionToUpdate"
+                                                    class="btn btn-sm btn-danger edit-button"
+                                                    data-toggle="tooltip"
+                                                    title="Edit"
+                                                    (click)="Undo(row, i,'allRecords')">
+                                                    {{global.getGlobalNames('undo')}}
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="pills-failed" role="tabpanel"
+                aria-labelledby="pills-failed-tab" tabindex="0">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table datatable
+                                class="table table-hover custom-table mb-0 m-auto datatable"
+                                style="width: 80%;">
+                                <thead class="small thead-all">
+                                    <tr class="tr-th-all">
+                                        <th
+                                            scope="col">{{global.getGlobalNames('DeviceId')}}</th>
+                                        <th scope="col">
+                                            {{global.getGlobalNames('date')}}
+                                            <i class="fa fa-sort"
+                                                data-column="dateCode"
+                                                (click)="sortData('dateCode')"
+                                                [ngClass]="{'asc': sortColumn === 'dateCode' && sortOrder === 'asc',
+                                'desc': sortColumn === 'dateCode' && sortOrder === 'desc'}"></i></th>
+                                        <th scope="col">
+                                            {{global.getGlobalNames('empCode')}}
+                                            <i
+                                                class="fa fa-sort"
+                                                data-column="employeeCode"
+                                                (click)="sortData('employeeCode')"
+                                                [ngClass]="{'asc': sortColumn === 'employeeCode' && sortOrder === 'asc',
+                                'desc': sortColumn === 'employeeCode' && sortOrder === 'desc'}"></i></th>
+                                        <th scope="col">
+                                            {{global.getGlobalNames('empName')}}
+                                            <i
+                                                class="fa fa-sort"
+                                                data-column="employeeName"
+                                                (click)="sortData('employeeName')"
+                                                [ngClass]="{'asc': sortColumn === 'employeeName' && sortOrder === 'asc',
+                                'desc': sortColumn === 'employeeName' && sortOrder === 'desc'}"></i></th>
+                                        <th
+                                            scope="col">{{global.getGlobalNames('time')}}
+                                            <i class="fa fa-sort"
+                                                data-column="attTime"
+                                                (click)="sortData('attTime')"
+                                                [ngClass]="{'asc': sortColumn === 'attTime' && sortOrder === 'asc',
+                                'desc': sortColumn === 'attTime' && sortOrder === 'desc'}"></i></th>
+                                        <th scope="col"
+                                            class="text-center">{{global.getGlobalNames('status')}}
+                                            <i class="fa fa-sort"
+                                                data-column="status"
+                                                (click)="sortData('status')"
+                                                [ngClass]="{'asc': sortColumn === 'status' && sortOrder === 'asc',
+                                'desc': sortColumn === 'status' && sortOrder === 'desc'}"></i></th>
+                                        <th scope="col" class="text-center"
+                                            *ngIf="hasPermissionToUpdate">
+                                            {{global.getGlobalNames('action')}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="failedRows.length === 0">
+                                    <tr
+                                        style=" text-align: center; height: 150px;">
+                                        <td colspan="7">
+                                            {{global.showGlobalErrors('notFound')}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody
+                                    *ngFor="let row of failedRows; let i=index;">
+                                    <tr class="dasboard-td"
+                                        *ngIf="row.attStatus === 'FAILED'">
+                                        <td class>{{row.deviceId}}</td>
+                                        <td class>{{row.dateCode | date:
+                                            dateFormat}}</td>
+                                        <td class>{{row.employeeCode}}</td>
+                                        <td>{{row.employeeName}}</td>
+                                        <td class>{{row.attTime ? (row.attTime |
+                                            timeFormater): ''}}</td>
+                                        <td class="text-center">
+                                            <span
+                                                *ngIf="!row.isedit">{{row.modifyStatus}}</span>
+                                            <span *ngIf="row.isedit">
+                                                <select
+                                                    class=" form-select form-selectt"
+                                                    style="width: fit-content;"
+                                                    [(ngModel)]="row.modifyStatus">
+                                                    <option selected
+                                                        disabled>-</option>
+                                                    <option
+                                                        value="IN">{{global.getGlobalNames('IN')}}</option>
+                                                    <option
+                                                        value="OUT">{{global.getGlobalNames('OUT')}}</option>
+                                                </select>
+                                            </span>
+                                        </td>
+                                        <td class="text-center"
+                                            *ngIf="hasPermissionToUpdate">
+                                            <div class="btn-group" role="group">
+                                                <button type="button"
+                                                    *ngIf="!row.isedit && hasPermissionToUpdate"
+                                                    class="btn btn-sm btn-primary edit-button"
+                                                    data-toggle="tooltip"
+                                                    title="Edit"
+                                                    (click)="editData(row)">
+                                                    {{global.getGlobalNames('edit')}}
+                                                </button>
+                                                <button type="button"
+                                                    *ngIf="row.isedit && hasPermissionToUpdate"
+                                                    class="btn btn-sm btn-success me-1 edit-button"
+                                                    data-toggle="tooltip"
+                                                    title="Edit"
+                                                    (click)="saveRow(row, i)">
+                                                    {{global.getGlobalNames('save')}}
+                                                </button>
+                                                <button type="button"
+                                                    *ngIf="row.isedit && hasPermissionToUpdate"
+                                                    class="btn btn-sm btn-danger edit-button"
+                                                    data-toggle="tooltip"
+                                                    title="Edit"
+                                                    (click)="Undo(row, i,'failedRecords')">
+                                                    {{global.getGlobalNames('undo')}}
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div *ngIf="rows.length > config.itemsPerPage && firstTab"
+                                class="text-center mt-3">
+                                <pagination-controls
+                                    (pageChange)="pageChanged($event)"></pagination-controls>
+                            </div>
+
+  <div *ngIf="failedRows.length > config1.itemsPerPage && secondTab"
+   class="text-center mt-3"> <pagination-controls (pageChange)="pageChangedFailed($event)"></pagination-controls>
+     </div> -->
+    </div>
+</div>

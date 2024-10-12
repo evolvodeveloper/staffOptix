@@ -1,0 +1,171 @@
+<!-- Page Content -->
+
+<div class="content container-fluid">
+        <p class="apply-btn1 " style="   margin-bottom: 0px;
+    text-align: end;">
+   Already have Account
+  <a class="text-primary" style="cursor: context-menu;" (click)="signIn()">Sign In</a>
+</p>
+  <div class="row">
+    <div class="col-md-12 md-3">
+      <!-- Page Header -->
+      <div class="page-header" style="text-align: -webkit-center">
+        <div class="row">
+          <div class="col-sm-12">
+            <h2 class="plan-tittle">Find Your Perfect Plan</h2>
+            <div class="plan-subtittle">
+              Discover the ideal plan to fuel your business growth. Our pricing
+              options are carefully crafted to cater to businesses.
+            </div>
+            <!-- <p class="apply-btn1">
+   Already have Account
+  <a routerLink="/sign-in" class="text-primary">Sign In</a>
+</p> -->
+          </div>
+        </div>
+      </div>
+
+      <div class="toggle">
+        <label>Quarterly</label>
+        <div class="toggle-btn">
+          <input
+            type="checkbox"
+            (click)="onYearly($event)"
+            id="checkbox"
+            class="checkbox"
+          />
+          <label for="checkbox" class="sub" id="suv">
+            <div class="circle"></div>
+          </label>
+        </div>
+        <label>Yearly</label>
+      </div>
+
+      <div class="row">
+        <div
+          class="pricing-card"
+          [ngStyle]="{ 'border-color': row.plan.color }"
+          *ngFor="let row of pricemasterlist"
+        >
+          <div class="puplar" *ngIf="row.plan.isMostPopular === true">
+            <div class="most-popular">Most Popular</div>
+          </div>
+          <div class="card-body">
+            <div class="pricing-headear">
+              <div class="frame-4">
+                <div class="free">{{ row?.plan?.pricingCode }}</div>
+                <div class="best-for-personal-use">Best for personal use</div>
+              </div>
+              <div class="frame-5">
+                <div
+                  class="pricing-amount"
+                  [ngStyle]="{ color: row.plan.color }"
+                >
+                  <!-- $0 -->
+                  ₹{{ row?.subscription?.amount }}
+                </div>
+                <div class="month">/{{ row?.subscription?.duration }}</div>
+              </div>
+              <!-- <div class="frame-5">
+                <div class="pricing-amount">$0</div>
+                <div class="month">/Yearly</div>
+              </div> -->
+            </div>
+
+            <div class="pricing-features" *ngFor="let x of row.attributes">
+              <div class="what-you-get">What you get:</div>
+              <div class="feature-row">
+                <svg
+                  class="checkmark"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M20.9557 5.90223L9.05075 19.5079L3.04211 13.4992L4.50052 12.0408L8.95029 16.4906L19.4035 4.54407L20.9557 5.90223Z"
+                    fill="#4BB543"
+                  />
+                </svg>
+
+                <div class="what-you-get2">
+                  {{ x.attrCode }} : {{ x.attrValue }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="card-footer"> -->
+          <button class="btn btn-primary getStartedBtn " style="bottom: 10px;" (click)="proceed(row)">
+            Get Started
+          </button>
+
+          <!-- </div> -->
+          <!-- <div class="button">
+            <button ></button>
+          </div> -->
+        </div>
+      </div>
+
+      <!-- Yearly  -->
+
+      <!-- <div class="row">
+        <div
+          class="pricing-card"
+          [ngStyle]="{ 'border-color': row.plan.color }"
+          *ngFor="let row of priceListForYearly"
+        >
+          <div class="puplar" *ngIf="row.plan.isMostPopular == true">
+            <div class="most-popular">Most Popular</div>
+          </div>
+          <div class="card-body">
+            <div class="pricing-headear">
+              <div class="frame-4">
+                <div class="free">{{ row.plan.pricingCode }}</div>
+                <div class="best-for-personal-use">Best for personal use</div>
+              </div>
+              <div class="frame-5">
+                <div class="pricing-amount" [ngStyle]="{ color: row.plan.color }">
+              
+                  ₹{{ row?.subscription?.amount }}
+                </div>
+                <div class="month">/{{row?.subscription?.duration}}</div>
+              </div>
+
+            </div>
+
+            <div class="pricing-features"  *ngFor="let x of row.attributes">
+              <div class="what-you-get">What you get:</div>
+              <div class="feature-row">
+                <svg
+                  class="checkmark"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M20.9557 5.90223L9.05075 19.5079L3.04211 13.4992L4.50052 12.0408L8.95029 16.4906L19.4035 4.54407L20.9557 5.90223Z"
+                    fill="#4BB543"
+                  />
+                </svg>
+
+                <div class="what-you-get2">{{x.attrCode}} : {{x.attrValue}}</div>
+              </div>
+
+            </div>
+          </div>
+
+          <button class="btn btn-primary getStartedBtn" (click)="proceedForYearly(row)">Get Started</button>
+        </div>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<!-- <button id="rzp-button1">Pay</button> -->

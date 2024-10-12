@@ -1,0 +1,301 @@
+<div class="account-content p-0">
+    <!-- <a routerLink = "/login/joblist" class="btn btn-primary apply-btn">Apply Job</a> -->
+    <div class="container-fluid">
+        <div class="row">
+            <div
+                class="col-md-6 text-center justify-content-center account-login-right">
+
+                <div
+                    class=" d-flex align-items-center flex-column justify-content-center"
+                    style="gap: 37px;">
+                    <div class="d-flex flex-row-start align-items-center"
+                        style="gap: 11px;">
+                        <img style="height: 108px; width: 108px;" alt
+                            src="assets/img/atlas-logo-full.png" />
+                        <!-- <img style="height: 58px; width: 168px;" alt="" src="assets/img/atlas-logo-white-name.png" /> -->
+
+                        <!-- <b class="text-white fs-2" style="letter-spacing: 3px;">Atlas</b> -->
+                    </div>
+                    <div class=" align-items-start  position-relative "
+                        style="padding: 0 42px; gap: 10px;font-size: 20px;">
+                        <div
+                            class=" position-relative rounded bg-white overflow-hidden"
+                            style="width: 389px;  height: 283.63px">
+                            <img class="mt-4" alt src="assets/img/PunchIn1.svg" />
+
+                            <div class="position-absolute"
+                                style="top: 169px; left: calc(50% - 171.5px) ;font-size: 15px; font-weight: 500;">
+                                Revolutionizing Employee Attendance
+                                Management
+                            </div>
+                            <div class="  fw-normal position-absolute"
+                                style="top: 198px;
+  left: 34px; width: 320px ;font-size:10px;text-align: justify;">
+                                1) Cloud based Platform to access the data
+                                anytime
+                                anywhere.<br>
+                                2) Complete reporting of the employee details.<br>
+                                3)Real-time information on your finger tips.<br>
+                                4) Reduces the cost and manpower and etc.
+                            </div>
+                        </div>
+                        <div
+                            class="rounded bg-white position-absolute overflow-hidden"
+                            style="
+                top: 260px;
+                left: 0;
+                width: 297px;
+                height: 64.23px;
+                font-size: 12px;
+                box-shadow: 308px 27px 87px transparent,
+                  197px 17px 79px rgba(3, 38, 164, 0.01),
+                  111px 10px 67px rgba(3, 38, 164, 0.05),
+                  49px 4px 50px rgba(3, 38, 164, 0.09),
+                  12px 1px 27px rgba(3, 38, 164, 0.1);
+              ">
+                            <img
+                                class="mb-3 position-absolute"
+                                style="top: 11.59px; left: 12.56px"
+                                alt
+                                src="assets/img/Frame.svg" />
+
+                            <div class="payments-made-simple">
+                                Attendance
+                                Management
+
+                            </div>
+                            <div class="user-friendly-and-efficient">
+
+                                User-friendly and efficient solution designed to
+                                streamline and simplify your attendance
+                                management process.
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class=" d-flex align-items-center flex-column justify-content-center"  style="gap: 37px;">
+            <div class="vector-parent d-flex flex-row-start align-items-center" style="gap: 11px;">
+            <img  style="height: 50px; width: 50px;"  alt="" src="assets/img/atlas-only-logo-white.png" />
+              <img  style="height: 35px; "  alt="" src="assets/img/atlas-logo-white-name.png" />
+
+            </div>
+
+          </div> -->
+
+            </div>
+
+            <div class="col-md-6 d-flex justify-content-center styleofcompany"
+                style="min-height: 100vh; align-items: center;
+    justify-content: center;">
+
+                <!-- <div class="account-login-block" > -->
+                <div class="account-box">
+                    <div class="account-wrapper">
+                        <!-- <div class=" d-flex mb-3 justify-content-center align-items-center" style="gap: 11px;">
+              <img style="height: 88px; width: 98px;" alt="" src="assets/img/atlas-only-logo-blue.png" />
+            </div> -->
+                        <h3 class="account-title mb-5">Login</h3>
+                        <form [formGroup]="logInForm">
+                            <div class="form-group input">
+                                <div class="input-group">
+                                    <input id="email"
+                                        placeholder="enter your user name / email"
+                                        class="form-control bg-white"
+                                        type="text"
+                                        [formControl]="logInForm.controls.username">
+                                    <span>
+
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group input">
+                                <div class="input-group">
+                                    <input
+                                        id="password"
+                                        name="password"
+                                        (keyup.enter)="login()"
+                                        [type]="showPassword ? 'text' : 'password'"
+                                        class="form-control pwd-control bg-white"
+                                        [formControl]="logInForm.controls.password"
+                                        placeholder="enter your password">
+
+                                    <span class="input-group-custom"
+                                        id="password">
+                                        <i alt="show" class="far fa-eye"
+                                            id="password"
+                                            *ngIf="showPassword"
+                                            [name]="showPassword?'eye-off' : 'eye'"
+                                            (click)="showPassword = !showPassword"></i>
+                                        <i alt="hide" id="password"
+                                            class="far fa-eye-slash eye-hide"
+                                            *ngIf="!showPassword"
+                                            (click)="showPassword = !showPassword"></i>
+                                    </span>
+                                    <span
+                                        class="input-group-custom"
+                                        *ngIf="logInForm.controls['password'].hasError('minlength')"
+                                        data-toggle="tooltip"
+                                        id="password"
+                                        data-placement="right"
+                                        title="Must be at least 8 characters!">
+                                        <div style="color: #dc3545">
+                                            <i class="fa fa-exclamation-triangle"
+                                                aria-hidden="true"></i>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+           
+
+                            <div class="form-group text-center">
+                                <button id="login_btn"
+                                    class="btn btn-primary account-btn"
+                                    type="button" [ngClass]="spinnerClass"
+                                    [disabled]="logInForm.invalid"
+                                    (click)="login()" #tt="ngbTooltip"
+                                    ngbTooltip="{{errorMessage}}"
+                                    [ngStyle]="{'pointer-events': isLogging ? 'none': 'auto'}">
+                                    <div id="login_btn"
+                                        class="spinner d-inline-block">
+                                        <div class="bounce1"></div>
+                                        <div class="bounce2"></div>
+                                        <div class="bounce3"></div>
+                                    </div>
+                                    <span id="login_btn" class="icon success">
+                                        <i class="simple-icon-check"></i>
+                                    </span>
+                                    <span id="login_btn" class="icon fail"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="{{errorMessage}}">
+                                        <i class="simple-icon-exclamation"></i>
+                                    </span>
+                                    login
+                                    <div id="login_btn" *ngIf="isLogging"
+                                        class="spinner d-inline-block">
+                                        <span
+                                            class="spinner-grow spinner-grow-sm spinner"
+                                            role="status" aria-hidden="true"></span>
+                                        <span
+                                            class="spinner-grow spinner-grow-sm spinner"
+                                            role="status" aria-hidden="true"></span>
+                                        <span
+                                            class="spinner-grow spinner-grow-sm spinner"
+                                            role="status" aria-hidden="true"></span>
+                                    </div>
+                                </button>
+
+                            </div>
+                            <div id="errorMessage" class="account-footer"
+                                *ngIf="errorMessage.length>0">
+                                <div class="alert alert-danger w-100"
+                                    role="alert">{{errorMessage}}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col">
+                                </div>
+                                <div class="col-auto">
+                                    <a class="text-muted"
+                                        routerLink="/auth/forgot">
+                                        forgot password?
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="account-footer">
+                                <p>Don't have an account yet? <a
+                                        routerLink="/auth/sign-up">Sign up</a></p>
+                            </div>
+
+                        </form>
+
+                        <!-- </div> -->
+
+                    </div>
+                </div>
+                <!-- </div> -->
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- <div class="account-content">
+
+    <div class="container">
+
+
+        <div class="account-logo">
+            <a href="javascript:"><img src="assets/img/atlaslogo.png" alt="Sankya"></a>
+        </div>
+
+
+        <div class="account-box">
+            <div class="account-wrapper">
+                <h3 class="account-title">Sign In</h3>
+
+                <form [formGroup]="logInForm">
+                    <div class="form-group">
+                        <label>User Name</label>
+                        <input class="form-control" type="text" [formControl]="logInForm.controls.username">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input class="form-control" type="password" [formControl]="logInForm.controls.password">
+                        </div>
+
+
+                        <div class="form-group">
+
+                    </div>
+                    <div class="form-group text-center">
+                        <button class="btn btn-primary account-btn" type="button" [ngClass]="spinnerClass"
+                            (click)="login()" #tt="ngbTooltip" ngbTooltip="{{errorMessage}}"
+                            [ngStyle]="{'pointer-events': isLogging ? 'none': 'auto'}">
+                            <div class="spinner d-inline-block">
+                                <div class="bounce1"></div>
+                                <div class="bounce2"></div>
+                                <div class="bounce3"></div>
+                            </div>
+                            <span class="icon success">
+                                <i class="simple-icon-check"></i>
+                            </span>
+                            <span class="icon fail" data-toggle="tooltip" data-placement="top" title="{{errorMessage}}">
+                                <i class="simple-icon-exclamation"></i>
+                            </span>
+                            Sign In
+                            <div *ngIf="isLogging" class="spinner d-inline-block">
+                                <span class="spinner-grow spinner-grow-sm spinner" role="status" aria-hidden="true"></span>
+                                <span class="spinner-grow spinner-grow-sm spinner" role="status" aria-hidden="true"></span>
+                                <span class="spinner-grow spinner-grow-sm spinner" role="status" aria-hidden="true"></span>
+                            </div>
+                        </button>
+
+                    </div>
+                    <div class="account-footer" *ngIf="errorMessage.length>0">
+                        <div class="alert alert-danger w-100" role="alert">{{errorMessage}}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+
+                        </div>
+                        <div class="col-auto">
+                            <a class="text-muted" routerLink="/sign-in/forgot">
+                                Forgot password?
+                            </a>
+                        </div>
+                    </div>
+                    <div class="account-footer">
+                        <p>Don't have an account yet? <a routerLink="/sign-in/sign-up">Sign Up</a></p>
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</div> -->

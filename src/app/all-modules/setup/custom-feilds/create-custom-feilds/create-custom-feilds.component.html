@@ -1,0 +1,132 @@
+<div class="row">
+    <div class="col-sm-12">
+      <div class="d-flex align-items-baseline">
+        <i style="font-size: 20px"
+          class="fa fa-arrow-left"
+          (click)="back()"
+          aria-label="back"></i>
+        <h3 class="ms-4 page-title">
+            {{ view ? "View" : update ? "Update" : "Create" }}  Custom Fields
+        </h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="card  p-3">
+    <form [formGroup]="customFeildsform">
+
+    <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+
+                <div class="mb-3">
+                    <label class="form-label text-sm" for="entityField">Entity Field </label>
+                    <input type="text" class="form-control" 
+                    formControlName="entityField"
+                    name="entityField" id="entityField"
+                        placeholder="enter entity Field">
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="mb-3">
+                    <label class="form-label text-sm" for="entityDataType">
+                        Entity DataType</label>
+                    <input type="text" class="form-control"
+                        name="entityDataType" 
+                        formControlName="entityDataType"
+                        id="entityDataType"
+                        placeholder="Enter entity DataType" >
+                </div>
+            </div>
+
+
+    </div>
+    <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+
+                <div class="mb-3">
+                    <label class="form-label text-sm" for="uiField">Ui Field</label>
+                    <input type="text"
+                     formControlName="uiField"
+                     class="form-control" name="uiField" id="uiField"
+                        placeholder="enter ui Field">
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="mb-3">
+                    <label class="form-label text-sm" for="uiDataType">
+                        Ui DataType</label>
+                    <input type="text" class="form-control"
+                        name="uiDataType" 
+                        formControlName="uiDataType"
+                        id="uiDataType"
+                        placeholder="enter ui DataType">
+                </div>
+            </div>
+
+
+    </div>
+    <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+
+                <div class="mb-3">
+          <div class="d-flex my-4">
+
+                        <div>
+                          <input type="checkbox"
+                            formControlName="active"
+                           class="form-check-input me-2" id="isActive"
+                          >
+                        </div>
+                        <label for="isActive">
+                           is Active
+                        </label>
+          </div>
+
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            </div>
+
+
+    </div>
+
+    </form>
+  </div>
+
+  <div class="footer mt-4" *ngIf="!view">
+    <button
+      id="cancel_apply_customFeildsform"
+      type="button"
+      class="btn delete-btn"
+      (click)="back()">
+      Cancel
+    </button>
+    <button
+      id="submit_apply_customFeildsform"
+      type="button"
+      class="btn add-btn"
+      *ngIf="!update"
+      [disabled]="customFeildsform.invalid"
+      (click)="create()">
+      Submit
+    </button>
+    <button
+      id="_update_customFeildsform"
+      type="button"
+      class="btn add-btn"
+      *ngIf="update"
+      [disabled]="customFeildsform.invalid"
+      (click)="Update()">
+      Update
+    </button>
+  </div>
+  
+  <div class="footer text-center mt-4" *ngIf="view">
+    <button
+      id="_cancel_customFeildsform"
+      type="button"
+      class="btn delete-btn"
+      (click)="back()">
+      Cancel
+    </button>
+  </div>

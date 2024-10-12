@@ -1,0 +1,607 @@
+ <div class="row" *ngIf="tabData">
+  <div class="col-sm-12">
+    <div class="d-flex align-items-baseline">
+      <i style="font-size: 20px"
+        class="fa fa-arrow-left"
+        (click)="back()"
+        aria-label="back"></i>
+      <h3 class="ms-4 page-title" *ngIf="tabData.length > 1"> {{ view ? globalServ.getGlobalNames('view') : (update ?
+          globalServ.getGlobalNames('update')
+          :globalServ.getGlobalNames('create')) }} Employee</h3>
+        <h3 class="ms-4 page-title" *ngIf="tabData.length === 1">{{ view ? globalServ.getGlobalNames('view') : (update ?
+          globalServ.getGlobalNames('update')
+          :globalServ.getGlobalNames('create')) }} {{tabData[0].header}}</h3>
+    </div>
+  </div>
+</div>
+
+<div class="card p-3">
+  <div class="row">
+    <div class="col-md-12">
+     <!-- if the dynamic form has tabs starts -->
+
+<span *ngIf="tabData.length  === 0" class="d-flex justify-content-between">
+    <span>
+        <i class="fa fa-gear fa-spin" style="font-size:24px"></i>
+    </span>
+<span>
+
+    "Crafting Your Personalized Form - Just a Moment, Please."
+    <!-- "Form Construction in Progress - Appreciate Your Wait."<br>
+    "We're Creating Your Form - Hang on, It's Worth It!"<br>
+"Your Custom Form is Underway - Stay with Us for a Moment."<br>
+"In the Process of Crafting Your Form - Thanks for Waiting."<br>
+"Form Building in Action - We're Almost There!" -->
+</span>
+  <span>
+        <i class="fa fa-gear fa-spin" style="font-size:24px"></i>
+    </span>
+</span>
+
+
+
+      <ng-stepper class="cdk-step" #cdkStepper [linear]="false" class="mt-1" *ngIf="tabData.length > 1">
+        <cdk-step *ngFor="let tab of tabData; let i= index" [stepControl]="tab.formCode" [optional]="true">
+          <ng-template cdkStepLabel>
+            <div
+              class="step-bullet"
+              style="width: 40px; height: 40px; z-index: 105">
+              <img
+                src="assets/img/icon/User_Add.svg"
+                height="20"
+                width="20" />
+            </div>
+            <div class="step-title">{{tab.header}}</div>
+          </ng-template>
+            <form [formGroup]="tab.formGroup">
+      <div class="row">
+              <ng-container *ngFor="let field of tab.array" >
+
+           <span *ngIf="field.sameLine === false"> <ng-container class="block"></ng-container></span>
+                    <!-- for text field -->
+                    <div
+                      *ngIf="field.dataType === 'text'"
+                      class="form-group "
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <label for="{{ field.columnName }}">{{ field.label }}
+                        <span
+                          *ngIf="field.isMandatory === true"
+                          class="text-danger">
+                          *</span>
+                      </label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName" />
+                    </div>
+                    <!-- text field end-->
+
+                    <!-- for textarea field -->
+                    <div
+                      *ngIf="field.dataType === 'textarea'"
+                      class="form-group "
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <label for="{{ field.columnName }}">{{ field.label }}
+                        <span
+                          *ngIf="field.isMandatory === true"
+                          class="text-danger">
+                          *</span>
+                      </label>
+                      <textarea
+                        type="text"
+                        class="form-control"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName"></textarea>
+                    </div>
+                    <!-- for textarea field  ends-->
+
+                    <!-- for dropdown field with given options-->
+                    <div
+                      *ngIf="
+                          field.dataType === 'dropdown' &&
+                          field.defaultValues?.tags
+                        "
+                      class="form-group "
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <label for="{{ field.columnName }}">{{
+                        field.label
+                        }}</label>
+                      <select
+                        class="form-select"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]"
+                        [formControlName]="field.columnName">
+                        <option selected value="">-</option>
+                        <option
+                          *ngFor="let data of field.dropDownData"
+                          [value]="data">
+                          {{ data }}
+                        </option>
+                      </select>
+                    </div>
+                    <!-- for dropdown field with given options ends-->
+
+                    <!-- for dropdown field with not given options-->
+                    <div
+                      *ngIf="
+                          field.dataType === 'dropdown' &&
+                          !field.defaultValues?.tags
+                        "
+                      class="form-group "
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <label for="{{ field.columnName }}">{{
+                        field.label
+                        }}</label>
+                      <select
+                        class="form-select"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName">
+                        <option selected value="">-</option>
+                        <option
+                          *ngFor="let data of field.dropDownData"
+                          [value]="data[field.defaultValues.key]">
+                          {{ data[field.defaultValues.output] }}
+                        </option>
+                      </select>
+                    </div>
+                    <!-- for dropdown field with not given options-->
+
+                    <!-- for date field -->
+                    <div
+                      *ngIf="field.dataType === 'date'"
+                      class="form-group "
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <label for="{{ field.columnName }}">{{
+                        field.label
+                        }}</label>
+                      <input
+                        type="date"
+                        class="form-control"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName" />
+                    </div>
+                    <!-- for date field ends-->
+
+                    <!-- for number field -->
+                    <div
+                      *ngIf="field.dataType === 'number'"
+                      class="form-group "
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <label for="{{ field.columnName }}">{{
+                        field.label
+                        }}</label>
+                      <input
+                        type=" number"
+                        class="form-control"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName" />
+                    </div>
+                    <!-- for number field ends-->
+
+                    <!-- for checkbox field-->
+                    <div
+                      *ngIf="field.dataType === 'checkbox'"
+                      class="form-check form-group  ms-2"
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName" />
+                      <label for="{{ field.columnName }}">{{ field.label }}
+                        <span
+                          *ngIf="field.isMandatory === true"
+                          class="form-check-label text-danger">
+                          *</span>
+                      </label>
+                    </div>
+
+                       <div class="col-md-6"  *ngIf="field.dataType === 'byte'">
+                  <div class="row">
+                    <!-- <div class="employee-image">Employee Image</div> -->
+                    <label for class="col-form-label">Employee Image</label>
+                    <div class="row ">
+
+                      <div class="col-md-4 col-sm-4">
+                        <div class="emp-profile-img-wrap">
+                          <img
+                            *ngIf="emp?.image"
+                            style="width: -webkit-fill-available"
+                            [src]="emp?.image" />
+                          <img
+                            *ngIf="!emp?.image"
+                            style="width: -webkit-fill-available"
+                            src="assets/img/emp-default-img.svg" />
+                        </div>
+                      </div>
+
+                      <div *ngIf="!view"
+                        class="col-md-8 col-sm-8 img-box d-flex justify-content-center"
+                        style="
+                        flex-direction: column;
+                        height: 130px;
+                      ">
+                        <div class="drop-your-images-here-or-browse">
+                          <span>
+                            <span class="drop-your-images-here-or-browse-span">
+                              Click to upload image or
+                            </span>
+                            <span
+                              class="drop-your-images-here-or-browse-span2"
+                              *ngIf="!view"
+                              (click)="open()">browse</span>
+                          </span>
+                        </div>
+                        <div class="supports-jpg-png-of-300-x-300-size">
+                          Supports JPG &amp; PNG of 300x300 size
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+
+        
+<!--         
+        
+          <label>{{ field.label }}</label>
+     
+        <div *ngIf="field.dataType === 'text' || field.dataType === 'number' || field.dataType === 'date'">
+          <input [type]="field.dataType" [placeholder]="field.placeHolder" [formControlName]="field.columnCode"
+            class="form-control" />
+        </div>
+        
+        <div *ngIf="field.dataType === 'dropdown'">
+        </div> -->
+      </ng-container>
+      </div>
+      
+<!--  [disabled]="tab.formGroup.invalid" -->
+<section class="mt-2">
+        <ng-container *ngIf="i === 0; else notFirstTab">
+          <!-- First Tab -->
+          <button class="btn delete-btn me-3" (click)="back()">Cancel</button>
+          <button class="btn add-btn" type="submit" cdkStepperNext>
+            Next
+          </button>
+        </ng-container>
+        <ng-template #notFirstTab>
+          <ng-container *ngIf="i !== tabData.length - 1; else lastTab">
+            <!-- Not First and Not Last Tab -->
+            <button class="btn btn-secondary secondary-btn" type="submit" cdkStepperPrevious>
+              Previous
+            </button>
+            <button class="btn add-btn" type="submit" cdkStepperNext>
+              Next
+            </button>
+          </ng-container>
+          <ng-template #lastTab>
+            <!-- Last Tab -->
+            <section class="form-group mt-3">
+              <button class="btn btn-secondary secondary-btn mb-3" type="submit" cdkStepperPrevious>
+                Previous
+              </button>
+              <button class="btn add-btn mb-3" [disabled]="tab.formGroup.invalid" type="submit" (click)="submittt(tab.formGroup)" >
+                Submit
+              </button>
+            </section>
+          </ng-template>
+        </ng-template>
+      </section>
+
+                  </form>
+        </cdk-step>
+        </ng-stepper>
+     <!-- if the dynamic form has tabs ends -->
+
+     <!-- if the dynamic form has no tabs starts-->
+<ng-container  *ngIf="tabData.length === 1">
+<div  *ngFor="let tab of tabData; let i= index">
+
+    <form [formGroup]="tab.formGroup">
+      <div class="row">
+              <ng-container *ngFor="let field of tab.array" >
+
+           <span *ngIf="field.sameLine === false"> <ng-container class="block"></ng-container></span>
+                    <!-- for text field -->
+                    <div
+                      *ngIf="field.dataType === 'text'"
+                      class="form-group "
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <label for="{{ field.columnName }}">{{ field.label }}
+                        <span
+                          *ngIf="field.isMandatory === true"
+                          class="text-danger">
+                          *</span>
+                      </label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName" />
+                    </div>
+                    <!-- text field end-->
+
+                    <!-- for textarea field -->
+                    <div
+                      *ngIf="field.dataType === 'textarea'"
+                      class="form-group "
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <label for="{{ field.columnName }}">{{ field.label }}
+                        <span
+                          *ngIf="field.isMandatory === true"
+                          class="text-danger">
+                          *</span>
+                      </label>
+                      <textarea
+                        type="text"
+                        class="form-control"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName"></textarea>
+                    </div>
+                    <!-- for textarea field  ends-->
+
+                    <!-- for dropdown field with given options-->
+                    <div
+                      *ngIf="
+                          field.dataType === 'dropdown' &&
+                          field.defaultValues?.tags
+                        "
+                      class="form-group "
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <label for="{{ field.columnName }}">{{
+                        field.label
+                        }}</label>
+                      <select
+                        class="form-select"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName">
+                        <option selected value="">-</option>
+                        <option
+                          *ngFor="let data of field.dropDownData"
+                          [value]="data">
+                          {{ data }}
+                        </option>
+                      </select>
+                    </div>
+                    <!-- for dropdown field with given options ends-->
+
+                    <!-- for dropdown field with not given options-->
+                    <div
+                      *ngIf="
+                          field.dataType === 'dropdown' &&
+                          !field.defaultValues?.tags
+                        "
+                      class="form-group "
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <label for="{{ field.columnName }}">{{
+                        field.label
+                        }}</label>
+                      <select
+                        class="form-select"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName">
+                        <option selected value="">-</option>
+                        <option
+                          *ngFor="let data of field.dropDownData"
+                          [value]="data[field.defaultValues.key]">
+                          {{ data[field.defaultValues.output] }}
+                        </option>
+                      </select>
+                    </div>
+                    <!-- for dropdown field with not given options-->
+                  
+    <!-- for dropdown field with parameter-->
+                    <!-- <div
+                      *ngIf="
+                          field.dataType === 'dropdown' && !field.defaultValues?.tags && field.defaultValues?.parameter
+                        "
+                      class="form-group "
+                      [ngClass]="
+                          field.pctSize !== null? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <label for="{{ field.columnName }}">{{
+                        field.label
+                        }}2</label>
+                      <select
+                        class="form-select"
+                        [placeholder]="
+                            field.placeHolder !== null ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName">
+                        <option
+                          *ngFor="let data of field.dropDownData"
+                          [value]="data[field.defaultValues.key]">
+                          {{ data[field.defaultValues.output] }}
+                        </option>
+                      </select>
+                    </div> -->
+
+    <!-- for dropdown field with parameter-->
+
+                    <!-- for date field -->
+                    <div
+                      *ngIf="field.dataType === 'date'"
+                      class="form-group "
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <label for="{{ field.columnName }}">{{
+                        field.label
+                        }}</label>
+                      <input
+                        type="date"
+                        class="form-control"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName" />
+                    </div>
+                    <!-- for date field ends-->
+
+                    <!-- for number field -->
+                    <div
+                      *ngIf="field.dataType === 'number'"
+                      class="form-group "
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <label for="{{ field.columnName }}">{{
+                        field.label
+                        }}</label>
+                      <input
+                        type=" number"
+                        class="form-control"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName" />
+                    </div>
+                    <!-- for number field ends-->
+
+                    <!-- for checkbox field-->
+                    <div
+                      *ngIf="field.dataType === 'checkbox'"
+                      class="form-check form-group "
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName" />
+                      <label for="{{ field.columnName }}">{{ field.label }}
+                        <span
+                          *ngIf="field.isMandatory === true"
+                          class="form-check-label text-danger">
+                          *</span>
+                      </label>
+                    </div>
+      </ng-container>
+      </div>
+    
+<section>
+                  <section class="form-group mt-3">
+                       <button class="btn delete-btn me-3" (click)="back()">Cancel</button>
+
+              <button class="btn add-btn mb-3" type="submit" (click)="submittt(tab.formGroup)" >
+                Submit
+              </button>
+            </section>
+      </section>
+
+                  </form>
+
+</div>
+</ng-container>
+
+
+
+    </div>
+  </div>
+</div>

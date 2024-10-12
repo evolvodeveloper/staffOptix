@@ -1,0 +1,88 @@
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col-sm-12 col-lg-8">
+            <div class="d-flex align-items-baseline">
+                <i style="font-size:20px" class="fa fa-arrow-left" id="backbtn"
+                    (click)="back()" aria-label="back"></i>
+                <h3 class="ms-4 page-title">Offer Template</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row mb-3">
+            <div class="col-sm-12 col-lg-3">
+                <div class="input-group">
+                    <input type="text" id="search" class="form-control"
+                        placeholder="search by Template"
+                        [(ngModel)]="searchedFor" (keyup)="updateFilter($event)"
+                        style="border-radius: 8px 0px 0px 8px;">
+                    <span class="input-group-text" id="basic-addon1">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+            </div>
+            <div class="col-lg-2">
+            </div>
+
+            <div class="col-sm-6 col-lg-2 mt-30px">
+                <!-- <label class="form-label ms-2">Show entries</label>
+                <select class="form-select" (change)="resultsPerPage($event)">
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="all">All</option>
+                </select> -->
+            </div>
+            <div class="col-lg-2">
+                <button type="button" id="add_offerletter"
+                    class="btn add-btn float-end d-flex" (click)="create()"><i
+                        id="createOffLetter" class="material-icons me-2">add</i>
+                    Add New</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-md-3 mb-4"
+                        *ngFor="let card of templatebody">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ card.templateSubject
+                                    }}</h5>
+                            </div>
+                            <div class="card-footer text-end">
+                                <small class="text-muted"><i
+                                        (click)="update(card)"
+                                        style="font-size: 20px;"
+                                        class="fa-solid fa-pencil me-1"></i></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="col-12 col-sm-3 col-md-3 col-lg-3"
+                *ngFor="let row of templatebody">
+                <div class="card p-3" style="max-height: 130px;" >
+                    <div class="card-body">
+                        <h5 class="card-title">{{row.templateSubject }}</h5>
+                        <div class="d-flex justify-content-end">
+                            <p class="card-link" (click)="update(row)"
+                                ngbTooltip="Edit Template"><i
+                                    style="font-size: 20px;"
+                                    class="fa-solid fa-pencil me-1"></i></p>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+
+    </div>
+</div>

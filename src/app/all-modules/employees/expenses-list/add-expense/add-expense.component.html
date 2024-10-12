@@ -1,0 +1,386 @@
+<div class="page-header">
+  <div class="row align-items-center">
+    <div class="col-sm-12 col-lg-8 d-flex align-items-baseline">
+      <i style="font-size:20px" class="fa fa-arrow-left me-4"
+        (click)="back()" aria-label="back"></i>
+      <h3 class="page-title">
+        {{ view ? globalServ.getGlobalNames('view') : (update ?
+        globalServ.getGlobalNames('update')
+        :globalServ.getGlobalNames('create')) }}
+        {{globalServ.showLabel('ExpensesHeader')}}
+      </h3>
+    </div>
+  </div>
+</div>
+
+<div class="card card-border-style p-4">
+  <form [formGroup]="expenseForm">
+    <div class="row">
+      <div class="col-sm-5 col-lg-5 mb-4">
+        <div class="row">
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label
+                class="col-form-label">{{globalServ.getGlobalNames('date')}}&nbsp;<span
+                  style="color: red; margin-left: 1px">*</span></label>
+              <input
+                type="date"
+                [max]="today"
+                class="form-control"
+                formControlName="dateOfExpense"
+                [class.is-invalid]="expenseForm.controls.dateOfExpense.invalid && (expenseForm.controls.dateOfExpense.dirty || expenseForm.controls.dateOfExpense.touched)" />
+              <div
+                *ngIf="
+                    expenseForm.controls['dateOfExpense'].invalid &&
+                    (expenseForm.controls['dateOfExpense'].dirty ||
+                      expenseForm.controls['dateOfExpense'].touched)
+                  "
+                style="padding: 0px">
+                <div
+                  *ngIf="expenseForm.controls['dateOfExpense'].errors.required"
+                  style="color: #dc3545">
+                   {{globalServ.showGlobalErrors('fieldRequired')}}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label class="col-form-label">
+                {{globalServ.showLabel('ExpenseType')}}</label>
+              <select
+                id="expenseType"
+                class="form-select"
+                formControlName="expenseType">
+                <option
+                  *ngFor="let e of catagaroyList"
+                  [value]="e.subcategoryCode">
+                  {{ e.subcategoryCode }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label class="col-form-label">
+                {{globalServ.showLabel('title')}}&nbsp;<span
+                  style="color: red; margin-left: 1px">*</span></label>
+              <input
+                type="text"
+                placeholder="{{globalServ.showPlaceholder('EnterExpenseTitle')}}"
+                class="form-control"
+                id="expenseTittle"
+                formControlName="expenseTittle" />
+              <div
+                *ngIf="expenseForm.controls['expenseTittle'].invalid && (expenseForm.controls['expenseTittle'].dirty ||
+                    expenseForm.controls['expenseTittle'].touched)"
+                style="padding: 0px">
+                <div
+                  *ngIf="expenseForm.controls['expenseTittle'].errors.required"
+                  style="color: #dc3545"> Expense tittle is required. </div>
+              </div>
+              <div
+                *ngIf="expenseForm.get('expenseTittle').hasError('invalidFormat')"
+                style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+            </div>
+          </div>
+
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label
+                class="col-form-label">{{globalServ.getGlobalNames('amount')}}&nbsp;<span
+                  style="color: red; margin-left: 1px">*</span></label>
+              <input
+                type="number"
+                placeholder="{{globalServ.showPlaceholder('EnterAmount')}}"
+                class="form-control"
+                id="amount"
+                [class.is-invalid]="expenseForm.controls.amount.invalid && (expenseForm.controls.amount.dirty || expenseForm.controls.amount.touched)"
+                formControlName="amount" />
+              <div
+                *ngIf="
+                    expenseForm.controls['amount'].invalid &&
+                    (expenseForm.controls['amount'].dirty ||
+                      expenseForm.controls['amount'].touched)
+                  "
+                style="padding: 0px">
+                <div
+                  *ngIf="expenseForm.controls['amount'].errors.required"
+                  style="color: #dc3545">
+                 {{globalServ.showGlobalErrors('fieldRequired')}}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-12"></div>
+          <div class="col-sm-12">
+            <h4
+              class="col-form-label">{{globalServ.showLabel('PurposeOfExpense')}}</h4>
+            <textarea
+              id="comments"
+              class="textArea border-rounded"
+              formControlName="comments"
+              name="comments"
+              rows="5"
+              cols="50"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="col-2"></div>
+      <div class="col-sm-5 col-lg-5 mb-4">
+        <h4
+          class="col-form-label">{{globalServ.showLabel('ReceiptOfExpense')}}</h4>
+        <!--    (click)="forToedit(i, url)" -->
+        <div class="mt-3 row justify-content-between">
+          <ng-container *ngFor="let url of receipts; let i = index">
+            <div class="col-md-6" *ngIf="!url.isDeleted">
+              <div
+                class="position-relative d-flex images justify-content-center"
+                *ngIf="!url.isDeleted && url.fileType !== 'pdf'">
+                <img 
+                  [src]="url.viewImage"/>
+                <i class="fa-solid fa-trash position-absolute text-danger"
+                  style="right: 20%; top: 10px;" (click)="forToedit(i,url)"
+                  *ngIf="!view"></i>
+                <i class="fa-solid fa-eye position-absolute text-info"
+                  style="right: 7%; top: 10px;" data-bs-toggle="modal"
+                  data-bs-target="#previewExp" (click)="previewRow(i,url)"></i>
+            </div>
+              <div class="position-relative images" style="width: auto;"
+                *ngIf="!url.isDeleted && url.fileType === 'pdf'"
+              >
+                <i class="fa-solid fa-file-pdf"
+                  style="display: flex; justify-content: center; align-items: center; font-size: xxx-large; height: 100%;"></i>
+                <i class="fa-solid fa-trash position-absolute text-danger"
+                  style="right: 20%; top: 5px;" (click)="forToedit(i,url)"
+                  *ngIf="!view"></i>
+                <i class="fa-solid fa-eye position-absolute text-info"
+                  style="right: 5%; top: 5px;" data-bs-toggle="modal"
+                  data-bs-target="#previewExp" (click)="previewRow(i,url)"></i>
+              </div>
+            </div>
+          </ng-container>
+          <div class="col-md-6" *ngIf="!view">
+            <div class="uploaddiv m-1 ">
+              <input type="file" id="selectedFile" size="34"
+                accept=".png, .jpg, .jpeg, .pdf" (change)="onSelectFile($event)"
+                style="display: none" />
+              <a type="button" value="Upload Images"
+                class="btn btn-outline-primary col-form-label"
+                onclick="document.getElementById('selectedFile').click();"><i
+                  class="fa fa-plus"></i>&nbsp;Upload Receipts</a>
+              <div *ngIf="view">
+                <h6 *ngIf="receipts.length === 0">
+                  {{globalServ.showLabel('NoImagesfound')}}</h6>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="mt-3 row">
+          <ng-container *ngFor="let url of receipts; let i = index">
+            <div class=" col-md-6">
+              <ng-container
+                class="position-relative d-flex images  justify-content-center"
+                *ngIf="!url.isDeleted && url.fileType !== 'pdf'">
+                <img
+                  data-bs-toggle="modal"
+                  class data-bs-target="#previewExp"
+                  (click)="previewRow(i,url) "
+                  [src]="url.viewImage" />
+                <i class="fa-solid fa-eye position-absolute text-info"
+                  style="right: 15%; top: 10px;" data-bs-toggle="modal"
+                  data-bs-target="#previewExp" (click)="previewRow(i,url)"></i>
+
+              </ng-container>
+              <div class="position-relative images" style="width: auto;"
+                *ngIf="!url.isDeleted && url.fileType === 'pdf'"
+                data-bs-toggle="modal" data-bs-target="#previewExp">
+                     <i class="fa-solid fa-file-pdf"
+                  style="display: flex; justify-content: center;
+    align-items: center; font-size: xxx-large; height: 100%;"></i>
+                <i class="fa-solid fa-eye position-absolute text-info"
+                  style="right: 5%; top: 5px;" data-bs-toggle="modal"
+                  data-bs-target="#previewExp" (click)="previewRow(i,url)"></i>
+              </div>
+            </div>
+
+          </ng-container>
+          <div class="col-md-6" *ngIf="!view">
+            <div class="uploaddiv m-1 ">
+              <input
+                type="file"
+                id="selectedFile"
+                size="34"
+                accept=".png, .jpg, .jpeg, .pdf"
+                (change)="onSelectFile($event)"
+                style="display: none" />
+              <a
+                type="button"
+                value="Upload Images"
+                class="btn btn-outline-primary col-form-label"
+                onclick="document.getElementById('selectedFile').click();"><i
+                  class="fa fa-plus"></i>&nbsp;Upload Receipts</a>
+              <div *ngIf="view">
+                <h6 *ngIf="receipts.length === 0">No Images found</h6>
+              </div>
+            </div>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </form>
+
+  <div class="row">
+    <div class="items-table">
+      <div class="item-row head w-100">
+        <div class="col-12 item-h">
+          <div class="titlediv">
+            <h5 class="mb-0"
+              *ngIf="!view">{{globalServ.showLabel('AddMultipleItems')}}</h5>
+            <h5 class="mb-0"
+              *ngIf="view && itemsArray.length > 0">{{globalServ.showLabel('ViewMultipleItems')}}</h5>
+            <h5 class="mb-0"
+              *ngIf="view && itemsArray.length === 0">{{globalServ.getGlobalNames('nodatafound')}}</h5>
+          </div>
+          <div *ngIf="!view" style="float: right">
+            <button
+              type="button"
+              (click)="addItem()"
+              class="btn btn-primary btn-sm mt-1 me-2 align-items-end d-flex">
+              <i class="material-icons me-2">add</i>
+              {{globalServ.getGlobalNames('addMore')}}
+            </button>
+          </div>
+        </div>
+      </div>
+      <ng-container *ngFor="let c of itemsArray; let i = index">
+
+        <div class="item-row w-100" *ngIf="!c.isDeleted">
+          <div class="col-md-5 item-h">
+            <div class="form-floating">
+              <input
+                class="form-control br-rm"
+                [(ngModel)]="c.itemName"
+                [disabled]="view"
+                [ngModelOptions]="{ standalone: true }" />
+              <label>
+                {{globalServ.showLabel('ItemNames')}}&nbsp;<span
+                  style="color: red; margin-left: 1px">*</span>
+              </label>
+            </div>
+          </div>
+          <div class="col-md-2 item-h">
+            <div class="form-floating">
+              <input
+                class="form-control br-rm"
+                [ngModelOptions]="{ standalone: true }"
+                [(ngModel)]="c.itemQty"
+                (keyup)="getTotal()"
+                [disabled]="view"
+                type="number" />
+              <label> {{globalServ.showLabel('ItemQty')}}</label>
+            </div>
+          </div>
+          <div class="col-md-2 item-h">
+            <div class="form-floating">
+              <input
+                class="form-control br-rm"
+                [ngModelOptions]="{ standalone: true }"
+                [(ngModel)]="c.itemRate"
+                (keyup)="getTotal()"
+                [disabled]="view"
+                type="number" />
+              <label> {{globalServ.showLabel('ItemRate')}} </label>
+            </div>
+          </div>
+          <div class="col-md-2 item-h">
+            <div class="form-floating">
+              <input
+                class="form-control br-rm"
+                [value]="c.itemQty * c.itemRate"
+                [(ngModel)]="c.itemAmount"
+                [ngModelOptions]="{ standalone: true }"
+                type="number"
+                readonly />
+              <label> {{globalServ.showLabel('totalAmt')}} </label>
+            </div>
+          </div>
+          <div class="item-h" *ngIf="!view">
+            <i
+              class="fa-solid fa-trash fs-5 text-danger mt-3 px-2 c-ptr"
+              (click)="removeItem(i)"></i>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer mt-4" *ngIf="!view">
+  <button
+    id="cancel_apply_expense"
+    type="button"
+    class="btn delete-btn"
+    (click)="back()">
+    {{globalServ.getGlobalNames('cancel')}}
+  </button>
+  <button
+    id="submit_apply_expense"
+    type="button"
+    class="btn add-btn"
+    *ngIf="!update"
+    [disabled]="expenseForm.invalid"
+    (click)="createExpense()">
+    {{globalServ.getGlobalNames('submit')}}
+  </button>
+  <button
+    id="update_apply_expense"
+    type="button"
+    class="btn add-btn"
+    *ngIf="update"
+    [disabled]="expenseForm.invalid"
+    (click)="Update()">
+    {{globalServ.getGlobalNames('update')}}
+  </button>
+</div>
+
+<div class="footer text-center mt-4" *ngIf="view">
+  <button
+    id="cancel_apply_expense"
+    type="button"
+    class="btn delete-btn"
+    (click)="back()">
+    {{globalServ.getGlobalNames('cancel')}}
+  </button>
+</div>
+
+<div id="previewExp" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="dialog">
+    <div class="modal-content">
+      <ng-container *ngIf="PreviewObject?.fileType === 'pdf'">
+        <embed [src]="PreviewObject?.viewImage" type="application/pdf"
+          width="100%" height="600px" />
+
+      </ng-container>
+      <ng-container
+        *ngIf="PreviewObject?.fileType === 'png' || PreviewObject?.fileType === 'jpg'|| PreviewObject?.fileType === 'jpeg'">
+        <div style="overflow: auto;">
+          <img width="100%" class="p-3" [src]="PreviewObject?.viewImage " alt>
+        </div>
+      </ng-container>
+      <div class="my-2 text-center">
+        <button
+          id="previewFile_close"
+          type="button"
+          class="btn delete-btn closeDesig ms-2"
+          data-bs-dismiss="modal"
+          aria-label="Close"> {{globalServ.getGlobalNames('cancel')}}</button>
+      </div>
+    </div>
+  </div>
+</div>

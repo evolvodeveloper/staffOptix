@@ -1,0 +1,114 @@
+
+<div class="page-header p-3">
+    <div class="row align-items-center">
+        <div class="col">
+            <div class="d-flex align-items-baseline border-bottom">
+                <i style="font-size:20px" class="fa fa-arrow-left"
+                    (click)="cancel()"
+                    aria-label="back"></i>
+                <h3 class=" ms-4 page-title"> Adhoc Allowance</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container row d-flex justify-content-center">
+    <div class="col-xl-4 col-sm-5 col-12" style="margin-top: 15px">
+        <p>Click on below button to download the sample CSV file.</p>
+        <button class="btn" style="border: 1px solid #9595ff; color:aliceblue; background: #2747D7;" 
+        [disabled]="columnsAre.length ===0"
+        (click)="downloadCSV()">
+            <i class="fa fa-file-text-o" aria-hidden="true"></i>
+            Download Sample
+           
+            <i class="fa fa-download" aria-hidden="true"></i>
+
+        </button>
+    </div>
+    <div class="startDiv col-xl-7 col-sm-5 col-12">
+        <p class="w-100"
+            style="color: #6990f2;"><span>Upload CSV file</span>
+        </p>
+        <div *ngIf="!file.name">
+            <div class="uploaddiv"
+                (click)="openFileInput('csvfile')">
+                <input
+                    type="file"
+                    class="file-input"
+                    name="file"
+                    id="csvfile"
+                    accept=".csv"
+                    (change)="onFileSelected($event)"
+                    style="display: none" />
+                <i
+                    class="fas fa-cloud-upload-alt d-flex justify-content-center"
+                    style="color: #6990f2; font-size: 50px;"></i>
+                <p value="Upload Images" class="ms-2"
+                    style="color: #6990f2; font-size: 16px;">&nbsp;Browse
+                    File to Upload</p>
+            </div>
+        </div>
+        <div class="text-center" *ngIf="file.name"
+            (click)="openFileInput('csvfile')">
+            <input
+                type="file"
+                class="file-input"
+                name="file"
+                id="csvfile"
+                accept=".csv"
+                (change)="onFileSelected($event)"
+                style="display: none" />
+            <i class=" text-success fa-solid fa-circle-check"
+                style="font-size: x-large;"></i>
+            <p *ngIf="file">{{file?.name}} uploaded</p>
+        </div>
+        <span class="text-end w-100 me-3" *ngIf="file?.name"
+            (click)="removeFile()"> <i class="fa-solid fa-trash"
+                style="color: #dc3545"></i></span>
+    </div>
+
+    <!-- 
+  <p>Click here on button to download the CSV file.</p>
+  <a class="btn btn-primary" (click)="downloadCSV()">
+  <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+ Download CSV
+</a> -->
+</div>
+
+<!-- file :<input type="file" (change)="onFileSelected($event)"> -->
+<div class="row d-flex  justify-content-center p-3">
+    <div class="col-md-12">
+        <div *ngFor="let row of issues">
+<span class="badge bg-inverse-danger"> {{row}}</span>
+        </div>
+        <div class="table-responsive">
+            <table
+                class="table table-hover table-nowrap custom-table mb-0 datatable">
+                <thead class="thead-all">
+                    <tr class="tr-th-all">
+                        <th scope="col"
+                            *ngFor="let row of finalObj?.properties">{{row}}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="finalObj?.result.length === 0">
+                    <tr style=" text-align: center; height: 150px;">
+                        <td colspan="7">
+                            "No records were found."
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody *ngIf="finalObj?.result.length > 0">
+                    <tr class="dasboard-td"
+                        *ngFor="let data of finalObj?.result | paginate: config; let i = index">
+                        <td *ngFor="let property of finalObj.properties">{{data[property]}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+         <button id="submit" class="btn add-btn mt-2 me-1"
+           *ngIf="finalObj?.result.length > 0"
+                (click)="submitAdhoc()">Submit</button>      
+    </div>
+</div>

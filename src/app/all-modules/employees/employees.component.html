@@ -1,0 +1,107 @@
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col-sm-12 col-lg-8">
+            <h3 class="page-title">Employees</h3>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="row mb-3">
+            <div class="col-sm-12 col-lg-3">
+                <div class="input-group">
+                    <input type="text" class="form-control"
+                        placeholder="{{global.showGlobalplaceholders('searchbyemployeename')}}"
+                        (keyup)="updateFilter($event)"
+                        style="border-radius: 8px 0px 0px 8px;">
+                    <span class="input-group-text" id="basic-addon1">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="col-lg-5">
+            </div>
+            <div class="col-sm-6 col-lg-2">
+                <button type="button" class="btn add-btn float-end d-flex"
+                    *ngIf="hasPermission" (click)="create()"><i
+                        class="material-icons me-2">add</i> Add New</button>
+            </div>
+            <div class="col-sm-6 col-lg-2 mt-30px">
+                <label class="form-label ms-2">Show entries</label>
+                <select class="form-select" (change)="resultsPerPage($event)">
+                    <!-- <option value="10">10</option> -->
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="all">All</option>
+                </select>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table
+                class="table table-hover table-nowrap small custom-table mb-0 datatable">
+                <thead>
+                    <tr style="background-color: lightgray;">
+                        <th scope="col">ID</th>
+                        <th scope="col">Employee Name</th>
+                        <th scope="col">Designation</th>
+                        <th scope="col">User Name</th>
+                        <th scope="col">Email</th>
+                        <!-- <th scope="col">Address</th> -->
+                        <th scope="col">Contact Number</th>
+                        <th scope="col">Department </th>
+                        <th scope="col">Join Date</th>
+                        <th scope="col">Active</th>
+                        <th scope="col" class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let row of rows | paginate: config; let i = index">
+                        <td>{{row.employeeid}}</td>
+                        <td>{{row.employeeName}}</td>
+                        <td>{{row.designation}}</td>
+                        <td>{{row.userName}}</td>
+                        <td>{{row.email}}</td>
+                        <!-- <td>{{row.address}}</td> -->
+                        <td>{{row.contactNo}}</td>
+                        <td>{{row.deptCode}}</td>
+                        <td>{{row.joinDate | date:dateFormat}}</td>
+                        <td class="text-center">
+                            <i *ngIf="row.isactive" class="fa-solid fa-circle"
+                                style="color: #55CE63;"></i>
+                            <i *ngIf="!row.isactive" class="fa-solid fa-circle"
+                                style="color: #f62d51;"></i>
+                        </td>
+                        <td style="text-align: right">
+                            <div class="btn-group" role="group">
+                                <button type="button"
+                                    class="btn btn-light me-1 text-info"
+                                    placement="top" ngbTooltip="View"
+                                    (click)="viewData(row)">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <button type="button"
+                                    class="btn btn-light me-1 text-secondary"
+                                    placement="top" ngbTooltip="Edit"
+                                    (click)="editData(row)">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <!-- <button type="button" class="btn btn-light me-1 text-danger" placement="top" ngbTooltip="Delete">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button> -->
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div *ngIf="rows.length > config.itemsPerPage"
+                class="text-center mt-3">
+                <pagination-controls
+                    (pageChange)="pageChanged($event)"></pagination-controls>
+            </div>
+        </div>
+    </div>
+</div>

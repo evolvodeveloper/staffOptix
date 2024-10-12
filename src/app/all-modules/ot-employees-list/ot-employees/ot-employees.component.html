@@ -1,0 +1,150 @@
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col">
+            <div class="d-flex align-items-baseline">
+                <i style="font-size:20px" class="fa fa-arrow-left"
+                    (click)="cancel()"
+                    aria-label="back"></i>
+                <h3 class=" ms-4 page-title"> {{global.showLabel('OTAssignment')}}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-2 mb-3">
+    <div class="col-sm-6 col-md-3">
+        <label>{{global.getGlobalNames('payroll')}}&nbsp;<span
+                style="color: red; margin-left: 1px">*</span></label>
+        <select id="payroll_Type" class="form-select"
+            (change)="getRecordsBasedOnDatendPayroll()"
+            [formControl]="empOtForm.controls.payrollCode">
+            <option [value]="ptypes.payrollCode"
+                *ngFor="let ptypes of payrollCodesList">{{ptypes.payrollCode}}</option>
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <label>{{global.getGlobalNames('fromDate')}}&nbsp;<span
+                style="color: red; margin-left: 1px">*</span></label>
+        <input
+            type="date"
+            (change)="getRecordsBasedOnDatendPayroll()"
+            class="form-control"
+            id="FromDate"
+             placeholder="{{global.showGlobalplaceholders('EnterDate')}}"
+            [formControl]="empOtForm.controls.startDate" />
+        <!--    -->
+        <!-- (change)="getshiftassignments(shiftAssignmentForm.controls.shiftCode.value,shiftAssignmentForm.controls.startDate.value)" -->
+    </div>
+    <!-- <div class="col-md-3">
+        <label>To Date&nbsp;<span
+                style="color: red; margin-left: 1px">*</span></label>
+        <input
+            type="date"
+            class="form-control"
+            id="ToDate"
+            min="{{ empOtForm.controls.startDate.value }}"
+            max="{{ today }}"
+             placeholder="{{global.showGlobalplaceholders('EnterDate')}}"
+            [formControl]="empOtForm.controls.endDate" />
+    </div> -->
+    <!-- <div class="col-md-6">
+        <button
+            [disabled]="empOtForm.invalid"
+            (click)="getRecordsBasedOnDatendPayroll()"
+            class="btn add-btn  float-end mt-4">
+            Submit
+        </button>
+    </div> -->
+
+    <div class="d-flex">
+        <div class="col-md-6"
+            style="height: 400px; overflow: auto;scrollbar-width: thin;">
+            <div class="m-2 col-sm-11 col-lg-11 col-md-11"
+                *ngIf="temp?.length > 0">
+                <div class="input-group">
+                    <input type="text" class="form-control"
+                        [(ngModel)]="searchInEmp"
+                        placeholder="{{global.showGlobalplaceholders('searchEmp')}}"
+                        (keyup)="updateFilter($event)"
+                        style="border-radius: 8px 0px 0px 8px;">
+                    <span class="input-group-text" id="basic-addon1">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                </div>
+            </div>
+
+            <p class="mt-3"
+                *ngIf="records?.length === 0 && empOtForm.controls?.payrollCode?.value !== null ">{{global.getGlobalNames('NoEmployees')}}</p>
+            <table *ngIf="records?.length > 0">
+                <tr>
+                    <th colspan="3">
+                        <input
+                            class="form-check-input ms-2"
+                            type="checkbox"
+                            id="selectAll"
+                            [(ngModel)]="checkedAll"
+                            (click)="selectAllEmps($event)" /> <span
+                            class="mx-2">{{global.showLabel('SelectAllEmployees')}}</span></th>
+                    <!-- <th colspan="2">Shift Assigned Employees</th> -->
+                </tr>
+                <tr *ngFor="let emp of records">
+                    <td colspan="2">
+                        <div class="ms-2">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="{{emp.employeeCode}}"
+                                [(ngModel)]="emp.checked"
+                                (click)="selectedEmp($event, emp)" />
+                            <label class="form-check-label mx-2"
+                                for="{{emp.employeeCode}}">
+                                {{ emp.employeeName }}
+                            </label>
+                        </div>
+                    </td>
+                    <td class="text-nowrap">
+                        [ {{ emp.employeeCode }}]
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md ms-3"  style="height: 400px; overflow: auto;scrollbar-width: thin;">
+            <table *ngIf="empOtForm.controls.employeeData.value?.length >0">
+                <tr>
+                    <th>{{global.getGlobalNames('SelectedEmployees')}} </th>
+                </tr>
+                <tr *ngFor="let emps of empOtForm.controls.employeeData.value">
+                    <td>
+                        {{ emps.employeeName }}
+                    </td>
+                    <td class="text-nowrap">
+                        [ {{ emps.employeeCode }}]
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- <div *ngIf="update">
+    <h4>Shift Modifying Record</h4>
+    <div>
+      {{updatingRow.employeeCode}} , {{updatingRow.employeeName}}
+    </div>
+  </div> -->
+</div>
+<div>
+    <button (click)="cancel()" class="btn delete-btn mt-4">{{global.getGlobalNames('cancel')}} </button>
+    <button
+        [disabled]="empOtForm.controls.employeeData.value.length ===0"
+        (click)="create()"
+        class="btn add-btn  float-end mt-4">
+        {{global.getGlobalNames('create')}} 
+    </button>
+    <!-- <button *ngIf="update"
+    [disabled]="shiftAssignmentForm.pristine || shiftAssignmentForm.invalid"
+    (click)="Update()"
+    class="btn add-btn  float-end mt-4">
+    Update
+  </button> -->
+</div>

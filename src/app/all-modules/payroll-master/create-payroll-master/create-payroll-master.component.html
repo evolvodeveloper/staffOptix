@@ -1,0 +1,778 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="d-flex align-items-baseline">
+      <i
+        style="font-size: 20px"
+        class="fa fa-arrow-left"
+        (click)="back()"
+        aria-label="back"></i>
+      <h3 class="ms-4 page-title">
+        {{ view ? globalServ.getGlobalNames('view') : (update ?
+        globalServ.getGlobalNames('update')
+        :globalServ.getGlobalNames('create')) }}
+        {{globalServ.showLabel('payrollMasterHeader')}}
+      </h3>
+    </div>
+  </div>
+</div>
+
+<div class="card p-3">
+  <div class="row">
+    <div class="col-md-12">
+      <ng-stepper class="cdk-step" #cdkStepper [linear]="false" class="mt-1">
+        <cdk-step [stepControl]="stepOne.stepOneForm" [optional]="true">
+          <ng-template cdkStepLabel>
+            <div
+              class="step-bullet"
+              style="width: 40px; height: 40px; z-index: 105">
+              <img src="assets/img/icon/User_Add.svg" height="20" width="20" />
+            </div>
+            <div class="step-title">1.{{globalServ.showLabel('payrollUser')}}
+            </div>
+          </ng-template>
+
+          <!-- <form [formGroup]="addPayrollForm" > -->
+          <div #stepOne [formGroup]="addPayrollForm">
+            <div class="row mt-3">
+              <div class="col-md-6"
+                *ngIf="view || update || allowAutoGenerateEmpCode">
+                <div class="form-group">
+                  <label class="col-form-label"
+                    for="empCode">{{globalServ.getGlobalNames('employeeCode')}}&nbsp;<span
+                      class="text-danger">*</span></label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="{{globalServ.showPlaceholder('enterEmpCode')}}"
+                    id="empCode"
+                    formControlName="employeeCode" />
+                  <div
+                    *ngIf="addPayrollForm.get('employeeCode').hasError('invalidFormat')"
+                    style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-form-label" for="employeeRefCode">
+                    {{globalServ.getGlobalNames('employeeRefCode')}}</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="{{globalServ.showPlaceholder('employeeRefCode')}}"
+                    id="employeeRefCode"
+                    formControlName="employeeRefCode" />
+                  <div
+                    *ngIf="addPayrollForm.get('employeeRefCode').hasError('invalidFormat')"
+                    style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-form-label"
+                    for="employeeName">{{globalServ.getGlobalNames('employeeName')}}&nbsp;<span
+                      class="text-danger">*</span></label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    aria-label="Employee"
+                    placeholder="{{globalServ.showPlaceholder('enterEmployeeName')}}"
+                    matInput
+                    formControlName="employeeName"
+                    [matAutocomplete]="auto"
+                    (keyup)="onEmployeeNameChange()"
+                    (mouseup)="onEmployeeNameChange()"
+                    (change)="onEmployeeNameChange()"
+                    id="employeeName" />
+                  <mat-autocomplete autoActiveFirstOption
+                    #auto="matAutocomplete">
+                    <mat-option *ngFor="let option of filteredEmployees_list"
+                      (click)="onEmployeeNameChange()"
+                      [value]="option.employeeName">
+                      {{ option.employeeName }}
+                    </mat-option>
+                  </mat-autocomplete>
+                  <div
+                    *ngIf="
+                    addPayrollForm.controls['employeeName'].invalid &&
+                    (addPayrollForm.controls['employeeName'].dirty ||
+                      addPayrollForm.controls['employeeName'].touched)
+                  "
+                    style="padding: 0px">
+                    <div
+                      *ngIf="addPayrollForm.controls['employeeName'].errors.required"
+                      style="color: #dc3545">
+                      {{globalServ.getGlobalNames('employeeName')}}
+                      {{globalServ.showGlobalErrors('required')}}
+                    </div>
+                  </div>
+                  <div
+                    *ngIf="addPayrollForm.get('employeeName').hasError('invalidFormat')"
+                    style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-form-label" for="aliasName"> {{globalServ.getGlobalNames('aliasName')}}
+                  </label>
+                  <input
+                    class="form-control"
+                    type="text"
+                     placeholder="{{globalServ.showGlobalplaceholders('enterAliasName')}}"
+                    id="aliasName"
+                    formControlName="aliasName" />
+                      <div *ngIf="addPayrollForm.get('aliasName').hasError('invalidFormat')"
+                          style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-form-label"
+                    for="lastName">{{globalServ.showLabel('lastName')}}
+                  </label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="{{globalServ.showPlaceholder('enterLastName')}}"
+                    id="lastName"
+                    formControlName="lastName" />
+                  <div
+                    *ngIf="addPayrollForm.get('lastName').hasError('invalidFormat')"
+                    style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-form-label"
+                    for="designation">{{globalServ.getGlobalNames('designation')}}
+                  </label>
+                  <select class="form-select" id="designation"
+                    formControlName="designation">
+                    <option selected value>-</option>
+                    <option
+                      [value]="desg.designation"
+                      *ngFor="let desg of designationList">
+                      {{ desg.designation }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-form-label"
+                    for="deptCode">{{globalServ.getGlobalNames('department')}}&nbsp;<span
+                      class="text-danger">*</span></label>
+                  <select class="form-select" id="deptCode"
+                    formControlName="deptCode">
+                    <option selected value>-</option>
+                    <option
+                      [value]="dep.deptCode"
+                      *ngFor="let dep of departmentsList">
+                      {{ dep.deptName }}
+                    </option>
+                  </select>
+                  <div
+                    *ngIf="
+                    addPayrollForm.controls['deptCode'].invalid &&
+                    (addPayrollForm.controls['deptCode'].dirty ||
+                      addPayrollForm.controls['deptCode'].touched)
+                  "
+                    style="padding: 0px">
+                    <div
+                      *ngIf="addPayrollForm.controls['deptCode'].errors.required"
+                      style="color: #dc3545">
+                      {{globalServ.getGlobalNames('department')}}
+                      {{globalServ.showGlobalErrors('required')}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label
+                    class="col-form-label">{{globalServ.showLabel('employeeType')}}
+                  </label>
+                  <select class="form-select" formControlName="employeeType">
+                    <option selected value>-</option>
+                    <option
+                      [value]="etype.code"
+                      *ngFor="let etype of emptypes">
+                      {{ etype.code }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-form-label"
+                    for="payrollType">{{globalServ.showLabel('payrollType')}}&nbsp;<span
+                      class="text-danger">*</span></label>
+                  <select
+                    class="form-select"
+                    id="payrollType"
+                    formControlName="payrollType">
+                    <option selected value>-</option>
+                    <option [value]="ptype.code"
+                      *ngFor="let ptype of pytypes">
+                      {{ ptype.code }}
+                    </option>
+                  </select>
+
+                  <div
+                    *ngIf="
+                    addPayrollForm.controls['payrollType'].invalid &&
+                    (addPayrollForm.controls['payrollType'].dirty ||
+                      addPayrollForm.controls['payrollType'].touched)
+                  "
+                    style="padding: 0px">
+                    <div
+                      *ngIf="addPayrollForm.controls['payrollType'].errors.required"
+                      style="color: #dc3545">
+                      {{globalServ.showLabel('payrollType')}}
+                      {{globalServ.showGlobalErrors('required')}}
+                    </div>
+                  </div> </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-form-label"
+                    for="payrollCode">{{globalServ.getGlobalNames('payroll')}}&nbsp;<span
+                      class="text-danger">*</span></label>
+                  <select
+                    id="payrollCode"
+                    class="form-select"
+                    (change)="getsalaryComp()"
+                    formControlName="payrollCode">
+                    <option selected value>-</option>
+                    <option *ngFor="let pc of payrollsetups"
+                      [value]="pc.payrollCode">
+                      {{ pc.payrollCode }}
+                    </option>
+                  </select>
+
+                  <div
+                    *ngIf="
+                    addPayrollForm.controls['payrollCode'].invalid &&
+                    (addPayrollForm.controls['payrollCode'].dirty ||
+                      addPayrollForm.controls['payrollCode'].touched)
+                  "
+                    style="padding: 0px">
+                    <div
+                      *ngIf="addPayrollForm.controls['payrollCode'].errors.required"
+                      style="color: #dc3545">
+                      {{globalServ.getGlobalNames('payroll')}}
+                      {{globalServ.showGlobalErrors('required')}}
+                    </div>
+                  </div> </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label
+                    class="col-form-label">{{globalServ.showLabel('captureType')}}
+                  </label>
+                  <select class="form-select" formControlName="capturePolicy">
+                    <option selected value>-</option>
+                    <option
+                      [value]="c?.captureCode"
+                      *ngFor="let c of capturesTypes">
+                      {{ c?.captureCode }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-form-label"
+                    for="projectCode">{{globalServ.getGlobalNames('project')}}</label>
+                  <select
+                    class="form-select"
+                    id="projectCode"
+                    formControlName="projectCode">
+                    <option selected value>-</option>
+                    <option [value]="code.categoryCode"
+                      *ngFor="let code of empCat">
+                      {{ code.categoryCode }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-form-label"
+                    for="policyCode">{{globalServ.showLabel('trackingPolicy')}}</label>
+                  <select
+                    class="form-select"
+                    id="policyCode"
+                    formControlName="policyCode">
+                    <option selected value>-</option>
+                    <option [value]="code.trackingPolicy.policyCode"
+                      *ngFor="let code of policyCodes">
+                      {{ code.trackingPolicy.policyCode }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <!-- 
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="col-form-label" for="empSalary">Salary</label>
+                    <input
+                      class="form-control"
+                      type="text"
+                      placeholder="Enter Employee Salary"
+                      id="empSalary"
+                      formControlName="empSalary" />
+                  </div>
+                </div> -->
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-form-label"
+                    for="bankAccountNo">{{globalServ.getGlobalNames('bankAccountNumber')}}</label>
+                  <input
+                    class="form-control"
+                    id="bankAccountNo"
+                    type="number"
+                    placeholder="{{globalServ.showPlaceholder('enterBankAccountNumber')}}"
+                    formControlName="bankAccountNo">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-form-label" for="bankName">
+                    {{globalServ.getGlobalNames('bankName')}}
+                  </label>
+                  <input
+                    id="bankName"
+                    class="form-control"
+                    type="text"
+                    placeholder="{{globalServ.showPlaceholder('enterBankName')}}"
+                    formControlName="bankName">
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-form-label" for="bankCode">
+                    {{globalServ.getGlobalNames('bankCode')}}
+                  </label>
+                  <input
+                    id="bankCode"
+                    class="form-control"
+                    type="text"
+                    placeholder="{{globalServ.showPlaceholder('enterBankCode')}}"
+                    formControlName="bankCode">
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-form-label" for="bankBranch">
+                    {{globalServ.getGlobalNames('bankBranch')}}
+                  </label>
+                  <input
+                    id="bankBranch"
+                    class="form-control"
+                    type="text"
+                    placeholder="{{globalServ.showPlaceholder('enterBankBranch')}}"
+                    formControlName="bankBranch">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-form-label" for="bankAddress">
+                    {{globalServ.getGlobalNames('bankAddress')}}
+                  </label>
+                  <input
+                    id="bankAddress"
+                    class="form-control"
+                    type="text"
+                    placeholder="{{globalServ.showPlaceholder('enterBankAddress')}}"
+                    formControlName="bankAddress">
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-form-label"
+                    for="supervisor">{{globalServ.showLabel('supervisor')}}
+                  </label>
+                  <select class="form-select" formControlName="supervisorId"
+                    id="supervisor"
+                    (change)="onSupervisorChange(addPayrollForm.controls.supervisorId.value)">
+                    <option selected value>-</option>
+                    <option *ngFor="let sup of supervisors"
+                      [value]="sup.employeeCode">
+                      {{ sup.employeeName}} ({{ sup.employeeCode}})
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-sm-6" *ngIf="update || view">
+                <div class="form-group">
+                  <label class="col-form-label" for="lastWorkingDate">
+                    {{globalServ.getGlobalNames('lastWorkingDate')}}
+                  </label>
+                  <input
+                    class="form-control datetimepicker"
+                    type="date"
+                    id="lastWorkingDate"
+                    formControlName="lastWorkingDate" />
+                </div>
+              </div>
+              <div class="form-check col-md-10 mt-2 ms-3 mb-3">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="isactive"
+                  formControlName="isActive" />
+                <label class="form-check-label" for="isactive">
+                  {{globalServ.getGlobalNames('active')}}
+                </label>
+              </div>
+
+              <!-- </div> -->
+              <section class *ngIf="!view">
+                <button class="btn delete-btn  me-3" id="cancel"
+                  (click)="back()">
+                  {{globalServ.getGlobalNames('cancel')}}
+                </button>
+
+                <button
+                  [disabled]="addPayrollForm.invalid"
+                  class="btn add-btn"
+                  type="submit"
+                  id="Next"
+                  cdkStepperNext>
+                  {{globalServ.getGlobalNames('next')}}
+                </button>
+
+              </section>
+              <section *ngIf="view">
+                <button type="button" id="close_btn"
+                  class="btn delete-btn  me-3"
+                  data-dismiss="modal"
+                  (click)="back()">
+                  {{globalServ.getGlobalNames('close')}}
+                </button>
+                <button
+                  class="btn add-btn"
+                  type="submit"
+                  id="Next"
+                  cdkStepperNext>
+                  {{globalServ.getGlobalNames('next')}}
+                </button>
+              </section>
+            </div>
+          </div>
+          <!-- </form> -->
+        </cdk-step>
+
+        <cdk-step [stepControl]="stepTwo.stepTwoForm" [optional]="true">
+          <ng-template cdkStepLabel>
+            <div
+              class="step-bullet"
+              style="width: 40px; height: 40px; z-index: 106">
+              <img src="assets/img/icon/Compass.svg" height="20" width="20" />
+            </div>
+            <div class="step-title">2.
+              {{globalServ.showLabel('salaryInfo')}}</div>
+          </ng-template>
+
+          <div #stepTwo>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label
+                  class="col-form-label">{{globalServ.showLabel('totalSalary')}}
+                  &nbsp;<span
+                    class="text-danger">*</span></label>
+                <input
+                  class="form-control"
+                  type="number"
+                  (change)="salaryValue()"
+                  [formControl]="addPayrollForm.controls.salary" />
+                <small
+                  *ngIf="
+                        addPayrollForm.get('salary').invalid &&
+                        addPayrollForm.get('salary').touched
+                      "
+                  class="text-danger">
+                  {{globalServ.showLabel('totalSalary')}}
+                  {{globalServ.showGlobalErrors('required')}}
+                </small>
+              </div>
+              <!-- <div *ngIf="addPayrollForm.controls.rulesQuestion.value === true">
+                <button class="btn btn-primary"
+                  (click)="getsalaryComp()">{{globalServ.showLabel('calculate')}}</button>
+              </div> -->
+            </div>
+            <div class="form-check col-md-10 mt-2" *ngIf="hasRules">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="rulesQuestion"
+                [formControl]="addPayrollForm.controls.rulesQuestion"
+                (change)="getsalaryComp()" />
+              <label class="form-check-label" for="rulesQuestion">
+                {{globalServ.showLabel('rulesQuestion')}}
+              </label>
+            </div>
+            <div class="row mt-5"
+              *ngIf="showComponentCode && salaryComponents.length > 0">
+              <h4>
+                {{globalServ.getGlobalNames('salaryBreakup')}}
+              </h4>
+              <div class="col-md-12 d-flex">
+                <div class="table-leftblock col-md-6">
+                  <table
+                    class="table table-nowrap mb-0">
+                    <thead
+                      class="thead-all">
+                      <tr
+                        class="tr-th-all">
+                        <th class="text-left">
+                          {{globalServ.getGlobalNames('earnings')}}
+                        </th>
+                        <th class="text-center">%</th>
+                        <th
+                          class="text-end">
+                          {{globalServ.getGlobalNames('amount')}}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody
+                      style="font: 300 12px/150% CircularStd, sans-serif; border: #fbffff;">
+                      <ng-container
+                        *ngFor="let row of salaryComponents">
+                        <ng-container
+                          *ngIf="row?.isDeduction === false">
+                          <tr class>
+                            <td scope="col">
+                              <span class="d-flex align-items-center">
+                                <input
+                                  type="checkbox"
+                                  [disabled]="view"
+                                  class="form-check me-2"
+                                  [ngModel]="row?.checkedSalary"
+                                  (click)="checkedSalary($event, row)"
+                                  style="zoom: 1.4" />{{ row.componentCode }}
+                              </span>
+                            </td>
+                            <td scope="col">
+                              <input
+                                type="number"
+                                (keyup)="onChangeperct($event.target.value,row)"
+                                placeholder="0.00"
+                                style="width: 70px;"
+                                class="form-control text-end inputwid d-flex justify-content-end"
+                                [(ngModel)]="row.pct"
+                                [ngModelOptions]="{standalone: true}"
+                                [disabled]="!row.checkedSalary || view" />
+                            </td>
+                            <td
+                              class="text-end"
+                              scope="col"> <input
+                                type="number"
+                                (keyup)="onChangeBal($event.target.value,row)"
+                                placeholder="0.00"
+                                class="form-control text-end inputwid"
+                                [(ngModel)]="row.amount"
+                                [ngModelOptions]="{standalone: true}"
+                                [disabled]="!row.checkedSalary || view" />
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+                <div
+                  class="table-right block col-md-6">
+                  <table
+                    class="table table-nowrap  mb-0">
+                    <thead
+                      class="thead-all">
+                      <tr
+                        class="tr-th-all">
+                        <th
+                          class="text-left">
+                          {{globalServ.getGlobalNames('deductions')}}
+                        </th>
+                        <th class="text-center">%</th>
+                        <th class="text-end">
+                          {{globalServ.getGlobalNames('amount')}}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody
+                      style="font: 300 12px/150% CircularStd, sans-serif; border: #fbffff;">
+                      <ng-container *ngFor="let row of salaryComponents">
+                        <ng-container
+                          *ngIf="row.isDeduction === true">
+                          <tr
+                            class>
+                            <td
+                              scope="col"> <span
+                                class="d-flex align-items-center">
+                                <input
+                                  type="checkbox"
+                                  class="form-check me-2"
+                                  [disabled]="view"
+                                  [ngModel]="row?.checkedSalary"
+                                  (click)="checkedSalary($event, row)"
+                                  style="zoom: 1.4" />{{ row.componentCode }}
+                              </span>
+                            </td>
+                            <td scope="col">
+                              <input
+                                type="number"
+                                (keyup)="onChangeperct($event.target.value,row)"
+                                placeholder="0.00"
+                                style="width: 70px;"
+                                class="form-control text-end inputwid d-flex justify-content-end"
+                                [(ngModel)]="row.pct"
+                                [ngModelOptions]="{standalone: true}"
+                                [disabled]="!row.checkedSalary || view" />
+
+                              <!-- (keyup)="calCulateSalary()" -->
+                            </td>
+                            <td
+                              scope="col"
+                              class="text-end"> <input
+                                type="number"
+                                (keyup)="onChangeBal($event.target.value,row)"
+                                placeholder="0.00"
+                                class="form-control text-end inputwid"
+                                [(ngModel)]="row.amount"
+                                [ngModelOptions]="{standalone: true}"
+                                [disabled]="!row.checkedSalary || view" />
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="col-md-12 d-flex"
+                style="font: 600 12px/150% CircularStd, sans-serif; padding: 5px;">
+                <div
+                  class="col-md-6 border-bottom border-top py-1">
+                  <div
+                    class="d-flex justify-content-between">
+                    <span
+                      style="padding-left: 15px; ">{{globalServ.getGlobalNames('GrossEarnings')}}</span>
+                    <span
+                      style="padding-right: 15px;">
+                      {{totalearningAmt
+                      | number
+                      :
+                      "1.2-2"}}</span>
+                  </div>
+                </div>
+                <div
+                  class="col-md-6 border-bottom border-top py-1">
+                  <div
+                    class="d-flex justify-content-between">
+                    <span
+                      style="padding-left: 15px;">
+                      {{globalServ.getGlobalNames('TotalDeductions')}}
+                    </span>
+                    <span
+                      style="padding-right: 15px;">
+                      {{totalDeduction
+                      | number
+                      :
+                      "1.2-2"}}</span>
+                  </div>
+                </div>
+              </div>
+              <!--     border-bottom: white; -->
+              <div
+                class="col-md-12  d-flex justify-content-between"
+                style="font: 600 12px/150% CircularStd, sans-serif; padding: 5px;">
+                <span
+                  style="padding-left: 15px;">
+
+                  {{globalServ.showLabel('totalNetPayable')}}
+                  <span
+                    class="block text-muted">
+                    {{globalServ.getGlobalNames('GrossEarnings')}}
+                    -
+                    {{globalServ.getGlobalNames('TotalDeductions')}}
+                  </span>
+                </span>
+                <span
+                  style="padding-right: 15px;">
+                  {{totalSalary | number :
+                  "1.2-2"}}
+                </span>
+              </div>
+            </div>
+            <!-- <div class="row d-flex justify-content-end me-3"   *ngIf="showComponentCode && salaryComponents.length > 0">
+           <table class="col-md-2">
+            <tr>
+              <td>Earnings</td> <td class="text-end"> {{totalearningAmt}}</td>
+            </tr>
+               <tr>
+              <td>Deductions</td> <td class="text-end">  {{totalDeduction}}</td>
+            </tr>
+               <tr class="border-top">
+              <td><b>Total</b></td> <td class="text-end"> {{totalSalary}}</td>
+            </tr>
+           </table>
+            </div> -->
+            <div class="row mt-3">
+              <section class *ngIf="!view">
+                <button
+                  class="btn btn-secondary secondary-btn"
+                  type="submit"
+                  cdkStepperPrevious>
+                  {{globalServ.getGlobalNames('previous')}}
+                </button>
+                <!-- if user want to submit only employee -->
+                <span>
+                  <button *ngIf="!update"
+                    class="btn add-btn"
+                    (click)="submit()"
+                    type="submit">
+                    {{globalServ.getGlobalNames('save')}}
+                  </button>
+                  <button *ngIf="update"
+                    class="btn add-btn"
+                    type="submit" (click)="Update()">
+                    {{globalServ.getGlobalNames('update')}}
+                  </button>
+                </span>
+              </section>
+              <section *ngIf="view">
+                <button
+                  class="btn btn-secondary secondary-btn"
+                  type="submit"
+                  cdkStepperPrevious>
+                  {{globalServ.getGlobalNames('previous')}}
+                </button>
+                <!-- if user want to submit only employee -->
+                <span>
+                  <button style="float: inline-end;" type="button"
+                    id="close_btn" class="btn delete-btn  me-3"
+                    data-dismiss="modal"
+                    (click)="back()">
+                    {{globalServ.getGlobalNames('close')}}
+                  </button>
+                </span>
+              </section>
+            </div>
+
+          </div>
+        </cdk-step>
+      </ng-stepper>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,64 @@
+<div class="modal fade modal-right" style="padding-right: 17px; display: none;" [ngClass]="{'show':open}"
+    [ngStyle]="open && {'display': 'block'}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">{{view ? 'View' : update ? 'Update' : 'Create'}} {{globalServ.getGlobalNames('designation')}} </h1>
+                <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <form [formGroup]="designationForm" novalidate>
+                            <div class="form-group input">
+                                 <label class="mb-1 text-sm"> {{globalServ.getGlobalNames('designation')}}&nbsp;<span style="color: red; margin-left: 1px">*</span>
+                                </label>
+                                <input   class="form-control" id="designation"
+                                    maxlength={{charLimit}} [formControl]="designationForm.controls.designation"
+                                   placeholder="{{globalServ.showPlaceholder('enterDesig')}}"/>
+                               
+                                <div *ngIf="designationForm.controls['designation'].invalid && (designationForm.controls['designation'].dirty ||
+                          designationForm.controls['designation'].touched)" style="padding: 0px">
+                                    <div *ngIf="designationForm.controls['designation'].errors.required"
+                                        style="color: #dc3545">
+                                        {{globalServ.getGlobalNames('designation')}} {{globalServ.showGlobalErrors('required')}}
+                                    </div>
+                                </div>
+                                <div [hidden]="view" *ngIf="designationForm.controls['designation'].value?.length > charLimit - 1"
+                                    style="color: #dc3545">{{globalServ.showGlobalErrors('max')}} {{ charLimit }}  {{globalServ.showGlobalErrors('char')}}
+                                </div>
+                                  <div *ngIf="designationForm.get('designation').hasError('invalidFormat')"
+                          style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+                            </div>
+                            <div class="mt-2">
+                                     <div class="mb-3 form-check">
+                    <input class="form-check-input"  id="isManager" color="primary" type="checkbox" [formControl]="designationForm.controls.isManager">
+                    <label class="form-check-label">
+                        {{globalServ.showLabel('IsManager')}}
+                    </label>
+                </div>
+                                <div class="mb-3 form-check">
+                    <input class="form-check-input"  id="isManager" color="primary" type="checkbox" [formControl]="designationForm.controls.isactive">
+                    <label class="form-check-label">
+                        {{globalServ.getGlobalNames('active')}}
+                    </label>
+                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn delete-btn" (click)="closeModal()"> {{globalServ.getGlobalNames('cancel')}}</button>
+                <button [disabled]="designationForm.pristine || designationForm.invalid" [hidden]="view || update"
+                    (click)="create()" class="btn add-btn">
+                     {{globalServ.getGlobalNames('create')}}
+                </button>
+                <button *ngIf="update" [disabled]="designationForm.pristine" (click)="Update()" class="btn add-btn">
+                    {{globalServ.getGlobalNames('update')}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="open" class="modal-backdrop fade show"></div>

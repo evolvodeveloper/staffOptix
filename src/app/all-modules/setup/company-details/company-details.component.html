@@ -1,0 +1,131 @@
+<div class="container-xxl">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="d-flex justify-content-between">
+        <span><i style="font-size:20px" class="fa fa-arrow-left me-1"
+            (click)="back()" aria-label="back"></i> {{globalServ.showLabel('compInfo')}}</span>
+        <a routerLink="/pricing-plans"><small>{{globalServ.showLabel('upgradePlan')}}</small></a>
+      </h3>
+    </div>
+  </div>
+  <div class="row customecard justify-content-center ">
+    <div class="col-md-2 d-flex  justify-content-cente align-item-center ">
+      <div class="profile-img-wrap edit-img">
+        <img
+          *ngIf="!companyLogoPresent"
+          class="inline-block"
+          src="assets/img/avatar-21.jpg"
+          alt="companyLogo" />
+        <img
+          *ngIf="companyLogoPresent"
+          class="inline-block"
+          [src]="companyObj?.companyLogo"
+          alt="user" />
+
+        <div class="fileupload btn" *ngIf="hasPermissionToUpdate">
+          <span class="btn-text">{{globalServ.getGlobalNames('edit')}}</span>
+          <input
+            class="upload"
+            type="file" accept="image/*"
+            (change)="onSelectFile($event)" />
+        </div>
+      </div>
+
+    </div>
+    <div class="row col-md-10  p-3 centerme">
+      <div class="col-md-12 ">
+        <div class="d-flex centerme">
+          <h2 class="user-name " *ngIf="!editName">
+            <!-- text-capitalize -->
+           <span > {{ company?.companyName }}</span>
+           </h2>
+            <input type="text" class="imputStyle" *ngIf="editName" [(ngModel)]="compName" >
+          <span class="ms-1 " style="margin: 5px 0px;">
+            <i class="fa fa-pencil iconsStyle"  *ngIf="!editName && hasPermissionToUpdate" (click)="editName = !editName"></i>
+            <!-- <i class="fas fa-check-circle" (click)="UpdateCompanyName()"></i> -->
+            <!-- <i class="fas fa-check-circle"></i> -->
+              
+            <span class="mx-1" *ngIf="editName"> <i class="fas fa-times iconsStyle" (click)="clearEditedName()" ></i></span>
+
+           
+            <span class="mx-1"  *ngIf="editName">  <i class="fas fa-check  iconsStyle" (click)="UpdateCompanyName()"></i></span>
+
+          </span>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="profile-info-left">
+          <div class="staff-id">
+            {{globalServ.showLabel('compCode')}}:<span class="danger-color">
+              {{ company?.companyCode }}</span>
+          </div>
+
+          <div class="staff-id">
+            {{globalServ.getGlobalNames('shortName')}} :<span class="danger-color">
+              {{company?.shortName}}</span>
+          </div>
+          <div class="staff-id">
+            {{globalServ.showLabel('pricingPlan')}} :<span class="danger-color">
+              {{company?.pricingCode}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="personal-info">
+          <div class="staff-id">
+            {{globalServ.showLabel('Industry')}} :<span class="danger-color">
+              {{company?.industry}}</span>
+          </div>
+          <div class="staff-id">
+            {{globalServ.showLabel('licValid')}} :<span class="danger-color">
+              {{ company?.validTill | date:dateFormat}}</span>
+          </div>
+          <div class="staff-id">
+           {{globalServ.getGlobalNames('active')}} :<span class="danger-color">
+              {{company?.isactive }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 
+<div class="row mt-4">
+  <div class="col-md-12">
+    <ul
+      class="nav nav-pills flex-column flex-sm-row mb-4"
+      id="pills-tab"
+      role="tablist">
+
+
+      <li class="nav-item me-3" role="presentation">
+        <button
+          class="nav-link active"
+          id="pills-coPreference-tab"
+          data-bs-toggle="pill"
+          data-bs-target="#pills-coPreference"
+          type="button"
+          role="tab"
+          aria-controls="pills-coPreference"
+          aria-selected="false">
+          Preferences
+        </button>
+      </li>
+
+    </ul>
+  </div>
+</div> -->
+  <!-- <div class="tab-content" id="pills-tabContent">
+
+  <div
+    class="tab-pane fade"
+    id="pills-coPreference"
+    role="tabpanel"
+    aria-labelledby="pills-coPreference-tab"
+    tabindex="0">
+    <h2>
+      coPreference
+    </h2>
+  </div>
+
+</div> -->
+</div>

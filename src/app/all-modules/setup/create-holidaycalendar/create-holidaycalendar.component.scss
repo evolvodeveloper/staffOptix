@@ -1,0 +1,22 @@
+.form-select:focus,
+.form-select:hover {
+    outline: none;
+    border-color: rgba(129, 140, 248);
+    background-color: #fff;
+    box-shadow: 0 0 0 5px rgb(129 140 248 / 30%);
+}
+
+.input:focus,
+input:hover {
+    outline: none;
+    border-color: rgba(129, 140, 248);
+    background-color: #fff;
+    box-shadow: 0 0 0 5px rgb(129 140 248 / 30%);
+}
+
+::placeholder {
+    color: rgba(0, 0, 0, 50%);
+    // color: #0326a45d;
+    font-size: 14px;
+
+}

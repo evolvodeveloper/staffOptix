@@ -1,0 +1,174 @@
+<div class="page-header">
+  <div class="row align-items-center">
+    <div class="col-sm-12 col-lg-8 d-flex align-items-baseline">
+      <i style="font-size:20px" class="fa fa-arrow-left"
+        (click)="cancel()" aria-label="back"></i>
+      <h3 class="ms-4 page-title"> {{  view ? globalServ.getGlobalNames('view')  
+               : (update ? globalServ.getGlobalNames('update') 
+               :globalServ.getGlobalNames('create')) }}
+              {{globalServ.showLabel('deviceLocationHeader')}}
+                </h3>
+               
+
+    </div>
+  </div>
+</div>
+
+<div class="row card">
+  <div class="col-md-12">
+    <form [formGroup]="deviceLocationForm">
+      <section #stepOne class="row g-2">
+        <div class="col-md-6 mt-4">
+          <div class="form-group">
+            <label class="text-sm mb-1">
+              {{globalServ.showLabel('deviceLocationHeader')}}&nbsp;<span
+                style="color: red; margin-left: 1px">*</span>
+            </label>
+            <input
+              class="form-control"
+              id="deviceLocCode"
+              placeholder="{{globalServ.showPlaceholder('deviceLocCode')}}"
+              [formControl]="deviceLocationForm.controls.deviceLocCode" />
+            <div
+              *ngIf="deviceLocationForm.controls['deviceLocCode'].invalid &&
+                            (deviceLocationForm.controls['deviceLocCode'].dirty ||
+                            deviceLocationForm.controls['deviceLocCode'].touched)"
+              style="padding: 0px">
+              <div
+                *ngIf="deviceLocationForm.controls['deviceLocCode'].errors.required"
+                style="color: #dc3545">
+                 {{globalServ.showLabel('deviceLocationHeader')}} {{globalServ.showGlobalErrors('required')}}
+              </div>
+            </div>
+            <div
+              *ngIf="deviceLocationForm.get('deviceLocCode').hasError('invalidFormat')"
+              style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+          </div>
+        </div>
+        <div class="col-md-6 mt-4">
+          <div class="form-group">
+            <label class="text-sm mb-1">{{globalServ.showLabel('deviceLocationDesc')}}
+            </label>
+            <textarea
+              class="form-control"
+              id="description"
+              placeholder="{{globalServ.showPlaceholder('deviceLocationDesc')}}"
+              [formControl]="deviceLocationForm.controls.description"></textarea>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="text-sm mb-1">{{globalServ.showLabel('deviceOfficeLocation')}}
+            </label>
+            <select
+              class="form-select"
+              id="projectOwner"
+              [formControl]="deviceLocationForm.controls.locationCode">
+              <option selected disabled>-</option>
+              <option [value]="p.locationCode"
+                *ngFor="let p of activeOfficeLocations">
+                {{ p.locationCode }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="form-check">
+            <input class="form-check-input" id="isactive"
+              formControlName="isactive"
+              color="primary" type="checkbox">
+            <label class="form-check-label">
+              <label class="form-check-label"> {{globalServ.getGlobalNames('active')}} </label>
+
+            </label>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="form-check">
+            <input class="form-check-input" id="restricted"
+              formControlName="restricted"
+              (change)="checkIsRestrict()"
+              color="primary" type="checkbox">
+            <label class="form-check-label">
+              {{globalServ.showLabel('deviceLocRes')}}
+            </label>
+          </div>
+        </div>
+        <div class="col-md-6 mt-2"
+          *ngIf="deviceLocationForm.controls.restricted.value === true">
+          <div class="d-flex" [formGroup]="deviceAccessForm">
+
+            <div class="col-md-12 ms-2" style="height: 300px; overflow: auto;">
+              <table>
+                <tr>
+                  <th>List Of Employees</th>
+                </tr>
+                <tr *ngFor="let employee of payrollEmplist">
+                  <td>
+                    <label>
+                      <input
+                        type="checkbox"
+                        [disabled]="view"
+                        [checked]="isEmployeeSelected(employee)"
+                        (change)="toggleEmployeeSelection(employee)" />
+                      {{ employee.employeeName }}
+                    </label>
+                  </td>
+                  <td>
+                    {{ employee.employeeCode }}
+                  </td>
+                </tr>
+              </table>
+
+            </div>
+            <div class="col-md-10 ms-3" style="height: 300px; overflow: auto;">
+              <table>
+                <tr>
+                  <th>Access Employees</th>
+                </tr>
+                <tr *ngFor="let selectedEmployee of employeeCodes.controls">
+                  <ng-container
+                    *ngIf="selectedEmployee.value.accessDenied !== true ">
+                    <td>
+                      {{ selectedEmployee.value.employeeName }}
+                    </td>
+                    <td>
+                      {{ selectedEmployee.value.employeeCode }}
+                    </td>
+                  </ng-container>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </form>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+    <button
+      id="cancel_deviceloc"
+      (click)="cancel()"
+      class="btn delete-btn me-1">
+      {{globalServ.getGlobalNames('cancel')}} 
+    </button>
+    <button
+      id="create_deviceloc"
+      [disabled]="deviceLocationForm.invalid"
+      [hidden]="view || update"
+      (click)="submit()"
+      class="btn add-btn  ">
+      {{globalServ.getGlobalNames('create')}} 
+    </button>
+    <button
+      id="update_deviceloc"
+      *ngIf="update"
+       [disabled]="deviceLocationForm.invalid || deviceLocationForm.pristine"
+      (click)="Update()"
+      class="btn add-btn  ">
+      {{globalServ.getGlobalNames('update')}} 
+    </button>
+  </div>
+
+</div>

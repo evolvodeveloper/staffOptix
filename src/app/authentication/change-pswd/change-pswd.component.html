@@ -1,0 +1,119 @@
+<!-- Page Content -->
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col-sm-12 col-lg-8 d-flex align-items-baseline">
+            <i style="font-size:20px" class="fa fa-arrow-left me-4"
+                routerLink="/dashboard" aria-label="back"></i>
+            <h3
+                class="page-title">{{globalServ.showLabel('changePasswordHeader')}}</h3>
+        </div>
+    </div>
+</div>
+<div class="content container-fluid">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+
+            <!-- Page Header -->
+            <!-- <div class="page-header">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h3 class="page-title">Change Password</h3>
+                    </div>
+                </div>
+            </div> -->
+            <!-- /Page Header -->
+
+            <form (ngSubmit)="submitChangePassword()"
+                [formGroup]="changePassword">
+                <div class="form-group">
+                    <label>{{globalServ.showLabel('oldPassword')}}</label>
+
+                    <div class="input-group">
+                        <input [type]="showPassword ? 'text' : 'password'"
+                            class="form-control" (change)="onPasswordChange()"
+                            placeholder="{{globalServ.showPlaceholder('enterOldpassword')}}"
+                            [pattern]="noSpacesPattern"
+                            [class.invalid]="changePassword.get('oldPassword').invalid && changePassword.get('oldPassword').touched"
+                            formControlName="oldPassword">
+                        <span class="input-group-custom"
+                            id="password">
+                            <i alt="show" class="far fa-eye"
+                                id="password"
+                                *ngIf="showPassword"
+                                [name]="showPassword?'eye-off' : 'eye'"
+                                (click)="showPassword = !showPassword"></i>
+                            <i alt="hide" id="password"
+                                class="far fa-eye-slash eye-hide"
+                                *ngIf="!showPassword"
+                                (click)="showPassword = !showPassword"></i>
+                        </span>
+                    </div>
+                    <div
+                        *ngIf="changePassword.get('oldPassword').invalid && changePassword.get('oldPassword').touched">
+                        <small
+                            *ngIf="changePassword.get('oldPassword').invalid && changePassword.get('oldPassword').touched"
+                            class="text-danger">
+                            {{globalServ.showLabel('oldPassword')}}
+                            {{globalServ.showGlobalErrors('required')}}
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>{{globalServ.showLabel('newPassword')}}</label>
+                    <div class="input-group">
+                        <input
+                            placeholder="{{globalServ.showPlaceholder('enterNewpassword')}}"
+                            [pattern]="noSpacesPattern"
+                            (change)="onPasswordChange()"
+                            [type]="showNewPassword ? 'text' : 'password'"
+                            class="form-control"
+                            [class.invalid]="changePassword.get('newPassword').hasError('mismatch') && changePassword.get('newPassword').touched"
+                            formControlName="newPassword">
+                        <span class="input-group-custom"
+                            id="password">
+                            <i alt="show" class="far fa-eye"
+                                id="password"
+                                *ngIf="showNewPassword"
+                                [name]="showNewPassword?'eye-off' : 'eye'"
+                                (click)="showNewPassword = !showNewPassword"></i>
+                            <i alt="hide" id="password"
+                                class="far fa-eye-slash eye-hide"
+                                *ngIf="!showNewPassword"
+                                (click)="showNewPassword = !showNewPassword"></i>
+                        </span>
+                    </div>
+                    <div
+                        *ngIf="changePassword.get('newPassword').invalid && changePassword.get('newPassword').touched">
+                        <small
+                            *ngIf="changePassword.get('newPassword').invalid && changePassword.get('newPassword').touched"
+                            class="text-danger">
+                            {{globalServ.showLabel('newPassword')}}
+                            {{globalServ.showGlobalErrors('required')}}
+                        </small>
+                    </div>
+                    <div
+                        *ngIf="changePassword.get('newPassword').hasError('mismatch') ">
+                        <small
+                            *ngIf="changePassword.get('newPassword').invalid && changePassword.get('newPassword').touched"
+                            class="text-danger">old and new passwords cannot be
+                            same</small>
+                    </div>
+                    <div
+                        *ngIf="changePassword.get('newPassword').hasError('minLength') ">
+                        <small
+                            *ngIf="changePassword.get('newPassword').invalid && changePassword.get('newPassword').touched"
+                            class="text-danger">New password length must be 8
+                            characters or more.</small>
+                    </div>
+                </div>
+
+                <div class="submit-section">
+                    <button class="btn btn-primary submit-btn"
+                        [disabled]="changePassword.invalid">
+                        {{globalServ.showLabel('updatePassword')}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /Page Content -->

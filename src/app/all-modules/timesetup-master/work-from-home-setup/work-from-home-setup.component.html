@@ -1,0 +1,394 @@
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col-sm-12 col-lg-8">
+            <div class="d-flex align-items-baseline">
+                <i style="font-size:20px" class="fa fa-arrow-left"
+                    (click)="back()" aria-label="back"></i>
+                <h3
+                    class="ms-4 page-title">{{globalServ.showLabel('wfhodHeader')}}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card p-3">
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item me-2" role="presentation">
+            <button
+                style="height: 40px; padding: revert"
+                (click)="tab1()"
+                class="nav-link active"
+                id="pills-WFH-tab"
+                data-bs-toggle="pill"
+                data-bs-target="#pills-WFH"
+                type="button"
+                role="tab"
+                aria-controls="pills-WFH"
+                aria-selected="true">
+                <div class="d-flex my-2 justify-content-center">
+                    {{globalServ.showLabel('headerOfWFH')}}
+                </div>
+            </button>
+        </li>
+        <li class="nav-item me-2" role="presentation">
+            <button
+                style="height: 40px; padding: revert"
+                (click)="tab2()"
+                class="nav-link"
+                id="pills-duty-tab"
+                data-bs-toggle="pill"
+                data-bs-target="#pills-duty"
+                type="button"
+                role="tab"
+                aria-controls="pills-duty"
+                aria-selected="false">
+                <div
+                    class="d-flex my-2 justify-content-center">{{globalServ.showLabel('odHeader')}}</div>
+            </button>
+        </li>
+        <!-- <li class="nav-item me-2" role="presentation">
+          <button
+            style="height: 40px; padding: revert"
+            (click)="tab3()"
+            class="nav-link"
+            id="pills-comp-tab"
+            data-bs-toggle="pill"
+            data-bs-target="#pills-comp"
+            type="button"
+            role="tab"
+            aria-controls="pills-comp"
+            aria-selected="false"
+          >
+            <div class="d-flex my-2 justify-content-center">
+              Compensation Off
+            </div>
+          </button>
+        </li> -->
+    </ul>
+
+    <div class="tab-content" id="pills-tabContent">
+        <div
+            class="tab-pane fade show active"
+            id="pills-WFH"
+            role="tabpanel"
+            aria-labelledby="pills-WFH-tab"
+            tabindex="0">
+            <form [formGroup]="wfhForm">
+
+                <div>
+
+                    <h4> {{globalServ.showLabel('headerOfWFH')}}</h4>
+                    <div class="d-flex my-4">
+                        <div>
+                            <input type="checkbox" class="form-check-input me-2"
+                                [formControl]="wfhForm.controls.allowHalfDay">
+                        </div>
+                        <div class>
+                            {{ globalServ.showLabel('halfDay')}}
+                        </div>
+                    </div>
+                    <div class="d-flex my-4">
+                        <div>
+                            <input type="checkbox" class="form-check-input me-2"
+                                [formControl]="wfhForm.controls.isPunchMandatory">
+                        </div>
+                        <div class>
+                            {{ globalServ.showLabel('punchMandatoryWfh')}}
+                        </div>
+                    </div>
+                    <div class="d-flex my-4">
+                        <div>
+                            <input type="checkbox"
+                                class="form-check-input me-2" />
+                        </div>
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('wfhRequestLimitInDays')">{{globalServ.splitLabelDescription('wfhRequestLimitInDays').before}}
+                            <input type="number"
+                                [formControl]="wfhForm.controls.daysAllowedForWfh"
+                                class="mx-1 form-control"
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
+                            {{globalServ.splitLabelDescription('wfhRequestLimitInDays').after}}
+                            <select name id class="form-select"
+                                [formControl]="wfhForm.controls.timeframeForDaysAllowed"
+                                style="display: inline-flex; width: fit-content;">
+                                <option [value]="cc.code"
+                                    *ngFor="let cc of notExceeds">{{cc.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex my-4">
+                        <div>
+                            <input type="checkbox"
+                                class="form-check-input me-2">
+                        </div>
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('wfhRequestLimitInTime')">
+                            {{globalServ.splitLabelDescription('wfhRequestLimitInTime').before}}
+                            <input type="number " class="mx-1 form-control"
+                                [formControl]="wfhForm.controls.noOfTimesAllowed"
+                                placeholder="times" />
+                            {{globalServ.splitLabelDescription('wfhRequestLimitInTime').after}}
+                            <select name id class="form-select"
+                                [formControl]="wfhForm.controls.timeframeForTimesAllowed"
+                                style="display: inline-flex; width: fit-content;">
+                                <option [value]="cc.code"
+                                    *ngFor="let cc of notExceeds">{{cc.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex my-4">
+                        <div>
+                            <input type="checkbox"
+                                class="form-check-input me-2">
+                        </div>
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('restrictPast')">
+                            {{globalServ.splitLabelDescription('restrictPast').before}}
+                            <input type="number" class="mx-1 form-control"
+                                [formControl]="wfhForm.controls.pastdaysRestriction"
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
+                            {{globalServ.splitLabelDescription('restrictPast').after}}
+                        </div>
+                    </div>
+                    <div class="d-flex my-4">
+                        <div>
+                            <input type="checkbox" class="form-check-input me-2"
+                                [formControl]="wfhForm.controls.allowWfhOnWe"></div>
+                        <div class="mar-10">
+                            {{globalServ.showLabel('restrictRaisingReq')}}
+                            <select name id class="form-select"
+                                [(ngModel)]="selectedAllowWfhOn"
+                                [formControl]="wfhForm.controls.allowWfhOn"
+                                style="display: inline-flex; width: fit-content;">
+                                <option [value]="cc.code"
+                                    *ngFor="let cc of notRaiseIn">{{cc.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex my-4">
+                        <div>
+                            <input type="checkbox"
+                                class="form-check-input me-2"></div>
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('notice')">
+                            {{globalServ.splitLabelDescription('notice').before}}
+                            <input type="number" class="mx-1 form-control"
+                                [formControl]="wfhForm.controls.calendarDaysNotice"
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
+                            {{globalServ.splitLabelDescription('notice').after}}
+                            <input type="number" class="mx-1 form-control"
+                                [formControl]="wfhForm.controls.workingDaysNotice"
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
+                            {{globalServ.splitLabelDescription('notice').after1}}
+                        </div>
+                    </div>
+
+                    <div class="d-flex my-4">
+                        <div>
+                            <input type="checkbox"
+                                class="form-check-input me-2"></div>
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('requiresApproval')">
+                            {{
+                            globalServ.splitLabelDescription('requiresApproval').before
+                            }}
+                            <input type="number" class="mx-1 form-control"
+                                [formControl]="wfhForm.controls.requireApprovalForGtDays"
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
+                            {{
+                            globalServ.splitLabelDescription('requiresApproval').after
+                            }}
+                            <select name id class="form-select"
+                                [formControl]="wfhForm.controls.requireApprovalTimeframe"
+                                style="display: inline-flex; width: fit-content;">
+                                <option [value]="cc.code"
+                                    *ngFor="let cc of notExceeds">{{cc.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+        <!-- wfh ends -->
+
+        <div
+            class="tab-pane fade"
+            id="pills-duty"
+            role="tabpanel"
+            aria-labelledby="pills-duty-tab"
+            tabindex="0">
+            <form [formGroup]="onDutyForm">
+
+                <div>
+                    <h4>{{globalServ.showLabel('headerOfOnDuty')}}</h4>
+                    <div class="d-flex my-4">
+                        <div>
+                            <input type="checkbox" class="form-check-input me-2"
+                                [formControl]="onDutyForm.controls.noOfTimesAllowed"></div>
+                        <div> {{globalServ.showLabel('allowHalfday')}}
+                        </div></div>
+                    <div class="d-flex my-4">
+                        <div>
+                            <input type="checkbox" class="form-check-input me-2"
+                                [formControl]="onDutyForm.controls.allowHourlyBasis">
+                        </div>
+                        <div> {{globalServ.showLabel('allowHourlyBasis')}}
+                        </div></div>
+                    <div class="d-flex my-4">
+                        <div>
+                            <input type="checkbox" class="form-check-input me-2"
+                                [formControl]="onDutyForm.controls.isPunchMandatory">
+                        </div>
+                        <div> {{globalServ.showLabel('punchMandatoryOnDuty')}}
+                        </div>
+                    </div>
+                    <div class="d-flex my-4">
+                        <div>
+                            <input type="checkbox"
+                                class="form-check-input me-2"> </div>
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('odRequestLimitInDays')">
+                            {{globalServ.splitLabelDescription('odRequestLimitInDays').before}}
+                            <input type="number " class="form-control mx-1"
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}"
+                                [formControl]="onDutyForm.controls.daysAllowedForOd" />
+                            {{globalServ.splitLabelDescription('odRequestLimitInDays').after}}
+                            <select name id class="form-select"
+                                [formControl]="onDutyForm.controls.timeframeForDaysAllowed"
+                                style="display: inline; width: fit-content;">
+                                <option [value]="cc.code"
+                                    *ngFor="let cc of notExceeds">{{cc.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex my-4">
+                        <div>
+                            <input type="checkbox"
+                                class="form-check-input me-2"></div>
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('odRequestLimitInTime')">
+                            {{globalServ.splitLabelDescription('odRequestLimitInTime').before}}
+                            <input type="number" class="form-control mx-1"
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}"
+                                [formControl]="onDutyForm.controls.noOfTimesAllowed" />
+                            {{globalServ.splitLabelDescription('odRequestLimitInTime').after}}
+                            <select name id class="form-select"
+                                [formControl]="onDutyForm.controls.timeframeForTimesAllowed"
+                                style="display: inline; width: fit-content;">
+                                <option [value]="cc.code"
+                                    *ngFor="let cc of notExceeds">{{cc.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- -------------
+    <div class="d-flex my-4">
+        <div>
+            <input type="checkbox" class="form-check-input me-2"></div>
+        <div class="mar-10"  *ngIf="globalServ.hasInteger('allowPast')" > {{globalServ.splitLabelDescription('allowPast').before}} 
+            <select name id class="form-select" 
+                style="display: inline; width: fit-content;">
+                <option [value]="cc.code" *ngFor="let cc of pastDutyReq">{{cc.name}}</option>
+            </select>
+            {{globalServ.splitLabelDescription('allowPast').after}} 
+            <select name id class="form-select"
+                style="display: inline; width: fit-content;">
+                <option [value]="cc.code" *ngFor="let cc of pastDutyReqEnd">{{cc.name}}</option>
+            </select>
+                {{globalServ.splitLabelDescription('allowPast').after1}} 
+        </div>
+    </div>
+    -------------- -->
+                    <div class="d-flex my-4">
+                        <div>
+                            <input type="checkbox"
+                                class="form-check-input me-2"> </div>
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('restrictPast')">
+                            {{globalServ.splitLabelDescription('restrictPast').before}}
+                            <input type="number" class="form-control mx-1"
+                                [formControl]="onDutyForm.controls.pastdaysRestriction"
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
+                            {{globalServ.splitLabelDescription('restrictPast').after}}
+                        </div>
+                    </div>
+                    <div class="d-flex my-4">
+                        <div>
+                            <input type="checkbox" class="form-check-input me-2"
+                                [formControl]="onDutyForm.controls.allowOdOnWe">
+                        </div>
+                        <div class="mar-10"> {{
+                            globalServ.showLabel('restrictRaisingReq')}}
+                            <select name id class="form-select"
+                                [formControl]="onDutyForm.controls.allowOdOn"
+                                style="display: inline; width: fit-content;">
+                                <option [value]="cc.code"
+                                    *ngFor="let cc of notRaiseIn">{{cc.name}}</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="d-flex my-4">
+                        <div>
+                            <input type="checkbox"
+                                class="form-check-input me-2"></div>
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('notice')">
+                            {{globalServ.splitLabelDescription('notice').before}}
+                            <input type="number" class="form-control mx-1"
+                                [formControl]="onDutyForm.controls.calendarDaysNotice"
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
+                            {{globalServ.splitLabelDescription('notice').after}}
+                            <input type="number"
+                                [formControl]="onDutyForm.controls.workingDaysNotice"
+                                class="form-control mx-1"
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
+                            {{globalServ.splitLabelDescription('notice').after1}}
+                        </div>
+                    </div>
+                    <!-- <div class="d-flex my-4">
+        <div>
+            <input type="checkbox" class="form-check-input me-2"></div>
+        <div class="mar-10">
+           {{showLabel('requiresApproval')}} <input type="number" [formControl]="onDutyForm.controls.allowHourlyBasis" class="form-control mx-1"
+                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
+        </div>
+    </div> -->
+                    <div class="d-flex my-4">
+                        <div>
+                            <input type="checkbox"
+                                class="form-check-input me-2"></div>
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('requiresApproval')">
+                            {{
+                            globalServ.splitLabelDescription('requiresApproval').before
+                            }}
+                            <input type="number" class="mx-1 form-control"
+                                [formControl]="onDutyForm.controls.requireApprovalForGtDays"
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
+                            {{
+                            globalServ.splitLabelDescription('requiresApproval').after
+                            }}
+                            <select name id class="form-select"
+                                [formControl]="onDutyForm.controls.requireApprovalTimeframe"
+                                style="display: inline-flex; width: fit-content;">
+                                <option [value]="cc.code"
+                                    *ngFor="let cc of notExceeds">{{cc.name}}</option>
+                            </select>
+                        </div>
+
+                        <div
+                            class="tab-pane fade"
+                            id="pills-comp"
+                            role="tabpanel"
+                            aria-labelledby="pills-comp-tab"
+                            tabindex="0">
+                            <div>
+                                <h4 class="mb-3">Compensation off Request
+                                    Settings</h4>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>

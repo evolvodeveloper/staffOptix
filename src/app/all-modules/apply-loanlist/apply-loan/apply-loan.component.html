@@ -1,0 +1,141 @@
+<div class="modal fade modal-right" style="padding-right: 17px; display: none;"
+    [ngClass]="{'show':open}"
+    [ngStyle]="open && {display: 'block'}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">
+                    {{ view ? globalServ.getGlobalNames('view') : (update ?
+                    globalServ.getGlobalNames('update')
+                    :globalServ.getGlobalNames('apply')) }}
+                    {{globalServ.showLabel('loan')}}
+                </h1>
+                <button type="button" class="btn-close" (click)="closeModal()"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <form [formGroup]="loanApplicationForm" novalidate>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-md" *ngIf="iamAdmin">
+                                    <label>{{globalServ.getGlobalNames('employee')}}</label>
+                                    <ng-select
+                                        [items]="employees_list"
+                                        (change)="checkMaxLoanAmt()"
+                                        [formControl]="loanApplicationForm.controls.employeeCode"
+                                        bindLabel="mergeName"
+                                        bindValue="employeeCode"
+                                        [multiple]="false"
+                                        id="emp"
+                                        placeholder="Select an employee"
+                                        class="ngSelectform">
+                                    </ng-select>
+                                    <div class="mt-1"
+                                        *ngIf="loanApplicationForm.controls['employeeCode'].invalid && (loanApplicationForm.controls['employeeCode'].dirty ||
+                                            loanApplicationForm.controls['employeeCode'].touched) "
+                                        style="padding: 0px">
+                                        <div class="ms-2"
+                                            *ngIf="loanApplicationForm.controls['employeeCode'].errors.required"
+                                            style="color: #dc3545">
+                                            {{globalServ.showLabel('employee')}}
+                                            {{globalServ.showGlobalErrors('required')}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-md">
+                                    <label>
+                                        {{globalServ.showLabel("LoanName")}}&nbsp;<span
+                                            style="color: red; margin-left: 1px">*</span></label>
+                                    <div class="input-group">
+                                        <select for="loanCode"
+                                            class="form-select"
+                                            *ngIf="!view && !update"
+                                            (change)="checkMaxLoanAmt()"
+                                            [formControl]="loanApplicationForm.controls.loanCode">
+                                            <option value="">-</option>
+                                            <option *ngFor="let hh of loansData"
+                                                [value]="hh.loanCode">{{hh.loanCode}}</option>
+                                        </select>
+
+                                        <input type="text"
+                                            *ngIf="view || update"
+                                            name="loanCode"
+                                            class="form-control"
+                                            [formControl]="loanApplicationForm.controls.loanCode">
+                                    </div>
+                                    <div class="mt-1"
+                                        *ngIf="loanApplicationForm.controls['loanCode'].invalid && (loanApplicationForm.controls['loanCode'].dirty ||
+                                            loanApplicationForm.controls['loanCode'].touched) "
+                                        style="padding: 0px">
+                                        <div class="ms-2"
+                                            *ngIf="loanApplicationForm.controls['loanCode'].errors.required"
+                                            style="color: #dc3545">
+                                            {{globalServ.showLabel('LoanName')}}
+                                            {{globalServ.showGlobalErrors('required')}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-md">
+                                    <label>
+                                        {{globalServ.showLabel("LoanAmount")}}&nbsp;<span
+                                            style="color: red; margin-left: 1px">*</span></label>
+                                    <div class="input-group">
+                                        <input type="number"
+                                            name="loanAmount"
+                                            [max]="maxLoanAmt"
+                                            (keyup)="checkMaxLoanAmt()"
+                                            class="form-control"
+                                            [formControl]="loanApplicationForm.controls.loanAmount">
+                                    </div>
+                                    <div class="mt-1"
+                                        *ngIf="loanApplicationForm.controls['loanAmount'].invalid && (loanApplicationForm.controls['loanAmount'].dirty ||
+                                            loanApplicationForm.controls['loanAmount'].touched) "
+                                        style="padding: 0px">
+                                        <div class="ms-2"
+                                            *ngIf="loanApplicationForm.controls['loanAmount'].errors.required"
+                                            style="color: #dc3545">
+                                            {{globalServ.showLabel('LoanAmount')}}
+                                            {{globalServ.showGlobalErrors('required')}}
+                                        </div>
+                                        <div class="ms-2"
+                                            *ngIf="loanApplicationForm.controls['loanAmount'].value > maxLoanAmt"
+                                            style="color: #dc3545">
+                                            {{globalServ.showLabel('LoanAmountMax')}}
+                                            {{maxLoanAmt}}.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel_loanMaster" type="button"
+                    class="btn delete-btn"
+                    (click)="closeModal()">{{globalServ.getGlobalNames('cancel')}}</button>
+                <button id="create_loanMaster"
+                    [disabled]="loanApplicationForm.pristine || loanApplicationForm.invalid"
+                    [hidden]="view || update"
+                    (click)="create()" class="btn add-btn">
+                    {{globalServ.getGlobalNames('create')}}
+                </button>
+                <button id="update_loanMaster" *ngIf="update"
+                    [disabled]="loanApplicationForm.pristine || loanApplicationForm.invalid"
+                    (click)="Update()"
+                    class="btn add-btn">
+                    {{globalServ.getGlobalNames('update')}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="open" class="modal-backdrop fade show"></div>

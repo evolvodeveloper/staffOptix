@@ -1,0 +1,359 @@
+<div class="modal fade modal-right" style="padding-right: 17px; display: none;"
+    [ngClass]="{'show':open}"
+    [ngStyle]="open && {'display': 'block'}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">{{ view ?
+                    globalServ.getGlobalNames('view') : (update ?
+                    globalServ.getGlobalNames('update')
+                    :globalServ.getGlobalNames('create')) }}
+                    {{globalServ.showLabel('userHeader')}} </h1>
+                <button type="button" class="btn-close" (click)="closeModal()"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <form [formGroup]="userForm" novalidate>
+                            <div class="row g-2 mb-3" [hidden]="view || update">
+                                <div class="col-md">
+                                    <!-- <div class="form-floating"> -->
+                                    <label>{{selectedUserType | titlecase
+                                        }}&nbsp;<span
+                                            style="color: red; margin-left: 1px">*</span></label>
+                                    <select id="employee" class="form-select"
+                                        [formControl]="userForm.controls.userCode">
+                                        <option [value]="employee.code"
+                                            *ngFor="let employee of List">{{employee.name}}
+                                            - [{{employee.code}}]
+                                        </option>
+                                    </select>
+                                    <!-- </div> -->
+                                </div>
+                            </div>
+                            <div class="row g-2 mb-3" [hidden]="view || update">
+                                <div class="col-md">
+                                    <!-- <div class="form-floating"> -->
+                                    <label>
+                                        {{globalServ.getGlobalNames('userName')}}
+                                        &nbsp;<span
+                                            style="color: red; margin-left: 1px">*</span></label>
+                                    <div class="input-group">
+                                        <input type="text"
+                                            name="userName" class="form-control"
+                                            (keyup)="onUserNameChange(userForm.controls.userName.value)"
+                                            maxlength={{charLimit}}
+                                            [formControl]="userForm.controls.userName">
+                                        <span
+                                            id="userName"
+                                            class="input-group-custom"
+                                            *ngIf="showSuccessuserNameToolTip === 'USERNAME NOT EXISTS'"
+                                            data-toggle="tooltip"
+                                            data-placement="right"
+                                            title>
+                                            <i
+                                                id="userName"
+                                                style="color: #35ef57"
+                                                class="far fa-check-circle"
+                                                aria-hidden="true"></i>
+                                        </span>
+                                        <span
+                                            class="input-group-custom"
+                                            id="userName"
+                                            *ngIf="showSuccessuserNameToolTip === 'USERNAME ALREADY EXISTS'"
+                                            data-toggle="tooltip"
+                                            data-placement="right"
+                                            title="USERNAME ALREADY EXISTS">
+                                            <i
+                                                id="userName"
+                                                style="color: #dc3545"
+                                                class="fa fa-exclamation-triangle"
+                                                aria-hidden="true"></i>
+                                        </span>
+                                    </div>
+
+                                    <div
+                                        *ngIf="userForm.controls['userName'].invalid && (userForm.controls['userName'].dirty ||
+                            userForm.controls['userName'].touched) "
+                                        style="padding: 0px">
+                                        <div class="ms-2"
+                                            *ngIf="userForm.controls['userName'].errors.required"
+                                            style="color: #dc3545">
+                                            {{globalServ.getGlobalNames('userName')}}
+                                            {{globalServ.showGlobalErrors('required')}}
+                                        </div>
+                                    </div>
+                                    <div id="userName"
+                                        *ngIf="userForm.controls['userName'].value?.length > charLimit - 1"
+                                        style="color: #dc3545">
+                                        {{globalServ.showGlobalErrors('max')}}
+                                        {{ charLimit }}
+                                        {{globalServ.showGlobalErrors('char')}}
+                                    </div>
+                                    <!-- </div> -->
+                                </div>
+                            </div>
+
+                            <div class="row g-2 mb-3" *ngIf="update || view">
+                                <div class="col-md">
+                                    <!-- <div class="form-floating"> -->
+                                    <label>{{globalServ.getGlobalNames('userName')}}</label>
+                                    <input id="employee" type="text"
+                                        class="form-control disablepointer "
+                                        readonly formControlName="userName">
+                                    <!-- </div> -->
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="text-sm mb-1">
+                                    {{globalServ.getGlobalNames('roles')}}
+                                    &nbsp;<span
+                                        style="color: red; margin-left: 1px">*</span>
+                                </label>
+                                <ng-select id="roleCode" [items]="roleCodeList"
+                                    bindLabel="roleCode" bindValue="roleCode"
+                                    multiple="true"
+                                    placeholder=" {{globalServ.showPlaceholder('selectRoles')}}"
+                                    formControlName="selectedRoles"></ng-select>
+                                <!-- </div> -->
+                            </div>
+                            <div class="form-group input">
+                                <label>{{globalServ.showLabel('password')}}
+                                    &nbsp;<span
+                                        style="color: red; margin-left: 1px">*</span></label>
+                                <div class="input-group">
+                                    <input
+                                        id="password"
+                                        (keyup)="onPasswordChange()"
+                                        name="password"
+                                        autocomplete="new-password"
+                                        [type]="showPassword ? 'text' : 'password'"
+                                        class="form-control pwd-control bg-white"
+                                        [formControl]="userForm.controls.password">
+                                    <span class="input-group-custom"
+                                        id="password">
+                                        <i alt="show" class="far fa-eye"
+                                            id="password"
+                                            *ngIf="showPassword"
+                                            [name]="showPassword?'eye-off' : 'eye'"
+                                            (click)="showPassword = !showPassword"></i>
+                                        <i alt="hide" id="password"
+                                            class="far fa-eye-slash eye-hide"
+                                            *ngIf="!showPassword"
+                                            (click)="showPassword = !showPassword"></i>
+                                    </span>
+                                    <span
+                                        class="input-group-custom"
+                                        *ngIf="userForm.controls['password'].hasError('minlength')"
+                                        data-toggle="tooltip"
+                                        id="password"
+                                        data-placement="right"
+                                        title="Must be at least 8 characters!">
+                                        <div style="color: #dc3545">
+                                            <i
+                                                class="fa fa-exclamation-triangle"
+                                                aria-hidden="true"></i>
+                                        </div>
+                                    </span>
+                                </div>
+                                <div
+                                    *ngIf="userForm.controls['password'].invalid && (userForm.controls['password'].dirty || userForm.controls['password'].touched)"
+                                    style="padding: 0px">
+                                    <div id="password" class="ms-2"
+                                        *ngIf="userForm.controls['password'].errors.required"
+                                        style="color: #dc3545">
+                                        {{globalServ.showLabel('password')}}
+                                        {{globalServ.showGlobalErrors('required')}}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group input">
+                                <label>
+                                    {{globalServ.showLabel('confirmPassword')}}
+                                    &nbsp;<span
+                                        style="color: red; margin-left: 1px">*</span></label>
+                                <div class="input-group">
+                                    <input
+                                        id="confirm_password"
+                                        (keyup)="onPasswordChange()"
+                                        name="confirm_password"
+                                        [type]="showConfrmPassword ? 'text' : 'password'"
+                                        class="form-control pwd-control bg-white"
+                                        [formControl]="userForm.controls.confirm_password">
+                                    <span class="input-group-custom"
+                                        id="confirmpassword">
+                                        <i alt="show" class="far fa-eye"
+                                            id="confirmpassword"
+                                            *ngIf="showConfrmPassword"
+                                            [name]="showConfrmPassword?'eye-off' : 'eye'"
+                                            (click)="showConfrmPassword = !showConfrmPassword"></i>
+                                        <i alt="hide"
+                                            class="far fa-eye-slash eye-hide"
+                                            id="confirmpassword"
+                                            *ngIf="!showConfrmPassword"
+                                            (click)="showConfrmPassword = !showConfrmPassword"></i>
+                                    </span>
+                                    <span
+                                        class="input-group-custom"
+                                        *ngIf="confirm_password.hasError('mismatch')"
+                                        style="color: #dc3545"
+                                        data-toggle="tooltip"
+                                        id="confirmpassword"
+                                        data-placement="right"
+                                        title="Password Does not match">
+                                        <div style="color: #dc3545">
+                                            <i
+                                                id="confirmpassword"
+                                                class="fa fa-exclamation-triangle"
+                                                aria-hidden="true"></i></div></span>
+                                </div>
+                                <div
+                                    *ngIf="userForm.controls['confirm_password'].invalid && (userForm.controls['confirm_password'].dirty || userForm.controls['confirm_password'].touched)"
+                                    style="padding: 0px">
+                                    <div id="confirm_password" class="ms-2"
+                                        *ngIf="userForm.controls['confirm_password'].errors.required"
+                                        style="color: #dc3545">
+                                        {{globalServ.showLabel('confirmPassword')}}
+                                        {{globalServ.showGlobalErrors('required')}}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 mb-3" *ngIf="update  || view">
+                                <div class="col-md">
+                                    <div class="form-floating">
+                                        <input id="lastWorkingDate" type="date"
+                                            class="form-control"
+                                            [formControl]="userForm.controls.lastWorkingDate">
+                                        <label>
+                                            {{globalServ.showLabel('accountExpiryDate')}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class=" g-2 mb-3">
+                                <!-- <div class="col-md" *ngIf="!update && !view">
+                                    <div class="form-check form-check-inline">
+                                        <input id="firstLogin"
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            [formControl]="userForm.controls.firstLogin">
+                                        <label class="form-check-label">
+                                            First Login
+                                        </label>
+                                    </div>
+                                </div> -->
+                                <div class="col-md" *ngIf="update || view">
+                                    <div class="form-check form-check-inline">
+                                        <input id="accountLocked"
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            [formControl]="userForm.controls.accountLocked">
+                                        <label class="form-check-label">
+                                            {{globalServ.showLabel('accountLocked')}}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md" *ngIf="update || view">
+                                    <div class="form-check form-check-inline">
+                                        <input id="passwordExpired"
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            [formControl]="userForm.controls.passwordExpired">
+                                        <label class="form-check-label">
+                                            {{globalServ.showLabel('passwordExpired')}}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md">
+                                    <div class="form-check form-check-inline">
+                                        <input id="multiBranch"
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            [formControl]="userForm.controls.multiBranch">
+                                        <label class="form-check-label"
+                                            for="multiBranch">
+                                            {{globalServ.showLabel('multiBranchUser')}}
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <section class="mt-2" *ngIf="!view && !update">
+                                    <label>
+                                        {{globalServ.showLabel('onboardingProcess')}}
+
+                                    </label>
+                                    <div class="row justify-content-around ">
+                                        <div class="card col-md-5"
+                                            [class.selected]="getSelectedOption() === 'manual'"
+                                            (click)="selectCard('manual')">
+                                            <span class="m-auto p-2">
+                                                {{globalServ.showLabel('manualInvite')}}
+                                            </span>
+                                        </div>
+                                        <div class="card col-md-5"
+                                            [class.selected]="getSelectedOption() === 'email'"
+                                            (click)="selectCard('email')">
+                                            <span class="m-auto p-2">
+                                                {{globalServ.showLabel('emailInvite')}}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section *ngIf="!view && !update">
+                                    <div class="alert alert-info mt-1"
+                                        role="alert"
+                                        *ngIf="userForm.controls.onboardingFlow.value === 'email'">
+                                        {{globalServ.showLabel('emailOnboarding')}}
+                                    </div>
+                                    <div class="alert alert-info mt-1"
+                                        role="alert"
+                                        *ngIf="userForm.controls.onboardingFlow.value === 'manual'">
+                                        {{globalServ.showLabel('logincredentials')}}
+                                    </div>
+                                </section>
+                                <div class="col-md" *ngIf="update || view">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input"
+                                            id="isactive" type="checkbox"
+                                            [formControl]="userForm.controls.isactive">
+                                        <label class="form-check-label"
+                                            for="isactive">
+                                            {{globalServ.getGlobalNames('active')}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel_user" type="button" class="btn delete-btn"
+                    (click)="closeModal()">
+                    {{globalServ.getGlobalNames('cancel')}}
+                </button>
+                <button id="create_user"
+                    [disabled]="userForm.pristine || userForm.invalid || showSuccessuserNameToolTip === 'USERNAME ALREADY EXISTS'"
+                    [hidden]="view || update"
+                    (click)="create()" class="btn add-btn">
+                    {{globalServ.getGlobalNames('create')}}
+                </button>
+                <button id="update_user" *ngIf="update && !passwordChanged"
+                    [disabled]="userForm.pristine || showSuccessuserNameToolTip === 'USERNAME ALREADY EXISTS'"
+                    (click)="Update()" class="btn add-btn">
+                    {{globalServ.getGlobalNames('update')}}
+                </button>
+                <button id="update_user" *ngIf="update && passwordChanged"
+                    [disabled]="userForm.invalid || showSuccessuserNameToolTip === 'USERNAME ALREADY EXISTS' || passwdMatched === true"
+                    (click)="Update()" class="btn add-btn">
+                    {{globalServ.getGlobalNames('update')}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="open" class="modal-backdrop fade show"></div>

@@ -1,0 +1,355 @@
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col-sm-12 col-lg-8">
+            <div class="d-flex align-items-baseline">
+                <i style="font-size:20px" class="fa fa-arrow-left"
+                    (click)="back()" aria-label="back"></i>
+                <h3 class="ms-4 page-title">
+                    {{ view ? globalServ.getGlobalNames('view') : (update ?
+                    globalServ.getGlobalNames('update')
+                    :globalServ.getGlobalNames('create')) }}
+                    {{globalServ.showLabel('OTSetupHeader')}}
+                </h3>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card p-3">
+    <form [formGroup]="overtimesetup">
+        <div class="form-group input">
+            <label class="mb-1 text-sm" id="overtimeCode">{{globalServ.showLabel('overtimeCode')}}&nbsp;<span
+                    style="color: red; margin-left: 1px">*</span></label>
+            <div>
+                <input type="text"
+                    maxlength="{{ charLimit }}"
+                    [formControl]="overtimesetup.controls.overtimeCode"
+                    id="overtimeCode" class="form-control ms-2">
+                <div id="overtimeCode"
+                    *ngIf="overtimesetup.controls['overtimeCode'].invalid &&
+               (overtimesetup.controls['overtimeCode'].dirty ||
+                overtimesetup.controls['overtimeCode'].touched)"
+                    style="padding: 0px">
+                    <div
+                        *ngIf="overtimesetup.controls['overtimeCode'].errors.required"
+                        style="color: #dc3545">{{globalServ.showLabel('overtimeCode')}}
+                        {{globalServ.showGlobalErrors('required')}}
+                    </div>
+                </div>
+                <div
+                    *ngIf="overtimesetup.get('overtimeCode').hasError('invalidFormat')"
+                    style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+            </div>
+        </div>
+     
+        <div class="d-flex my-3">
+            <div>
+                <input type="checkbox" id="addEmpManually"
+                    class="form-check-input me-2"
+                    [formControl]="overtimesetup.controls.addEmpManually"></div>
+            In the future, would you prefer to manually assign overtime to
+            employees?
+        </div>
+
+        <!-- header for work Day -->
+        <div><b>
+            {{globalServ.showLabel('header-WorkDay')}}</b></div>
+        <div class="ms-3">
+            <div class="d-flex my-3">
+                <div>
+                    <input type="checkbox" id="allowOtOnWorkdays"
+                        class="form-check-input me-2" (change)="checkInital()"
+                        [formControl]="overtimesetup.controls.allowOtOnWorkdays"></div>
+                {{globalServ.showLabel('allowOtOnWorkdays')}}
+            </div>
+            <div class="d-flex my-3 align-items-center" id="otRatePct">
+                <div id="otRatePct">
+                    {{globalServ.showLabel('otRatePct')}}
+                </div>
+                <div class="d-flex">
+                    <div>
+                        <input type="number"
+                            [formControl]="overtimesetup.controls.otRatePct"
+                            (change)="allowMax('otRatePct')"
+                            id="otRatePct" class="form-control ms-2">
+                        <div style="color: #dc3545"
+                            *ngIf="overtimesetup.controls.otRatePct.value > 100">
+                            {{globalServ.showGlobalErrors('cannotBeMorethan')}}
+                        </div>
+                    </div>
+                    <span
+                        class="d-flex mx-2 align-items-center">%</span>
+                    <span
+                        class="d-flex me-2 align-items-center">{{globalServ.getGlobalNames('of')}}</span>
+                    <select id="salaryComponentCode" class="form-select ms-2"
+                        [formControl]=" overtimesetup.controls.salaryComponentCode">
+                        <option [value]="sal.componentCode"
+                            *ngFor="let sal of salaryCompCodes">{{sal.componentCode}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex my-3">
+                {{globalServ.showLabel('otBasis')}}
+            </div>
+            <div class="ms-3">
+                <input type="radio" name="otBasis" value="Hours"
+                    id="otBasis-Hours"
+                    [formControl]="overtimesetup.controls.otBasis"
+                    class="form-check-input me-2">
+                <span>{{globalServ.showLabel('otBasis-Hours')
+                    }}</span>
+                <br>
+                <input type="radio" name="otBasis" value="ShiftEnd"
+                    id="otBasis-ShiftEnd"
+                    [formControl]="overtimesetup.controls.otBasis"
+                    class="form-check-input me-2"> <span>{{
+                    globalServ.showLabel('otBasis-ShiftEnd')
+                    }}</span>
+            </div>
+            <div class="d-flex my-3 align-items-center">
+                <div *ngIf="globalServ.hasInteger('allowOtAfter')"
+                    class="d-flex align-items-center">
+                    {{globalServ.splitLabelDescription('allowOtAfter').before }}
+                    <div>
+                        <input type="number" class="form-control mx-2"
+                            id="allowOtAfter"
+                            (change)="allowMax('allowOtAfter')"
+                            [formControl]="overtimesetup.controls.allowOtAfter">
+                        <div style="color: #dc3545"
+                            *ngIf="overtimesetup.controls.allowOtAfter.value > 12">
+                            {{globalServ.showGlobalErrors('cannotBeMorethanHrs')}}
+                        </div>
+                    </div>
+                    {{globalServ.splitLabelDescription('allowOtAfter').after }}
+                </div>
+            </div>
+
+            <div class="my-3">
+                {{globalServ.showLabel('calculateOvertime')}}
+            </div>
+            <div class="ms-3">
+                <input type="radio" name="allowFullOt" [value]="true"
+                    id="allowFullOt-True"
+                    [formControl]="overtimesetup.controls.allowFullOt"
+                    class="form-check-input me-2"> <span>{{
+                    globalServ.showLabel('allowFullOt-True')
+                    }}</span>
+                <br>
+                <input type="radio" name="allowFullOt" [value]="false"
+                    id="allowFullOt-False"
+                    [formControl]="overtimesetup.controls.allowFullOt"
+                    class="form-check-input me-2"> <span>{{
+                    globalServ.showLabel('allowFullOt-False')
+                    }}</span>
+            </div>
+        </div>
+        <!-- header for work Day ends -->
+        <!-- header for WeekOff -->
+        <div class="my-3"><b>
+                <!-- <input type="checkbox" class="form-check-input me-2"
+            id="weAllowFullOt"
+            [formControl]="overtimesetup.controls.weAllowFullOt"> -->
+                {{globalServ.showLabel('header-WeekOff') }}</b></div>
+        <div class="ms-3">
+            <div class="d-flex my-3">
+                <div>
+                    <input type="checkbox" class="form-check-input me-2"
+                        id="allowOtOnWeekend" (change)="checkInital()"
+                        [formControl]="overtimesetup.controls.allowOtOnWeekend"></div>
+                {{globalServ.showLabel('allowOtOnWeekend') }}
+            </div>
+            <div class="d-flex my-3  align-items-center">
+                {{ globalServ.showLabel('weOtRatePct') }}
+                <div class="d-flex">
+                    <div>
+                        <input type="number"
+                            (change)="allowMax('weOtRatePct')"
+                            [formControl]="overtimesetup.controls.weOtRatePct"
+                            id="weOtRatePct" class="form-control ms-2">
+                        <div style="color: #dc3545"
+                            *ngIf="overtimesetup.controls.weOtRatePct.value > 100">
+                            {{globalServ.showGlobalErrors('cannotBeMorethan')}}
+                        </div>
+                    </div>
+                    <span
+                        class="d-flex mx-2 align-items-center">%</span>
+                    <span
+                        class="d-flex me-2 align-items-center">{{globalServ.getGlobalNames('of')}}</span>
+                    <select id="weSalaryComponentCode" class="form-select ms-2"
+                        [formControl]=" overtimesetup.controls.weSalaryComponentCode">
+                        <option [value]="sal.componentCode"
+                            *ngFor="let sal of salaryCompCodes">{{sal.componentCode}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex my-3 align-items-center">
+                <div
+                    class="d-flex align-items-center">
+                    {{ globalServ.splitLabelDescription('weAllowOtAfter').before
+                    }}
+                    <div>
+                        <input type="number" class="form-control mx-2"
+                            id="weAllowOtAfter"
+                            (change)="allowMax('weAllowOtAfter')"
+                            [formControl]="overtimesetup.controls.weAllowOtAfter">
+                        <div style="color: #dc3545"
+                            *ngIf="overtimesetup.controls.weAllowOtAfter.value > 12">
+                            {{globalServ.showGlobalErrors('cannotBeMorethanHrs')}}
+                        </div>
+                    </div>
+                    {{ globalServ.splitLabelDescription('weAllowOtAfter').after
+                    }}
+                </div>
+            </div>
+        </div>
+        <!-- header for WeekOff ends -->
+        <!-- header for Holiday  -->
+        <div><b>
+                <!-- <input type="checkbox" class="form-check-input me-2"
+            id="holAllowFullOt"
+            [formControl]="overtimesetup.controls.holAllowFullOt"> -->
+                {{globalServ.showLabel('header-Holiday') }}</b></div>
+        <div class="ms-3">
+            <div class="d-flex my-3">
+                <div>
+                    <input type="checkbox" class="form-check-input me-2"
+                        id="allowOtOnHoliday" (change)="checkInital()"
+                        [formControl]="overtimesetup.controls.allowOtOnHoliday"></div>
+                {{globalServ.showLabel('allowOtOnHolidays') }}
+            </div>
+            <div class="d-flex my-3  align-items-center">
+                {{ globalServ.showLabel('holOtRatePct') }}
+                <div class="d-flex">
+                    <div>
+                        <input type="number"
+                            (change)="allowMax('holOtRatePct')"
+                            [formControl]="overtimesetup.controls.holOtRatePct"
+                            id="holOtRatePct"
+                            id="holOtRatePct" class="form-control ms-2">
+                        <div style="color: #dc3545"
+                            *ngIf="overtimesetup.controls.holOtRatePct.value > 100">
+                            {{globalServ.showGlobalErrors('cannotBeMorethan')}}
+                        </div>
+                    </div>
+                    <span
+                        class="d-flex mx-2 align-items-center">%</span>
+                    <span
+                        class="d-flex me-2 align-items-center">{{globalServ.getGlobalNames('of')}}</span>
+                    <select id="holSalaryComponentCode" class="form-select ms-2"
+                        [formControl]="overtimesetup.controls.holSalaryComponentCode">
+                        <option [value]="sal.componentCode"
+                            *ngFor="let sal of salaryCompCodes">{{sal.componentCode}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex my-3 align-items-center">
+                <div *ngIf="globalServ.hasInteger('holAllowOtAfter')"
+                    class="d-flex align-items-center">
+                    {{
+                    globalServ.splitLabelDescription('holAllowOtAfter').before
+                    }}
+                    <div>
+                        <input type="number" class="form-control mx-2"
+                            id="holAllowOtAfter"
+                            (change)="allowMax('holAllowOtAfter')"
+                            [formControl]="overtimesetup.controls.holAllowOtAfter">
+                        <div style="color: #dc3545"
+                            *ngIf="overtimesetup.controls.holAllowOtAfter.value > 100">
+                            {{globalServ.showGlobalErrors('cannotBeMorethanHrs')}}
+                        </div>
+                    </div>
+                    {{ globalServ.splitLabelDescription('holAllowOtAfter').after
+                    }}
+                </div>
+            </div>
+        </div>
+        <!-- header for Holiday  ends -->
+        <!-- header for FullAttendance -->
+        <div><b> {{ globalServ.showLabel('header-FullAttendance') }}</b></div>
+        <div class="ms-3">
+            <div class="d-flex my-3">
+                <div>
+                    <input type="checkbox" class="form-check-input me-2"
+                        id="allowFullAttendanceBonus" (change)="checkInital()"
+                        [formControl]="overtimesetup.controls.allowFullAttendanceBonus"></div>
+                {{ globalServ.showLabel('allowFullAttendanceBonus') }}
+            </div>
+            <div>{{ globalServ.showLabel('IncentiveGiven') }}</div>
+
+            <div class="ms-3">
+                <input type="radio" name="faBonusType" value="Fixed"
+                    id="faBonusType-Fixed" (change)="faBonus()"
+                    [formControl]="overtimesetup.controls.faBonusType"
+                    class="form-check-input me-2"> <span>{{
+                    globalServ.showLabel('faBonusType-Fixed')
+                    }}</span>
+                <div class="d-flex my-3  ms-3 align-items-center"
+                    *ngIf="overtimesetup.controls.faBonusType.value === 'Fixed'">
+                    {{ globalServ.showLabel('faBonusValues-Fixed') }} <div>
+                        <input type="number" id="faBonusValue-Fixed"
+                            [formControl]=" overtimesetup.controls.faBonusValueFixed"
+                            class="form-control ms-2">
+                    </div>
+                </div>
+            </div>
+            <div class="ms-3">
+                <input type="radio" name="faBonusType" value="Days"
+                    id="faBonusType-Days" (change)="faBonus()"
+                    [formControl]="overtimesetup.controls.faBonusType"
+                    class="form-check-input me-2"> <span>{{
+                    globalServ.showLabel('faBonusType-Days')
+                    }}</span>
+
+                <div class="d-flex my-3  ms-3  align-items-center"
+                    *ngIf="overtimesetup.controls.faBonusType.value === 'Days'">
+                    {{ globalServ.showLabel('faBonusValues-Days') }} <div>
+                        <div>
+                            <input type="number"
+                                (change)="allowMax('faBonusType')"
+                                [formControl]=" overtimesetup.controls.faBonusValueDays"
+                                id="faBonusValue-Days"
+                                class="form-control ms-2">
+                            <div style="color: #dc3545"
+                                *ngIf="overtimesetup.controls.faBonusValueDays.value > 31">
+                                {{globalServ.showGlobalErrors('cannotBeMorethanHrs')}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+    <!-- header for FullAttendance  ends-->
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-2"
+        *ngIf="!view">
+        <button
+            id="cancel"
+            (click)="back()"
+            class="btn delete-btn me-1 float-start">
+            {{globalServ.getGlobalNames('cancel')}}
+        </button>
+        <button
+            id="create_payroll"
+            [hidden]="view || update" [disabled]="overtimesetup.invalid"
+            (click)="create()"
+            class="btn add-btn  float-end">
+            {{globalServ.getGlobalNames('create')}}
+        </button>
+        <button
+            id="update_payroll"
+            [disabled]="overtimesetup.pristine || overtimesetup.invalid"
+            *ngIf="update"
+            (click)="Update()"
+            class="btn add-btn  float-end">
+            {{globalServ.getGlobalNames('update')}}
+        </button>
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center mt-4 mb-2"
+        *ngIf="view">
+        <button
+            id="cancel"
+            (click)="back()"
+            class="btn delete-btn me-1">
+            {{globalServ.getGlobalNames('close')}}
+        </button>

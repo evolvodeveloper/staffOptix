@@ -1,0 +1,132 @@
+
+<div class="row">
+      <div class="col-sm-12">
+            <div class="d-flex align-items-baseline">
+                  <i style="font-size: 20px"
+                        class="fa fa-arrow-left"
+                        aria-label="back" (click)="back()"></i>
+                  <h3 class="ms-4 page-title"> Create Offer Template</h3>
+            </div>
+      </div>
+</div>
+
+<div class="row">
+      <div class="col-md-8">
+            <div class="mt-2 form-group input">
+                  <label class="text-sm mb-1">Template Subject &nbsp;<span
+                              style="color: red; margin-left: 1px">*</span>
+                  </label>
+                  <input
+                        class="form-control"
+                        id="tempSubject"
+                        [(ngModel)]="templateSubject"
+                        placeholder="Enter Offer template subject" />
+            </div>
+            <quill-editor [(ngModel)]="templatebody"
+                  (keyup)="countWords(templatebody);"
+                  [maxLength]="maxWords"
+                  maxLength="{{maxWords}}"
+                  placeholder="Type the content yourself. "
+                  style="height: 80vh;" class="card"></quill-editor>
+                  <div class="row">
+<table>
+      <tr><td height="13" ></td></tr>
+</table>
+                  </div>
+            <div class="row" style="margin-top: 10%; ">
+                  <div *ngIf="totalWords>maxWords" class=" col-md text-danger">
+                        Please limit your text to {{maxWords}} characters.
+                  </div>
+                  <div class="col-md" style="text-align: end;" *ngIf="maxWords">
+                        {{totalWords}}/{{maxWords}}
+                  </div>
+            </div>
+            <div
+                  class="col-lg-6 my-3  form-check col-md-6 col-sm-12 col-xs-12 ms-3">
+                  <input class="form-check-input" type="checkbox"
+                        id="isDefault"
+                        [(ngModel)]="default">
+                  <label class="form-check-label" for="isDefault">
+                        Do you want to make this template as default template ?
+                  </label>
+            </div>
+      </div>
+      <div class="col-md">
+            <span class="card p-4">
+                  <button class="btn add-btn rounded my-2"
+                        data-bs-target="#viewPlaceholders"
+                        data-bs-toggle="modal"> View
+                        PlaceHolders</button>
+                  <button class="btn add-btn rounded"
+                        (click)="loadTheDefaultTemplate()"> Load Default
+                        Template</button>
+            </span>
+      </div>
+</div>
+
+<div class="row">
+      <div class="col-md-12">
+       <button id="cancel_Offerletter" type="button"
+                    class="btn delete-btn"
+                    (click)="back()">Cancel</button>
+       
+            <button class="btn add-btn" *ngIf="!update"
+                  [disabled]="totalWords>maxWords || !templateSubject || !templatebody"
+                  (click)="submit()">Submit</button>
+            <button class="btn add-btn" *ngIf="update"
+                  [disabled]="totalWords>maxWords"
+                  (click)="Update()">Update</button>
+
+      </div>
+</div>
+
+<div id="viewPlaceholders" class="modal custom-modal fade" role="dialog">
+      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                  <div class="modal-header">
+                        <h5 class="modal-title">Place Holders</h5>
+                        <i class="fa-solid fa-xmark  fs-4" id="close_model"
+                              data-bs-dismiss="modal"></i>
+                        <!-- <button
+          type="button"
+          class="close"
+           data-bs-dismiss="modal"
+          (click)="closeModel('dismiss')"
+          aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+                  </div>
+                  <div class="modal-body">
+                        <div class="row">
+                              <div class="col-md-12">
+                                    <div class="table-responsive card p-3">
+                                          <table
+                                                class="table table-hover table-nowrap custom-table mb-0 datatable">
+                                                <thead class="thead-all">
+                                                      <tr class="tr-th-all">
+                                                            <th
+                                                                  scope="col">Placeholder</th>
+                                                            <th
+                                                                  scope="col">Description</th>
+                                                      </tr>
+                                                </thead>
+                                                <tbody>
+                                                      <tr
+                                                            *ngFor="let row of records">
+                                                            <td>
+                                                                  {{row.placeholder}}</td>
+
+                                                            <td
+                                                                  class="text-wrap">{{row.description}}</td>
+                                                      </tr>
+                                                </tbody>
+
+                                          </table>
+                                    </div>
+
+                              </div>
+                        </div>
+
+                  </div></div>
+      </div>
+</div>

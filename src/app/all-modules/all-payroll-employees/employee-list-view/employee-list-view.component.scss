@@ -1,0 +1,29 @@
+.emp-profile-img-wrap {
+    // height: 130px;
+    width: fit-content;
+    // border-radius: 50%;
+    // position: absolute;
+    // width: 120px;
+    background: #fff;
+    overflow: hidden;
+}
+
+
+.emp-profile-img-wrap img {
+    // border-radius: 50%;
+    height: 130px;
+    width: 110px;
+    object-fit: contain;
+    // border-radius: 7px 0px 0px 7px;
+
+}
+
+.emp-profile-img-wrap.edit-img {
+    border-radius: 50%;
+    margin: 0 auto 30px;
+    position: relative;
+}
+
+.emp-profile-img-wrap.edit-img .fileupload.btn {
+    left: 0;
+}

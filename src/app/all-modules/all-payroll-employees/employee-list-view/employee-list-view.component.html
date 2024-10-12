@@ -1,0 +1,101 @@
+<div class="page-header mb-0" [ngClass]="{' p-3': isSpecialRoute}">
+    <div class="row align-items-center">
+        <div
+            class="col-sm-12 col-lg-12 d-flex align-items-baseline justify-content-between ">
+            <i style="font-size:20px" class="fa fa-arrow-left"
+                (click)="back()" aria-label="back"></i>
+            <h3 class="ms-4 page-title">{{globalServ.getGlobalNames('view')}}
+                {{globalServ.getGlobalNames('employee')}}</h3>
+            <i class="fa-solid fa-xmark float-end fs-4" (click)="back()"></i>
+
+        </div>
+    </div>
+</div>
+
+<div class="row  mt-3"
+    [ngClass]="{'card': !isSpecialRoute, 'p-3': isSpecialRoute}">
+    <div class="col-md-12">
+        <div class="row d-flex justify-content-center" style="gap:20px">
+            <div class="col-md-12 card pt-1 " style="border-radius: 15px;">
+                <div class=" col-md-12   ">
+                    <section class="border-bottom  text-center mt-2">
+                        <div class="emp-profile-img-wrap m-auto">
+                            <img
+                                *ngIf="emp?.image"
+                                [src]="emp?.image" />
+                            <div *ngIf="!emp?.image" id="empShortName"
+                                class="avatar d-flex justify-content-center m-auto align-items-center"
+                                style="background: #5470C6; height: 80px; width: 80px; border-radius: 0px;">
+                                <span
+                                    style="font-size: xx-large; color: #fff">{{value.employeeMaster?.empShortName}}</span>
+                            </div>
+                        </div>
+
+                        <h4 class="mt-2" id="fullName">
+                            {{value?.employeeMaster?.employeeName}}<span
+                                *ngIf="value?.employeeMaster?.lastName">
+                                {{value?.employeeMaster?.lastName}}</span>
+                        </h4>
+                        <h4 class="mt-2" id="employeeCode">
+                            {{value?.employeeMaster?.employeeCode}}
+                        </h4>
+
+                        <h4 class="text-muted font-weight-normal"
+                            id="designation">
+                            {{value?.employeeMaster?.designation}}
+                        </h4>
+                    </section>
+                    <section class="border-bottom p-4">
+                        <div class="p-2" id="email">
+                            <i class="fa fa-envelope text-muted"></i>
+                            {{value?.employeeMaster?.email}}
+                        </div>
+
+                        <div class="p-2" id="contactNo">
+                            <i class="fa-solid fa-phone text-muted"></i>
+                            {{value?.employeeMaster?.contactNo}}
+                        </div>
+                    </section>
+
+                    <section class="p-4">
+
+                        <div class="p-2">
+                            <span class="text-muted block">
+                                {{globalServ.getGlobalNames('department')}}
+                            </span>
+                            {{value?.employeeMaster?.deptCode}}
+                        </div>
+
+                        <div class="p-2">
+                            <span class="text-muted block">
+                                {{globalServ.getGlobalNames('project')}}</span>
+                            {{value?.employeeMaster?.projectCode}}
+                        </div>
+                        <div class="p-2">
+                            <span class="text-muted block">
+                                {{globalServ.getGlobalNames('location')}}</span>
+                            {{value?.employeeMaster?.locationCode}}
+                        </div>
+                        <div class="p-2">
+                            <span
+                                class="text-muted block">{{globalServ.getGlobalNames('Branch')}}
+                            </span>
+                            {{value?.employeeMaster?.branchCode}}
+                        </div>
+
+                        <div class="p-2">
+                            <span
+                                class="text-muted block">{{globalServ.showLabel('reportingManager')}}
+                            </span>
+                            {{value?.payrollMaster?.supervisor}}
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <button class="btn delete-btn"
+                (click)="back()">{{globalServ.getGlobalNames('close')}}</button>
+        </div>
+    </div>
+</div>

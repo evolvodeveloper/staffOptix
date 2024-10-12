@@ -1,0 +1,133 @@
+<div class="row">
+    <div class="col-sm-12">
+      <div class="d-flex align-items-baseline">
+        <i style="font-size: 20px"
+          class="fa fa-arrow-left"
+          (click)="back()"
+          aria-label="back"></i>
+        <h3 class="ms-4 page-title">
+          {{view ? 'View' : update ? 'Update' :
+                    'Create'}} Visit Mapping
+        </h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="card  p-3">
+    <form [formGroup]="mappingForm">
+
+  
+
+      <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="mb-3" *ngIf="stopSpinner">
+                    <label class="form-label text-sm" for="visitConfigIds">
+                        Visit Config Ids</label>
+                        <select
+                        formControlName="visitConfigIds"
+                          class="form-select"
+                         >            
+                          <option *ngFor="let d of ids" [value]="d.id">
+                            {{ d.purpose }}
+                          </option>
+                        </select>
+                </div>
+            <div id="loading" *ngIf="!stopSpinner"></div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" >
+                
+            </div>
+
+
+    </div>
+
+    <div class="row">
+        <div class="mb-3">
+            <label>Select Option:</label>
+            <div class="mt-2">
+                <input type="radio" id="employeeOption" value="employee" [(ngModel)]="selectedOption" [ngModelOptions]="{standalone: true}"  name="option" (change)="selectOption('employee')">
+                <label for="employeeOption" class="radio-label m-3">Employee</label>
+                
+                <input type="radio" id="departmentOption" value="department" [(ngModel)]="selectedOption" [ngModelOptions]="{standalone: true}" name="option" (change)="selectOption('department')">
+                <label for="departmentOption" class="radio-label m-3">Department</label>
+            </div>
+        </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" *ngIf="selectedOption === 'employee'">
+
+                <div class="mb-3" *ngIf="stopSpinner">
+                    <label class="form-label text-sm" for="empCode">Employee </label>
+                    <ng-select
+  [items]="employees_list"
+  bindLabel="mergeName"     
+  bindValue="employeeCode"   
+  [multiple]="true"          
+  id="emp"
+  formControlName="empCode"  
+  placeholder="Select an employee"
+  class="ngSelectform">
+</ng-select>
+
+                </div>
+            <div id="loading" *ngIf="!stopSpinner"></div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" *ngIf="selectedOption === 'department'">
+                <div class="mb-3">
+                    <label class="form-label text-sm" for="deptCode">
+                        Department</label>
+                        <select
+                        formControlName="deptCode"
+                          class="form-select"
+                         >
+                         <option class="form-select">-</option>
+            
+                          <option *ngFor="let d of departments" [value]="d.deptCode">
+                            {{ d.deptName }}
+                          </option>
+                        </select>
+                </div>
+            </div>
+
+
+    </div>
+
+
+    </form>
+  </div>
+
+  <div class="footer mt-4" *ngIf="!view">
+    <button
+      id="cancel_apply_mappingForm"
+      type="button"
+      class="btn delete-btn"
+      (click)="back()">
+      Cancel
+    </button>
+    <button
+      id="submit_apply_mappingForm"
+      type="button"
+      class="btn add-btn"
+      *ngIf="!update"
+      [disabled]="mappingForm.invalid"
+      (click)="createMapping()">
+      Submit
+    </button>
+    <button
+      id="_update_mappingForm"
+      type="button"
+      class="btn add-btn"
+      *ngIf="update"
+      [disabled]="mappingForm.invalid"
+      (click)="updateMapping()">
+      Update
+    </button>
+  </div>
+  
+  <div class="footer text-center mt-4" *ngIf="view">
+    <button
+      id="_cancel_mappingForm"
+      type="button"
+      class="btn delete-btn"
+      (click)="back()">
+      Cancel
+    </button>
+  </div>

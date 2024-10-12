@@ -1,0 +1,287 @@
+<div class="page-header">
+  <div class="row align-items-center">
+    <div class="col-sm-12 col-lg-8">
+      <div class="d-flex align-items-baseline">
+        <i
+          style="font-size: 20px"
+          class="fa fa-arrow-left"
+          routerLink="/payrollsetup"
+          aria-label="back"></i>
+        <h3 class="ms-4 page-title">
+          {{ globalServ.showLabel('salaryMasterHeader') }}
+        </h3>
+      </div>
+    </div>
+  </div>
+</div>
+<ul class="nav nav-pills" id="pills-tab" role="tablist">
+  <li class="nav-item me-2" role="presentation">
+    <button
+      style="height: 40px; padding: revert"
+      (click)="tab1()"
+      class="nav-link active"
+      id="pills-Payroll-tab"
+      data-bs-toggle="pill"
+      data-bs-target="#pills-Payroll"
+      type="button"
+      role="tab"
+      aria-controls="pills-Payroll"
+      aria-selected="true">
+      <div class="d-flex my-2 justify-content-center">
+        {{ globalServ.getGlobalNames('payroll') }}
+      </div>
+    </button>
+  </li>
+  <li class="nav-item me-2" role="presentation">
+    <button
+      style="height: 40px; padding: revert"
+      (click)="tab2()"
+      class="nav-link"
+      id="pills-Salary-tab"
+      data-bs-toggle="pill"
+      data-bs-target="#pills-Salary"
+      type="button"
+      role="tab"
+      aria-controls="pills-Salary"
+      aria-selected="false">
+      <div class="d-flex my-2 justify-content-center">
+        {{ globalServ.getGlobalNames('salaryBreakup') }}
+      </div>
+    </button>
+  </li>
+</ul>
+
+<div class="tab-content" id="pills-tabContent" style="padding-top:2px ;">
+  <div
+    class="tab-pane fade show active"
+    id="pills-Payroll"
+    role="tabpanel"
+    aria-labelledby="pills-Payroll-tab"
+    tabindex="0">
+
+    <div class=" p-3">
+      <div class="row">
+        <div class="col-md">
+          <label>
+            {{ globalServ.getGlobalNames('department') }}
+          </label>
+          <div class="form-floating">
+            <select class="form-select" id="departments"
+              [(ngModel)]="reportObj.department"
+              (change)="employeesByDepartmentAndProject()"
+              (change)="modified()">
+              <option [value]="dtypes.deptCode"
+                *ngFor="let dtypes of departments">{{dtypes.deptName}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md">
+          <label>
+            {{ globalServ.getGlobalNames('project') }}
+          </label>
+          <div class="form-floating">
+            <select class="form-select" id="projects"
+              [(ngModel)]="reportObj.project" (change)="modified()"
+              (change)="employeesByDepartmentAndProject()">
+              <option [value]="cat.categoryCode"
+                *ngFor="let cat of projects">{{cat.categoryCode}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-md d-flex" [ngClass]="{'d-flex':!stopSpinner}">
+          <label *ngIf="stopSpinner"> 
+            {{ globalServ.showLabel('employee') }}
+          </label>
+          <div class="form-floating" *ngIf="stopSpinner">
+            <select id="employeeName" class="form-select"
+              [(ngModel)]="reportObj.empCode" (change)="getPayroll()">
+              <option [value]="emp.employeeCode"
+                *ngFor="let emp of employees_list">{{emp.employeeName}} -
+                {{emp.employeeCode}}</option>
+            </select>
+          </div>
+          <div id="loading" *ngIf="!stopSpinner"></div>
+        </div>
+
+        <div class="col-md-2">
+
+        </div>
+      </div>
+<div class="card mt-2" *ngIf="showComponentCode">
+
+      <div class=" row p-4" >
+        <div class="col-md-6 ol-sm-12 table-leftblock">
+          <table class="col-sm-12 col-md-12 ">
+            <tr class>
+              <th>
+                {{ globalServ.getGlobalNames('earnings') }}
+              </th>
+              <th class="text-end">
+                {{ globalServ.getGlobalNames('amount') }}
+              </th>
+            </tr>
+            <ng-container *ngFor="let row of payrollList">
+              <ng-container *ngIf="!row.isDeduction">
+                <tr>
+                  <td>{{ row.componentCode }}</td>
+                  <td>
+                    <input
+                      type="number"
+                      placeholder="0.00"
+                      readonly
+                      class="form-control text-end inputwid"
+                      [(ngModel)]="row.amount" />
+                  </td>
+                </tr>
+              </ng-container>
+            </ng-container>
+          </table>
+        </div>
+        <div class="col-md-6 ol-sm-12 table-rightblock">
+          <!-- <h3>Deductions</h3> -->
+          <table class="col-sm-12 col-md-12 ">
+            <tr>
+              <th>
+                {{ globalServ.getGlobalNames('deductions') }}
+              </th>
+              <th class="text-end">
+                {{ globalServ.getGlobalNames('amount') }}
+              </th>
+            </tr>
+            <ng-container *ngFor="let row of payrollList">
+              <ng-container *ngIf="row.isDeduction">
+                <tr>
+                  <td>{{ row.componentCode }}</td>
+                  <td>
+                    <input
+                      type="number"
+                      placeholder="0.00"
+                      readonly
+                      class="form-control text-end inputwid"
+                      [(ngModel)]="row.amount" />
+                  </td>
+                </tr>
+              </ng-container>
+            </ng-container>
+          </table>
+        </div>
+      </div>
+</div>
+      <!-- <div class="row mt-2">
+        <div class="col-12">
+          <button
+            id="payroll_Component"
+            type="button"
+            (click)="submit()"
+
+            [disabled]="payrollList.length === 0"
+            class="btn add-btn float-end">
+            Submit
+          </button>
+        </div>
+      </div> -->
+    </div>
+  </div>
+
+  <div
+    class="tab-pane fade"
+    id="pills-Salary"
+    role="tabpanel"
+    aria-labelledby="pills-Salary-tab"
+    tabindex="0">
+<div class="card p-3">
+    <div class="row">
+      <div class="col-md-3">
+        <label>
+          {{ globalServ.showLabel('payrollCode') }}
+        </label>
+        <div class="form-floating">
+          <select class="form-select" id="payrollCode"
+            [(ngModel)]="reportObj2.payrollCode">
+            <option [value]="ptypes.payrollCode"
+              *ngFor="let ptypes of payrollSetupList">{{ptypes.payrollCode}}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <label>
+          {{ globalServ.showLabel('salary') }}
+        </label>
+        <div class="form-floating">
+          <input type="number" class="form-control"
+            [(ngModel)]="reportObj2.salary">
+        </div>
+      </div>
+
+    </div>
+     <div class="row mt-5" *ngIf="showSalaryBreakup">
+        <div class="col-md-6 ol-sm-12 table-leftblock">
+          <table class="col-sm-12 col-md-12 ">
+            <tr class>
+              <th>
+                {{ globalServ.getGlobalNames('earnings') }}
+              </th>
+              <th class="text-center">
+                {{ globalServ.getGlobalNames('amount') }}
+              </th>
+            </tr>
+            <ng-container *ngFor="let row of salaryBreakupList">
+              <ng-container *ngIf="!row.isDeduction">
+                <tr>
+                  <td>{{ row.componentCode }}</td>
+                  <td>
+                    <input
+                      type="number"
+                      placeholder="0.00"
+                      readonly
+                      class="form-control text-end inputwid"
+                      [(ngModel)]="row.amount" />
+                  </td>
+                </tr>
+              </ng-container>
+            </ng-container>
+          </table>
+        </div>
+        <div class="col-md-6 ol-sm-12 table-rightblock">
+          <!-- <h3>Deductions</h3> -->
+          <table class="col-sm-12 col-md-12 ">
+            <tr>
+              <th>
+                {{ globalServ.getGlobalNames('deductions') }}
+              </th>
+              <th class="text-center">
+                {{ globalServ.getGlobalNames('amount') }}
+              </th>
+            </tr>
+            <ng-container *ngFor="let row of salaryBreakupList">
+              <ng-container *ngIf="row.isDeduction">
+                <tr>
+                  <td>{{ row.componentCode }}</td>
+                  <td>
+                    <input
+                      type="number"
+                      placeholder="0.00"
+                      class="form-control text-end inputwid"
+                      [(ngModel)]="row.amount" />
+                  </td>
+                </tr>
+              </ng-container>
+            </ng-container>
+          </table>
+        </div>
+      </div>
+       <div class="row mt-2">
+        <div class="col-12">
+        <button
+          id="salaryBreakup"
+          type="button"
+          (click)="getSalaryBreakuo()"
+          class="btn add-btn float-end">
+          {{ globalServ.getGlobalNames('submit') }}
+        </button>
+      </div>
+    </div>
+    </div>
+  </div>

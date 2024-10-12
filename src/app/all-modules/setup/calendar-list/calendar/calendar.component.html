@@ -1,0 +1,123 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{view ? 'View' : update ? 'Update' : 'Create'}}
+        {{globalServ.showLabel('calHeader')}}</h3>
+</div>
+<div class="row">
+    <div class="col-12">
+        <form [formGroup]="calendarForm" novalidate>
+            <div class="modal-body">
+                <div class="form-group input">
+                    <label class="text-sm mb-1">
+                        {{globalServ.showLabel('calendarCode')}}&nbsp;<span
+                            style="color: red; margin-left: 1px">*</span>
+                    </label>
+                    <input class="form-control"
+                        placeholder="{{globalServ.showPlaceholder('calendarCode')}}"
+                        formControlName="calendarCode" id="calendarCode" />
+                    <div
+                        *ngIf="calendarForm.controls['calendarCode'].invalid && (calendarForm.controls['calendarCode'].dirty ||
+                    calendarForm.controls['calendarCode'].touched)"
+                        style="padding: 0px">
+                        <div
+                            *ngIf="calendarForm.controls['calendarCode'].errors.required"
+                            style="color: #dc3545">
+                            {{globalServ.showLabel('calendarCode')}}
+                            {{globalServ.showGlobalErrors('required')}}</div>
+                    </div>
+                    <div
+                        *ngIf="calendarForm.get('calendarCode').hasError('invalidFormat')"
+                        style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+                </div>
+
+                <div class="form-group input mt-2">
+                    <label class="text-sm mb-1">
+                        {{globalServ.showLabel('cDescription')}} </label>
+                    <input
+                        placeholder="{{globalServ.showGlobalplaceholders('enterDesc')}}"
+                        class="form-control"
+                        id="description" formControlName="description" />
+                </div>
+                <div class="mt-2">
+                    <div class="ngselect-div">
+                        <label
+                            class="ngselect-label ms-2">{{globalServ.showLabel('timeZone')}}<span
+                                style="color: red; margin-left: 1px">*</span></label>
+                        <ng-select [items]="timezones" bindLabel="timezones"
+                            formControlName="timezone"
+                            placeholder="{{globalServ.showGlobalplaceholders('SelectTimezone')}}">
+                        </ng-select>
+                    </div>
+                    <div
+                        *ngIf="calendarForm.controls['timezone'].invalid && (calendarForm.controls['timezone'].dirty ||
+                                            calendarForm.controls['timezone'].touched)"
+                        style="padding: 0px">
+                        <div
+                            *ngIf="calendarForm.controls['timezone'].errors.required"
+                            style="color: #dc3545">
+                            {{globalServ.showLabel('timeZone')}}
+                            {{globalServ.showGlobalErrors('required')}}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group input mt-2">
+                    <label
+                        class="text-sm mb-1">{{globalServ.showLabel('module')}}&nbsp;<span
+                            style="color: red; margin-left: 1px">*</span></label>
+                    <input placeholder="Enter Module" class="form-control"
+                        id="description" formControlName="module" />
+                    <div
+                        *ngIf="calendarForm.controls['module'].invalid && (calendarForm.controls['module'].dirty ||
+                    calendarForm.controls['module'].touched)"
+                        style="padding: 0px">
+                        <div
+                            *ngIf="calendarForm.controls['module'].errors.required"
+                            style="color: #dc3545">
+                            {{globalServ.showLabel('module')}}
+                            {{globalServ.showGlobalErrors('required')}}
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="mt-2">
+                    <mat-slide-toggle class="example-margin" id="isDefault" color="primary"
+                        [formControl]="calendarForm.controls.isDefault" (change)="checkDefault(calendarForm.controls.isDefault.value)">
+                        Is Default <span style="color: red; margin-left: 1px">{{msg}}</span>
+                    </mat-slide-toggle>
+
+                </div> -->
+                <div class="mt-3 form-check">
+                    <input class="form-check-input" id="isDefault"
+                        formControlName="isDefault"
+                        (change)="checkDefault()"
+                        color="primary" type="checkbox">
+                    <label class="form-check-label">
+                        {{globalServ.getGlobalNames('isDefault')}}
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer mt-2">
+                <button (click)="closeModal1()"
+                    class="btn delete-btn mt-4 me-2">
+                    {{globalServ.getGlobalNames('cancel')}}</button>
+                <button
+                    [disabled]="calendarForm.pristine || calendarForm.invalid"
+                    [hidden]="view || update" (click)="create()"
+                    class="btn add-btn  float-end mt-4">
+                    {{globalServ.getGlobalNames('create')}} </button>
+                <button *ngIf="update" (click)="Update()"
+                    class="btn add-btn  float-end  mt-4">
+                    {{globalServ.getGlobalNames('update')}}
+                </button>
+            </div>
+
+            <!-- <div class="modal-footer mt-2">
+                <button [disabled]="calendarForm.pristine || calendarForm.invalid" [hidden]="view || update"
+                    (click)="create()" class="btn btn-outline-primary"> Save
+                </button>
+
+                <button *ngIf="update" (click)="Update()" class="btn btn-outline-primary"> Update </button>
+
+                <button type="button" class="btn delete-btn ms-2" (click)="closeModal1()">Cancel</button>
+            </div> -->
+        </form>
+    </div>
+</div>

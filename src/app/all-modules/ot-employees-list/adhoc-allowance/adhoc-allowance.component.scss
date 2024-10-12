@@ -1,0 +1,21 @@
+.startDiv {
+    // height: 130px;
+    display: flex;
+    cursor: pointer;
+    margin: 15px 10px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 5px;
+    border: 2px dashed #6990F2;
+}
+
+.modal.show .modal-dialog {
+    height: -webkit-fill-available;
+    width: -webkit-fill-available;
+
+    .modal-content {
+        width: max-content;
+        height: max-content;
+    }
+}

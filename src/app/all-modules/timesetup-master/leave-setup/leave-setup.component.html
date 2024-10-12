@@ -1,0 +1,839 @@
+<div class="page-header">
+  <div class="row align-items-center">
+    <div class="col-sm-12 col-lg-8">
+      <div class="d-flex align-items-baseline">
+        <i
+          style="font-size: 20px"
+          class="fa fa-arrow-left"
+          routerLink="/timesetup"
+          aria-label="back"></i>
+        <h3
+          class="ms-4 page-title">{{globalServ.showLabel('leaveSetupHeader')}}</h3>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row mb-3">
+  <div class="col-sm-12 col-lg-3">
+    <div class="input-group">
+
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="searchLeavePlan"
+        placeholder="{{globalServ.showPlaceholder('searchleavePlan')}}"
+        (keyup)="updateFilterForPlan($event)" *ngIf="secondTab"
+        style="border-radius: 8px 0px 0px 8px" />
+
+      <input
+        type="text"
+        class="form-control"
+        placeholder="{{globalServ.showPlaceholder('searchleaveType')}}"
+        [(ngModel)]="searchLeaveType"
+        (keyup)="updateFilterFortype($event)" *ngIf="thirdTab"
+        style="border-radius: 8px 0px 0px 8px" />
+
+      <input
+        type="text"
+        class="form-control"
+        placeholder="{{globalServ.showPlaceholder('searchleavePlan/type')}}"
+        (keyup)="updateFilter($event)" *ngIf="firstTab"
+        [(ngModel)]="searchedInSetUp"
+        style="border-radius: 8px 0px 0px 8px" />
+
+      <span class="input-group-text" id="b asic-addon1">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </span>
+    </div>
+  </div>
+  <div class="col-lg-3"></div>
+  <div class="col-sm-6 col-lg-4">
+    <button
+      id="leave_setup"
+      type="button"
+      class="btn add-btn float-end"
+      *ngIf="hasPermissionToUpdate && firstTab"
+      (click)="createLeaveSetup()">
+      <i id="add_leave_setup" class="fa fa-plus"></i>
+      {{globalServ.getGlobalNames('addSetup')}}
+
+    </button>
+
+    <button
+      id="leave_setup"
+      type="button"
+      class="btn add-btn float-end"
+      ngbTooltip="create"
+      (click)="addPlan()"
+      data-bs-toggle="modal"
+      data-bs-target="#addleavePlan"
+      *ngIf="hasPermissionToUpdate && secondTab">
+      <i id="add_leave_Plan" class="fa fa-plus"></i>
+      {{globalServ.getGlobalNames('addPlan')}}
+
+    </button>
+
+    <button
+      id="leave_type"
+      type="button"
+      class="btn add-btn float-end"
+      ngbTooltip="create"
+      data-bs-toggle="modal"
+      (click)="addleaveType()"
+      data-bs-target="#createLeaveType"
+      *ngIf="hasPermissionToUpdate && thirdTab">
+      <i id="add_leave_Plan" class="fa fa-plus"></i>
+      {{globalServ.getGlobalNames('addLType')}}
+
+    </button>
+  </div>
+  <div class="col-sm-6 col-lg-2 mt-30px">
+    <label class="form-label ms-2">
+      {{globalServ.getGlobalNames('records')}}</label>
+    <select class="form-select"
+      (change)="resultsPerPage($event)">
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+      <option value="all">All</option>
+    </select>
+  </div>
+</div>
+<div class="card p-3">
+  <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link active"
+        id="pills-leavePlan-tab"
+        data-bs-toggle="pill"
+        data-bs-target="#pills-leavePlan"
+        type="button"
+        role="tab"
+        (click)="tab2()"
+        aria-controls="pills-leavePlan"
+        aria-selected="false">
+        {{globalServ.showLabel('lplanHeader')}}
+      </button>
+    </li>
+
+    <li class="nav-item ms-2" role="presentation">
+      <button
+        class="nav-link"
+        id="pills-leaveType-tab"
+        data-bs-toggle="pill"
+        data-bs-target="#pills-leaveType"
+        type="button"
+        role="tab"
+        (click)="tab3()"
+        aria-controls="pills-leaveType"
+        aria-selected="true">
+        {{globalServ.showLabel('ltypeHeader')}}
+      </button>
+    </li>
+    <li class="nav-item ms-2" role="presentation">
+      <button
+        class="nav-link"
+        id="pills-leaveSetup-tab"
+        data-bs-toggle="pill"
+        data-bs-target="#pills-leaveSetup"
+        type="button"
+        role="tab"
+        (click)="tab1()"
+        aria-controls="pills-leaveSetup"
+        aria-selected="true">
+        {{globalServ.showLabel('leaveSetupHeader')}}
+      </button>
+    </li>
+  </ul>
+  <div class="tab-content" id="pills-tabContent">
+    <!-- leaveSetup starts -->
+    <div
+      class="tab-pane fade"
+      id="pills-leaveSetup"
+      role="tabpanel"
+      aria-labelledby="pills-leaveSetup-tab"
+      tabindex="0">
+
+      <div class="row">
+        <div class="col-md-12">
+          <!-- </form> -->
+          <div class="table-responsive">
+            <table
+              class="table table-hover small table-nowrap custom-table mb-0 datatable">
+              <thead class="thead-all">
+                <tr class="tr-th-all">
+                  <th scope="col">{{globalServ.showLabel('lplanHeader')}}</th>
+                  <th scope="col">{{globalServ.showLabel('ltypeHeader')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('sleave')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('accrualPolicy')}}</th>
+
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('lapse')}}</th>
+                  <!-- <th scope="col" class="text-center">Max Carry Forward</th> -->
+                  <!-- <th scope="col" class="text-center">Max Take At A Time</th> -->
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('cforward')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.getGlobalNames('action')}}</th>
+                </tr>
+              </thead>
+              <tbody
+                *ngIf="leaveSetupList.length === 0">
+                <tr
+                  style=" text-align: center; height: 150px;">
+                  <td colspan="9">
+                    {{globalServ.showGlobalErrors('notFound')}}
+                  </td>
+                </tr>
+              </tbody>
+
+              <tbody
+                *ngIf="leaveSetupList.length === 0 && planMessage === 'error'">
+                <tr
+                  style=" text-align: center; height: 150px;">
+                  <td colspan="9">
+                    {{globalServ.showGlobalErrors('sorry')}}
+
+                  </td>
+                </tr>
+              </tbody>
+
+              <tbody *ngIf="leaveSetupList.length > 0">
+                <ng-container
+                  *ngFor="
+                    let row of leaveSetupList | paginate : config;
+                    let i = index
+                  ">
+                  <tr class="dasboard-td">
+                    <td>{{ row.leavePlanCode }}</td>
+                    <td>{{ row.leaveTypeCode }}</td>
+                    <td class="text-center">{{ row.leaves }}</td>
+                    <td class="text-center">{{ row.accrualPolicy }}</td>
+                    <td class="text-center">{{ row.lapseAfterYears }}</td>
+                    <!-- <td class="text-center">{{ row.maxCarryForward }}</td> -->
+                    <!-- <td class="text-center">{{ row.maxTakeAtatime }}</td> -->
+                    <td class="text-center">
+                      <i
+                        *ngIf="row.canCarryForward"
+                        class="fa-solid fa-circle"
+                        style="color: #55ce63"></i>
+                      <i
+                        *ngIf="!row.canCarryForward"
+                        class="fa-solid fa-circle"
+                        style="color: #f62d51"></i>
+                    </td>
+                    <td class="text-center">
+                      <div class="btn-group" role="group">
+                        <button
+                          id="leave_setup_view"
+                          type="button"
+                          class="btn btn-light me-1 text-info"
+                          placement="top"
+                          ngbTooltip="View"
+                          (click)="viewData(row)">
+                          <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <button
+                          id="leave_setup_edit"
+                          type="button"
+                          class="btn btn-light me-1 text-secondary"
+                          placement="top"
+                          ngbTooltip="Edit"
+                          *ngIf="hasPermissionToUpdate"
+                          (click)="editData(row)">
+                          <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <!-- <button
+                    type="button"
+                    class="btn btn-light me-1 text-success"
+                    placement="top"
+                    ngbTooltip="Approve"
+                    (click)="approveData(row)"
+                  >
+                    <i class="fa-solid fa-circle-check"></i>
+                  </button> -->
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+            <div
+              *ngIf="leaveSetupList.length > config.itemsPerPage"
+              class="text-center mt-3">
+              <pagination-controls
+                (pageChange)="pageChanged($event)"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- leaveSetup ends -->
+
+    <!-- leavePlan starts -->
+    <div
+      class="tab-pane fade show active"
+      id="pills-leavePlan"
+      role="tabpanel"
+      aria-labelledby="pills-leavePlan-tab"
+      tabindex="0">
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table
+              class="table table-hover small table-nowrap custom-table mb-0 datatable">
+              <thead class="thead-all">
+                <tr class="tr-th-all">
+                  <th scope="col">{{globalServ.showLabel('lplanHeader')}}</th>
+                  <th scope="col"
+                    class="text-left">{{globalServ.showLabel('ldesc')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('cstartdate')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('nrundate')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('lastrun')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.getGlobalNames('action')}}</th>
+                </tr>
+              </thead>
+
+              <tbody
+                *ngIf="leavePlansList.length === 0">
+                <tr
+                  style=" text-align: center; height: 150px;">
+                  <td colspan="6">
+                    {{globalServ.showGlobalErrors('notFound')}}
+                  </td>
+                </tr>
+              </tbody>
+
+              <tbody *ngIf="leavePlansList.length === 0 && message === 'error'">
+                <tr
+                  style=" text-align: center; height: 150px;">
+                  <td colspan="6">
+                    {{globalServ.showGlobalErrors('sorry')}}
+                  </td>
+                </tr>
+              </tbody>
+
+              <tbody *ngIf="leavePlansList.length > 0">
+                <ng-container
+                  *ngFor="
+                    let row of leavePlansList | paginate : config1;
+                    let i = index
+                  ">
+                  <tr class="dasboard-td">
+                    <td>{{ row.leavePlanCode }}</td>
+                    <td class="text-left" style="text-wrap: balance;">{{
+                      row.description }}</td>
+                    <td class="text-center">{{ row.leaveCalendarStartDate | date
+                      :
+                      dateFormat}}</td>
+                    <td class="text-center">{{ row.nextRunDate | date
+                      :
+                      dateFormat}}</td>
+                    <td class="text-center">{{ row.lastRunDate| date
+                      :
+                      dateFormat }}</td>
+
+                    <td class="text-center">
+                      <div class="btn-group" role="group">
+                        <button
+                          id="leave_setup_view"
+                          type="button"
+                          class="btn btn-light me-1 text-info"
+                          placement="top"
+                          ngbTooltip="View"
+                          data-bs-toggle="modal"
+                          data-bs-target="#addleavePlan"
+                          (click)="viewDataForPlan(row)">
+                          <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <button
+                          id="leave_setup_edit"
+                          type="button"
+                          class="btn btn-light me-1 text-secondary"
+                          placement="top"
+                          ngbTooltip="Edit"
+                          data-bs-toggle="modal"
+                          data-bs-target="#addleavePlan"
+                          *ngIf="hasPermissionToUpdate"
+                          (click)="editDataForPlan(row)">
+                          <i class="fa-solid fa-pen"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+            <div
+              *ngIf="leavePlansList.length > config1.itemsPerPage"
+              class="text-center mt-3">
+              <pagination-controls
+                (pageChange)="pageChanged1($event)"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- leavePlan ends -->
+    <!-- leavetype starts -->
+    <div
+      class="tab-pane fade "
+      id="pills-leaveType"
+      role="tabpanel"
+      aria-labelledby="pills-leaveType-tab"
+      tabindex="0">
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table
+              class="table table-hover small table-nowrap custom-table mb-0 datatable">
+              <thead class="thead-all">
+                <tr class="tr-th-all">
+                  <th scope="col">{{globalServ.showLabel('ltypeHeader')}}</th>
+                  <th scope="col"
+                    class="text-left">{{globalServ.showLabel('leaveTypeDescription')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('gender')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('forGender')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('maritalStatusLeave')}}</th>
+                  <th scope="col"
+                    class="text-left">{{globalServ.showLabel('maritalStat')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.getGlobalNames('active')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.getGlobalNames('action')}}</th>
+                </tr>
+              </thead>
+
+              <tbody
+                *ngIf="leaveTypesList.length === 0">
+                <tr
+                  style=" text-align: center; height: 150px;">
+                  <td colspan="7">
+                    {{globalServ.getGlobalErrors('noDeptAccess')}}
+                  </td>
+                </tr>
+              </tbody>
+
+              <tbody
+                *ngIf="leaveTypesList.length === 0 && leaveTypeMessage === 'error'">
+                <tr
+                  style=" text-align: center; height: 150px;">
+                  <td colspan="7">
+                    {{globalServ.getGlobalErrors('sorry')}}
+                  </td>
+                </tr>
+              </tbody>
+
+              <tbody *ngIf="leaveTypesList.length > 0">
+                <ng-container
+                  *ngFor="
+                    let row of leaveTypesList | paginate : config2Type;
+                    let i = index
+                  ">
+                  <tr class="dasboard-td">
+                    <td>{{ row.leaveTypeCode }}</td>
+                    <td class="text-left"
+                      style=" width: 20%; text-wrap: balance;">{{
+                      row.description }}</td>
+                    <td class="text-center">
+                      <i
+                        *ngIf="row.isGenderBased"
+                        class="fa-solid fa-circle"
+                        style="color: #55ce63"></i>
+                      <i
+                        *ngIf="!row.isGenderBased"
+                        class="fa-solid fa-circle"
+                        style="color: #f62d51"></i>
+                    </td>
+                    <td class="text-center">{{ row.forGender}}</td>
+                    <td class="text-center">
+                      <i
+                        *ngIf="row.isMaritalStatusBased"
+                        class="fa-solid fa-circle"
+                        style="color: #55ce63"></i>
+                      <i
+                        *ngIf="!row.isMaritalStatusBased"
+                        class="fa-solid fa-circle"
+                        style="color: #f62d51"></i>
+                    </td>
+                    <td class="text-left">{{ row.forMaritalStatus}}</td>
+
+                    <td class="text-center">
+                      <i
+                        *ngIf="row.isactive"
+                        class="fa-solid fa-circle"
+                        style="color: #55ce63"></i>
+                      <i
+                        *ngIf="!row.isactive"
+                        class="fa-solid fa-circle"
+                        style="color: #f62d51"></i>
+                    </td>
+                    <td class="text-center">
+                      <div class="btn-group" role="group">
+                        <button
+                          id="leave_type_view"
+                          type="button"
+                          class="btn btn-light me-1 text-info"
+                          placement="top"
+                          ngbTooltip="View"
+                          data-bs-toggle="modal"
+                          data-bs-target="#createLeaveType"
+                          (click)="viewDataForType(row)">
+                          <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <button
+                          id="leave_type_edit"
+                          type="button"
+                          class="btn btn-light me-1 text-secondary"
+                          placement="top"
+                          ngbTooltip="Edit"
+                          data-bs-toggle="modal"
+                          data-bs-target="#createLeaveType"
+                          *ngIf="hasPermissionToUpdate"
+                          (click)="editDataForType(row)">
+                          <i class="fa-solid fa-pen"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+            <div
+              *ngIf="leaveTypesList.length > config2Type.itemsPerPage"
+              class="text-center mt-3">
+              <pagination-controls
+                (pageChange)="pageChangedType($event)"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- leavetype ends -->
+  </div>
+</div>
+
+<!-- leavePlan model starts -->
+<div id="addleavePlan" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{globalServ.showLabel('lplanHeader')}}</h5>
+        <button
+          id="leave_setup_close"
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="leavePlanForm">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label
+                  class="text-sm mb-1">{{globalServ.showLabel('leavePlanCode')}}&nbsp;<span
+                    style="color: #f62d51">*</span></label>
+                <input
+                  type="text"
+                  maxlength="{{ charLimit }}"
+                  placeholder="{{globalServ.showPlaceholder('searchleavePlan')}}"
+                  id="leavePlanCode"
+                  class="form-control"
+                  [formControl]="leavePlanForm.controls.leavePlanCode" />
+                <div *ngIf="
+                    leavePlanForm.controls['leavePlanCode'].invalid &&
+                    (leavePlanForm.controls['leavePlanCode'].dirty ||
+                      leavePlanForm.controls['leavePlanCode'].touched)
+                  "
+                  style="padding: 0px">
+                  <div
+                    *ngIf="leavePlanForm.controls['leavePlanCode'].errors.required"
+                    style="color: #dc3545">
+                    {{globalServ.showLabel('leavePlanCode')}}
+                    {{globalServ.showGlobalErrors('required')}}
+                  </div>
+                </div>
+                <div
+                  *ngIf="leavePlanForm.get('leavePlanCode').hasError('invalidFormat')"
+                  style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+              </div></div>
+
+            <div class="col-md-6">
+              <div class="form-group input">
+                <label
+                  class="text-sm mb-1">{{globalServ.showLabel('ldesc')}}</label>
+                <textarea
+                  type="text"
+                  placeholder="{{globalServ.showGlobalplaceholders('enterDesc')}}"
+                  id="description"
+                  class="form-control"
+                  [formControl]="leavePlanForm.controls.description"></textarea>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group input">
+                <label class="text-sm mb-1"
+                  for="leaveCalSrtDate">{{globalServ.showLabel('leaveStartDt')}}</label>
+                <select
+                  class="form-select"
+                  [formControl]="leavePlanForm.controls.leaveCalendarStartDate">
+                  <option value selected
+                    disabled>{{globalServ.showPlaceholder('leaveStartDt')}}</option>
+                  <option
+                    *ngFor="let lp of firstDatesOfMonths"
+                    [value]="lp.value">
+                    {{ lp.code }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group input">
+                <label class="text-sm mb-1" for="leaveCalSrtDate">
+                  {{globalServ.showLabel('leavePolicyRunDt')}} <span
+                    class="text-danger">*</span></label>
+                <select
+                  class="form-select"
+                  [formControl]="leavePlanForm.controls.runLeavepolicyOnDt">
+                  <option value selected
+                    disabled>{{globalServ.showPlaceholder('leaveRunDt')}}</option>
+                  <option
+                    *ngFor="let lp of dates"
+                    [value]="lp">
+                    {{ lp }}
+                  </option>
+                </select>
+                <div *ngIf="
+                    leavePlanForm.controls['runLeavepolicyOnDt'].invalid &&
+                    (leavePlanForm.controls['runLeavepolicyOnDt'].dirty ||
+                      leavePlanForm.controls['runLeavepolicyOnDt'].touched)
+                  "
+                  style="padding: 0px">
+                  <div
+                    *ngIf="leavePlanForm.controls['runLeavepolicyOnDt'].errors.required"
+                    style="color: #dc3545">
+                    {{globalServ.showLabel('leavePolicyRunDt')}}
+                    {{globalServ.showGlobalErrors('required')}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class *ngIf="!view">
+          <button
+            id="leave_setup_close"
+            type="button"
+            class="btn delete-btn"
+            data-bs-dismiss="modal"
+            aria-label="Close">{{globalServ.getGlobalNames('cancel')}}</button>
+          <button id="submit_leavePlanForm" *ngIf="!update"
+            class="btn add-btn"
+            [disabled]="leavePlanForm.invalid || leavePlanForm.pristine"
+            (click)="submit()"
+            type="submit">{{globalServ.getGlobalNames('submit')}}</button>
+          <button id="submit_leavePlanForm" *ngIf="update"
+            class="btn add-btn"
+            [disabled]="leavePlanForm.invalid || leavePlanForm.pristine"
+            (click)="UpdatePlan()"
+            type="submit">{{globalServ.getGlobalNames('update')}}</button>
+        </div>
+        <div class="text-center" *ngIf="view">
+          <button
+            id="leave_setup_close"
+            type="button"
+            class=" btn delete-btn"
+            data-bs-dismiss="modal"
+            aria-label="Close">{{globalServ.getGlobalNames('close')}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- leavePlan model  ends-->
+
+<!-- leaveType model starts -->
+<div id="createLeaveType" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{globalServ.showLabel('ltypeHeader')}}</h5>
+        <button
+          id="leave_type_close"
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="leaveTypeForm">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label
+                  class="text-sm mb-1">{{globalServ.showLabel('leaveTypeCode')}}
+                  &nbsp;<span
+                    class="text-danger">*</span></label>
+                <input
+                  type="text"
+                  maxlength="{{ charLimit }}"
+                  placeholder="{{globalServ.showPlaceholder('leavePlan')}}"
+                  id="leaveTypeCode"
+                  class="form-control"
+                  [formControl]="leaveTypeForm.controls.leaveTypeCode" />
+                <div *ngIf="
+                    leaveTypeForm.controls['leaveTypeCode'].invalid &&
+                    (leaveTypeForm.controls['leaveTypeCode'].dirty ||
+                      leaveTypeForm.controls['leaveTypeCode'].touched)
+                  "
+                  style="padding: 0px">
+                  <div
+                    *ngIf="leaveTypeForm.controls['leaveTypeCode'].errors.required"
+                    style="color: #dc3545">
+                    {{globalServ.showLabel('leaveTypeCode')}}
+                    {{globalServ.showGlobalErrors('required')}}
+                  </div>
+                </div>
+                <div
+                  *ngIf="leaveTypeForm.get('leaveTypeCode').hasError('invalidFormat')"
+                  style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+              </div></div>
+
+            <div class="col-md-6">
+              <div class="form-group input">
+                <label
+                  class="text-sm mb-1">
+                  {{globalServ.showLabel('ldesc')}}</label>
+                <input
+                  type="text"
+                  placeholder="{{globalServ.showGlobalplaceholders('enterDesc')}}"
+                  id="description"
+                  class="form-control"
+                  [formControl]="leaveTypeForm.controls.description" />
+              </div>
+            </div>
+            <div class="col-md-12 m-auto">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="isGenderBased"
+                  (change)="genderBased()"
+                  [formControl]="leaveTypeForm.controls.isGenderBased" />
+                <label class="form-check-label" for="isGenderBased">
+                  {{globalServ.showLabel('genderBasis')}}</label>
+              </div>
+            </div>
+            <div class="col-md-6 mt-2"
+              *ngIf="leaveTypeForm.controls.isGenderBased.value === true">
+              <div class="form-group input">
+                <label class="text-sm mb-1" for="forGender">
+                  {{globalServ.showLabel('gender')}} </label>
+
+                <select
+                  class="form-select"
+                  [formControl]="leaveTypeForm.controls.forGender">
+                  <option value selected disabled>
+                    {{globalServ.showPlaceholder('selectGender')}}</option>
+                  <option value="Male"> Male</option>
+                  <option value="Female"> Female</option>
+                  <option value="Others"> Others </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-12 m-auto">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="isMaritalStatusBased"
+                  (change)="maritalStatusBased()"
+                  [formControl]="leaveTypeForm.controls.isMaritalStatusBased" />
+                <label class="form-check-label" for="isMaritalStatusBased">
+                  {{globalServ.showLabel('maritalStatusLeave')}}</label>
+              </div>
+            </div>
+            <div class="col-md-6  mt-2"
+              *ngIf="leaveTypeForm.controls.isMaritalStatusBased.value === true">
+              <div class="form-group input">
+                <label class="text-sm mb-1" for="forMaritalStatus">
+                  {{globalServ.showLabel('maritalStatus')}} </label>
+                <select
+                  class="form-select"
+                  [formControl]="leaveTypeForm.controls.forMaritalStatus">
+                  <option value selected
+                    disabled>{{showPlaceholder('maritalStatus')}}</option>
+                  <option value="Married"> Married</option>
+                  <option value="unMarried">Unmarried</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="isactive"
+                    [formControl]="leaveTypeForm.controls.isactive" />
+                  <label class="form-check-label" for="isactive">
+                    {{globalServ.getGlobalNames('active')}}</label>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="isVisible"
+                    [formControl]="leaveTypeForm.controls.isVisible" />
+                  <label class="form-check-label" for="isVisible">
+                    {{globalServ.showLabel('isVisible')}}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class *ngIf="!leaveTypeview">
+          <button
+            id="leave_setup_close"
+            type="button"
+            class="btn delete-btn"
+            data-bs-dismiss="modal"
+            aria-label="Close">{{globalServ.getGlobalNames('cancel')}}</button>
+          <button id="submit_leaveType" *ngIf="!leaveTypeUpdate"
+            class="btn  add-btn"
+            [disabled]="leaveTypeForm.invalid || leaveTypeForm.pristine"
+            (click)="createLeaveType()" type="submit">
+            {{globalServ.getGlobalNames('create')}}</button>
+          <button id="submit_leaveType" *ngIf="leaveTypeUpdate"
+            class="btn  add-btn"
+            [disabled]="leaveTypeForm.invalid || leaveTypeForm.pristine"
+            (click)="UpdateType()" type="submit">
+            {{globalServ.getGlobalNames('update')}}</button>
+        </div>
+        <div class="text-center" *ngIf="leaveTypeview">
+          <button
+            id="leave_setup_close"
+            type="button"
+            class="btn delete-btn"
+            data-bs-dismiss="modal"
+            aria-label="Close">{{globalServ.getGlobalNames('close')}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

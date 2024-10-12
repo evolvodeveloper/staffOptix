@@ -1,0 +1,228 @@
+
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col-sm-12 col-lg-8">
+            <div class="d-flex align-items-baseline">
+                <i style="font-size:20px" class="fa fa-arrow-left"
+                    (click)="back()" aria-label="back"></i>
+                <h3 class="ms-4 page-title">Upload Employees To Multiple
+                    Devices</h3>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class='col-md-6'>
+        <div class='card p-3' style="margin-bottom: 10px">
+            <div class="mb-2">
+                Employees
+                <div class="input-group">
+                    <input type="text" class="form-control"
+                        placeholder="search by employee name"
+                        (keyup)="employeeeFilter($event)"
+                        style="border-radius: 8px 0px 0px 8px; height: 35px;">
+                    <span class="input-group-text" id="basic-addon1">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="row col-md-12 mt-2"
+                style="height: 130px;overflow: auto;
+                    scrollbar-width: thin;">
+                <table style="height: fit-content;">
+                    <tr *ngIf="emplist.length > 0"> 
+                        <th colspan="3">
+                            <input
+                                class="form-check-input ms-2"
+                                type="checkbox"
+                                id="selectAll"
+                                [(ngModel)]="checkedAll"
+                                (click)="selectAllEmps($event)" /> <span
+                                class="mx-2">Select All Employees</span></th>
+                        <!-- <th colspan="2">Shift Assigned Employees</th> -->
+                    </tr>
+                    <!-- <tr>
+                        <th colspan="2">Emp Name</th>
+                        <th>Emp Code</th>
+                    </tr> -->
+                    <tr *ngFor="let emp of emplist">
+                        <td colspan="2">
+                            <div class="ms-2">
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="{{emp.employeeCode}}"
+                                    [(ngModel)]="emp.checked"
+                                    (click)="selectedEmpFun($event, emp)" />
+                                <label class="form-check-label mx-2"
+                                    for="{{emp.employeeCode}}">
+                                    {{ emp.employeeName }} {{ emp.lastName }}
+                                </label>
+                            </div>
+                        </td>
+                        <td class="text-nowrap">
+                            [ {{ emp.employeeCode }}]
+                        </td>
+                         <!-- <td class="text-nowrap">
+                            [ {{ emp.employeeRefCode }}]
+                        </td> -->
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class='col-md-6'>
+        <div class='card p-3' style="margin-bottom: 10px">
+            <div class="mb-2">
+                Devices
+                <div class="input-group">
+                    <input type="text" class="form-control"
+                        placeholder="search by serial number"
+                        (keyup)="deviceFilter($event)"
+                        style="border-radius: 8px 0px 0px 8px; height: 35px;">
+                    <span class="input-group-text" id="basic-addon1">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="row col-md-12 mt-2"
+                style="height: 130px;overflow: auto;
+                    scrollbar-width: thin;">
+                <table style="height: fit-content;">
+                    <tr *ngIf="devicesList.length > 0">
+                        <th colspan="3">
+                            <input
+                                class="form-check-input ms-2"
+                                type="checkbox"
+                                id="selectAll"
+                                [(ngModel)]="checkAllDevices"
+                                (click)="selectAllDevices($event)" /> <span
+                                class="mx-2">Select All Devices</span></th>
+                        <!-- <th colspan="2">Shift Assigned Employees</th> -->
+                    </tr>
+                    <tr *ngFor="let dv of devicesList">
+                        <td colspan="2">
+                            <div class="ms-2">
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="{{dv.deviceSerial}}"
+                                    [(ngModel)]="dv.checked"
+                                    (click)="selectedDeviceFun($event, dv)" />
+                                <label class="form-check-label mx-2"
+                                    for="{{dv.deviceSerial}}">
+                                    {{ dv.deviceSerial }}
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class='col-md-6'>
+        <div class='card p-3'>
+            <div class="mb-2 p-2"
+                style="background-color: #f3f4f7;border-radius: 5px;">
+                Selected Employees
+            </div>
+            <div class="row col-md-12 mt-2"
+                style="height: 130px;overflow: auto;
+                    scrollbar-width: thin;">
+                <table style="height: fit-content;">
+                    <tr *ngFor="let emp of selectedEmp">
+                        <td colspan="2">
+                            <div class="ms-2">
+                                <label class="form-check-label mx-2"
+                                    for="{{emp.employeeCode}}">
+                                    {{ emp.employeeName }} {{ emp.lastName }}
+                                </label>
+                            </div>
+                        </td>
+
+                         <td class="text-nowrap">
+                            [ {{ emp.employeeCode }}]
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class='col-md-6'>
+        <div class='card p-3'>
+            <div class="mb-2  p-2"
+                style="background-color: #f3f4f7; border-radius: 5px;">
+                Selected Devices
+            </div>
+            <div class="row col-md-12 mt-2"
+                style="height: 130px;overflow: auto;
+                    scrollbar-width: thin;">
+                <table style="height: fit-content;">
+                    <tr *ngFor="let dv of selectedDevices">
+                        <td colspan="2">
+                            <div class="ms-2">
+                                <label class="form-check-label mx-2"
+                                    for="{{dv.deviceSerial}}">
+                                    {{ dv.deviceSerial }}
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row col-md-12">
+        <div class="col-md">
+            <div class="ms-2">
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="uploadUser"
+                    [(ngModel)]="uploadUser" />
+                <label class="form-check-label mx-2"
+                    for="uploadUser">
+                    Upload User
+                </label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="ms-2">
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="uploadFingerprint"
+                    [(ngModel)]="uploadFingerprint" />
+                <label class="form-check-label mx-2"
+                    for="uploadFingerprint">
+                    Upload Fingerprint
+                </label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="ms-2">
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="uploadFace"
+                    [(ngModel)]="uploadFace" />
+                <label class="form-check-label mx-2"
+                    for="uploadFace">
+                    Upload Face
+                </label>
+            </div>
+        </div>
+    </div>
+
+   <div>
+  <button (click)="back()" class="btn delete-btn mt-4">Cancel</button>
+  <button 
+    [disabled]="selectedEmp.length == 0 || selectedDevices.length == 0"
+    (click)="create()"
+    class="btn add-btn  float-end mt-4">
+    Upload Data
+  </button>
+</div>
+</div>

@@ -1,0 +1,504 @@
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col-sm-12 col-lg-8">
+            <div class="d-flex align-items-baseline">
+                <i
+                    style="font-size: 20px"
+                    class="fa fa-arrow-left"
+                    (click)="back()"
+                    aria-label="back"></i>
+                <h3 class="ms-4 page-title">Income Tax</h3>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row p-3">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-10">
+                <p>View complete breakup of payments deduction and declarations.
+                    You
+                    can analyze tax is being calculated and what is the TDS
+                    every
+                    month.</p>
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" [(ngModel)]="selectedFY"
+                    (change)="getMonthsBetween(selectedFY)">
+                    <option [value]="yr"
+                        *ngFor="let yr of financialYears">{{yr}}</option>
+                </select> </div>
+        </div>
+
+        <div class="row card p-3">
+            <div class="col-md-12">
+                <h5>Important</h5>
+                <ul>
+                    <li>
+                        <h6>Current Income Tax calculation is considering
+                            DECLARED
+                            amounts of investment Declaration irrespective of
+                            the
+                            approval status.</h6>
+                    </li>
+                    <li>
+                        <h6>Your Income and tax liability is being computed as
+                            per Old
+                            Income Tax regime. To lear more, and switch to New
+                            Income
+                            Tax regime, <span class="text-primary">click
+                                here</span>
+                        </h6>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+        <div class="row card p-3">
+            <div class="row ">
+                <div class="col-md-3">
+                    <p>Net Taxable Income
+                        <span class="block">INR 5,47,550</span></p>
+                </div>
+                <div class="col-md-3">
+                    <p>Gross Income Tax
+                        <span class="block">INR 22,010</span></p>
+                </div>
+                <div class="col-md-3">
+                    <p>Total Surcharge & cess
+                        <span class="block">INR 880</span></p>
+                </div>
+                <div class="col-md-3">
+                    <p>Net Income Tax Payable
+                        <span class="block">INR 22,890</span></p>
+                </div>
+                <div class="col-md-3">
+                    <p>Tax Paid Till Now
+                        <span class="block">INR 0</span></p>
+                </div>
+                <div class="col-md-3">
+                    <p>Remaining Tax To Be Paid
+                        <span class="block">INR 22,890</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class=" col-md-12">          
+               <h3>
+                    Gross Earnings from Employment
+                </h3>
+                <div class="row col-md-12">
+
+
+
+
+                    <div class="col-md-4">
+                        <h5> <i
+                                class="fa-solid fa-circle text-primary me-1"></i>
+                            Income from Previous Employer</h5>
+                    </div>
+                    <div class="col-md-4">
+                        <h5> <i
+                                class="fa-solid fa-circle text-info me-1"></i>Income
+                            from Current Employer</h5>
+                    </div>
+                    <div class="col-md-4">
+                        <h5> <i
+                                class="fa-solid fa-circle text-success me-1"></i>Projected
+                            Salary</h5>
+                    </div>
+                </div>
+
+                <div class="table-responsive mb-4">
+                    <table
+                        class="table table-hover table-nowrap custom-table mb-0 datatable">
+                        <thead class="thead-all">
+                            <tr class="tr-th-all">
+                                <th scope="col">Salary Breakup </th>
+                                <th scope="col"
+                                    class="text-end">Total</th>
+                                <th scope="col"
+                                    *ngFor="let mfy of listOfMonthsInFY;let i = index"
+                                    class="text-end">
+                                    <i [ngClass]="getIconClass(i)"
+                                        class="fa-solid fa-circle me-1"
+                                        style="font-size: x-small;"></i>
+                                    {{mfy}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="dasboard-td"
+                                *ngFor="let records of salaryPerMonth">
+                                <td>{{records.comp}}</td>
+                                <td class="text-end">{{records.total}}</td>
+                                <td class="text-end">{{records.apr}}</td>
+                                <td class="text-end">{{records.may}}</td>
+                                <td class="text-end">{{records.jun}}</td>
+                                <td class="text-end">{{records.jul}}</td>
+                                <td class="text-end">{{records.aug}}</td>
+                                <td class="text-end">{{records.sep}}</td>
+                                <td class="text-end">{{records.oct}}</td>
+                                <td class="text-end">{{records.nov}}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>
+                    Taxable Income From all heads
+                </h3>
+                <h4>
+                    Income from Salaries : </h4>
+                <span class="card m-4 p-3">
+                    <div class="row p-2">
+                        <div class="col-md-6 text-left">
+                            Total salary received
+                        </div>
+                        <div class="col-md-6 text-end">
+                            6,49,950
+                        </div>
+                    </div>
+                    <div class="row  p-2">
+                        <div class="col-md-6 text-left">
+                            Outside Payroll Bonuses Income
+                        </div>
+                        <div class="col-md-6 text-end">
+                            2,00,000
+                        </div>
+                    </div>
+                    <div class="row bold p-2 bg-light">
+                        <div class="col-md-6 text-left">
+                            Total
+                        </div>
+                        <div class="col-md-6 text-end">
+                            8,49,950
+                        </div>
+                    </div>
+
+                    <div class="table-responsive my-4">
+                        <table
+                            class="table table-hover table-nowrap custom-table mb-0 datatable">
+                            <thead class="thead-all">
+                                <tr class="tr-th-all">
+                                    <th scope="col">Section</th>
+                                    <th scope="col"
+                                        class>Allowance</th>
+                                    <th scope="col"
+                                        class></th>
+                                    <th scope="col"
+                                        class="text-end">Gross Amount</th>
+                                    <th scope="col"
+                                        class="text-end">Deductible Amount</th>
+                                </tr>
+                            </thead>
+                            <ng-container
+                                *ngFor="let records of taxexemptions">
+                                <tbody class="tr-th-all">
+                                    <tr *ngIf="records.header">
+                                        <td colspan="5">
+                                            <h5>{{ records.headerName }}</h5>
+                                        </td>
+                                    </tr>
+                                    <tr class="dasboard-td"
+                                        *ngFor="let rc of records.comp">
+                                        <td>{{rc.section}}</td>
+                                        <td>{{rc.allowance}}</td>
+                                        <td>{{rc.deatils}}</td>
+                                        <td
+                                            class="text-end">{{rc.grossAmt}}</td>
+                                        <td
+                                            class="text-end">{{rc.dedAmt}}</td>
+                                    </tr>
+
+                                </tbody>
+                            </ng-container>
+                        </table>
+                    </div>
+
+                    <div class="row bold p-2 bg-light">
+                        <div class="col-md-6 text-left">
+                            Taxable Amount under Head "Salaries"
+                        </div>
+                        <div class="col-md-6 text-end">
+                            7,52,550
+                        </div>
+                    </div>
+
+                </span>
+                <h4>
+                    Income From House Properties :
+                </h4>
+                <div class="card p-3">
+                    <p>Not declared any Income from House Properties</p>
+                </div>
+
+                <h4>
+                    Income From Other Sources :
+                </h4>
+                <div class="table-responsive my-4">
+                    <table
+                        class="table table-hover table-nowrap custom-table mb-0 datatable">
+                        <tbody class="tr-th-all">
+                            <tr *ngFor="let os of Othersources">
+                                <td>
+                                    {{ os.comp }}
+                                </td>
+                                <td class="text-end">
+                                    {{ os.Amount }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card">
+
+                    <div class="row bold p-2">
+                        <div class="col-md-6 text-left">
+                            Taxable Amount under Head
+                            "Income From Other Sources"
+                        </div>
+                        <div class="col-md-6 text-end">
+                            2,00,000
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Less: 1.5 Lac Tax Exemption ( section 80C + Other)</h4>
+
+                <div class="table-responsive my-4">
+                    <table
+                        class="table table-hover table-nowrap custom-table mb-0 datatable">
+                        <thead class="thead-all">
+                            <tr class="tr-th-all">
+                                <th scope="col">Section</th>
+                                <th scope="col"
+                                    class>Allowance</th>
+                                <th scope="col"
+                                    class></th>
+                                <th scope="col"
+                                    class="text-end">Declared Amount</th>
+                                <th scope="col"
+                                    class="text-end">Deductible Amount</th>
+                            </tr>
+                        </thead>
+                        <ng-container
+                            *ngFor="let records of listOflacExemptions">
+                            <tbody class="tr-th-all">
+                                <tr class="dasboard-td">
+                                    <td>{{records.section}}</td>
+                                    <td>{{records.allowance}}</td>
+                                    <td>{{records.deatils}}</td>
+                                    <td
+                                        class="text-end">{{records.decAmt}}</td>
+                                    <td
+                                        class="text-end">{{records.dedAmt}}</td>
+                                </tr>
+
+                            </tbody>
+                        </ng-container>
+                    </table>
+                </div>
+                <h4>Less: Other Tax Exemptions</h4>
+                <div class="card">
+
+                    <div class="table-responsive">
+                        <table
+                            class="table table-hover table-nowrap custom-table mb-0 datatable">
+                            <thead class="thead-all">
+                                <tr class="tr-th-all">
+                                    <th scope="col">Section</th>
+                                    <th scope="col"
+                                        class>Allowance</th>
+                                    <th scope="col"
+                                        class="text-end">Declared Amount</th>
+                                    <th scope="col"
+                                        class="text-end">Deductible Amount</th>
+                                </tr>
+                            </thead>
+                            <ng-container
+                                *ngFor="let records of listOthExemptions">
+                                <tbody class="tr-th-all">
+                                    <tr class="dasboard-td">
+                                        <td>{{records.section}}</td>
+                                        <td>{{records.allowance}}</td>
+                                        <td
+                                            class="text-end">{{records.decAmt}}</td>
+                                        <td
+                                            class="text-end">{{records.dedAmt}}</td>
+                                    </tr>
+
+                                </tbody>
+                            </ng-container>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="d-flex justify-content-between p-2">
+                        <div class=" text-left">
+                            Total Taxable Amount
+                        </div>
+                        <div class=" text-end">
+                            5,47,550
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between p-2">
+                        <div class=" text-left">
+                            Net Taxable Amount
+                        </div>
+                        <div class=" text-end">
+                            5,47,550
+                        </div>
+                    </div>
+                </div>
+                <h4>Tax Calculation</h4>
+                <div class="table-responsive my-4">
+                    <table
+                        class="table table-hover table-nowrap custom-table mb-0 datatable">
+                        <thead class="thead-all">
+                            <tr class="tr-th-all">
+                                <th scope="col">Tax Income Slab</th>
+                                <th scope="col"
+                                    class="text-end">Tax Amount</th>
+                            </tr>
+                        </thead>
+                        <ng-container>
+                            <tbody class="tr-th-all">
+                                <tr class="dasboard-td"
+                                    *ngFor="let records of IncomeAsPerslabs">
+                                    <td>{{records.slab}}</td>
+                                    <td class="text-end">{{records.amount}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Gross Income Tax</td> <td
+                                        class="text-end">22,010</td>
+                                </tr>
+                            </tbody>
+                        </ng-container>
+                    </table>
+                </div>
+
+                <h4>Surcharge & Cess</h4>
+                <div class="card">
+                    <div class="d-flex justify-content-between p-2">
+                        <div class=" text-left">
+                            Health and Education cess - 4% of Gross Income Tax
+                            and Surcharge
+                        </div>
+                        <div class=" text-end">
+                            880.4
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between p-2">
+                        <div class=" text-left">
+                            Total Surcharge & Cess
+                        </div>
+                        <div class=" text-end">
+                            880.4
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Net Income Tax payable</h4>
+                <div class="card">
+                    <div class="d-flex justify-content-between p-2">
+                        <div class=" text-left">
+                            Tax Calculation + Surcharge & Cess
+                        </div>
+                        <div class=" text-end">
+                            22,890.4
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between p-2">
+                        <div class=" text-left">
+                            Net Tax amount of 22,890.4 after round Off is
+                        </div>
+                        <div class=" text-end">
+                            22,890 </div>
+                    </div>
+
+                </div>
+
+                <h4>Cumulative Tax Deduction Details</h4>
+                <div class="card">
+                    <div class="d-flex justify-content-between p-2">
+                        <div class=" text-left">
+                            Tax Paid Till Now
+                        </div>
+                        <div class=" text-end">
+                            0
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="d-flex justify-content-between p-2">
+                        <div class=" text-left">
+                            Remaining Tax to be Paid
+                        </div>
+                        <div class=" text-end">
+                            22,890
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Month on month Tax Deduction Details</h4>
+                <div class="row col-md-12">
+                    <div class="col-md-4">
+                        <h5> <i
+                                class="fa-solid fa-circle text-primary me-1"></i>
+                            Tax deduction From previous employer</h5>
+                    </div>
+                    <div class="col-md-4">
+                        <h5> <i
+                                class="fa-solid fa-circle text-info me-1"></i>Imported
+                            tax deduction from current employer</h5>
+                    </div>
+                    <div class="col-md-4">
+                        <h5> <i
+                                class="fa-solid fa-circle text-success me-1"></i>Projected
+                            income tax</h5>
+                    </div>
+                </div>
+                <div class="table-responsive mb-4">
+                    <table
+                        class="table table-hover table-nowrap custom-table mb-0 datatable">
+                        <thead class="thead-all">
+                            <tr class="tr-th-all">
+                                <th scope="col">Month </th>
+                                <th scope="col"
+                                    *ngFor="let mfy of listOfMonthsInFY;let i = index"
+                                    class="text-end">
+                                    <i [ngClass]="getIconClass1(i)"
+                                        class="fa-solid fa-circle me-1"
+                                        style="font-size: x-small;"></i>{{mfy}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="dasboard-td"
+                                *ngFor="let records of taxPerMonth">
+                                <td>Montly Total Tax</td>
+                                <td class="text-end">{{records.apr}}</td>
+                                <td class="text-end">{{records.may}}</td>
+                                <td class="text-end">{{records.jun}}</td>
+                                <td class="text-end">{{records.jul}}</td>
+                                <td class="text-end">{{records.aug}}</td>
+                                <td class="text-end">{{records.aug}}</td>
+                                <td class="text-end">{{records.aug}}</td>
+                                <td class="text-end">{{records.aug}}</td>
+                                <td class="text-end">{{records.aug}}</td>
+                                <td class="text-end">{{records.aug}}</td>
+                                <td class="text-end">{{records.aug}}</td>
+                                <td class="text-end">{{records.aug}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>

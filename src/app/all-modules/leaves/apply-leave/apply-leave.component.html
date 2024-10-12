@@ -1,0 +1,129 @@
+<div class="modal-header fw-bold">
+  <h4 class="modal-title">{{global.showLabel('ApplyLeave')}}</h4>
+  <i
+    class="fa-solid fa-xmark float-end fs-4"
+    data-bs-dismiss="modal"
+    (click)="closeModal()"></i>
+</div>
+
+<div class="modal-body">
+
+  <form [formGroup]="applyLeaveForm">
+
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <label for>{{global.getGlobalNames('fromDate')}}</label>
+        <mat-form-field class="w-100">
+          <input id="start_date" matInput [matDatepicker]="picker"
+            (dateChange)="setDates()"
+             min="{{today}}"
+            max="{{threeMonths}}"
+            formControlName="leaveFromdate" [matDatepickerFilter]="dateFilter">
+          <mat-datepicker-toggle matSuffix
+            [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <label for>{{global.getGlobalNames('toDate')}}</label>
+        <mat-form-field class="w-100">
+          <input id="end_date" matInput [matDatepicker]="picker1"
+            min="{{applyLeaveForm.controls?.leaveFromdate.value}}"
+            max="{{threeMonths}}" (dateChange)="setDates()"
+            formControlName="leaveTodate" [matDatepickerFilter]="dateFilter">
+          <mat-datepicker-toggle matSuffix
+            [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field>
+      </div>
+</div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <div class="form-group">
+          <label>{{global.getGlobalNames('LeaveType')}}&nbsp;<span
+              style="color: red; margin-left: 1px">*</span></label>
+          <select id="leaveTypeCode" class="form-select"
+          (change)="checkRules()"
+            formControlName="leaveTypeCode" (keydown)="onKeyDown($event)">
+            <option
+              *ngFor="let LveType of lTypes"
+              [disabled]="LveType.disable"
+              [value]="LveType.leaveTypeCode">
+              {{ LveType.leaveTypeCode }}
+            </option>
+          </select>
+          <!-- </div>  [disabled]="LveType.disable"-->
+          <div
+            *ngIf="
+            applyLeaveForm.controls['leaveTypeCode'].invalid &&
+            (applyLeaveForm.controls['leaveTypeCode'].dirty ||
+              applyLeaveForm.controls['leaveTypeCode'].touched)
+          "
+            style="padding: 0px">
+            <div
+              id="leaveTypeCode"
+              *ngIf="applyLeaveForm.controls['leaveTypeCode'].errors.required"
+              style="color: #dc3545">
+              {{globalServ.getGlobalNames('LeaveType')}} {{globalServ.showGlobalErrors('required')}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <div class="form-group"
+          *ngIf="applyLeaveForm.controls.numLeaves.value <= 1 && canApplyHalfDay">
+          <label>{{global.showLabel('duration')}}</label>
+          <select id="duration" class="form-select" formControlName="duration"
+            (change)="checkDuration()">
+            <option
+              *ngFor="let ld of lduration"
+              [value]="ld.code">
+              {{ ld.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+</div>
+<div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p>{{global.showLabel('NumberOfLeaves')}} : {{this.applyLeaveForm.controls.numLeaves.value}}
+        </p>
+
+        <!-- <div class="form-group">
+          <label>Number Of Leaves</label>
+          <input
+            type="number"
+            readonly
+            class="form-control"
+            id="numLeaves"
+            formControlName="numLeaves" />
+        </div> -->
+      </div>
+    </div>
+    <div class="row" *ngIf="allowUserToTakethisNumOfLeave >= 0">
+<span  *ngFor="let roe of errorMsg"  class=" text-start badge  bg-inverse-danger">{{roe.msg}} </span>
+    </div>
+    <!-- style="color: #f62d51;" -->
+    <div class="row">
+<span  *ngFor="let roe of warningMsg" class="text-start badge  bg-inverse-info mt-1">{{roe.msg}} </span>
+
+    </div>
+  </form>
+</div>
+<div class="modal-footer" *ngIf="!view">
+  <button id="cancel_apply_leave" type="button" class="btn delete-btn "
+    data-dismiss="modal"
+    (click)="closeModal()">{{global.getGlobalNames('cancel')}}</button>
+  <button id="submit_apply_leave" type="button" class="btn add-btn"
+    *ngIf="!update"
+    [disabled]="applyLeaveForm.invalid || applyLeaveForm.pristine || errorMsg.length > 0"
+    (click)="submit()">{{global.getGlobalNames('submit')}}</button>
+  <!-- <button id="update_apply_leave" type="button" class="btn add-btn " *ngIf="update"
+    [disabled]="applyLeaveForm.invalid || applyLeaveForm.pristine" (click)="Update()">Submit</button> -->
+
+</div>
+<div class="modal-footer  text-center " *ngIf="view">
+  <button id="cancel_apply_leave" type="button" class="btn delete-btn "
+    data-dismiss="modal"
+    (click)="closeModal()">{{global.getGlobalNames('close')}}</button>
+</div>

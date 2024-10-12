@@ -1,0 +1,44 @@
+.custom-dropdown {
+    position: relative;
+    /* Adjust the width as needed */
+}
+
+.hovercolor {
+    background-color: #ccc;
+}
+.inputwid {
+    margin: 3px;
+    height: 36px;
+}
+.selected-option {
+    cursor: pointer;
+    padding: 8px;
+    border: 1px solid #ccc;
+    display: block;
+}
+
+.dropdown-list {
+    list-style: none;
+    border-radius: 5px;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    max-height: 200px;
+    height: auto;
+    max-height: auto;
+    overflow: auto;
+}
+
+.dropdown-list li {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.dropdown-list li:hover {
+    background-color: #f0f0f0;
+}

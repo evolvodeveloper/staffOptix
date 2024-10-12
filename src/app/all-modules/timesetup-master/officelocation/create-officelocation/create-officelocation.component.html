@@ -1,0 +1,194 @@
+<div class="page-header mb-0" [ngClass]="{' p-3': isSpecialRoute}">
+    <div class="row align-items-center">
+        <div class="col-sm-12 col-lg-8 d-flex align-items-baseline">
+            <i style="font-size:20px" class="fa fa-arrow-left"
+                (click)="cancel()" aria-label="back"></i>
+            <h3 class="ms-4 page-title"> {{ view ?
+                globalServ.getGlobalNames('view') : (update ?
+                globalServ.getGlobalNames('update')
+                :globalServ.getGlobalNames('create')) }}
+                {{globalServ.showLabel('officeLocationHeader')}}</h3>
+        </div>
+    </div>
+</div>
+<div class="row" [ngClass]="{'card': !isSpecialRoute, 'p-3': isSpecialRoute}">
+    <div class="col-md-12 ">
+        <form [formGroup]="locationForm">
+            <section #stepOne class="row g-2">
+                <div class="col-md-6 mt-4">
+                    <div class="form-group">
+                        <label class="text-sm mb-1">
+                            {{globalServ.showLabel('officeLocationHeader')}}&nbsp;<span
+                                style="color: red; margin-left: 1px">*</span>
+                        </label>
+                        <input
+                            class="form-control"
+                            id="locationCode"
+                            placeholder="{{globalServ.showPlaceholder('loc')}}"
+                            [formControl]="locationForm.controls.locationCode" />
+                        <div
+                            *ngIf="locationForm.controls['locationCode'].invalid &&
+                            (locationForm.controls['locationCode'].dirty ||
+                            locationForm.controls['locationCode'].touched)"
+                            style="padding: 0px">
+                            <div
+                                *ngIf="locationForm.controls['locationCode'].errors.required"
+                                style="color: #dc3545">
+                                {{globalServ.showLabel('officeLocHeader')}}
+                                {{globalServ.showGlobalErrors('required')}}
+                            </div>
+                        </div>
+                        <div
+                            *ngIf="locationForm.get('locationCode').hasError('invalidFormat')"
+                            style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+                    </div>
+                </div>
+                <div class="col-md-6 mt-4">
+                    <div class="form-group">
+                        <label
+                            class="text-sm mb-1">{{globalServ.showLabel('officeDesc')}}
+                        </label>
+                        <textarea
+                            class="form-control"
+                            id="description"
+                            placeholder="{{globalServ.showGlobalplaceholders('enterDesc')}}"
+                            [formControl]="locationForm.controls.description"></textarea>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="form-group">
+                        <label
+                            class="text-sm mb-1">{{globalServ.showLabel('officeAddress')}}</label>
+                        <textarea
+                            class="form-control"
+                            id="address1"
+                            placeholder="{{globalServ.showPlaceholder('primaryAdd')}}"
+                            [formControl]="locationForm.controls.address1"></textarea>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="text-sm mb-1">
+                            {{globalServ.showLabel('officeSecAddr')}}</label>
+                        <textarea
+                            class="form-control"
+                            id="address2"
+                            placeholder="{{globalServ.showPlaceholder('secoAdd')}}"
+                            [formControl]="locationForm.controls.address2"></textarea>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label
+                            class="text-sm mb-1">{{globalServ.showLabel('officeCity')}}</label>
+                        <input
+                            class="form-control"
+                            id="City"
+                            placeholder="{{globalServ.showPlaceholder('enterCity')}}"
+                            [formControl]="locationForm.controls.city">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label
+                            class="text-sm mb-1">{{globalServ.showLabel('officeState')}}</label>
+                        <ng-select
+                            [items]="stateNames"
+                            bindLabel="state"
+                            bindValue="state"
+                            [multiple]="false"
+                            placeholder="{{globalServ.showPlaceholder('selectState')}}"
+                            style="
+                      width: 100%;
+                      margin-left: calc(var(--mo-border-width) * -1);
+                      border-top-left-radius: 0;
+                      border-bottom-left-radius: 0;
+                    "
+                            class="ngSelectform"
+                            [formControl]="locationForm.controls.state">
+                        </ng-select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label
+                            class="text-sm mb-1">{{globalServ.showLabel('officeCountry')}}</label>
+                        <ng-select
+                            [items]="countryNames"
+                            bindLabel="country"
+                            bindValue="country"
+                            [multiple]="false"
+                            placeholder="{{globalServ.showPlaceholder('selectCountry')}}"
+                            (change)="getStatesForThatCmp(locationForm.controls.country.value)"
+                            style=" width: 100%; margin-left: calc(var(--mo-border-width) * -1);
+                             border-top-left-radius: 0;
+                             border-bottom-left-radius: 0;"
+                            class="ngSelectform"
+                            [formControl]="locationForm.controls.country">
+                        </ng-select>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <input
+                            class="form-check-input me-2"
+                            type="checkbox"
+                            value
+                            id="isDefault"
+                            (change)="checkDefault()"
+                            [formControl]="locationForm.controls.isDefault" />
+                        <label
+                            for="isDefault">{{globalServ.showLabel('defaultLoc')}}</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input
+                            class="form-check-input me-2"
+                            type="checkbox"
+                            value
+                            id="isActive"
+                            [formControl]="locationForm.controls.isActive" />
+                        <label>{{globalServ.getGlobalNames('active')}}</label>
+                    </div>
+                </div>
+            </section>
+        </form>
+        <div
+            class="d-flex justify-content-between align-items-center mt-4 mb-2">
+            <button
+                id="cancel_Office"
+                (click)="cancel()"
+                class="btn delete-btn me-1">
+                <span *ngIf="view">
+                    {{globalServ.getGlobalNames('close')}}</span>
+                <span
+                    [hidden]="view ">{{globalServ.getGlobalNames('cancel')}}</span>
+            </button>
+            <button
+                id="create_Office"
+                [disabled]="locationForm.invalid"
+                [hidden]="view || update "
+                (click)="create()"
+                class="btn add-btn  ">
+                {{globalServ.getGlobalNames('create')}}
+            </button>
+            <button
+                id="update_Office"
+                [disabled]="locationForm.pristine"
+                *ngIf="update"
+                (click)="Update()"
+                class="btn add-btn  ">
+                {{globalServ.getGlobalNames('update')}}
+            </button>
+        </div>
+    </div>
+</div>

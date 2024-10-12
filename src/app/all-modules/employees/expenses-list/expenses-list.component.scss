@@ -1,0 +1,24 @@
+.tab_bg_color {
+    background-color: #a7b4ee !important;
+    border-top-color: #667eea !important;
+}
+.nav-pills .nav-link.active,
+.nav-pills .show>.nav-link {
+    color: #fff;
+    // background-color: #667eea;
+    background-color: #5470C6;
+    min-width: 100px;
+}
+
+.nav-pills .nav-link {
+    background: none;
+    border: 0;
+    border-radius: var(--mo-nav-pills-border-radius);
+    color: #828393;
+        font-size: small;
+    // font-weight: 600;
+}
+.nav-pills .nav-link,
+.nav-pills .show>.nav-link {
+    background-color: #cfdbff;
+}

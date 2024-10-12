@@ -1,0 +1,402 @@
+<div class="page-header">
+  <div class="row align-items-center">
+    <div class="col-sm-12 col-lg-8 d-flex align-items-baseline">
+      <i style="font-size:20px" class="fa fa-arrow-left"
+        (click)="back()" aria-label="back"></i>
+      <h3 class="ms-4 page-title"> {{ view ? globalServ.getGlobalNames('view') :
+        (update ? globalServ.getGlobalNames('update')
+        :globalServ.getGlobalNames('create')) }}
+        {{globalServ.showLabel('payrollSetHeader')}}</h3>
+    </div>
+  </div>
+</div>
+<!-- '''''''''''''''''''''''''' -->
+
+<div class="card p-3">
+  <div class="row">
+    <div class="col-md-12">
+      <ng-stepper class="cdk-step" #cdkStepper [linear]="true" class="mt-1">
+        <cdk-step [stepControl]="stepOne.stepOneForm" [optional]="true">
+          <ng-template cdkStepLabel>
+            <div
+              class="step-bullet"
+              style="width: 40px; height: 40px; z-index: 105">
+              <img
+                src="assets/img/icon/User_Add.svg"
+                height="20"
+                width="20" />
+            </div>
+            <div
+              class="step-title">{{globalServ.showLabel('payrollSetHeader')}}</div>
+          </ng-template>
+          <form [formGroup]="payrollForm">
+            <div #stepOne>
+              <div class="row">
+                <div class="col-md-6 form-group  col-lg-6 mt-4">
+                  <label class="col-form-label">
+                    {{globalServ.getGlobalNames('payroll')}}&nbsp;<span
+                      style="color: red; margin-left: 1px">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="{{globalServ.showPlaceholder('enterPayroll')}}"
+                    class="form-control"
+                    id="Payroll"
+                    [formControl]="payrollForm.controls.payrollCode" />
+                  <!-- maxlength="{{ charLimit }}" -->
+                  <div
+                    id="Payroll"
+                    *ngIf="
+                payrollForm.controls['payrollCode'].invalid &&
+                (payrollForm.controls['payrollCode'].dirty ||
+                  payrollForm.controls['payrollCode'].touched)
+              "
+                    style="padding: 0px">
+                    <div
+                      id="Payroll"
+                      class="ms-2"
+                      *ngIf="payrollForm.controls['payrollCode'].errors.required"
+                      style="color: #dc3545">
+                      {{globalServ.getGlobalNames('payroll')}}
+                      {{globalServ.showGlobalErrors('required')}}
+                    </div>
+                  </div>
+                  <div
+                    *ngIf="payrollForm.get('payrollCode').hasError('invalidFormat')"
+                    style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+                </div>
+
+                <div class="col-md-6 form-group  col-lg-6 mt-4">
+                  <label class="col-form-label" for="salaryFrequency">
+                    {{globalServ.showLabel('salaryFrequency')}}
+                    &nbsp;<span
+                      style="color: red; margin-left: 1px">*</span></label>
+                  <select
+                    id="salaryFrequency"
+                    class="form-select"
+                    (change)="onsalaryFrequencyChange()"
+                    [formControl]="payrollForm.controls.salaryFrequency">
+                    <option selected value>-</option>
+                    <option
+                      *ngFor="let hc of salaryFrequency"
+                      [value]="hc.code">
+                      {{ hc.name }}
+                    </option>
+                  </select>
+                  <div
+                    *ngIf="
+                payrollForm.controls['salaryFrequency'].invalid &&
+                (payrollForm.controls['salaryFrequency'].dirty ||
+                  payrollForm.controls['salaryFrequency'].touched)
+              "
+                    style="padding: 0px">
+                    <div
+                      id="salaryFrequency"
+                      class="ms-2"
+                      *ngIf="
+                  payrollForm.controls['salaryFrequency'].errors.required
+                "
+                      style="color: #dc3545">
+                      {{globalServ.showLabel('salaryFrequency')}}
+                      {{globalServ.showGlobalErrors('required')}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 col-lg-6 form-group ">
+                  <label class="col-form-label"
+                    for="salaryCalculationDate">{{globalServ.showLabel('salaryCalculationdate')}}&nbsp;<span
+                      style="color: red; margin-left: 1px">*</span></label>
+                  <select
+                    id="salaryCalculationDate"
+                    class="form-select"
+                    [formControl]="payrollForm.controls.salaryCalculationDate">
+                    <option selected value>-</option>
+                    <option
+                      *ngFor="let hc of filteredsalryCalDates"
+                      [value]="hc.code">
+                      {{ hc.name }}
+                    </option>
+                  </select>
+
+                  <div
+                    *ngIf="
+                payrollForm.controls['salaryCalculationDate'].invalid &&
+                (payrollForm.controls['salaryCalculationDate'].dirty ||
+                  payrollForm.controls['salaryCalculationDate'].touched)
+              "
+                    style="padding: 0px">
+                    <div
+                      id="salaryCalculationDate"
+                      class="ms-2"
+                      *ngIf="
+                  payrollForm.controls['salaryCalculationDate'].errors.required
+                "
+                      style="color: #dc3545">
+                      {{globalServ.showLabel('salaryCalculationdate')}}
+                      {{globalServ.showGlobalErrors('required')}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 form-group col-lg-6">
+                  <label class="col-form-label">
+                    {{globalServ.showLabel('payDaycalculation')}}</label>
+                  <select
+                    id="payDayCalc"
+                    class="form-select"
+                    [formControl]="payrollForm.controls.payDayCalc">
+                    <option selected value>-</option>
+                    <option
+                      *ngFor="let pday of filteredpayDayCal"
+                      [value]="pday.code">
+                      {{ pday.name }}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="col-md-6 col-lg-6">
+                  <label
+                    class="col-form-label">{{globalServ.showLabel('leavePlanCode')}}&nbsp;<span
+                      style="color: red; margin-left: 1px">*</span></label>
+                  <select
+                    id="leavePlanCode"
+                    class="form-select"
+                    [formControl]="payrollForm.controls.leavePlanCode">
+                    <option selected value>-</option>
+                    <option
+                      *ngFor="let hc of leavePlansList"
+                      [value]="hc.leavePlanCode">
+                      {{ hc.leavePlanCode }}
+                    </option>
+                  </select>
+                  <div
+                    *ngIf="
+                payrollForm.controls['leavePlanCode'].invalid &&
+                (payrollForm.controls['leavePlanCode'].dirty ||
+                  payrollForm.controls['leavePlanCode'].touched)"
+                    style="padding: 0px">
+                    <div
+                      id="leavePlanCode"
+                      class="ms-2"
+                      *ngIf="
+                  payrollForm.controls['leavePlanCode'].errors.required
+                "
+                      style="color: #dc3545">
+                      {{globalServ.showLabel('leavePlanCode')}}
+                      {{globalServ.showGlobalErrors('required')}}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-5 col-lg-5 ms-2 my-auto "
+                  *ngIf="payrollForm.controls.payDayCalc.value === 'Calendar Days' ">
+                  <div class="form-check">
+                    <input
+                      id="excludeWeekoffs"
+                      class="form-check-input"
+                      color="primary"
+                      type="checkbox"
+                      formControlName="excludeWeekoffs" />
+                    <label class="form-check-label"
+                      for="excludeWeekoffs">
+                      {{globalServ.showLabel('excludeweekoffs')}}
+                    </label>
+                  </div>
+                  <!-- </div>
+                <div class="col-md-6 col-lg-11 ms-2 my-auto form-check"
+                  *ngIf="payrollForm.controls.payDayCalc.value === 'Calendar Days' "> -->
+                  <div class="form-check">
+                    <input
+                      id="excludeHolidays"
+                      class="form-check-input"
+                      color="primary"
+                      type="checkbox"
+                      formControlName="excludeHolidays" />
+                    <label class="form-check-label"
+                      for="excludeHolidays">
+                      {{globalServ.showLabel('excludeHolidays')}}
+                    </label>
+                  </div>
+                </div>
+
+                <div class="col-md-7 col-lg-7 ms-1 mt-2 d-flex">
+                  <div class="col-md-5 form-check d-flex align-items-center">
+                    <input
+                      id="allowOvertime"
+                      class="form-check-input"
+                      color="primary"
+                      type="checkbox"
+                      (change)="onOvertime()"
+                      formControlName="allowOvertime" />
+                    <label class="form-check-label ms-2" for="allowOvertime">
+                      {{globalServ.showLabel('allowOT')}}
+                    </label>
+                  </div>
+                  <div class="col-md-6 col-lg-6"
+                    *ngIf="payrollForm.controls.allowOvertime.value === true ">
+                    <label class="col-form-label" for="overtimeCode">
+                      {{globalServ.showLabel('otCode')}}
+                    </label>
+                    <select
+                      id="overtimeCode"
+                      class="form-select"
+                      [formControl]="payrollForm.controls.overtimeCode">
+                      <option selected value>-</option>
+                      <option
+                        *ngFor="let hc of overTimeSetupList"
+                        [value]="hc.overtimeCode">
+                        {{ hc.overtimeCode }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <div
+                  class="col-lg-6 my-3  form-check col-md-6 col-sm-12 col-xs-12 ms-3">
+                  <input class="form-check-input" type="checkbox"
+                    id="isDefault"
+                    formControlName="isDefault" (change)="checkDefault()">
+                  <label class="form-check-label" for="isDefault">
+                    {{globalServ.getGlobalNames('isDefault')}}
+                  </label>
+                </div>
+
+              </div>
+              <section class *ngIf="!view">
+                <button class="btn delete-btn  me-3"
+                  (click)="back()">
+                  {{globalServ.getGlobalNames('close')}}
+                </button>
+                <button
+                  [disabled]="payrollForm.invalid"
+                  class="btn add-btn"
+                  type="submit"
+                  cdkStepperNext>
+                  {{globalServ.getGlobalNames('next')}}
+                </button>
+              </section>
+              <section class *ngIf="view">
+                <button class="btn delete-btn  me-3"
+                  (click)="back()">{{globalServ.getGlobalNames('close')}}</button>
+                <button
+                  class="btn add-btn"
+                  type="submit"
+                  cdkStepperNext>
+                  {{globalServ.getGlobalNames('next')}}
+                </button>
+              </section>
+            </div>
+          </form>
+        </cdk-step>
+
+        <!-- Payroll Component Setup starts -->
+        <cdk-step [stepControl]="stepTwo.stepTwoForm" [optional]="true">
+          <ng-template cdkStepLabel>
+            <div class="step-bullet"
+              style="width: 40px; height: 40px;z-index:106">
+              <img src="assets/img/icon/Compass.svg" height="20" width="20" />
+            </div>
+            <div class="step-title">
+              {{globalServ.showLabel('addSalaryComponents')}}
+            </div>
+          </ng-template>
+          <div #stepTwo>
+            <div class="row">
+              <div class="col-md-6">
+                <h4>
+                  {{globalServ.showLabel('components')}}
+                </h4>
+                <div cdkDropList #todoList1="cdkDropList"
+                  [cdkDropListData]="salaryMasterList"
+                  [cdkDropListConnectedTo]="[doneList1]"
+                  class="example-list"
+                  (cdkDropListDropped)="drop1($event)">
+                  <div class="example-box" *ngFor="let item of salaryMasterList"
+                    cdkDrag [cdkDragDisabled]="view"> <div>
+                      {{item?.payrollComponent?.componentCode}}
+                    </div>
+                    <div>
+                      <span *ngIf="item?.payrollComponent?.isDeduction"
+                        style="color:#dc3545">
+                       'D'
+                      </span>
+                      <span *ngIf="!item?.payrollComponent?.isDeduction"
+                        style="color:#25bb00">
+                        'E'
+                      </span>
+                    </div></div>
+                </div>
+              </div>
+              <br>
+              <div class="col-md-6 d-flex">
+                <div class="col-md-6">
+                  <h4>
+                    {{globalServ.showLabel('selectedComponents')}}
+                  </h4>
+                  <div cdkDropList #doneList1="cdkDropList"
+                    [cdkDropListData]="done"
+                    [cdkDropListConnectedTo]="[todoList1]" class="example-list"
+                    (cdkDropListDropped)="drop1($event)">
+                    <div class="example-box" *ngFor="let item of done" cdkDrag
+                      [cdkDragDisabled]="view">
+                      <div>
+                        {{item?.payrollComponent?.componentCode}}
+                      </div>
+                      <div>
+                        <span *ngIf="item?.payrollComponent?.isDeduction"
+                          style="color:#dc3545">
+                          'D'
+                        </span>
+                        <span *ngIf="!item?.payrollComponent?.isDeduction"
+                          style="color:#25bb00">
+                          'E'
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+          <section class="mt-2" *ngIf="!view">
+            <button
+              class="btn btn-secondary secondary-btn"
+              type="submit"
+              cdkStepperPrevious>
+              {{globalServ.getGlobalNames('previous')}}
+            </button>
+
+            <!-- if user want to submit only employee -->
+            <span>
+              <button *ngIf="!update"
+                class="btn add-btn"
+                [disabled]="payrollForm.invalid"
+                (click)="createPayroll()"
+                type="submit">
+                {{globalServ.getGlobalNames('save')}}
+              </button>
+              <button *ngIf="update"
+                class="btn add-btn"
+                [disabled]="payrollForm.invalid"
+                (click)="updatePayroll()"
+                type="submit">
+                {{globalServ.getGlobalNames('update')}}
+              </button>
+            </span>
+          </section>
+          <section class="mt-2" *ngIf="view">
+            <button
+              class="btn btn-secondary secondary-btn"
+              type="submit"
+              cdkStepperPrevious>
+              {{globalServ.getGlobalNames('previous')}}
+            </button>
+          </section>
+        </cdk-step>
+      </ng-stepper>
+    </div>
+  </div>
+</div>

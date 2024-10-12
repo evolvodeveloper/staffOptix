@@ -1,0 +1,1957 @@
+<div class="content container-fluid">
+  <!-- Page Header -->
+  <div class="mb-2">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="d-flex align-items-baseline">
+          <i
+            style="font-size: 20px"
+            class="fa fa-arrow-left"
+            routerLink="/dashboard"
+            aria-label="back"></i>
+          <h3 class="ms-4 page-title">
+            {{global.showLabel('attendanceLogHeader')}}
+          </h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <label>{{global.getGlobalNames('department')}}</label>
+      <div class="form-floating mt-1">
+        <select
+          id="departments"
+          class="form-select"
+          [(ngModel)]="reportObj.deptCode"
+          (change)="modified()"
+          (change)="employeesByDepartmentAndProject()">
+          <option [value]="de.deptCode" *ngFor="let de of departments">
+            {{ de.deptName }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <label>{{global.getGlobalNames('project')}}</label>
+      <div class="form-floating mt-1">
+        <select
+          id="departments"
+          class="form-select"
+          [(ngModel)]="reportObj.projectCode"
+          (change)="employeesByDepartmentAndProject()"
+          (change)="modified()">
+          <option [value]="pjs.categoryCode" *ngFor="let pjs of projects">
+            {{ pjs.categoryCode }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-md-4" [ngClass]="{'d-flex':!stopSpinner}">
+      <div class *ngIf="stopSpinner">
+        <label>{{global.getGlobalNames('employee')}}</label>
+        <ng-select
+          [items]="employees"
+          bindLabel="mergeName"
+          bindValue="employeeCode"
+          [multiple]="false"
+          id="emp"
+          (change)="modified()"
+          placeholder="Select an employee"
+          class="ngSelectform"
+          [(ngModel)]="reportObj.empCode">
+        </ng-select>
+      </div>
+      <div id="loading" *ngIf="!stopSpinner"></div>
+    </div>
+
+    <div class="col-md-4">
+      <label>{{global.getGlobalNames('shift')}}</label>
+      <div class="form-floating mt-1">
+        <select
+          id="shift"
+          class="form-select"
+          [(ngModel)]="reportObj.shiftCode"
+          (change)="modified()">
+          <option value="ALL">ALL</option>
+          <option [value]="s.shiftCode"
+            *ngFor="let s of shifts">{{s.shiftCode}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <label>{{global.getGlobalNames('dateFromandTo')}} </label>
+      <div class="form-floating mt-1">
+        <input
+          id="selectedDateRange"
+          type="text"
+          ngxDaterangepickerMd
+          [(ngModel)]="selectedDateRange"
+          (change)="modified()"
+          class="form-control" />
+      </div>
+    </div>
+  </div>
+  <div class="row my-2">
+    <div class="col-sm-6 col-lg-4 d-flex my-2 align-items-end">
+      <div class="input-group">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="{{global.showGlobalplaceholders('search')}}"
+          (keyup)="updateFilter($event)"
+          style="
+            border-radius: 8px 0px 0px 8px;
+            height: calc(2.5rem + calc(var(--mo-border-width) * 2));
+          " />
+        <span class="input-group-text" id="basic-addon1">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </span>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-2 my-2">
+      <!--   <label
+        class="form-label ms-2">{{global.getGlobalNames('ShowEntries')}}</label>
+      <select
+        class="form-select"
+        *ngIf="allRecordsTab"
+        (change)="allRecordsresultPerPage($event)">
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="all">All</option>
+      </select>
+      <select
+        class="form-select"
+        *ngIf="firstTab"
+        (change)="validationNeededresultsPerPage($event)">
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="all">All</option>
+      </select>
+      <select
+        class="form-select"
+        *ngIf="secondTab"
+        (change)="resultsPerPage($event)">
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="all">All</option>
+      </select>
+      <select
+        class="form-select"
+        *ngIf="thirdTab"
+        (change)="isApprovedResultsPerPage($event)">
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="all">All</option>
+      </select> -->
+    </div>
+    <div class="col-lg-6 d-flex align-items-end justify-content-end">
+      <button
+        id="pdf_timesheet"
+        *ngIf="allRecordsTab"
+        class="btn add-btn float-end mx-2"
+        [disabled]="allRecords.length === 0"
+        (click)="savePdfForAllrecords()">
+        {{global.getGlobalNames('saveAsPDF')}}
+      </button>
+      <button
+        id="excel_timesheet"
+        *ngIf="allRecordsTab"
+        class="btn add-btn float-end mx-2"
+        [disabled]="allRecords.length === 0"
+        (click)="saveExcelForAllRecords()">
+        {{global.getGlobalNames('saveAsExcel')}}
+      </button>
+      <button
+        id="pdf_timesheet"
+        *ngIf="firstTab"
+        class="btn add-btn float-end mx-2"
+        [disabled]="validationNeededRows.length === 0"
+        (click)="savePDF()">
+        {{global.getGlobalNames('saveAsPDF')}}
+      </button>
+      <button
+        id="excel_timesheet"
+        *ngIf="firstTab"
+        class="btn add-btn float-end mx-2"
+        [disabled]="validationNeededRows.length === 0"
+        (click)="saveExcel()">
+        {{global.getGlobalNames('saveAsExcel')}}
+      </button>
+
+      <button
+        id="pdf_timesheet"
+        *ngIf="secondTab"
+        class="btn add-btn float-end mx-2"
+        [disabled]="unApprovedRows.length === 0"
+        (click)="savePdfForNeedApproval()">
+        {{global.getGlobalNames('saveAsPDF')}}
+      </button>
+      <button
+        id="excel_timesheet"
+        *ngIf="secondTab"
+        class="btn add-btn float-end mx-2"
+        [disabled]="unApprovedRows.length === 0"
+        (click)="saveExcelForNeedApproval()">
+        {{global.getGlobalNames('saveAsExcel')}}
+      </button>
+
+      <button
+        id="approve_timesheet"
+        *ngIf="secondTab && hasPermissionToApprove"
+        class="btn success-btn float-end mx-2"
+        [disabled]="approvedRowsPost.length === 0"
+        (click)="approveRecord()">
+        {{global.getGlobalNames('approve')}}
+      </button>
+      <button
+        id="submit_timesheet"
+        class="btn add-btn float-end mx-2"
+        (click)="submit()">
+        {{global.getGlobalNames('submit')}}
+      </button>
+    </div>
+  </div>
+
+  <div class="card card-border-style p-3">
+    <div class="mt-2">
+      <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item me-2" role="presentation">
+          <button
+            style="height: 40px; padding: revert"
+            (click)="allrecordstab()"
+            class="nav-link active"
+            id="pills-allrecords-tab"
+            data-bs-toggle="pill"
+            data-bs-target="#pills-allrecords"
+            type="button"
+            role="tab"
+            aria-controls="pills-allrecords"
+            aria-selected="true">
+            <div class="d-flex my-2 justify-content-center">
+              {{global.showLabel('AllLogs')}}
+            </div>
+          </button>
+        </li>
+
+        <li class="nav-item me-2" role="presentation">
+          <button
+            style="height: 40px; padding: revert"
+            (click)="tab1()"
+            class="nav-link"
+            id="pills-validation-tab"
+            data-bs-toggle="pill"
+            data-bs-target="#pills-validation"
+            type="button"
+            role="tab"
+            aria-controls="pills-validation"
+            aria-selected="true">
+            <div class="d-flex my-2 justify-content-center">
+              {{global.showLabel('LogsNeedingValidation')}}
+            </div>
+          </button>
+        </li>
+        <li class="nav-item me-2" role="presentation">
+          <button
+            style="height: 40px; padding: revert"
+            (click)="tab2()"
+            class="nav-link"
+            id="pills-needApproveal-tab"
+            data-bs-toggle="pill"
+            data-bs-target="#pills-needApproveal"
+            type="button"
+            role="tab"
+            aria-controls="pills-needApproveal"
+            aria-selected="false">
+            <div class="d-flex my-2 justify-content-center">
+              {{global.showLabel('UnapprovedLogs')}}</div>
+          </button>
+        </li>
+        <li class="nav-item me-2" role="presentation">
+          <button
+            style="height: 40px; padding: revert"
+            (click)="tab3()"
+            class="nav-link"
+            id="pills-contact-tab"
+            data-bs-toggle="pill"
+            data-bs-target="#pills-contact"
+            type="button"
+            role="tab"
+            aria-controls="pills-contact"
+            aria-selected="false">
+            <div class="d-flex my-2 justify-content-center">
+              {{global.showLabel('ApprovedLogs')}}
+            </div>
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="tab-content" id="pills-tabContent">
+      <!-- all records starts -->
+      <div
+        class="tab-pane fade show active"
+        id="pills-allrecords"
+        role="tabpanel"
+        aria-labelledby="pills-allrecords-tab"
+        tabindex="0">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="table-responsive">
+              <table
+                datatable
+                class="table table-hover custom-table mb-0 datatable">
+                <thead class="thead-all">
+                  <tr class="tr-th-all">
+                    <th></th>
+                    <th>
+                      {{global.getGlobalNames('date')}}
+                      <i
+                        class="fa fa-sort"
+                        data-column="dateCode"
+                        (click)="sortData('dateCode')"
+                        [ngClass]="{
+                          asc: sortColumn === 'dateCode' && sortOrder === 'asc',
+                          desc:
+                            sortColumn === 'dateCode' && sortOrder === 'desc'
+                        }"></i>
+                    </th>
+                    <th>
+                      {{global.getGlobalNames('employeeName')}}
+                      <i
+                        class="fa fa-sort"
+                        data-column="employeeName"
+                        (click)="sortData('employeeName')"
+                        [ngClass]="{
+                          asc:
+                            sortColumn === 'employeeName' &&
+                            sortOrder === 'asc',
+                          desc:
+                            sortColumn === 'employeeName' &&
+                            sortOrder === 'desc'
+                        }"></i>
+                    </th>
+                    <th class> {{global.getGlobalNames('shift')}}</th>
+                    <th class> {{global.getGlobalNames('workHrs')}}</th>
+                    <th class="text-center">
+                      {{global.getGlobalNames('totalHours')}}
+                      <i
+                        class="fa fa-sort"
+                        data-column="totalHours"
+                        (click)="sortData('totalHours1')"
+                        [ngClass]="{
+                          asc:
+                            sortColumn === 'totalHours1' && sortOrder === 'asc',
+                          desc:
+                            sortColumn === 'totalHours1' && sortOrder === 'desc'
+                        }"></i>
+                    </th>
+                    <th class="text-center">
+                      {{global.getGlobalNames('EffectiveHrs')}}
+                      <i
+                        class="fa fa-sort"
+                        data-column="effectiveHrs1"
+                        (click)="sortData('effectiveHrs1')"
+                        [ngClass]="{
+                          asc:
+                            sortColumn === 'effectiveHrs1' && sortOrder === 'asc',
+                          desc:
+                            sortColumn === 'effectiveHrs1' && sortOrder === 'desc'
+                        }"></i>
+                    </th>
+                    <th>{{global.getGlobalNames('AttendanceStatus')}}</th>
+                    <th> {{global.getGlobalNames('entryStatus')}}</th>
+                    <th>{{global.getGlobalNames('exitStatus')}}</th>
+                    <th>{{global.getGlobalNames('Comment')}}</th>
+                    <th class="text-center"
+                      *ngIf="allRecords.length > 0">
+                      {{global.getGlobalNames('action')}}</th>
+                  </tr>
+                </thead>
+                <tbody
+                  *ngFor="let vnr of allRecords ;let i = index">
+                  <ng-container *ngIf="!vnr.BreakShift">
+                    <tr
+                      class="dasboard-td">
+                      <td><i *ngIf="!vnr.expand" class="fa fa-plus"
+                          aria-hidden="true" (click)="expandRow(vnr)"></i>
+                        <i *ngIf="vnr.expand" class="fa fa-minus"
+                          aria-hidden="true" (click)="collapseRow(vnr)"></i>
+                      </td>
+                      <td>{{ vnr.dateCode | date : dateFormat }}</td>
+                      <td>
+                        {{ vnr.employeeName }} <br />
+                        <span class="text-muted">
+                          {{ vnr.employeeCode }}
+                        </span>
+                      </td>
+                      <td>
+                        <span *ngIf="!vnr?.inDateEditMode">
+                          <b class="edit-cal">{{ vnr.shift }}
+                          </b>
+                        </span>
+                        <div
+                          *ngIf="vnr?.inDateEditMode"
+                          style="display: inline-flex"
+                          class="mb-1">
+                          <select id="shift" style="width: auto;"
+                            class="form-select" [(ngModel)]="vnr.shift">
+                            <option value>-</option>
+                            <option [value]="sh.shiftCode"
+                              *ngFor="let sh of allShifts">{{sh.shiftCode}}</option>
+                          </select>
+                        </div>
+                      </td>
+                      <td class>
+                        <span *ngIf="!vnr?.inDateEditMode">
+                          <td> {{global.getGlobalNames('inDate')}} :</td> <td
+                            class="text-end"> {{ vnr.inTime }}
+                          </td>
+                        </span>
+                        <div
+                          *ngIf="vnr?.inDateEditMode"
+                          style="display: inline-flex"
+                          class="mb-1">
+                          <input
+                            type="date"
+                            min="{{vnr.minMinDate}}"
+                            max="{{vnr.minDate}}"
+                            class="form-control"
+                            [(ngModel)]="vnr.inDate"
+                            (change)="
+                            timeDifference(vnr, i, 'IN', 'allrecords')
+                          "
+                            style="height: 36px; width: 158px" />
+                          <input
+                            type="time"
+                            class="form-control ms-2"
+                            [(ngModel)]="vnr.inTime"
+                            (change)="
+                            timeDifference(vnr, i, 'IN', 'allrecords')
+                          "
+                            style="height: 36px; width: 158px" />
+                        </div>
+                        <br />
+                        <span
+                          *ngIf="!vnr?.outDateEditMode"
+                          style="margin-top: -10px">
+                          <td> {{global.getGlobalNames('outDate')}} :</td> <td
+                            class="text-end">{{ vnr.outTime }}</td>
+                          <!-- &nbsp;&nbsp;&nbsp;
+                          <b class="edit-cal">
+                            {{ vnr.outTime }}
+                          </b> -->
+                        </span>
+                        <div
+                          *ngIf="vnr?.outDateEditMode"
+                          style="display: inline-flex"
+                          class>
+                          <input
+                            type="date"
+                            class="form-control"
+                            [(ngModel)]="vnr.outDate"
+                            min="{{ vnr.minDate }}"
+                            max="{{ vnr.maxDate }}"
+                            (change)="
+                            timeDifference(vnr, i, 'OUT', 'allrecords')
+                          "
+                            style="height: 36px; width: 158px" />
+                          <input
+                            type="time"
+                            class="form-control ms-2"
+                            [(ngModel)]="vnr.outTime"
+                            (change)="
+                            timeDifference(vnr, i, 'OUT', 'allrecords')
+                          "
+                            style="height: 36px; width: 158px" />
+                        </div>
+                      </td>
+                      <td class="text-center">{{ vnr?.totalHours1 }}</td>
+                      <td class="text-center"> {{ vnr?.effectiveHrs1 }}</td>
+                      <td> <span
+                          *ngIf="vnr.attStatus === 'P'">{{global.getGlobalNames('present')}}</span>
+                        <span *ngIf="vnr.attStatus !== 'P'">{{vnr.attStatus}}
+                        </span></td>
+
+                      <td>{{vnr.entryStatus}}</td>
+                      <td>{{vnr.exitStatus}}</td>
+                      <td [innerHTML]="vnr.comments"></td>
+                      <td class="text-center">
+                        <div class="btn-group" role="group">
+                          <button
+                            type="button"
+                            *ngIf="!(vnr?.inDateEdit || vnr?.outDateEdit) && hasPermissionToUpdate"
+                            class="btn btn-sm btn-primary edit-button"
+                            data-toggle="tooltip"
+                            title="Edit"
+                            (click)="editData(vnr)">
+                            <i class="fa-solid fa-pencil me-1"></i>
+                          </button>
+                          <button
+                            type="button"
+                            *ngIf="!(vnr?.inDateEdit || vnr?.outDateEdit)"
+                            class="btn btn-sm btn-light view-button"
+                            data-toggle="tooltip"
+                            data-bs-target="#viewRecord"
+                            data-bs-toggle="modal"
+                            title="view"
+                            (click)="viewData(vnr)">
+                            <i class="fa-solid fa-eye me-1"></i>
+                          </button>
+                          <button
+                            type="button"
+                            *ngIf="(vnr?.inDateEdit || vnr?.outDateEdit) && hasPermissionToUpdate"
+                            class="btn btn-sm btn-success edit-button"
+                            data-toggle="tooltip"
+                            title="Save"
+                            [disabled]=" !vnr.outTime || !vnr.inTime"
+                            (click)="saveRow(vnr)">
+                            <i class="fa fa-save"></i>
+                          </button>
+                          <button
+                            type="button"
+                            *ngIf="vnr?.inDateEdit || vnr?.outDateEdit"
+                            class="btn btn-sm btn-danger edit-button"
+                            data-toggle="tooltip"
+                            title="Undo"
+                            (click)="Undo(vnr, i, 'allrecords')">
+                            <i class="fa fa-undo"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </ng-container>
+                  <ng-container *ngIf="vnr.BreakShift">
+                    <tr class="dasboard-td">
+                      <td><i *ngIf="!vnr.expand" class="fa fa-plus"
+                          aria-hidden="true" (click)="expandRow(vnr)"></i>
+                        <i *ngIf="vnr.expand" class="fa fa-minus"
+                          aria-hidden="true" (click)="collapseRow(vnr)"></i>
+                      </td>
+                      <td>{{ vnr.dateCode | date : dateFormat }}</td>
+                      <td>
+                        {{ vnr.employeeName }} <br />
+                        <span class="text-muted">
+                          {{ vnr.employeeCode }}
+                        </span>
+                      </td>
+                      <td>
+                        <span *ngIf="!vnr?.inDateEditMode">
+                          <b class="edit-cal">{{ vnr.shift }}
+                          </b>
+                        </span>
+                        <div
+                          *ngIf="vnr?.inDateEditMode"
+                          style="display: inline-flex"
+                          class="mb-1">
+                          <select id="shift" style="width: auto;"
+                            class="form-select" [(ngModel)]="vnr.shift">
+                            <option value>-</option>
+                            <option [value]="sh.shiftCode"
+                              *ngFor="let sh of allShifts">{{sh.shiftCode}}</option>
+                          </select>
+                        </div>
+                      </td>
+                      <td class>
+                        <span *ngIf="!vnr?.inDateEditMode">
+                          <td>{{global.getGlobalNames('inDate')}} :</td> <td
+                            class="text-end"> {{ vnr.inTime }}
+                          </td>
+                          <!-- In :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+                          <!-- <b class="edit-cal">
+                            {{ vnr.inTime }}
+                          </b> -->
+                        </span>
+                        <div
+                          *ngIf="vnr?.inDateEditMode"
+                          style="display: inline-flex"
+                          class="mb-1">
+                          <input
+                            type="date"
+                            min="{{vnr.minMinDate}}"
+                            max="{{vnr.minDate}}"
+                            class="form-control"
+                            [(ngModel)]="vnr.inDate"
+                            (change)="
+                            timeDifference(vnr, i, 'IN', 'allrecords')
+                          "
+                            style="height: 36px; width: 158px" />
+                          <input
+                            type="time"
+                            class="form-control ms-2"
+                            [(ngModel)]="vnr.inTime"
+                            (change)="
+                            timeDifference(vnr, i, 'IN', 'allrecords')
+                          "
+                            style="height: 36px; width: 158px" />
+                        </div>
+                        <br />
+                        <span
+                          *ngIf="!vnr?.outDateEditMode"
+                          style="margin-top: -10px">
+                          <td> {{global.getGlobalNames('outDate')}} :</td> <td
+                            class="text-end"> {{ vnr.outTime }}
+                          </td>
+                          <!-- Out :&nbsp;&nbsp;&nbsp;
+                          <b class="edit-cal">
+                            {{ vnr.outTime }}
+                          </b> -->
+                        </span>
+                        <div
+                          *ngIf="vnr?.outDateEditMode"
+                          style="display: inline-flex"
+                          class>
+                          <input
+                            type="date"
+                            class="form-control"
+                            [(ngModel)]="vnr.outDate"
+                            min="{{ vnr.minDate }}"
+                            max="{{ vnr.maxDate }}"
+                            (change)="timeDifference(vnr, i, 'OUT', 'allrecords')"
+                            style="height: 36px; width: 158px" />
+                          <input
+                            type="time"
+                            class="form-control ms-2"
+                            [(ngModel)]="vnr.outTime"
+                            (change)="timeDifference(vnr, i, 'OUT', 'allrecords')"
+                            style="height: 36px; width: 158px" />
+                        </div>
+                        <br>
+                        <!-- second record -->
+
+                        <span *ngIf="!vnr?.SecondInDateEditMode">
+                          <td> {{global.getGlobalNames('inDate')}} :</td> <td
+                            class="text-end"> {{
+                            vnr.SecondInTime }} </td>
+                          <!-- In :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          <b class="edit-cal">
+                            {{ vnr.SecondInTime }}
+                          </b> -->
+                        </span>
+                        <div
+                          *ngIf="vnr?.SecondInDateEditMode"
+                          style="display: inline-flex"
+                          class="mb-1">
+                          <input
+                            type="date"
+                            min="{{vnr.SecondMinMinDate}}"
+                            max="{{vnr.SecondMinDate}}"
+                            class="form-control"
+                            [(ngModel)]="vnr.SecondInDate"
+                            (change)="
+                            timeDifference(vnr, i, 'IN', 'allrecords')
+                          "
+                            style="height: 36px; width: 158px" />
+                          <input
+                            type="time"
+                            class="form-control ms-2"
+                            [(ngModel)]="vnr.SecondInTime"
+                            (change)="
+                            timeDifference(vnr, i, 'IN', 'allrecords')
+                          "
+                            style="height: 36px; width: 158px" />
+                        </div>
+                        <br />
+
+                        <span
+                          *ngIf="!vnr?.SecondOutDateEditMode"
+                          style="margin-top: -10px">
+                          <td> {{global.getGlobalNames('outDate')}} :</td> <td
+                            class="text-end"> {{
+                            vnr.SecondOutTime }} </td>
+                          <!-- Out :&nbsp;&nbsp;&nbsp;
+                          <b class="edit-cal">
+                            {{ vnr.SecondOutTime }}
+                          </b> -->
+                        </span>
+                        <div
+                          *ngIf="vnr?.SecondOutDateEditMode"
+                          style="display: inline-flex"
+                          class>
+                          <input
+                            type="date"
+                            class="form-control"
+                            [(ngModel)]="vnr.SecondOutDate"
+                            min="{{ vnr.SecondMinDate }}"
+                            max="{{ vnr.SecondMaxDate }}"
+                            (change)="
+                            timeDifference(vnr, i, 'OUT', 'allrecords')
+                          "
+                            style="height: 36px; width: 158px" />
+                          <input
+                            type="time"
+                            class="form-control ms-2"
+                            [(ngModel)]="vnr.SecondOutTime"
+                            (change)="
+                            timeDifference(vnr, i, 'OUT', 'allrecords')
+                          "
+                            style="height: 36px; width: 158px" />
+                        </div>
+                      </td>
+
+                      <td class="text-center">{{vnr?.totalHours1}}
+                        <br>
+                        {{vnr?.SecondTotalHours1}}
+                      </td>
+                      <td class="text-center"> {{vnr?.effectiveHrs1}}
+                        <br>
+                        {{vnr?.SecondEffectiveHrs1}}
+                      </td>
+
+                      <td> <span
+                          *ngIf="vnr.attStatus === 'P'">{{global.getGlobalNames('present')}}</span>
+                        <span *ngIf="vnr.attStatus !== 'P'">{{vnr.attStatus}}
+                        </span>
+                        <br>
+                        <span
+                          *ngIf="vnr.SecondAttStatus === 'P'">{{global.getGlobalNames('present')}}</span>
+                        <span
+                          *ngIf="vnr.SecondAttStatus !== 'P'">{{vnr.SecondAttStatus}}
+                        </span>
+                      </td>
+
+                      <td>{{vnr.entryStatus}}
+                        <br>
+                        {{vnr.SecondEntryStatus}}
+                      </td>
+
+                      <td>{{vnr.exitStatus}}
+                        <br>
+                        {{vnr.SecondExitStatus}}
+                      </td>
+                      <td> <span [innerHTML]="vnr.comments"> </span>
+                        <br>
+                        <span [innerHTML]="vnr.SecondComments"> </span>
+                      </td>
+                      <td class="text-center">
+                        <div class="btn-group" role="group">
+                          <button
+                            type="button"
+                            *ngIf="!(vnr?.inDateEdit || vnr?.outDateEdit) && hasPermissionToUpdate"
+                            class="btn btn-sm btn-primary edit-button"
+                            data-toggle="tooltip"
+                            title="Edit"
+                            (click)="editData(vnr)">
+                            <i class="fa-solid fa-pencil me-1"></i>
+                          </button>
+                          <button
+                            type="button"
+                            *ngIf="!(vnr?.inDateEdit || vnr?.outDateEdit)"
+                            class="btn btn-sm btn-light view-button"
+                            data-toggle="tooltip"
+                            data-bs-target="#viewRecord"
+                            data-bs-toggle="modal"
+                            title="view"
+                            (click)="viewData(vnr)">
+                            <i class="fa-solid fa-eye me-1"></i>
+                          </button>
+                          <button
+                            type="button"
+                            *ngIf="(vnr?.inDateEdit || vnr?.outDateEdit) && hasPermissionToUpdate"
+                            class="btn btn-sm btn-success edit-button"
+                            data-toggle="tooltip"
+                            title="Save"
+                            [disabled]="!vnr.outTime || !vnr.inTime"
+                            (click)="saveRow(vnr)">
+                            <i class="fa fa-save"></i>
+                          </button>
+                          <button
+                            type="button"
+                            *ngIf="vnr?.inDateEdit || vnr?.outDateEdit"
+                            class="btn btn-sm btn-danger edit-button"
+                            data-toggle="tooltip"
+                            title="Undo"
+                            (click)="Undo(vnr, i, 'allrecords')">
+                            <i class="fa fa-undo"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </ng-container>
+
+                  <tr *ngIf="vnr.expand">
+                    <td colspan="16" *ngIf="vnr.loading === 'loading'">
+                      <mat-progress-bar mode="query"></mat-progress-bar>
+                    </td>
+                    <td colspan="16" style="padding: 0"
+                      *ngIf="vnr.loading === 'success'">
+                      <table class="table table-bordered table-responsive-sm">
+                        <thead class="thead-all">
+                          <tr class="tr-th-all">
+                            <th scope="col">
+                              {{global.getGlobalNames('date')}}</th>
+                            <th scope="col">
+                              {{global.getGlobalNames('EmployeeRefCode')}}</th>
+                            <th scope="col">
+                              {{global.getGlobalNames('time')}}</th>
+                            <th scope="col">
+                              {{global.getGlobalNames('IN/OUT')}}</th>
+                            <th scope="col">
+                              {{global.getGlobalNames('DeviceId')}}</th>
+                            <th
+                              scope="col">{{global.getGlobalNames('status')}}</th>
+                            <th
+                              scope="col">{{global.getGlobalNames('Comment')}}</th>
+                            <th
+                              scope="col">{{global.showLabel('Processed')}}</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr class="dasboard-td"
+                            *ngFor="let item of vnr.logRecords">
+                            <td>{{item.dateCode | date :dateFormat}}</td>
+                            <td>{{item.employeeRefCode}}</td>
+                            <td>{{item.attTime }}</td>
+                            <td>{{item.status}}</td>
+                            <td>{{item.deviceId}}</td>
+                            <td>{{item.attStatus}}</td>
+                            <td [innerHTML]="item.comments"></td>
+                            <td>{{item.isProcessed}}</td>
+                            <td><i class="fa-solid fa-image"
+                                style="color: blue; font-size: larger; display: flex;
+    justify-content: center;" *ngIf="item.image" data-bs-toggle="modal"
+                                data-bs-target="#previewFile"
+                                data-placement="right"
+                                (click)="previewRow(item.image)"></i></td>
+                          </tr>
+                          <tr
+                            *ngIf="vnr.logRecords.length === 0  && message === 'modified'"
+                            style=" text-align: center; height: 150px;">
+                            <td colspan="16">
+                              {{global.showGlobalErrors('norecords')}}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody
+                  *ngIf="allRecords.length === 0 && message === 'modified'">
+                  <tr
+                    style=" text-align: center; height: 150px;">
+                    <td colspan="16">
+                      {{global.showGlobalErrors('notFound')}}
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody
+                  *ngIf="allRecords.length === 0 && message === 'clickOnsubmit'">
+                  <tr
+                    style=" text-align: center; height: 150px;">
+                    <td colspan="16">
+                      {{global.showGlobalErrors('greatChoices')}} </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- <div
+              *ngIf="allRecordsTab && allRecords.length >  allrecordsConfig.itemsPerPage"
+              class="text-center mt-3">
+              <pagination-controls
+                (pageChange)="allrecordsPageChanged($event)"></pagination-controls>
+            </div> -->
+          </div>
+        </div>
+      </div>
+      <!-- all records ends -->
+
+      <!-- need validation starts -->
+      <div
+        class="tab-pane fade"
+        id="pills-validation"
+        role="tabpanel"
+        aria-labelledby="pills-validation-tab"
+        tabindex="0">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="table-responsive">
+              <table
+                datatable
+                class="table table-hover custom-table mb-0 datatable">
+                <thead class="thead-all">
+                  <tr class="tr-th-all">
+                    <th></th>
+                    <th>
+                      {{global.getGlobalNames('date')}}
+                      <i
+                        class="fa fa-sort"
+                        data-column="dateCode"
+                        (click)="sortData('dateCode')"
+                        [ngClass]="{
+                          asc: sortColumn === 'dateCode' && sortOrder === 'asc',
+                          desc:
+                            sortColumn === 'dateCode' && sortOrder === 'desc'
+                        }"></i>
+                    </th>
+                    <th>
+                      {{global.getGlobalNames('employeeName')}}
+                      <i
+                        class="fa fa-sort"
+                        data-column="employeeName"
+                        (click)="sortData('employeeName')"
+                        [ngClass]="{
+                          asc:
+                            sortColumn === 'employeeName' &&
+                            sortOrder === 'asc',
+                          desc:
+                            sortColumn === 'employeeName' &&
+                            sortOrder === 'desc'
+                        }"></i>
+                    </th>
+                    <th class> {{global.getGlobalNames('shift')}}</th>
+                    <th class="text-center">
+                      {{global.showLabel('isHoliday')}}</th>
+                    <th
+                      class="text-center">{{global.showLabel('IsWeekoff')}}</th>
+                    <th class> {{global.getGlobalNames('workHrs')}}</th>
+                    <th class="text-center">
+                      {{global.getGlobalNames('totalHours')}}
+                      <i
+                        class="fa fa-sort"
+                        data-column="totalHours1"
+                        (click)="sortData('totalHours1')"
+                        [ngClass]="{
+                          asc:
+                            sortColumn === 'totalHours1' && sortOrder === 'asc',
+                          desc:
+                            sortColumn === 'totalHours1' && sortOrder === 'desc'
+                        }"></i>
+                    </th>
+                    <th class="text-center">
+                      {{global.getGlobalNames('EffectiveHrs')}}
+                      <i
+                        class="fa fa-sort"
+                        data-column="effectiveHrs1"
+                        (click)="sortData('effectiveHrs1')"
+                        [ngClass]="{
+                          asc:
+                            sortColumn === 'effectiveHrs1' && sortOrder === 'asc',
+                          desc:
+                            sortColumn === 'effectiveHrs1' && sortOrder === 'desc'
+                        }"></i>
+                    </th>
+                    <th> {{global.getGlobalNames('AttendanceStatus')}}</th>
+                    <th> {{global.getGlobalNames('Comment')}}</th>
+                    <th class="text-center"
+                      *ngIf="validationNeededRows.length > 0">{{global.getGlobalNames('action')}}</th>
+                  </tr>
+                </thead>
+                <tbody
+                  *ngIf="validationNeededRows.length === 0 && message === 'modified'">
+                  <tr
+                    style=" text-align: center; height: 150px;">
+                    <td colspan="14">
+                      {{global.showGlobalErrors('notFound')}}
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody
+                  *ngIf="validationNeededRows.length === 0 && message === 'clickOnsubmit'">
+                  <tr
+                    style=" text-align: center; height: 150px;">
+                    <td colspan="14">
+                      {{global.showGlobalErrors('greatChoices')}} </td>
+                  </tr>
+                </tbody>
+
+                <tbody
+                  *ngFor="let vnr of validationNeededRows | paginate :validationNeededconfig; let i = index">
+                  <tr
+                    class="dasboard-td">
+                    <td><i *ngIf="!vnr.expand" class="fa fa-plus"
+                        aria-hidden="true" (click)="expandRow(vnr)"></i>
+                      <i *ngIf="vnr.expand" class="fa fa-minus"
+                        aria-hidden="true" (click)="collapseRow(vnr)"></i>
+                    </td>
+                    <td>{{ vnr.dateCode | date : dateFormat }}</td>
+                    <td>
+                      {{ vnr.employeeName }} <br />
+                      <span class="text-muted">
+                        {{ vnr.employeeCode }}
+                      </span>
+                    </td>
+                    <td>
+                      <span *ngIf="!vnr?.inDateEditMode">
+                        <b class="edit-cal">{{ vnr.shift }}
+                        </b>
+                      </span>
+                      <div
+                        *ngIf="vnr?.inDateEditMode"
+                        style="display: inline-flex"
+                        class="mb-1">
+                        <select id="shift" style="width: auto;"
+                          class="form-select" [(ngModel)]="vnr.shift">
+                          <option value>-</option>
+                          <option [value]="sh.shiftCode"
+                            *ngFor="let sh of allShifts">{{sh.shiftCode}}</option>
+                        </select>
+                      </div>
+                    </td>
+                    <td class="text-center">
+                      <i
+                        *ngIf="vnr.isHoliday"
+                        class="fa-solid fa-circle"
+                        style="color: #55ce63"></i>
+                      <i
+                        *ngIf="!vnr.isHoliday"
+                        class="fa-solid fa-circle"
+                        style="color: #f62d51"></i>
+                    </td>
+                    <td class="text-center">
+                      <i
+                        *ngIf="vnr.isWeeklyOff"
+                        class="fa-solid fa-circle"
+                        style="color: #55ce63"></i>
+                      <i
+                        *ngIf="!vnr.isWeeklyOff"
+                        class="fa-solid fa-circle"
+                        style="color: #f62d51"></i>
+                    </td>
+
+                    <td class>
+                      <span *ngIf="!vnr?.inDateEditMode">
+                        <td> {{global.getGlobalNames('inDate')}} :</td> <td
+                          class="text-end"> {{ vnr.inTime }}
+                        </td>
+                        <!-- In :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <b class="edit-cal">
+                          {{ vnr.inTime }}
+                        </b> -->
+                      </span>
+                      <div
+                        *ngIf="vnr?.inDateEditMode"
+                        style="display: inline-flex"
+                        class="mb-1">
+                        <input
+                          type="date"
+                          min="{{vnr.minMinDate}}"
+                          max="{{vnr.minDate}}"
+                          class="form-control"
+                          [(ngModel)]="vnr.inDate"
+                          (change)="
+                            timeDifference(vnr, i, 'IN', 'fromValiNeeded')
+                          "
+                          style="height: 36px; width: 158px" />
+                        <input
+                          type="time"
+                          class="form-control ms-2"
+                          [(ngModel)]="vnr.inTime"
+                          (change)="
+                            timeDifference(vnr, i, 'IN', 'fromValiNeeded')
+                          "
+                          style="height: 36px; width: 158px" />
+                      </div>
+                      <br />
+                      <span
+                        *ngIf="!vnr?.outDateEditMode"
+                        style="margin-top: -10px">
+                        <td> {{global.getGlobalNames('outDate')}} :</td> <td
+                          class="text-end"> {{ vnr.outTime }}
+                        </td>
+                        <!-- Out :&nbsp;&nbsp;&nbsp;
+                        <b class="edit-cal">
+                          {{ vnr.outTime }}
+                        </b> -->
+                      </span>
+                      <div
+                        *ngIf="vnr?.outDateEditMode"
+                        style="display: inline-flex"
+                        class>
+                        <input
+                          type="date"
+                          class="form-control"
+                          [(ngModel)]="vnr.outDate"
+                          min="{{ vnr.minDate }}"
+                          max="{{ vnr.maxDate }}"
+                          (change)="
+                            timeDifference(vnr, i, 'OUT', 'fromValiNeeded')
+                          "
+                          style="height: 36px; width: 158px" />
+                        <input
+                          type="time"
+                          class="form-control ms-2"
+                          [(ngModel)]="vnr.outTime"
+                          (change)="
+                            timeDifference(vnr, i, 'OUT', 'fromValiNeeded')
+                          "
+                          style="height: 36px; width: 158px" />
+                      </div>
+                    </td>
+                    <td class="text-center">{{ vnr?.totalHours1 }}</td>
+                    <td class="text-center"> {{ vnr?.effectiveHrs1 }}</td>
+                    <td> <span
+                        *ngIf="vnr.attStatus === 'P'">{{global.getGlobalNames('present')}}</span>
+                      <span *ngIf="vnr.attStatus !== 'P'">{{vnr.attStatus}}
+                      </span></td>
+                    <td [innerHTML]="vnr.comments"></td>
+                    <td class="text-center">
+                      <div class="btn-group" role="group">
+                        <button
+                          type="button"
+                          *ngIf="!(vnr?.inDateEdit || vnr?.outDateEdit) && hasPermissionToUpdate"
+                          class="btn btn-sm btn-primary edit-button"
+                          data-toggle="tooltip"
+                          title="Edit"
+                          (click)="editData(vnr)">
+                          <i class="fa-solid fa-pencil me-1"></i>
+                        </button>
+                        <button
+                          type="button"
+                          *ngIf="!(vnr?.inDateEdit || vnr?.outDateEdit)"
+                          class="btn btn-sm btn-light view-button"
+                          data-toggle="tooltip"
+                          data-bs-target="#viewRecord"
+                          data-bs-toggle="modal"
+                          title="view"
+                          (click)="viewData(vnr)">
+                          <i class="fa-solid fa-eye me-1"></i>
+                        </button>
+                        <button
+                          type="button"
+                          *ngIf="(vnr?.inDateEdit || vnr?.outDateEdit) && hasPermissionToUpdate"
+                          class="btn btn-sm btn-success edit-button"
+                          data-toggle="tooltip"
+                          title="save"
+                          [disabled]="!vnr.outTime || !vnr.inTime"
+                          (click)="saveRow(vnr)">
+                          <i class=" fa-solid fa fa-save"></i>
+                        </button>
+                        <button
+                          type="button"
+                          *ngIf="(vnr?.inDateEdit || vnr?.outDateEdit ) && hasPermissionToUpdate"
+                          class="btn btn-sm btn-danger edit-button"
+                          data-toggle="tooltip"
+                          title="Undo"
+                          (click)="Undo(vnr, i, 'fromValiNeeded')">
+                          <i class="fa-solid fa fa-undo"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr *ngIf="vnr.expand">
+                    <td colspan="14" *ngIf="vnr.loading === 'loading'">
+                      <mat-progress-bar mode="query"></mat-progress-bar>
+                    </td>
+                    <td colspan="14" style="padding: 0"
+                      *ngIf="vnr.loading === 'success'">
+                      <table class="table table-bordered table-responsive-sm">
+                        <thead class="thead-all">
+                          <tr class="tr-th-all">
+                            <th scope="col">
+                              {{global.getGlobalNames('date')}}</th>
+                            <th scope="col">
+                              {{global.getGlobalNames('EmployeeRefCode')}}</th>
+                            <th scope="col">
+                              {{global.getGlobalNames('time')}}</th>
+                            <th scope="col">
+                              {{global.getGlobalNames('IN/OUT')}}</th>
+                            <th scope="col">
+                              {{global.getGlobalNames('DeviceId')}}</th>
+                            <th
+                              scope="col">{{global.getGlobalNames('status')}}</th>
+                            <th
+                              scope="col">{{global.getGlobalNames('comment')}}</th>
+                            <th
+                              scope="col">{{global.showLabel('Processed')}}</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr class="dasboard-td"
+                            *ngFor="let item of vnr.logRecords">
+                            <td>{{item.dateCode | date :dateFormat}}</td>
+                            <td>{{item.employeeRefCode}}</td>
+                            <td>{{item.attTime }}</td>
+                            <td>{{item.status}}</td>
+                            <td>{{item.deviceId}}</td>
+                            <td>{{item.attStatus}}</td>
+                            <td [innerHTML]="item.comments"></td>
+                            <td>{{item.isProcessed}}</td>
+                            <td><i class="fa-solid fa-image"
+                                style="color: blue; font-size: larger; display: flex;
+    justify-content: center;" *ngIf="item.image" data-bs-toggle="modal"
+                                data-bs-target="#previewFile"
+                                data-placement="right"
+                                (click)="previewRow(item.image)"></i></td>
+                          </tr>
+                          <tr
+                            *ngIf="vnr.logRecords.length === 0  && message === 'modified'"
+                            style=" text-align: center; height: 150px;">
+                            <td colspan="14">
+                              {{global.showGlobalErrors('norecords')}}
+                            </td>
+                          </tr>
+                          <tr
+                            *ngIf="vnr.logRecords.length === 0  && message === 'clickOnsubmit'"
+                            style=" text-align: center; height: 150px;">
+                            <td colspan="14">
+                              {{global.showGlobalErrors('greatChoices')}} </td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+              <!-- <div
+                *ngIf="firstTab && validationNeededRows.length >
+                  validationNeededconfig.itemsPerPage
+                "
+                class="text-center mt-3">
+                <pagination-controls
+                  (pageChange)="validationNeededpageChanged($event)"></pagination-controls>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Validation ends -->
+
+      <!-- Need approval starts -->
+      <div
+        class="tab-pane fade"
+        id="pills-needApproveal"
+        role="tabpanel"
+        aria-labelledby="pills-needApproveal-tab"
+        tabindex="0">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="table-responsive card">
+              <table
+                datatable
+                class="table table-hover custom-table mb-0 datatable">
+                <thead class="thead-all">
+                  <tr class="tr-th-all">
+                    <th></th>
+                    <th
+                      scope="col"
+                      *ngIf="unApprovedRows.length > 0 && hasPermissionToApprove"
+                      class="d-flex my-2 border-0">
+                      <div>
+                        <input
+                          type="checkbox"
+                          [checked]="checked"
+                          (change)="approveAllItem($event)"
+                          style="zoom: 1.4" />
+                      </div>
+                      <div style="margin-left: 4px; padding: 2px">
+                        <i
+                          class="fa fa-info-circle red-tooltip"
+                          aria-hidden="true"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="top"
+                          data-bs-custom-class="custom-tooltip"
+                          title="To Select all Records"></i>
+                      </div>
+                    </th>
+                    <th>
+                      {{global.getGlobalNames('date')}}<i
+                        class="fa fa-sort ms-1"
+                        data-column="dateCode"
+                        (click)="sortData('dateCode')"
+                        [ngClass]="{
+                          asc: sortColumn === 'dateCode' && sortOrder === 'asc',
+                          desc:
+                            sortColumn === 'dateCode' && sortOrder === 'desc'
+                        }"></i>
+                    </th>
+                    <th>
+                      {{global.getGlobalNames('employeeName')}}<i
+                        class="fa fa-sort ms-1"
+                        data-column="employeeName"
+                        (click)="sortData('employeeName')"
+                        [ngClass]="{
+                          asc:
+                            sortColumn === 'employeeName' &&
+                            sortOrder === 'asc',
+                          desc:
+                            sortColumn === 'employeeName' &&
+                            sortOrder === 'desc'
+                        }"></i>
+                    </th>
+                    <th class>{{global.getGlobalNames('shift')}}</th>
+                    <th class="text-center">
+                      {{global.showLabel('isHoliday')}}</th>
+                    <th
+                      class="text-center">{{global.showLabel('IsWeekoff')}}</th>
+                    <th class>{{global.getGlobalNames('workHrs')}}</th>
+                    <th class="text-center">
+                      {{global.getGlobalNames('totalHours')}}<i
+                        class="fa fa-sort"
+                        data-column="totalHours1"
+                        (click)="sortData('totalHours1')"
+                        [ngClass]="{
+                          asc:
+                            sortColumn === 'totalHours1' && sortOrder === 'asc',
+                          desc:
+                            sortColumn === 'totalHours1' && sortOrder === 'desc'
+                        }"></i>
+                    </th>
+                    <th class="text-center">
+                      {{global.getGlobalNames('EffectiveHrs')}}
+                      <i
+                        class="fa fa-sort"
+                        data-column="effectiveHrs1"
+                        (click)="sortData('effectiveHrs1')"
+                        [ngClass]="{
+                          asc:
+                            sortColumn === 'effectiveHrs1' && sortOrder === 'asc',
+                          desc:
+                            sortColumn === 'effectiveHrs1' && sortOrder === 'desc'
+                        }"></i>
+                    </th>
+                    <th>{{global.getGlobalNames('AttendanceStatus')}} </th>
+                    <th class="text-center"
+                      *ngIf="unApprovedRows.length > 0 && hasPermissionToUpdate">
+                      {{global.getGlobalNames('action')}}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody
+                  *ngIf="unApprovedRows.length === 0  && message === 'modified'">
+                  <tr
+                    style=" text-align: center; height: 150px;">
+                    <td colspan="14">
+                      {{global.showGlobalErrors('notFound')}}
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody
+                  *ngIf="unApprovedRows.length === 0  && message === 'clickOnsubmit'">
+                  <tr
+                    style=" text-align: center; height: 150px;">
+                    <td colspan="14">
+                      {{global.showGlobalErrors('greatChoices')}} </td>
+                  </tr>
+                </tbody>
+                <tbody *ngIf="unApprovedRows.length > 0">
+                  <ng-container
+                    *ngFor="let row of unApprovedRows ;let i = index">
+                    <tr class="dasboard-td" *ngIf="row.isApproved !== true">
+                      <td><i *ngIf="!row.expand" class="fa fa-plus"
+                          aria-hidden="true" (click)="expandRow(row)"></i>
+                        <i *ngIf="row.expand" class="fa fa-minus"
+                          aria-hidden="true" (click)="collapseRow(row)"></i>
+                      </td>
+
+                      <td *ngIf="hasPermissionToApprove">
+                        <input
+                          type="checkbox"
+                          [ngModel]="row?.approved"
+                          (click)="approveItem($event, row)"
+                          style="zoom: 1.4" />
+                      </td>
+                      <td>{{ row.dateCode | date : dateFormat }}</td>
+                      <td>
+                        {{ row.employeeName }} <br />
+                        <span class="text-muted">
+                          {{ row.employeeCode }}
+                        </span>
+                      </td>
+
+                      <td>
+                        <span *ngIf="!row?.inDateEditMode">
+                          <b class="edit-cal">{{ row.shift }}
+                          </b>
+                        </span>
+                        <div
+                          *ngIf="row?.inDateEditMode"
+                          style="display: inline-flex"
+                          class="mb-1">
+                          <select id="shift" style="width: auto;"
+                            class="form-select" [(ngModel)]="row.shift">
+                            <option value>-</option>
+                            <option [value]="sh.shiftCode"
+                              *ngFor="let sh of allShifts">{{sh.shiftCode}}</option>
+                          </select>
+                        </div>
+                      </td>
+
+                      <td class="text-center">
+                        <i *ngIf="row.isHoliday"
+                          class="fa-solid fa-circle"
+                          style="color: #55ce63"></i>
+                        <i
+                          *ngIf="!row.isHoliday"
+                          class="fa-solid fa-circle"
+                          style="color: #f62d51"></i>
+                      </td>
+                      <td class="text-center">
+                        <i
+                          *ngIf="row.isWeeklyOff"
+                          class="fa-solid fa-circle"
+                          style="color: #55ce63"></i>
+                        <i
+                          *ngIf="!row.isWeeklyOff"
+                          class="fa-solid fa-circle"
+                          style="color: #f62d51"></i>
+                      </td>
+                      <td>
+                        <span *ngIf="!row?.inDateEditMode">
+                          <td>{{global.getGlobalNames('inDate')}} :</td> <td
+                            class="text-end"> {{ row.inTime }}
+                          </td>
+                          <!-- In :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          <b class="edit-cal">{{row.inTime}}</b> -->
+                        </span>
+                        <div
+                          *ngIf="row?.inDateEditMode"
+                          style="display: inline-flex"
+                          class="mb-1">
+                          <input
+                            type="date"
+                            class="form-control"
+                            [(ngModel)]="row.inDate"
+                            min="{{row.minMinDate}}"
+                            max="{{row.minDate}}"
+                            (change)="
+                              timeDifference(row, i, 'IN', 'fromUnApproved')
+                            "
+                            style="height: 36px; width: 158px" />
+                          <input
+                            type="time"
+                            class="form-control ms-2"
+                            [(ngModel)]="row.inTime"
+                            (change)="
+                              timeDifference(row, i, 'IN', 'fromUnApproved')
+                            "
+                            style="height: 36px; width: 158px" />
+                        </div>
+                        <br />
+                        <span
+                          *ngIf="!row?.outDateEditMode"
+                          style="margin-top: -10px">
+                          <td> {{global.getGlobalNames('outDate')}} :</td> <td
+                            class="text-end"> {{ row.outTime }}
+                          </td>
+                          <!-- Out :&nbsp;&nbsp;&nbsp;
+                          <b class="edit-cal">{{row.outTime}}
+                          </b> -->
+                        </span>
+                        <div
+                          *ngIf="row?.outDateEditMode"
+                          style="display: inline-flex"
+                          class>
+                          <input
+                            type="date"
+                            class="form-control"
+                            [(ngModel)]="row.outDate"
+                            min="{{ row.minDate }}"
+                            max="{{ row.maxDate }}"
+                            (change)="
+                              timeDifference(row, i, 'OUT', 'fromUnApproved')
+                            "
+                            style="height: 36px; width: 158px" />
+                          <input
+                            type="time"
+                            class="form-control ms-2"
+                            [(ngModel)]="row.outTime"
+                            (change)="
+                              timeDifference(row, i, 'OUT', 'fromUnApproved')
+                            "
+                            style="height: 36px; width: 158px" />
+                        </div>
+                      </td>
+
+                      <td class="text-center">
+                        {{ row?.totalHours1 }}
+                      </td>
+                      <td class="text-center"> {{ row?.effectiveHrs1 }}</td>
+                      <td> <span
+                          *ngIf="row.attStatus === 'P'">{{global.getGlobalNames('present')}}</span>
+                        <span *ngIf="row.attStatus !== 'P'">{{row.attStatus}}
+                        </span></td>
+                      <td class="text-center" *ngIf="hasPermissionToUpdate">
+                        <div class="btn-group" role="group">
+                          <button
+                            type="button"
+                            *ngIf="!(row?.inDateEdit || row?.outDateEdit)&& hasPermissionToUpdate"
+                            class="btn btn-sm btn-primary edit-button"
+                            data-toggle="tooltip"
+                            title="Edit"
+                            (click)="editData(row)">
+                            <i class="fa-solid fa-pencil me-1"></i>
+                          </button>
+                          <button
+                            type="button"
+                            *ngIf="(row?.inDateEdit || row?.outDateEdit)&& hasPermissionToUpdate"
+                            class="btn btn-sm btn-success edit-button"
+                            data-toggle="tooltip"
+                            title="save"
+                            [disabled]="!row.outTime || !row.inTime"
+                            (click)="saveRow(row)">
+                            <i class=" fa-solid fa fa-save"></i>
+                          </button>
+                          <button
+                            type="button"
+                            *ngIf="(row?.inDateEdit || row?.outDateEdit) && hasPermissionToUpdate"
+                            class="btn btn-sm btn-danger edit-button"
+                            data-toggle="tooltip"
+                            title="undo"
+                            (click)="Undo(row, i, 'fromUnApproved')">
+                            <i class="fa-solid fa fa-undo"></i>
+                          </button>
+                          <!-- 'fromUnApproved' -->
+                        </div>
+                      </td>
+                    </tr>
+                    <tr *ngIf="row.expand">
+                      <td colspan="14" *ngIf="row.loading === 'loading'">
+                        <mat-progress-bar mode="query"></mat-progress-bar>
+                      </td>
+                      <td colspan="14" style="padding: 0"
+                        *ngIf="row.loading === 'success'">
+                        <table class="table table-bordered table-responsive-sm">
+                          <thead class="thead-all">
+                            <tr class="tr-th-all">
+                              <th scope="col">
+                                {{global.getGlobalNames('date')}}</th>
+                              <th scope="col">
+                                {{global.getGlobalNames('EmployeeRefCode')}}</th>
+                              <th scope="col">
+                                {{global.getGlobalNames('time')}}</th>
+                              <th scope="col">
+                                {{global.getGlobalNames('IN/OUT')}}</th>
+                              <th scope="col">
+                                {{global.getGlobalNames('DeviceId')}}</th>
+                              <th
+                                scope="col">{{global.getGlobalNames('status')}}</th>
+                              <th
+                                scope="col">{{global.getGlobalNames('comment')}}</th>
+                              <th
+                                scope="col">{{global.showLabel('Processed')}}</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr class="dasboard-td"
+                              *ngFor="let item of row.logRecords">
+                              <td>{{item.dateCode | date :dateFormat}}</td>
+                              <td>{{item.employeeRefCode}}</td>
+                              <td>{{item.attTime }}</td>
+                              <td>{{item.status}}</td>
+                              <td>{{item.deviceId}}</td>
+                              <td>{{item.attStatus}}</td>
+                              <td [innerHTML]="item.comments"></td>
+                              <td>{{item.isProcessed}}</td>
+                              <td><i class="fa-solid fa-image"
+                                  style="color: blue; font-size: larger; display: flex;
+    justify-content: center;" *ngIf="item.image" data-bs-toggle="modal"
+                                  data-bs-target="#previewFile"
+                                  data-placement="right"
+                                  (click)="previewRow(item.image)"></i></td>
+                            </tr>
+                            <tr
+                              *ngIf="row.logRecords.length === 0  && message === 'modified'"
+                              style=" text-align: center; height: 150px;">
+                              <td colspan="14">
+                                {{global.showGlobalErrors('norecords')}}
+                              </td>
+                            </tr>
+                            <tr
+                              *ngIf="row.logRecords.length === 0  && message === 'clickOnsubmit'"
+                              style=" text-align: center; height: 150px;">
+                              <td colspan="14">
+                                {{global.showGlobalErrors('greatChoices')}}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+              <!-- <div
+                *ngIf="secondTab &&  unApprovedRows.length > unApprovedconfig.itemsPerPage"
+                class="text-center mt-3">
+                <pagination-controls
+                  (pageChange)="unApprovedPageChanged($event)"></pagination-controls>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Need approval ends -->
+
+      <!-- Approved starts -->
+
+      <div
+        class="tab-pane fade"
+        id="pills-contact"
+        role="tabpanel"
+        aria-labelledby="pills-contact-tab"
+        tabindex="0">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="table-responsive">
+              <table
+                datatable
+                class="table table-hover custom-table mb-0 datatable">
+                <thead class="thead-all">
+                  <tr class="tr-th-all">
+                    <th>
+                      {{global.getGlobalNames('date')}}
+                      <i
+                        class="fa fa-sort"
+                        data-column="dateCode"
+                        (click)="sortData('dateCode')"
+                        [ngClass]="{
+                          asc: sortColumn === 'dateCode' && sortOrder === 'asc',
+                          desc:
+                            sortColumn === 'dateCode' && sortOrder === 'desc'
+                        }"></i>
+                    </th>
+                    <th>
+                      {{global.getGlobalNames('employeeName')}}
+                      <i
+                        class="fa fa-sort"
+                        data-column="employeeName"
+                        (click)="sortData('employeeName')"
+                        [ngClass]="{
+                          asc:
+                            sortColumn === 'employeeName' &&
+                            sortOrder === 'asc',
+                          desc:
+                            sortColumn === 'employeeName' &&
+                            sortOrder === 'desc'
+                        }"></i>
+                    </th>
+                    <th class> {{global.getGlobalNames('shift')}}</th>
+                    <th class="text-center">
+                      {{global.getGlobalNames('isHoliday')}}</th>
+                    <th class="text-center">
+                      {{global.getGlobalNames('IsWeekoff')}}</th>
+                    <th class="text-center">
+                      {{global.getGlobalNames('workHrs')}}</th>
+                    <th>
+                      {{global.getGlobalNames('totalHours')}}
+                      <i
+                        class="fa fa-sort"
+                        data-column="totalHours1"
+                        (click)="sortData('totalHours1')"
+                        [ngClass]="{
+                          asc:
+                            sortColumn === 'totalHours1' && sortOrder === 'asc',
+                          desc:
+                            sortColumn === 'totalHours1' && sortOrder === 'desc'
+                        }"></i>
+                    </th>
+                    <th class="text-center">
+                      {{global.getGlobalNames('EffectiveHrs')}}
+                      <i
+                        class="fa fa-sort"
+                        data-column="effectiveHrs1"
+                        (click)="sortData('effectiveHrs1')"
+                        [ngClass]="{
+                          asc:
+                            sortColumn === 'effectiveHrs1' && sortOrder === 'asc',
+                          desc:
+                            sortColumn === 'effectiveHrs1' && sortOrder === 'desc'
+                        }"></i>
+                    </th>
+                    <th> {{global.getGlobalNames('AttendanceStatus')}} </th>
+                  </tr>
+                </thead>
+                <tbody
+                  *ngIf="isApprovedRecords.length === 0  && message === 'modified'">
+                  <tr
+                    style=" text-align: center; height: 150px;">
+                    <td colspan="14">
+                      {{global.showGlobalErrors('notFound')}}
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody
+                  *ngIf="isApprovedRecords.length === 0  && message === 'clickOnsubmit'">
+                  <tr
+                    style=" text-align: center; height: 150px;">
+                    <td colspan="14">
+                      {{global.showGlobalErrors('greatChoices')}} </td>
+                  </tr>
+                </tbody>
+
+                <tbody *ngIf="isApprovedRecords.length > 0">
+                  <tr
+                    class="dasboard-td"
+                    *ngFor="
+                      let isApprow of isApprovedRecords;
+                      let i = index
+                    ">
+                    <td>{{ isApprow.dateCode | date : dateFormat }}</td>
+                    <td>
+                      {{ isApprow.employeeName }} <br />
+                      <span class="text-muted">
+                        {{ isApprow.employeeCode }}
+                      </span>
+                    </td>
+                    <td class>{{ isApprow.shift }}</td>
+                    <td class="text-center">
+                      <i
+                        *ngIf="isApprow.isHoliday"
+                        class="fa-solid fa-circle"
+                        style="color: #55ce63"></i>
+                      <i
+                        *ngIf="!isApprow.isHoliday"
+                        class="fa-solid fa-circle"
+                        style="color: #f62d51"></i>
+                    </td>
+                    <td class="text-center">
+                      <i
+                        *ngIf="isApprow.isWeeklyOff"
+                        class="fa-solid fa-circle"
+                        style="color: #55ce63"></i>
+                      <i
+                        *ngIf="!isApprow.isWeeklyOff"
+                        class="fa-solid fa-circle"
+                        style="color: #f62d51"></i>
+                    </td>
+                    <td class="text-center">
+                      <span>
+                        <td>{{global.getGlobalNames('inDate')}} :</td> <td
+                          class="text-end"> {{ isApprow.inDate
+                          }} {{ isApprow.inTime }} </td>
+                        <!-- In :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <b class="edit-cal">{{ isApprow.inDate }}
+                          {{ isApprow.inTime }}
+                        </b> -->
+                      </span>
+                      <br />
+                      <span style="margin-top: -10px">
+
+                        <td> {{global.getGlobalNames('outDate')}} :</td> <td
+                          class="text-end"> {{ isApprow.outDate }} {{
+                          isApprow.outTime }} </td>
+                        <!-- Out :&nbsp;&nbsp;&nbsp;
+                        <b class="edit-cal">{{ isApprow.outDate }}
+                          {{ isApprow.outTime }}
+                        </b> -->
+                      </span>
+                    </td>
+
+                    <td class="text-center">{{ isApprow?.totalHours1 }}</td>
+                    <td class="text-center"> {{ isApprow?.effectiveHrs1 }}</td>
+                    <td> <span
+                        *ngIf="isApprow.attStatus === 'P'">{{global.getGlobalNames('present')}}</span>
+                      <span
+                        *ngIf="isApprow.attStatus !== 'P'">{{isApprow.attStatus}}
+                      </span></td>
+                  </tr>
+
+                </tbody>
+              </table>
+              <!-- <div
+                *ngIf="thirdTab && isApprovedRecords.length > isApprovedconfig.itemsPerPage"
+                class="text-center mt-3">
+                <pagination-controls
+                  (pageChange)="isApprovedpageChanged($event)">jjjd</pagination-controls>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Approved ends -->
+    </div>
+  </div>
+</div>
+
+<div id="viewRecord" class="modal custom-modal fade" role="dialog"
+  data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{global.getGlobalNames('TimeSheet')}}</h5>
+        <button
+          id="timesheetclose"
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <span class="block my-2"> {{global.getGlobalNames('date')}} :
+              {{ view?.dateCode | date : dateFormat }}
+            </span>
+            <span class="my-2"> {{global.getGlobalNames('Comment')}}:
+              {{ view?.comments ? view?.comments : "-" }}
+            </span>
+          </div>
+          <div class="col-md-6">
+            <section class="border-bottom p-2"
+              style="border: 1px solid; border-color: #8e958e55; border-radius: 10px;">
+              <h5 class="border-bottom p-2">
+                {{global.showLabel('Details')}}</h5>
+              <table class="w-100">
+                <tbody>
+                  <tr class="p-2"><td
+                      class="text-muted">{{global.getGlobalNames('employeeCode')}}
+                      :</td><td>{{view?.employeeCode}}</td></tr>
+                  <tr class="p-2"><td
+                      class="text-muted">{{global.getGlobalNames('employeeName')}}
+                      : </td>
+                    <td> {{view?.employeeName}} </td></tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('shift')}} :</td>
+                    <td>{{view?.shift}}</td> </tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('Branch')}} :</td> <td>
+                      {{view?.branchCode}}</td></tr>
+                  <tr class="p-2"> <td class="text-muted">
+                      {{global.showLabel('Company')}}
+                      :</td><td>{{view?.companyCode}}</td> </tr>
+                </tbody>
+              </table>
+            </section>
+
+            <section class="border-bottom p-2 my-2"
+              style="border: 1px solid; border-color: #8e958e55; border-radius: 10px;">
+              <h5 class="border-bottom p-2">
+                {{global.getGlobalNames('status')}}</h5>
+              <table class="w-100">
+                <tbody>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('entryStatus')}}
+                      :</td><td>{{ view?.entryStatus}}</td> </tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.showLabel('EntryHrs')}} : </td><td>{{
+                      view?.entryHrs }}</td></tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('exitStatus')}} :</td><td>
+                      {{ view?.exitStatus }}</td></tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.showLabel('ExitHrs')}} : </td><td>{{
+                      view?.exitHrs }}</td></tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.showLabel('isHoliday')}} :</td>
+                    <td>{{ view?.isHoliday }}</td></tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.showLabel('IsWeekoff')}} :</td>
+                    <td>{{view?.isWeeklyOff }}</td></tr>
+                  <tr class="p-2"><td
+                      class="text-muted">{{global.getGlobalNames('status')}}:</td><td>{{
+                      view?.status }}</td></tr>
+                  <tr class="p-2"><td
+                      class="text-muted">{{global.showLabel('isHoliday')}}
+                      :</td>
+                    <td>{{ view?.needValidation }}</td> </tr>
+                  <tr class="p-2"><td
+                      class="text-muted">{{global.showLabel('IsFinalized')}}:</td>
+                    <td>{{ view?.isFinalized }}</td> </tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('approve')}}:</td> <td>{{
+                      view?.isApproved }}</td> </tr>
+                </tbody></table>
+            </section>
+          </div>
+
+          <div class="col-md-6">
+            <section class="border-bottom p-2"
+              style="border: 1px solid; border-color: #8e958e55; border-radius: 10px;">
+              <h5
+                class="border-bottom p-2">{{global.showLabel('AttendanceDetails')}}</h5>
+              <table class="w-100">
+                <tbody>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('inDate')}}
+                      :</td><td>{{view?.inDate | date : dateFormat}}</td> </tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('inTime')}} :</td><td>{{
+                      view?.inTime}}</td> </tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('outDate')}} :</td><td>{{
+                      view?.outDate | date : dateFormat}}</td> </tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('outTime')}} :</td><td>{{
+                      view?.outTime}}</td> </tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('totalHours')}}
+                      :</td><td>{{ view?.totalHours1}}</td> </tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('EffectiveHrs')}}
+                      :</td><td>{{ view?.effectiveHrs1}}</td> </tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('OTHrs')}} :</td><td>{{
+                      view?.otHours}}</td> </tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('RegularHours')}}
+                      :</td><td>{{ view?.regularhours}}</td> </tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('AttendanceStatus')}}
+                      :</td><td>{{ view?.attStatus}}</td> </tr>
+                </tbody>
+              </table>
+            </section>
+
+            <section class="border-bottom p-2 my-2"
+              style="border: 1px solid; border-color: #8e958e55; border-radius: 10px;">
+              <h5 class="border-bottom p-2"> {{global.getGlobalNames('device')}}
+              </h5>
+              <table>
+                <tbody>
+                  <tr class="p-2"><td
+                      class="text-muted">{{global.showLabel('InDevice')}}
+                      :</td><td>{{
+                      view?.inDevice}}</td> </tr>
+                  <tr class="p-2"><td
+                      class="text-muted">{{global.showLabel('InLocation')}}
+                      :</td><td>{{ view?.inLocation}}</td> </tr>
+                  <tr class="p-2"><td
+                      class="text-muted">{{global.showLabel('LastInTime')}}
+                      :</td><td>{{ view?.lastInTime}}</td> </tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.showLabel('OutDevice')}}
+                      :</td><td>{{ view?.outDevice}}</td> </tr>
+                  <tr class="p-2"><td
+                      class="text-muted">{{global.showLabel('OutLocation')}}
+                      :</td><td>{{ view?.outLocation}}</td> </tr>
+
+                </tbody>
+              </table>
+            </section>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="previewFile" class="modal custom-modal fade" role="dialog"
+  data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="dialog">
+    <div class="modal-content">
+      <ng-container
+        *ngIf="PreviewObject">
+        <div style="overflow: auto;">
+          <img width="100%" [src]="PreviewObject" alt>
+        </div>
+      </ng-container>
+      <div class="my-2 text-center">
+        <button
+          id="previewFile_close"
+          type="button"
+          class="btn delete-btn closeDesig"
+          data-bs-dismiss="modal"
+          aria-label="Close" (click)="PreviewObject = null">
+          {{global.getGlobalNames('cancel')}}</button>
+
+      </div>
+    </div>
+  </div>
+</div>

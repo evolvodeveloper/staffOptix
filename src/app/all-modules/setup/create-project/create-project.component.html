@@ -1,0 +1,223 @@
+<div
+  class="modal fade modal-right"
+  style="padding-right: 17px; display: none"
+  [ngClass]="{ show: open }"
+  [ngStyle]="open && { display: 'block' }">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          {{ view ? globalServ.getGlobalNames('view') : update ?
+          globalServ.getGlobalNames('update') :
+          globalServ.getGlobalNames('create') }}
+          {{globalServ.getGlobalNames('project')}}
+        </h3>
+        <i
+          data-dismiss="modal"
+          (click)="closeModal()"
+          class="material-icons text-dark fs-4 c-ptr"
+          style="cursor: pointer;">close</i>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+            <form [formGroup]="projectForm" novalidate>
+              <div class="form-group input">
+                <label class="text-sm mb-1">
+                  {{globalServ.getGlobalNames('project')}}&nbsp;<span
+                    style="color: red; margin-left: 1px">*</span>
+                </label>
+                <input
+                  class="form-control"
+                  id="categoryCode"
+                  maxlength="{{ charLimit }}"
+                  placeholder="{{globalServ.showPlaceholder('Project')}}"
+                  [formControl]="projectForm.controls.categoryCode" />
+                <div
+                  *ngIf="
+                    projectForm.controls['categoryCode'].invalid &&
+                    (projectForm.controls['categoryCode'].dirty ||
+                      projectForm.controls['categoryCode'].touched)
+                  "
+                  style="padding: 0px">
+                  <div
+                    *ngIf="projectForm.controls['categoryCode'].errors.required"
+                    style="color: #dc3545">
+                    {{globalServ.getGlobalNames('project')}}
+                    {{globalServ.showGlobalErrors('required')}}
+                  </div>
+                </div>
+                <div
+                  *ngIf="projectForm.get('categoryCode').hasError('invalidFormat')"
+                  style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+                <div
+                  *ngIf="
+                    projectForm.controls['categoryCode'].value?.length >
+                    charLimit - 1
+                  "
+                  style="color: #dc3545">
+                  {{globalServ.showGlobalErrors('max')}} {{ charLimit }}
+                  {{globalServ.showGlobalErrors('char')}}
+                </div>
+              </div>
+
+              <div class="mt-2 form-group input">
+                <label
+                  class="text-sm mb-1">{{globalServ.showLabel('ProjectShortName')}}
+                </label>
+                <input
+                  class="form-control"
+                  id="shortName"
+                  maxlength="3"
+                  placeholder="{{globalServ.showPlaceholder('ProjectShortName')}}"
+                  [formControl]="projectForm.controls.shortName" />
+              </div>
+
+              <div class="mt-2 form-group">
+                <label
+                  class="text-sm mb-1">{{globalServ.showLabel('projectType')}}&nbsp;<span
+                    style="color: red; margin-left: 1px">*</span></label>
+                <select
+                  class="form-select"
+                  id="projectTypes"
+                  [formControl]="projectForm.controls.projectType">
+                  <option [value]="p.name" *ngFor="let p of projectTypes">
+                    {{ p.name }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="mt-2 form-group">
+                <label class="text-sm mb-1">
+                  {{globalServ.showLabel('description')}} </label>
+                <input
+                  class="form-control"
+                  id="description"
+                  placeholder="{{globalServ.showPlaceholder('description')}}"
+                  [formControl]="projectForm.controls.description" />
+              </div>
+
+              <div class="mb-3 form-check">
+                <input
+                  class="form-check-input"
+                  id="isactive"
+                  color="primary"
+                  type="checkbox"
+                  [formControl]="projectForm.controls.isactive" />
+                <label
+                  class="form-check-label">{{globalServ.getGlobalNames('active')}}</label>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="items-table">
+            <div class="item-row head w-100">
+              <div class="col-12 item-h">
+                <div class="titlediv">
+                  <h5 class="mb-0"
+                    *ngIf="!view">{{globalServ.getGlobalNames('add')}}
+                    {{globalServ.showLabel('projectAccess')}}</h5>
+                  <h5 class="mb-0"
+                    *ngIf="view && roleAccessArray.length > 0">{{globalServ.getGlobalNames('view')}}
+                    {{globalServ.showLabel('projectAccess')}}</h5>
+                  <h5 class="mb-0"
+                    *ngIf="view && roleAccessArray.length === 0 ">
+                    {{globalServ.getGlobalErrors('noProjectAccess')}}
+                  </h5>
+                </div>
+                <div style="float: right">
+                  <button *ngIf="!view"
+                    type="button"
+                    (click)="addUser()"
+                    [disabled]="projectForm.invalid"
+                    class="btn btn-primary btn-sm mt-1 me-2 align-items-end d-flex">
+                    <i
+                      class="material-icons me-2">add</i>{{globalServ.getGlobalNames('addNew')}}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div *ngFor="let c of roleAccessArray; let i = index">
+          <div class="row mt-4 w-100" *ngIf="c.status !== 'delete'">
+            <div class="col-md-5 item-h">
+              <div class="form-floating">
+                <select
+                  id="projectRoleCode"
+                  class="form-select br-rm"
+                  [(ngModel)]="c.projectRoleCode"
+                  [disabled]="view"
+                  [ngModelOptions]="{ standalone: true }">
+                  <option
+                    *ngFor="let e of roleTypes"
+                    [value]="e.name">
+                    {{ e.name }}
+                  </option>
+                </select>
+                <label>
+                  {{globalServ.getGlobalNames('roleCode')}}&nbsp;<span
+                    style="color: red; margin-left: 1px">*</span>
+                </label>
+              </div>
+            </div>
+            <div class="col-md-5 item-h">
+              <div class="form-floating">
+
+                <select
+                  id="userName"
+                  class="form-select br-rm"
+                  [(ngModel)]="c.userName"
+                  [disabled]="view"
+                  [ngModelOptions]="{ standalone: true }">
+                  <option
+                    *ngFor="let e of userList"
+                    [value]="e">
+                    {{ e }}
+                  </option>
+                </select>
+                <label>{{globalServ.getGlobalNames('userName')}}&nbsp;<span
+                    style="color: red; margin-left: 1px">*</span></label>
+              </div>
+            </div>
+            <div class="item-h col-md-2" [hidden]="view">
+              <i
+                class="fa-solid fa-trash fs-5 text-danger mt-3 px-2 c-ptr"
+                (click)="removeItem(i)"></i>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button
+          id="cancel_project"
+          type="button"
+          class="btn delete-btn"
+          (click)="closeModal()">
+          {{globalServ.getGlobalNames('cancel')}}
+        </button>
+        <button
+          id="create_project"
+          [disabled]="projectForm.pristine || projectForm.invalid || rolesArrLen.length ===0 "
+          [hidden]="view || update"
+          (click)="createApi()"
+          class="btn add-btn ">
+          {{globalServ.getGlobalNames('create')}}
+        </button>
+        <button *ngIf="update"
+          [disabled]="projectForm.invalid || rolesArrLen.length ===0"
+          id="update_project"
+          (click)="Update()" class="btn add-btn ">
+          {{globalServ.getGlobalNames('update')}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="open" class="modal-backdrop fade show"></div>
