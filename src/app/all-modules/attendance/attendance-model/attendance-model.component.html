@@ -1,0 +1,76 @@
+<div class="modal-header fw-bold">
+  <h4 class="modal-title">Modify Attendance</h4>
+  <i class="fa-solid fa-xmark float-end fs-4" style="cursor: pointer;"
+    data-bs-dismiss="modal" (click)="closeModal('')"></i>
+</div>
+<div class="modal-body">
+  <div class="table-responsive card p-3">
+    <table
+      class="table table-hover table-nowrap custom-table mb-0 datatable">
+      <thead class="thead-all">
+        <tr class="tr-th-all">
+          <th scope="col">Date </th>
+          <th scope="col">Emp Code</th>
+          <th scope="col">Emp Name</th>
+          <th scope="col">Department </th>
+          <th scope="col">Shift </th>
+          <th class="text-center" scope="col">Attendance Status</th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let row of rows">
+        <tr class="dasboard-td">
+          <td>{{row.data.date | date : dateFormat}}</td>
+          <td>{{row.data.employeeCode}}</td>
+          <td>{{row.data.employeeName}}</td>
+          <td>{{row.data.deptCode}}</td>
+          <td>{{row.data.shift}}</td>
+          <td class="text-center">{{row.data.status}}</td>
+        </tr></tbody></table></div>
+  <div class="row">
+    <section class="col-md-6" *ngIf="source !== 'markLeave'">
+      <label style="text-wrap: balance;">Assign a shift </label>
+      <select class="form-select" [(ngModel)]="shiftCode">
+        <option [value] selected disabled>Select Shift</option>
+        <option [value]="sh.shiftCode"
+          *ngFor="let sh of shifts">{{sh.shiftCode}}</option>
+      </select>
+    </section>
+    <section class="col-md-6" *ngIf="source === 'markLeave'">
+      <label style="text-wrap: balance;">Leave Type </label>
+      <select class="form-select" [(ngModel)]="leaveCode">
+        <option [value] selected disabled>Select leave</option>
+        <option [value]="sh.leaveTypeCode"
+          *ngFor="let sh of leaveTypeCodes">{{sh.leaveTypeCode}}</option>
+      </select>
+    </section>
+
+    <section class="col-md-6" *ngIf="source !== 'markLeave'">
+      <label style="text-wrap: balance;">Mark Attendance</label>
+      <select name id class="form-select" [(ngModel)]="assignStatus">
+        <option [value] selected disabled>Select attendance status</option>
+        <option *ngFor="let att of attendStatus" [value]="att">{{att}}</option>
+        <!-- <option  value="Week Off" *ngIf="showWeekOff">Week Off</option> -->
+      </select>
+    </section>
+    <section class="col-md-12">
+      <label style="text-wrap: balance;">Comments</label>
+      <textarea type="text" [(ngModel)]="userComments" class="form-control"></textarea>
+    </section>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" id="cancel_btn" class="btn delete-btn "
+    data-dismiss="modal"
+    (click)="closeModal('')">Cancel</button>
+  <button type="button" id="update_shift" class="btn add-btn add-btn"
+    *ngIf="source !== 'markLeave'"
+    [disabled]="!rows || !assignStatus"
+    (click)="modifyData('attendance')">Modify A</button>
+  <!--  (click)="assignAttendanceFun(row.data)" -->
+  <button type="button" id="update_shift" class="btn add-btn add-btn"
+    *ngIf="source === 'markLeave'"
+    [disabled]="!leaveCode" (click)="modifyData('Leave')">Modify L</button>
+  <!-- (click)="assignAttendanceFunForLeave(row.data)" -->
+
+</div>

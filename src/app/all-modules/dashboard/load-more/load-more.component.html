@@ -1,0 +1,213 @@
+<div class="modal-header fw-bold" style="display: flex;
+justify-content: space-between;">
+    <h4 class="modal-title">{{load_more.header}}</h4>
+    <i class="fa-solid fa-xmark float-end fs-4" style="cursor: pointer;"
+        data-bs-dismiss="modal" (click)="closeModal('dismiss')"></i>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 my-3"></div>
+    <div class="col-sm-12 col-lg-6 my-3 pe-4">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search"
+                (keyup)="updateFilter($event)"
+                style="border-radius: 8px 0px 0px 8px;">
+            <span class="input-group-text" id="basic-addon1">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="overflow-y: scroll;">
+    <div class="col-md-12">
+        <div class="card card-table p-3">
+            <div class="card-body">
+                <!-- absents -->
+                <div *ngIf="load_more.type === 'absents'"
+                    class="table-responsive ">
+                    <table class="table table-nowrap custom-table mb-0">
+                        <thead class="thead-all">
+                            <tr class="tr-th-all">
+                                <!-- <th scope="col">#</th> -->
+                                <th>Employee</th>
+                                <th>Designation</th>
+                                <th>Leave Date</th>
+                                <th>Shift</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="dasboard-td"
+                                *ngFor="let d of data; let i = index">
+                                <!-- <td>{{i+1}}</td> -->
+                                <td>
+                                    <h2 class="table-avatar">
+                                        <!-- <a class="avatar"><img alt="" src="assets/img/avatar-21.jpg"></a> -->
+                                        <a>{{d.employeeName}}
+                                            <span>Code
+                                                :{{d.employeeCode}}</span></a>
+                                    </h2>
+                                </td>
+                                <td>{{d.designation}}</td>
+                                <td>{{d.inDate | date:dateFormat}}</td>
+                                <td>{{d.shiftCode}}</td>
+                                <td>
+                                    <span class="badge bg-inverse-success"
+                                        *ngIf="d.employeeStatus === 'Reported'">Leave</span>
+                                    <span class="badge bg-inverse-danger"
+                                        *ngIf="d.employeeStatus !== 'Reported'">{{d.employeeStatus}}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- late commers -->
+                <div
+                    *ngIf="load_more.type==='Latecomers' || load_more.type==='earlycheckins'"
+                    class="table-responsive">
+                    <table class="table table-nowrap custom-table mb-0">
+                        <thead class="thead-all">
+                            <tr class="tr-th-all">
+                                <!-- <th scope="col">#</th> -->
+                                <th>Employee</th>
+                                <th>Designation</th>
+                                <th>In Date</th>
+                                <th>In Time</th>
+                                <th><span  *ngIf="load_more.type==='earlycheckins'">Is Early by</span>
+                                <span  *ngIf="load_more.type==='Latecomers'">Is Late by</span> </th>
+                                <th>Shift</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="dasboard-td"
+                                *ngFor="let d of data; let i = index">
+                                <!-- <td>{{i+1}}</td> -->
+                                <td>
+                                    <h2 class="table-avatar">
+                                        <!-- <a class="avatar"><img alt="" src="assets/img/avatar-21.jpg"></a> -->
+                                        <a>{{d.employeeName}}
+                                            <span>Code
+                                                :{{d.employeeCode}}</span></a>
+                                    </h2>
+                                </td>
+                                <td>{{d.designation}}</td>
+                                <td>{{d.inDate | date:dateFormat}}</td>
+                                <td>{{d.inTime ? (d.inTime | timeFormater) : ''}}</td>
+                                 <td>{{ d.entryHrs1 }}</td>
+                                <td>{{d.shiftCode}}</td>
+                                <td>
+                                    <span class="badge bg-inverse-danger"
+                                        *ngIf="d.employeeStatus === 'LATE'">{{d.employeeStatus}}</span>
+                                    <span class="badge bg-inverse-Early"
+                                        *ngIf="d.employeeStatus === 'EARLY'">{{d.employeeStatus}}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- employee login details -->
+
+                <div *ngIf="load_more.type ==='employeeLoginDetails'"
+                    class="table-responsive">
+                    <table class="table table-nowrap custom-table mb-0">
+                        <thead class="thead-all">
+                            <tr class="tr-th-all">
+                                <!-- <th scope="col">#</th> -->
+                                <th>Employee</th>
+                                <th class="text-center">Shift</th>
+                                <th class="text-center">In Time</th>
+                                <th class="text-center">Out Time</th>
+                                <th class="text-center">Total Hrs</th>
+                                <th class="text-center">Effective Hrs</th>
+                                <!-- <th class="text-center">Attendance Status</th>                -->
+                                <th class="text-center">Entered Status</th>
+                                <th class="text-end">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="dasboard-td"
+                                *ngFor="let d of data; let i = index">
+                                <!-- <td>{{i+1}}</td> -->
+                                <td>
+                                    <h2 class="table-avatar">
+                                        <!-- <a class="avatar"><img alt="" src="assets/img/avatar-21.jpg"></a> -->
+                                        <a>{{d.employeeName}} <span>Code:
+                                                {{d.employeeCode}}</span></a>
+                                    </h2>
+                                </td>
+                                <td class="text-center">{{d.shift}}</td>
+                                <td class="text-center">{{d.inTime ? (d.inTime | timeFormater) :''}}</td>
+                                <td class="text-center">{{d.outTime ? (d.outTime | timeFormater) : ''}}</td>
+                                <td class="text-center">{{d.totalHours1 }}</td>
+                                <td class="text-center">{{d.effectiveHrs1
+                                    }}</td>
+                                <!-- <td class="text-center">{{d.attStatus }}</td>                                    -->
+                               <td class="text-center">
+                    <span
+                      *ngIf="d.entryStatus === 'LATE'"
+                      class="badge bg-inverse-danger">{{ d.entryStatus }}</span>
+                    <span
+                      *ngIf="d.entryStatus === 'IN_TIME'"
+                      class="badge bg-inverse-success">{{ d.entryStatus }}</span>
+                       <span
+                      *ngIf="d.entryStatus === 'EARLY'"
+                      class="badge bg-inverse-Early">{{ d.entryStatus }}</span>
+                      <span
+                      *ngIf="d.entryStatus === 'UNASSIGNED'"
+                      class="badge bg-inverse-warning">{{ d.entryStatus }}</span>
+                        <span
+                      *ngIf="d.entryStatus === 'OD'"
+                      class="badge bg-inverse-OD">{{ d.entryStatus }}</span>
+                        <span
+                      *ngIf="d.entryStatus === 'WEEK OFF'"
+                      class="badge bg-inverse-WeekOff">{{ d.entryStatus }}</span>
+                  </td>
+                                <td class="text-end">
+                                    <span *ngIf="d.status !== 'IN'"
+                                        class="badge bg-inverse-danger">{{d.status}}</span>
+                                    <span *ngIf="d.status === 'IN'"
+                                        class="badge bg-inverse-success">{{d.status}}</span>
+                                </td>   
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="m-2 p-3" style="overflow: scroll;">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">First</th>
+                <th scope="col">Last</th>
+                <th scope="col">Handle</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+            </tr>
+            <tr *ngFor="let d of temp;let i=index">
+                <td>{{i+1}}</td>
+                <td>{{d.employeeName}}</td>
+                <td colspan="2">Larry the Bird</td>
+                <td>@twitter</td>
+            </tr>
+        </tbody>
+    </table>
+</div> -->

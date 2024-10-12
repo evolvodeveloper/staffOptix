@@ -1,0 +1,177 @@
+<div class="content container-fluid">
+    <div class="mb-2">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="d-flex align-items-baseline">
+                    <i style="font-size:20px" class="fa fa-arrow-left"
+                        routerLink="/dashboard" aria-label="back"></i>
+                    <h3 class="ms-4 page-title">Leave Calendar</h3>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-floating">
+                <select class="form-select" id="departments"
+                    [(ngModel)]="reportObj.department"
+                    (change)="employeesByDepartmentAndProject()"
+                    (change)="modified()">
+                    <option [value]="dtypes.deptCode"
+                        *ngFor="let dtypes of departments">{{dtypes.deptName}}</option>
+                </select>
+                <label>Department</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-floating">
+                <select class="form-select" [(ngModel)]="reportObj.pjCode"
+                    (change)="modified()"
+                    (change)="employeesByDepartmentAndProject()">
+                    <option [value]="sh.categoryCode"
+                        *ngFor="let sh of categorys">{{sh.categoryCode}}</option>
+                </select>
+                <label>Project</label>
+            </div>
+        </div>
+        <div class="col-md d-flex" [ngClass]="{'d-flex':!stopSpinner}">
+            <div class="form-floating" *ngIf="stopSpinner">
+                <select id="employeeName" class="form-select"
+                    (change)="modified()"
+                    [(ngModel)]="reportObj.empCode">
+                    <option [value]="emp.employeeCode"
+                        *ngFor="let emp of employee">{{emp.employeeName}} -
+                        {{emp.employeeCode}}</option>
+                </select>
+                <label>Employee</label>
+            </div>
+            <div id="loading" *ngIf="!stopSpinner"></div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <mat-form-field appearance="outline">
+                <mat-label>Month and Year</mat-label>
+                <input matInput [matDatepicker]="dp" [(ngModel)]="date" />
+                <mat-datepicker-toggle matIconSuffix
+                    [for]="dp"></mat-datepicker-toggle>
+                <mat-datepicker
+                    style="height: 50px;"
+                    #dp
+                    startView="multi-year"
+                    (monthSelected)="setMonthAndYear($event, dp)"
+                    panelClass="example-month-picker">
+                </mat-datepicker>
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="row col-md-12 mb-2 mt-5">
+        <div class="col-sm-6 col-lg-4 d-flex mb-2 align-items-end">
+            <div class="input-group">
+                <input type="text" class="form-control"
+                    placeholder="Search"
+                    (keyup)="updateFilter($event)"
+                    style="border-radius: 8px 0px 0px 8px; 
+    height: calc(2.5rem + calc(var(--mo-border-width) * 2));">
+                <span class="input-group-text" id="basic-addon1">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-2 mt-30px">
+            <label class="form-label ms-2">Show entries</label>
+            <select class="form-select" (change)="resultsPerPage($event)">
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="all">All</option>
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <button id="submit_Leave" class="btn add-btn"
+                [disabled]="!reportObj.empCode"
+                (click)="getLeaveCal()">Submit</button>
+        </div>
+    </div>
+
+    <div class="table-responsive card p-3">
+        <table class="table  custom-table table-nowrap mb-0">
+            <thead class="thead-all">
+                <tr class="tr-th-all">
+                    <th>Emp Code<i class="fa fa-sort  my-auto ms-2"
+                            data-column="code"
+                            (click)="sortData('code')"
+                            [ngClass]="{'asc': sortColumn === 'code' && sortOrder === 'asc',
+                            'desc': sortColumn === 'code' && sortOrder === 'desc'}"></i></th>
+                    <th class="d-flex fixeddrow">Emp Name <i
+                            class="fa fa-sort my-auto ms-2"
+                            data-column="name"
+                            (click)="sortData('name')"
+                            [ngClass]="{'asc': sortColumn === 'name' && sortOrder === 'asc',
+                            'desc': sortColumn === 'name' && sortOrder === 'desc'}"></i>
+                    </th>
+                    <th class="text-center" *ngFor="let date of monthly_dates">
+                        {{ date | date : "d" }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody *ngIf="rows.length === 0 && message === 'modified'">
+                <tr
+                    style=" text-align: center; height: 150px;">
+                    <td colspan="35">
+                        "No records were found with the selected filter criteria."
+                    </td>
+                </tr>
+            </tbody>
+            <tbody
+                *ngIf="rows.length === 0 && message === 'clickOnsubmit'">
+                <tr
+                    style=" text-align: center; height: 150px;">
+                    <td colspan="35">
+                        "Great choices! Finalize your selection by clicking 'Submit' to generate a report with the filtered data you've chosen."
+                    </td>
+                </tr>
+            </tbody>
+            <tbody *ngIf="rows.length === 0 && message === 'error'">
+                <tr
+                    style=" text-align: center; height: 150px;">
+                    <td colspan="35">
+                        "Sorry for the Inconvenience!"
+                    </td>
+                </tr>
+            </tbody>
+
+            <tbody *ngIf="rows.length > 0">
+                <tr class="dasboard-td"
+                    *ngFor=" let leave of rows  | paginate : config; let i = index ">
+                    <td>
+                        <h2 class="table-avatar">
+                            <a>{{ leave.code }}</a>
+                        </h2>
+                    </td>
+                    <td>
+                        <h2 class="table-avatar">
+                            <a>{{ leave.name }}</a>
+                        </h2>
+                    </td>
+                    <ng-container *ngFor="let d of leave.data; let j = index">
+                        <td *ngIf="shouldShowCell(leave.data, j)"
+                            class="text-center"
+                            [attr.colspan]="getColspan(leave.data, j)"
+                            [ngStyle]="getColspan(leave.data, j) > 1 || d.leave !== '-' ? {'background-color': 'skyblue', 'border-radius': '10px'} : {}">
+                            {{ d.leave }}
+                        </td>
+                    </ng-container>
+
+                </tr>
+            </tbody>
+
+        </table>
+        <div
+            *ngIf="rows.length > config.itemsPerPage"
+            class="text-center mb-3 mt-4">
+            <pagination-controls
+                (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+    </div>

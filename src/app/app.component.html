@@ -1,0 +1,12 @@
+<!-- <ngx-spinner 
+  size="medium"
+  color="#fff" 
+  type="ball-scale-multiple"></ngx-spinner> -->
+  <!-- <div *ngIf="uilSer.showGif">
+<img src="assets/img/loading.gif" alt="Loading...">
+  </div> -->
+<ngx-spinner  size = "medium" color = "#fff" type = "square-jelly-box" [fullScreen] = "true"><p style="color: white" ></p></ngx-spinner>
+  <div class="preloader" *ngIf="uilSer.showGif">
+  <img src="../assets/img/XUAR-Logo.svg" alt="Xaur Loading...">
+</div>
+<router-outlet *ngIf="!uilSer.showGif" ></router-outlet>

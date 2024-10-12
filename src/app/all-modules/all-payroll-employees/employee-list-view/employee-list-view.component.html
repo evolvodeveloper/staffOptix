@@ -1,0 +1,267 @@
+<div class="page-header mb-0" [ngClass]="{' p-3': isSpecialRoute}">
+    <div class="row align-items-center">
+        <div
+            class="col-sm-12 col-lg-12 d-flex align-items-baseline justify-content-between ">
+            <i style="font-size:20px" class="fa fa-arrow-left"
+                (click)="back()" aria-label="back"></i>
+            <h3 class="ms-4 page-title">View Employee</h3>
+            <i class="fa-solid fa-xmark float-end fs-4" (click)="back()"></i>
+
+        </div>
+    </div>
+</div>
+
+<div class="row  mt-3"
+    [ngClass]="{'card': !isSpecialRoute, 'p-3': isSpecialRoute}">
+    <div class="col-md-12">
+        <div class="row d-flex justify-content-center" style="gap:20px">
+            <div class="col-md-12 card pt-1 " style="border-radius: 15px;">
+                <div class=" col-md-12   ">
+                    <section class="border-bottom  text-center mt-2">
+                        <div class="emp-profile-img-wrap m-auto">
+                            <img
+                                *ngIf="emp?.image"
+                                [src]="emp?.image" />
+                            <div *ngIf="!emp?.image" id="empShortName"
+                                class="avatar d-flex justify-content-center m-auto align-items-center"
+                                style="background: #5470C6; height: 80px; width: 80px; border-radius: 0px;">
+                                <span
+                                    style="font-size: xx-large; color: #fff">{{value.employeeMaster?.empShortName}}</span>
+                            </div>
+                        </div>
+
+                        <h4 class="mt-2" id="fullName">
+                            {{value?.employeeMaster?.employeeName}}<span
+                                *ngIf="value?.employeeMaster?.lastName">
+                                {{value?.employeeMaster?.lastName}}</span>
+                        </h4>
+                        <h4 class="mt-2" id="employeeCode">
+                            {{value?.employeeMaster?.employeeCode}}
+                        </h4>
+
+                        <h4 class="text-muted font-weight-normal" id="designation">
+                            {{value?.employeeMaster?.designation}}
+                        </h4>
+                    </section>
+                    <section class="border-bottom p-4">
+                        <div class="p-2" id="email">
+                            <i class="fa fa-envelope text-muted"></i>
+                            {{value?.employeeMaster?.email}}
+                        </div>
+
+                        <div class="p-2" id="contactNo">
+                            <i class="fa-solid fa-phone text-muted"></i>
+                            {{value?.employeeMaster?.contactNo}}
+                        </div>
+                    </section>
+
+                    <section class="p-4">
+
+                        <div class="p-2" id="deptCode">
+                            <span class="text-muted block"> Department</span>
+                            {{value?.employeeMaster?.deptCode}}
+                        </div>
+
+                        <div class="p-2" id="projectCode">
+                            <span class="text-muted block"> Project</span>
+                            {{value?.employeeMaster?.projectCode}}
+                        </div>
+                        <div class="p-2" id="locationCode">
+                            <span class="text-muted block"> Location</span>
+                            {{value?.employeeMaster?.locationCode}}
+                        </div>
+                        <div class="p-2" id="branchCode">
+                            <span class="text-muted block"> Branch</span>
+                            {{value?.employeeMaster?.branchCode}}
+                        </div>
+
+                        <div class="p-2" id="supervisor">
+                            <span class="text-muted block"> Reporting
+                                manager</span>
+                            {{value?.payrollMaster?.supervisor}}
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- <div class="col-md-8 card pt-1" style="border-radius: 15px;">
+                <section class="p-4 mt-2"
+                    style="border: 1px solid #f0eeee; border-radius: 15px;">
+                    <div class=" border-bottom" style="font-size: larger;">
+                        Personal Info
+                    </div>
+                    <div class="row">
+                        <table
+                            class="table table-nowrap  table-borderless  mb-0">
+                            <tbody>
+                                <tr class>
+                                    <td scope="col" class="text-muted">
+                                        Employee Code :
+                                    </td>
+                                    <td
+                                        class
+                                        scope="col">{{value.employeeMaster.employeeCode}}
+                                    </td>
+                                    <td scope="col" class="text-muted">
+                                        Employee
+                                        Ref Code :
+                                    </td>
+                                    <td
+                                        class
+                                        scope="col">{{value.payrollMaster?.employeeRefCode}}
+                                    </td>
+                                </tr>
+                                <tr class>
+                                    <td scope="col" class="text-muted">
+                                        Employee
+                                        name :
+                                    </td>
+                                    <td
+                                        class
+                                        scope="col">{{value.employeeMaster.employeeName}}
+                                    </td>
+
+                                    <td scope="col" class="text-muted">
+                                        Last name
+                                        :
+                                    </td>
+                                    <td
+                                        class
+                                        scope="col">{{value.employeeMaster.lastName ? value.employeeMaster.lastName : "-"}}
+                                    </td>
+                                </tr>
+                                <tr class>
+                                    <td scope="col" class="text-muted">
+                                        Gender :
+                                    </td>
+                                    <td
+                                        class
+                                        scope="col">{{value.employeeMaster.gender ? value.employeeMaster.gender : "-" }}
+                                    </td>
+                                    <td scope="col" class="text-muted">
+                                        Date of Birth :
+                                    </td>
+                                    <td
+                                        class
+                                        scope="col">{{value.employeeDetails.dob
+                                        | date: dateFormat}}
+                                    </td>
+                                </tr>
+
+                                <tr class>
+                                    <td scope="col" class="text-muted">
+                                        Join Date :
+                                    </td>
+                                    <td
+                                        class
+                                        scope="col">{{value.employeeMaster.joinDate}}
+                                    </td>
+                                    <td scope="col" class="text-muted">
+                                        User name :
+                                    </td>
+                                    <td
+                                        class
+                                        scope="col">{{value.employeeMaster.userName}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </section>
+
+                <section class="p-4 mt-2"    style="border: 1px solid #f0eeee; border-radius: 15px;">
+                    <div class=" border-bottom" style="font-size: larger;">
+                        Address
+                    </div>
+
+                    <div class="row">
+                        <table
+                            class="table table-nowrap  table-borderless  mb-0">
+                            <tbody>
+                                <tr class>
+                                    <td scope="col" class="text-muted">
+                                        Primary address :
+                                    </td>
+                                    <td
+                                        class
+                                        scope="col">{{value.employeeDetails.address1}}
+                                    </td>
+                                </tr>
+                                <tr class>
+                                    <td scope="col" class="text-muted">
+                                        Secondary address :
+                                    </td>
+                                    <td class
+                                        scope="col">{{value.employeeDetails.address2}}
+                                    </td>
+                                </tr>
+                   
+                                <tr class>
+                                    <td scope="col" class="text-muted">
+                                        City :
+                                    </td>
+                                    <td class
+                                        scope="col">{{value.employeeDetails.city}}
+                                    </td>
+                                </tr>
+                                <tr class>
+                                    <td scope="col" class="text-muted">
+                                        State :
+                                    </td>
+                                    <td class
+                                        scope="col">{{value.employeeDetails.state}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="p-4 my-2"    style="border: 1px solid #f0eeee; border-radius: 15px;">
+                    <div class=" border-bottom" style="font-size: larger;">
+                        Emergency Contact
+                    </div>
+
+                    <div class="row">
+                        <table
+                            class="table table-nowrap  table-borderless  mb-0">
+                            <tbody>
+                                <tr class>
+                                    <td scope="col" class="text-muted">
+                                    Name :
+                                    </td>
+                                    <td
+                                        class
+                                        scope="col">{{value.employeeDetails.emergencyContactName}}
+                                    </td>
+                                </tr>
+                                <tr class>
+                                    <td scope="col" class="text-muted">
+                                        Phone number :
+                                    </td>
+                                    <td class
+                                        scope="col">{{value.employeeDetails.emergencyContactNo}}
+                                    </td>
+                                </tr>
+                   
+                                <tr class>
+                                    <td scope="col" class="text-muted">
+                                        Relation :
+                                    </td>
+                                    <td class
+                                        scope="col">{{value.employeeDetails.relationshipWithEmp}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div> -->
+        </div>
+
+        <div class="text-center">
+            <button class="btn delete-btn" (click)="back()">Close</button>
+        </div>
+    </div>
+</div>

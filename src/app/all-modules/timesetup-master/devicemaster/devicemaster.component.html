@@ -1,0 +1,254 @@
+<div class="content container-fluid">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col d-flex align-items-baseline">
+                <i style="font-size:20px"
+                    class="fa fa-arrow-left" (click)="back()"
+                    aria-label="back"></i> <h3 class="page-title ms-4"> Device
+                    List</h3>
+            </div>
+            <div class="col-auto float-right ml-auto">
+                <a class="btn add-btn" data-bs-target="#add_device"
+                    *ngIf="hasPermissionToUpdate"
+                    data-bs-toggle="modal"><i class="fa fa-plus"></i> Add
+                    Device</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive card p-3">
+                <table id="datatable"
+                    class="table table-hover custom-table mb-0 datatable">
+                    <thead class="thead-all">
+                        <tr class="tr-th-all">
+                            <th>Device</th>
+                            <th>Device Type </th>
+                            <th>Captures </th>
+                            <th class="text-center">Use For Attendance </th>
+                            <th class="text-center">Has Biometric</th>
+                            <th class="text-center">Has Facial</th>
+                            <th class="text-center">Active</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="dasboard-td"
+                            *ngFor="let item of deviceList;let i = index">
+                            <td>{{item.deviceId}}</td>
+                            <td>{{item.deviceType}}</td>
+                            <td>{{item.captures}}</td>
+                            <td class="text-center">
+                                <i
+                                    *ngIf="item.useForAttendance"
+                                    class="fa-solid fa-circle"
+                                    style="color: #55ce63"></i>
+                                <i
+                                    *ngIf="!item.useForAttendance"
+                                    class="fa-solid fa-circle"
+                                    style="color: #f62d51"></i>
+                            </td>
+                            <td class="text-center">
+                                <i
+                                    *ngIf="item.hasBiometric"
+                                    class="fa-solid fa-circle"
+                                    style="color: #55ce63"></i>
+                                <i
+                                    *ngIf="!item.hasBiometric"
+                                    class="fa-solid fa-circle"
+                                    style="color: #f62d51"></i>
+                            </td>
+                            <td class="text-center">
+                                <i
+                                    *ngIf="item.hasFacial"
+                                    class="fa-solid fa-circle"
+                                    style="color: #55ce63"></i>
+                                <i
+                                    *ngIf="!item.hasFacial"
+                                    class="fa-solid fa-circle"
+                                    style="color: #f62d51"></i>
+                            </td>
+                            <td class="text-center">
+                                <i
+                                    *ngIf="item.isactive"
+                                    class="fa-solid fa-circle"
+                                    style="color: #55ce63"></i>
+                                <i
+                                    *ngIf="!item.isactive"
+                                    class="fa-solid fa-circle"
+                                    style="color: #f62d51"></i>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <button
+                                        id="devicemaster_view"
+                                        type="button"
+                                        class="btn btn-light me-1 text-info"
+                                        placement="top"
+                                        ngbTooltip="View"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#add_device"
+                                        (click)="viewData(item)">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                    <button
+                                        id="devicemaster_edit"
+                                        type="button"
+                                        class="btn btn-light me-1 text-secondary"
+                                        placement="top"
+                                        ngbTooltip="Edit"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#add_device"
+                                        *ngIf="hasPermissionToUpdate"
+                                        (click)="editData(item)">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Page Content -->
+
+<div id="add_device" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Device</h5>
+                <button type="button" class="close" data-dismiss="modal"
+                    data-bs-dismiss="modal" aria-label="Close" (click)="cancel()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="deviceMasterForm">
+                    <div class="form-group">
+                        <label>Device Id&nbsp;<span
+                                class="text-danger">*</span></label>
+                        <input class="form-control" type="text"
+                            id="deviceId"
+                            formControlName="deviceId">
+                        <div
+                            *ngIf="deviceMasterForm.get('deviceId').invalid &&(deviceMasterForm.controls['deviceId'].dirty  || deviceMasterForm.get('deviceId').touched)">
+                            <small id="deviceSerial"
+                                *ngIf="deviceMasterForm.get('deviceId').invalid && (deviceMasterForm.controls['deviceId'].dirty  ||deviceMasterForm.get('deviceId').touched)"
+                                class="text-danger"> Device Id is
+                                required</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Device Serial Number&nbsp;<span
+                                class="text-danger">*</span></label>
+                        <input class="form-control" type="text"
+                            id="deviceSerial"
+                            formControlName="deviceSerial">
+                        <div
+                            *ngIf="deviceMasterForm.get('deviceSerial').invalid && (deviceMasterForm.controls['deviceSerial'].dirty  || deviceMasterForm.get('deviceSerial').touched)">
+                            <small id="deviceSerial"
+                                *ngIf="deviceMasterForm.get('deviceSerial').invalid && (deviceMasterForm.controls['deviceSerial'].dirty  || deviceMasterForm.get('deviceSerial').touched)"
+                                class="text-danger"> serial number is
+                                required</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Device Type&nbsp;<span
+                                class="text-danger">*</span></label>
+                        <select
+                            class="form-select"
+                            id="deviceType"
+                            [formControl]="deviceMasterForm.controls.deviceType">
+                            <option selected disabled>Select Type</option>
+                            <option [value]="p"
+                                *ngFor="let p of deviceTypes">
+                                {{ p }}
+                            </option>
+                        </select>
+                        <div
+                            *ngIf="deviceMasterForm.get('deviceType').invalid && (deviceMasterForm.controls['deviceType'].dirty  || deviceMasterForm.get('deviceType').touched)">
+                            <small id="deviceType"
+                                *ngIf="deviceMasterForm.get('deviceType').invalid && (deviceMasterForm.controls['deviceType'].dirty  || deviceMasterForm.get('deviceType').touched)"
+                                class="text-danger"> Device type is
+                                required</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Captures</label>
+                        <select
+                            class="form-select"
+                            id="captures"
+                            [formControl]="deviceMasterForm.controls.captures">
+                            <option selected disabled>Select Captures</option>
+                            <option [value]="c"
+                                *ngFor="let c of captures">
+                                {{ c }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Secret Key</label>
+                        <input class="form-control" type="text"
+                            id="secretKey"
+                            formControlName="secretKey">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Device Location</label>
+                        <select
+                            class="form-select"
+                            id="captures"
+                            [formControl]="deviceMasterForm.controls.deviceLocCode">
+                            <option selected disabled>Select Location</option>
+                            <option [value]="c.deviceLocCode"
+                                *ngFor="let c of deviceLoc">
+                                {{ c.deviceLocCode }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-check">
+                            <input class="form-check-input" id="isactive"
+                                formControlName="isactive"
+                                color="primary" type="checkbox">
+                            <label class="form-check-label">
+                                Is Active
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mt-1" *ngIf="!view">
+                        <button
+                            id="deviceMasterForm_close"
+                            type="button"
+                            class="btn delete-btn"
+                            data-bs-dismiss="modal"
+                            aria-label="Close" (click)="cancel()">Cancel</button>
+                        <button id="submit_deviceMasterForm" *ngIf="!update"
+                            class="btn add-btn"
+                            [disabled]="deviceMasterForm.invalid"
+                            (click)="submit()" type="submit">Submit</button>
+                        <button id="submit_leavePlanForm" *ngIf="update"
+                            class="btn add-btn"
+                            [disabled]="deviceMasterForm.pristine"
+                            (click)="Update()" type="submit">Update</button>
+                    </div>
+                    <div class="text-center mt-1" *ngIf="view">
+                        <button
+                            id="deviceMasterForm_close"
+                            type="button"
+                            class=" btn delete-btn"
+                            data-bs-dismiss="modal"
+                            aria-label="Close" (click)="cancel()" >Close</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

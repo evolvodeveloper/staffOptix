@@ -1,0 +1,336 @@
+<div class="page-header">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="d-flex align-items-baseline">
+        <i
+          style="font-size: 20px"
+          class="fa fa-arrow-left"
+          (click)="back()"
+          aria-label="back"></i>
+        <h3 class="ms-4 page-title">Attendance Summary</h3>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-7">
+    <div class="row filter-row">
+      <div class="col-sm-6 col-md-4">
+        <label style="font-size: small">Department</label>
+        <!-- <div class="form-floating"> -->
+        <select
+          class="form-select"
+          [(ngModel)]="selected_department" (change)="modified()">
+          <option *ngFor="let d of departments_list" [value]="d.dept">
+            {{ d.dept }}
+          </option>
+        </select>
+        <!-- </div> -->
+      </div>
+      <div class="col-sm-6 col-md-4 ">
+        <!-- <div class="form-floating"> -->
+        <label>Project</label>
+        <select
+          class="form-select"
+          id="projects"
+          [(ngModel)]="projectCode" (change)="modified()">
+          <option [value]="cat.project" *ngFor="let cat of projects">
+            {{ cat.project }}
+          </option>
+        </select>
+      </div>
+      <!-- </div> -->
+      <div class="col-sm-6 col-md-4">
+        <mat-label>Month and Year</mat-label>
+        <mat-form-field appearance="outline">
+          <input matInput [matDatepicker]="dp" [(ngModel)]="date"
+            [max]="maxDate" />
+          <mat-datepicker-toggle matIconSuffix
+            [for]="dp"></mat-datepicker-toggle>
+          <mat-datepicker
+            #dp
+            startView="multi-year"
+            (monthSelected)="setMonthAndYear($event, dp)"
+            panelClass="example-month-picker">
+          </mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row mb-2">
+      <div class="col-sm-6 col-md-4 d-flex mb-2 align-items-end">
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="searchedFor"
+            placeholder="Search"
+            (keyup)="updateFilter($event)"
+            style="
+          border-radius: 8px 0px 0px 8px;
+          height: calc(2.5rem + calc(var(--mo-border-width) * 2));
+        " />
+          <span class="input-group-text" id="basic-addon1">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </span>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-4 mb-2">
+        <label class>Show entries</label>
+        <select class="form-select" (change)="resultsPerPage($event)">
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="all">All</option>
+        </select>
+      </div>
+      <div class="col-sm-6 col-md-4 ">
+        <label class>Filter</label>
+        <select class="form-select" (change)="filterRecords($event)">
+          <option value="All">ALL</option>
+          <option value="P">Present</option>
+          <option value="Reported">Leave</option>
+          <option value="L">Not Reported</option>
+          <option value="Half Day">Half Day</option>
+        </select>
+      </div>
+      <div
+        class="col-sm-6 col-md-12 mt-2 d-flex justify-content-end align-items-end">
+        <button id="excel_timesheet" class="btn add-btn me-1"
+          [disabled]="attendance_list.length === 0"
+          (click)="saveAsExcel()">Save As Excel </button>
+        <button id="submit_timesheet" class="btn add-btn"
+          [disabled]="!projectCode || !selected_department"
+          (click)="getAttendanceSummary()">Submit </button>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-5 col-lg-5 d-flex">
+    <div
+      class="card flex-fill dash-statistics"
+      style="
+        background: #fcfcfc;
+        border-radius: 12px;
+        border-style: solid;
+        border-color: #c7ddff;
+        border-width: 1px;
+      ">
+      <div class="card-body">
+        <div echarts [options]="option" class="demo-chart-600"
+          style="height: 170px;"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="row mt-3">
+  <div class="col-lg-12">
+    <div class="bg-light mb-1 p-2 d-flex justify-content-between">
+      <div>
+        <i class="fa-solid icon fa-check present fa-5x me-1"></i> Present
+      </div>
+      <div><i class="fa-solid icon fa-xmark absent me-1"></i> Not Reported</div>
+      <div> <span style="color: #ed576b; font-weight: bold;font-size: medium;"
+          class="me-1">L</span>
+        Leave
+      </div>
+      <div><span class="me-1" style="color: orange">HD </span> Half-Day</div>
+      <div>
+        <span class="me-1"><b style="font-size: larger">-</b></span> Shift Not
+        Assigned
+      </div>
+      <div>
+        <span style="color: slateblue; font-weight: bold" class="me-1">H</span>
+        Holiday
+      </div>
+
+      <div>
+        <span style="color: blue; font-weight: bold" class="me-1">W </span>
+        Week Off
+      </div>
+    </div>
+    <div class="table-responsive card">
+      <table class="table custom-table table-nowrap mb-0">
+        <thead class="thead-all">
+          <tr class="tr-th-all">
+            <th>
+              Emp Code<i
+                class="fa fa-sort my-auto ms-2"
+                data-column="code"
+                (click)="sortData('code')"
+                [ngClass]="{
+                  asc: sortColumn === 'code' && sortOrder === 'asc',
+                  desc: sortColumn === 'code' && sortOrder === 'desc'
+                }"></i>
+            </th>
+            <th class="d-flex fixeddrow">
+              Emp Name
+              <i
+                class="fa fa-sort my-auto ms-2"
+                data-column="name"
+                (click)="sortData('name')"
+                [ngClass]="{
+                  asc: sortColumn === 'name' && sortOrder === 'asc',
+                  desc: sortColumn === 'name' && sortOrder === 'desc'
+                }"></i>
+            </th>
+            <th class="text-center" *ngFor="let date of monthly_dates">
+              {{ date | date : "d" }}
+            </th>
+            <th class="text-center">Working Days</th>
+            <th class="text-center">Present</th>
+            <!-- <th class="text-center">Half Days</th> -->
+            <th class="text-center">Leave </th>
+            <th class="text-center">Absent</th>
+            <th class="text-center">Week Off</th>
+            <th class="text-center">Holidays</th>
+
+          </tr>
+        </thead>
+        <tbody *ngIf="attendance_list.length > 0">
+          <tr
+            class="dasboard-td"
+            *ngFor="
+              let attendance of attendance_list | paginate : config;
+              let i = index">
+            <td>
+              <a>{{ attendance.code }}</a>
+            </td>
+            <td class="fixeddrow">
+              <a>{{ attendance.name }} </a>
+            </td>
+            <td
+              class="text-center hh"
+              *ngFor="let d of attendance.data; let j = index"
+              (mousedown)="onMouseDown(i, j, d)"
+              (mouseover)="onMouseOver(i, j, d)"
+              (mouseup)="onMouseUp($event)"
+              [class.selected]="isSelected(i, j, d)"
+                [matTooltip]="d.shift+' - '+ (d.inTime + ' - ' +  d.outTime)"
+              (contextmenu)="onRightClick($event, d)">
+              <i
+                *ngIf="d.status === 'P'"
+                class="fa-solid icon fa-check present fa-5x"></i>
+              <i
+                *ngIf="d.status === 'Full Day'"
+                class="fa-solid icon fa-check present fa-5x"></i>
+              <span *ngIf="d.status === 'Missing Swipe'">
+                <i
+                  class="fa-solid icon fa-check present fa-5x"></i><span
+                  style="color:#ed576b">*</span>
+              </span>
+              <i
+                *ngIf="d.status === 'L'"
+                class="fa-solid icon fa-xmark absent"></i>
+              <span *ngIf="d.status === 'Shift Not Assigned'">-</span>
+              <span style="color: orange"
+                *ngIf="d.status === 'Half Day'">HD</span>
+              <span
+                *ngIf="d.status === 'H'"
+                style="color: slateblue; font-weight: bold">H</span>
+              <span *ngIf="d.status === 'H/P'">
+                <span style="color: #6a5acd; font-weight: bold">H</span>/<span
+                  class="text-success" style="font-weight: bold">P</span>
+              </span>
+              <span
+                *ngIf="d.status === 'Reported'"
+                style=" color: hsl(352, 81%, 64%) ;font-weight: bold;font-size: medium;">L</span>
+
+              <span
+                *ngIf="d.status === 'W'"
+                style="color: blue; font-weight: bold">W</span>
+
+              <span *ngIf="d.status === 'W/P'">
+                <span style="color: blue; font-weight: bold">W</span>/<span
+                  class="text-success" style="font-weight: bold">P</span>
+              </span>
+            </td>
+            <td class="text-end" style="padding-right: 25px;">
+              <a>{{ attendance.workingDays }}</a>
+            </td>
+            <td class="text-end" style="padding-right: 25px;">
+              <a>{{ attendance.present }}</a>
+            </td>
+            <!-- <td class="text-end" style="padding-right: 25px;">
+              <a>{{ attendance.halfDay }}</a>
+            </td> -->
+            <td class="text-end" style="padding-right: 25px;">
+              <a>{{ attendance.leave }}</a>
+            </td>
+            <td class="text-end" style="padding-right: 25px;">
+              <a>{{ attendance.absent }}</a>
+            </td>
+            <td class="text-end" style="padding-right: 25px;">
+              <a>{{ attendance.weekOff }}</a>
+            </td>
+            <td class="text-end" style="padding-right: 25px;">
+              <a>{{ attendance.holiday }}</a>
+            </td>
+          </tr>
+        </tbody>
+        <tbody
+          *ngIf="attendance_list.length === 0 && message === 'clickOnsubmit'">
+          <tr
+            style=" text-align: center; height: 150px;">
+            <td colspan="40">
+              "Great choices! Finalize your selection by clicking 'Submit' to generate a report with the filtered data you've chosen."
+            </td>
+          </tr>
+        </tbody>
+        <tbody
+          *ngIf="attendance_list.length === 0 && message === 'clicked'">
+          <tr
+            style=" text-align: center; height: 150px;">
+            <td colspan="40">
+              "No records were found with the selected filter criteria."
+            </td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="attendance_list.length === 0 && message === 'error'">
+          <tr
+            style=" text-align: center; height: 150px;">
+            <td colspan="40">
+              "Sorry for the Inconvenience!"
+            </td>
+          </tr>
+        </tbody>
+        <div
+          class="card hovercard"
+          *ngIf="isHovered"
+          style="
+            position: fixed;
+            background: rgb(255, 255, 255);
+            border: 1px solid #c7ddff;
+            height: fit-content;
+            padding: 10px;
+            z-index: 1;
+            cursor: pointer;
+          "
+          [style.left.px]="hoveredItemPosition.x"
+          [style.top.px]="hoveredItemPosition.y">
+          <div class="itemHover" (click)="openModal('markAttendance')"
+            [ngStyle]="{ 'display':hideMarkAttendance ? 'none' : ''  }">Mark
+            Attendance</div>
+          <div class="itemHover"
+            [ngStyle]="{ 'display':selectedCells[0].data.status=== 'Reported' ? 'none' : ''  }"
+            (click)="openModal('markLeave')">Mark Leave</div>
+          <div class="itemHover"
+            [ngStyle]="{ 'display':selectedCells[0].data.status=== 'W' || !showWeekOff ? 'none' : ''  }"
+            (click)="markWeekoffFunction()">Mark Week Off </div>
+          <div class="itemHover" (click)="markOdFunction()">Mark OD</div>
+          <div class="itemHover"
+            [ngStyle]="{ 'display':selectedCells[0].data.status === 'L' || selectedCells[0].data.status === 'Shift Not Assigned' ? 'none' : ''  }"
+            (click)="noRepFun()"> Mark Not Reported</div>
+        </div>
+      </table>
+      <div *ngIf="attendance_list.length > config.itemsPerPage"
+        class="text-center mb-3 mt-4">
+        <pagination-controls
+          (pageChange)="pageChanged($event)"></pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,9 @@
+.radio-label {
+    margin-right: 15px; /* Adjust spacing as needed */
+}
+.disabled-option {
+    color: gray; /* Change color to indicate disabled state */
+    pointer-events: none; /* Prevent interaction */
+    text-decoration: line-through; /* Optional: add strikethrough */
+  }
+  

@@ -1,0 +1,245 @@
+<div class="content container-fluid">
+    <div class="mb-2">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="d-flex align-items-baseline">
+                    <i style="font-size:20px" class="fa fa-arrow-left"
+                        routerLink="/dashboard" aria-label="back"></i>
+                    <h3 class="ms-4 page-title">Daily Roster</h3>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-7">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="dept">Department</label>
+                    <select id="dept" class="form-select"
+                        [(ngModel)]="selected_department"
+                        (change)="employeesByDepartment()">
+                        <option *ngFor="let d of departments_list"
+                            [value]="d.dept">
+                            {{ d.dept }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-4" [ngClass]="{'d-flex':!stopSpinner}">
+                    <label for="Employee">Employee</label>
+                    <!-- <div class="form-floating " > -->
+                    <select id="Employee" *ngIf="stopSpinner"
+                        class="form-select" [(ngModel)]="empCode"
+                        (change)="modified()">
+                        <option [value]="ep.employeeCode"
+                            *ngFor="let ep of employee">{{ep.employeeName}}</option>
+                    </select>
+                    <!-- </div> -->
+                    <div id="loading" *ngIf="!stopSpinner"></div>
+                </div>
+                <div class="col-md-4">
+                    <mat-label>Month and Year</mat-label>
+                    <mat-form-field appearance="outline">
+                        <input matInput [matDatepicker]="dp"
+                            [(ngModel)]="date" />
+                        <mat-datepicker-toggle matIconSuffix
+                            [for]="dp"></mat-datepicker-toggle>
+                        <mat-datepicker
+                            style="height: 50px;"
+                            #dp
+                            startView="multi-year"
+                            (monthSelected)="setMonthAndYear($event, dp)"
+                            panelClass="example-month-picker">
+                        </mat-datepicker>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-sm-6 col-md-4 d-flex mb-2 align-items-end">
+                    <div class="input-group">
+                        <input type="text" class="form-control"
+                            placeholder="Search"
+                            [(ngModel)]="searchedFor"
+                            (keyup)="updateFilter($event)"
+                            style="border-radius: 8px 0px 0px 8px; 
+    height: calc(2.5rem + calc(var(--mo-border-width) * 2));
+">
+                        <span class="input-group-text" id="basic-addon1">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-4 mb-2">
+                    <label class>Show entries</label>
+                    <select class="form-select"
+                        (change)="resultsPerPage($event)">
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="all">All</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="Shifts">Shifts</label>
+                    <!-- <div class="form-floating "> -->
+                    <select id="Shifts" class="form-select"
+                        [(ngModel)]="shiftCode"
+                        (change)="modified()">
+                        <option [value]="sh.shiftCode"
+                            *ngFor="let sh of shifts">{{sh.shiftCode}}</option>
+                    </select>
+                    <!-- </div> -->
+                </div>
+                <div
+                    class="col-md-12 mt-2 d-flex justify-content-end align-items-end">
+                    <button id="submit_timesheet" class="btn add-btn"
+                        (click)="getDailyRoaster()" [disabled]="!empCode">Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5 col-lg-5 d-flex">
+            <div
+                class="card flex-fill dash-statistics"
+                style="
+        background: #fcfcfc;
+        border-radius: 12px;
+        border-style: solid;
+        border-color: #c7ddff;
+        border-width: 1px;
+      ">
+                <div class="card-body">
+                    <div echarts [options]="option" class="demo-chart-600"
+                        style="height: 170px;"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row col-md-12 m-auto" style="background: #fff;">
+        <div class="col-md col-sm my-2 text-nowrap"
+            *ngFor="let coll of collection"
+            [ngStyle]="{'display': coll.shiftCode !== 'Weekend' && coll.shiftCode !== 'Holiday' ? 'none' : 'block' }">
+            <span class="badge"
+                [ngStyle]="{'background' : coll.background ,'color' : coll.color  }">
+                {{coll.shift}} </span><span> - {{coll.shiftCode}}</span>
+        </div>
+    </div>
+    <div class="row col-md-12 m-auto" style="background: #fff;">
+        <div class="col-md col-sm my-2 text-nowrap"
+            *ngFor="let coll of collection"
+            [ngStyle]="{'display': coll.shiftCode === 'Weekend' || coll.shiftCode === 'Holiday' ? 'none' : 'block' }">
+            <span class="badge"
+                [ngStyle]="{'background' : coll.background ,'color' : coll.color  }">
+                {{coll.shift}} </span><span> - {{coll.shiftCode}}</span>
+        </div>
+    </div>
+
+    <div class="table-responsive card  scrollable-container">
+        <table #table class="table  custom-table table-nowrap mb-0">
+            <thead class="thead-all">
+                <tr class="tr-th-all">
+                    <th>Emp Code<i class="fa fa-sort  my-auto ms-2"
+                            data-column="code"
+                            (click)="sortData('code')"
+                            [ngClass]="{'asc': sortColumn === 'code' && sortOrder === 'asc',
+                'desc': sortColumn === 'code' && sortOrder === 'desc'}"></i></th>
+                    <th class="d-flex fixeddrow">Emp Name <i
+                            class="fa fa-sort my-auto ms-2"
+                            data-column="name"
+                            (click)="sortData('name')"
+                            [ngClass]="{'asc': sortColumn === 'name' && sortOrder === 'asc',
+              'desc': sortColumn === 'name' && sortOrder === 'desc'}"></i>
+                    </th>
+                    <th class="text-center" *ngFor="let date of monthly_dates">
+                        {{ date | date : "d" }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody *ngIf="rows.length === 0 && message === 'modified'">
+                <tr
+                    style=" text-align: center; height: 150px;">
+                    <td colspan="36">
+                        "No records were found with the selected filter criteria."
+                    </td>
+                </tr>
+            </tbody>
+
+            <tbody
+                *ngIf="rows.length === 0 && message === 'clickOnsubmit'">
+                <tr
+                    style=" text-align: center; height: 150px;">
+                    <td colspan="36">
+                        "Great choices! Finalize your selection by clicking 'Submit' to generate a report with the filtered data you've chosen."
+                    </td>
+                </tr>
+            </tbody>
+            <tbody *ngIf="rows.length === 0 && message === 'error'">
+                <tr
+                    style=" text-align: center; height: 150px;">
+                    <td colspan="36">
+                        "Sorry for the Inconvenience!"
+                    </td>
+                </tr>
+            </tbody>
+
+            <tbody *ngIf="rows.length >0">
+                <tr
+                    class="dasboard-td"
+                    *ngFor="
+              let attendance of rows | paginate : config;
+              let i = index">
+                    <!--  [ngClass]="{'upToTodayRecord': isRecordDisabled(i)}" -->
+                    <td><a> {{ attendance.code }} </a></td>
+                    <td class="fixeddrow">
+                        <a>{{ attendance.name }}</a>
+                    </td>
+                    <!--  [disabled]="isRecordDisabled(i,j)"
+                                [ngClass]="{'upToTodayRecord': isRecordDisabled(i,j)}" -->
+                    <td class="text-center"
+                        *ngFor="let d of attendance.data;let j = index"              
+                        (mousedown)="onMouseDown(i, j, d )"
+                        (mouseover)="onMouseOver(i, j, d)"
+                        (mouseup)="onMouseUp($event)"
+                        [class.selected]="isSelected(i, j, d)"
+                        (contextmenu)="onRightClick($event ,d)">
+                        <span class="badge" *ngIf="d.shift !== 'H'"
+                            [ngStyle]="{'background' : d.bgColor ,'color' : d.color  }">
+                            {{d.shift !== null ? d.shift : d.shiftCode }}</span>
+                        <span class="badge text-center" *ngIf="d.shift === 'H'"
+                            [ngStyle]="{'background' : d.bgColor ,'color' : d.color  }"><b>
+                                {{d.shift !== null ? d.shift : d.shiftCode
+                                }}</b></span>
+                    </td>
+                </tr>
+            </tbody>
+            <div class="card" *ngIf="isHovered"
+                style="
+            position: fixed;
+            background: rgb(255, 255, 255);
+            border: 1px solid #c7ddff;
+            height: fit-content;
+            padding: 10px;
+            width:150px;
+             z-index: 1;
+            cursor: pointer;
+          "
+                [style.left.px]="hoveredItemPosition.x"
+                [style.top.px]="hoveredItemPosition.y">
+                <div class="itemHover" (click)="openModal('assignShift')">
+                    <i class="fa-solid fa-pencil me-1"></i>&nbsp;Assign
+                    Shift</div>
+                <!-- <div class="itemHover"  (click)="openModal('markWeekOff')">Mark Week Off</div> -->
+
+            </div>
+        </table>
+        <div
+            *ngIf="rows.length > config.itemsPerPage"
+            class="text-center mb-3 mt-4">
+            <pagination-controls
+                (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+    </div>
+</div>

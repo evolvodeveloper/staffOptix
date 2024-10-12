@@ -1,0 +1,207 @@
+<div
+  class="modal fade modal-right"
+  style="padding-right: 17px; display: none"
+  [ngClass]="{ show: open }"
+  [ngStyle]="open && { display: 'block' }">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title">
+          {{ view ? "View" : update ? "Update" : "Create" }} Department
+        </h1>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="closeModal()"
+          aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+            <form [formGroup]="departmentForm" novalidate>
+              <div class="form-group input">
+                <label class="mb-1 text-sm">
+                  Department&nbsp;<span class="text-danger"
+                    style=" margin-left: 1px">*</span>
+                </label>
+                <input
+                  class="form-control"
+                  id="deptCode"
+                  maxlength="{{ charLimit }}"
+                  placeholder="Enter Department Code"
+                  [formControl]="departmentForm.controls.deptCode"
+                  [class.is-invalid]="departmentForm.controls.deptCode.invalid && (departmentForm.controls.deptCode.dirty || departmentForm.controls.deptCode.touched)" />
+                <div
+                  *ngIf="
+                    departmentForm.controls['deptCode'].invalid &&
+                    (departmentForm.controls['deptCode'].dirty ||
+                      departmentForm.controls['deptCode'].touched)
+                  "
+                  style="padding: 0px">
+                  <div
+                    *ngIf="departmentForm.controls['deptCode'].errors.required"
+                    style="color: #dc3545">
+                    Department Code is required.
+                  </div>
+                </div>
+
+                <div
+                  *ngIf="departmentForm.get('deptCode').hasError('invalidFormat')"
+                  style="color: #dc3545">field should not contain special
+                  characters</div>
+                <div
+                  *ngIf="
+                    departmentForm.controls['deptCode'].value?.length >
+                    charLimit - 1
+                  "
+                  style="color: #dc3545">
+                  Max {{ charLimit }} Characters
+                </div>
+              </div>
+
+              <div class="form-group input">
+                <label class="mb-1 text-sm">
+                  Department Name &nbsp;<span
+                    style="color: red; margin-left: 1px">*</span>
+                </label>
+                <input
+                  class="form-control"
+                  id="deptName"
+                  required
+                  maxlength="{{ charLimit }}"
+                  placeholder="Enter Department Name"
+                  [formControl]="departmentForm.controls.deptName"
+                  [class.is-invalid]="departmentForm.controls.deptName.invalid && (departmentForm.controls.deptName.dirty || departmentForm.controls.deptName.touched)" />
+                <div
+                  *ngIf="
+                    departmentForm.controls['deptName'].invalid &&
+                    (departmentForm.controls['deptName'].dirty ||
+                      departmentForm.controls['deptName'].touched)
+                  "
+                  style="padding: 0px">
+                  <div
+                    *ngIf="departmentForm.controls['deptName'].errors.required"
+                    style="color: #dc3545">
+                    Department Name is required.
+                  </div>
+                </div>
+                <div
+                  *ngIf="departmentForm.get('deptName').hasError('invalidFormat')"
+                  style="color: #dc3545">field should not contain special
+                  characters</div>
+              </div>
+              <!-- (keydown.space)="$event.preventDefault()" -->
+              <div class="mb-3 form-check">
+                <input
+                  class="form-check-input"
+                  id="isactive"
+                  color="primary"
+                  type="checkbox"
+                  [formControl]="departmentForm.controls.isactive" />
+                <label class="form-check-label"> Active </label>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="items-table">
+            <div class="item-row head w-100">
+              <div class="col-12 item-h">
+                <div class="titlediv">
+                  <h5 class="mb-0" *ngIf="!view">Add Department Access</h5>
+                  <h5 class="mb-0"
+                    *ngIf="view && roleAccessArray.length > 0">View Department
+                    Access Users</h5>
+                  <h5 class="mb-0" *ngIf="view && roleAccessArray.length === 0">
+                    No Department Access Fond for this Department.
+                  </h5>
+                </div>
+                <div style="float: right">
+                  <button *ngIf="!view"
+                    type="button"
+                    [disabled]="departmentForm.invalid"
+                    (click)="addUser()"
+                    class="btn btn-primary btn-sm mt-1 me-2 align-items-end d-flex">
+                    <i class="material-icons me-2">add</i> Add More
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div *ngFor="let c of roleAccessArray; let i = index">
+
+          <div class="row mt-4 w-100" *ngIf="c.status !== 'delete'">
+            <div class="col-md-5 item-h">
+              <div class="form-floating">
+
+                <select
+                  id="deptRoleCode"
+                  class="form-select br-rm"
+                  [(ngModel)]="c.deptRoleCode"
+                  [disabled]="view"
+                  [ngModelOptions]="{ standalone: true }">
+                  <option value>-</option>
+                  <option *ngFor="let e of roleTypes"
+                    [value]="e.name">
+                    {{ e.name }}
+                  </option>
+                </select>
+                <label>
+                  Role Code&nbsp;<span
+                    style="color: red; margin-left: 1px">*</span>
+                </label>
+              </div>
+            </div>
+            <div class="col-md-5 item-h">
+              <div class="form-floating">
+                <select
+                  id="userName"
+                  class="form-select br-rm"
+                  [(ngModel)]="c.userName"
+                  [disabled]="view"
+                  [ngModelOptions]="{ standalone: true }">
+                  <option value>-</option>
+                  <option
+                    *ngFor="let e of userNames"
+                    [value]="e">
+                    {{ e }}
+                  </option>
+                </select>
+                <label>User Name&nbsp;<span
+                    style="color: red; margin-left: 1px">*</span></label>
+              </div>
+            </div>
+
+            <div class="item-h col-md-2" [hidden]="view">
+              <i
+                class="fa-solid fa-trash fs-5 text-danger mt-3 px-2 c-ptr"
+                (click)="removeItem(i)"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn delete-btn" (click)="closeModal()">
+          Cancel
+        </button>
+        <button
+          [hidden]="view || update"
+          [disabled]="departmentForm.invalid || departmentForm.pristine || roleAccessArray.length === 0"
+          (click)="create()"
+          class="btn add-btn">
+          Create
+        </button>
+        <button *ngIf="update"
+          [disabled]="departmentForm.invalid || roleAccessArray.length === 0" 
+          (click)="Update()" class="btn add-btn">
+          Update
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="open" class="modal-backdrop fade show"></div>

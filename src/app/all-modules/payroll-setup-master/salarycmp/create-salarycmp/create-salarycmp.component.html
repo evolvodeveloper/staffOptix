@@ -1,0 +1,392 @@
+<div class="page-header">
+  <div class="row align-items-center">
+    <div class="col-sm-12 col-lg-8">
+      <div class="d-flex align-items-baseline">
+        <i
+          style="font-size: 20px"
+          class="fa fa-arrow-left"
+          (click)="cancel()"
+          aria-label="back"></i>
+        <h3 class="ms-4 page-title"> {{ view ? "View" : update ? "Update" :
+          "Create" }} Salary Component</h3>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card p-3">
+  <div class="row " [formGroup]="salaryStructureForm">
+    <div class="col-md-4 col-lg-4">
+      <label class="col-form-label">Component <span
+          class="text-danger">*</span></label>
+      <input
+        class="form-control"
+        type="text"
+        maxlength="{{ charLimit }}"
+        [class.invalid]="
+              salaryStructureForm.get('componentCode').invalid &&
+              salaryStructureForm.get('componentCode').touched
+            "
+        formControlName="componentCode" />
+      <div
+        *ngIf="
+              salaryStructureForm.get('componentCode').invalid &&
+              salaryStructureForm.get('componentCode').touched
+            ">
+        <small
+          *ngIf="
+                salaryStructureForm.get('componentCode').invalid &&
+                salaryStructureForm.get('componentCode').touched
+              "
+          class="text-danger">Component required</small>
+      </div>
+      <div
+        *ngIf="salaryStructureForm.get('componentCode').hasError('invalidFormat')"
+        style="color: #dc3545">field should not contain special characters</div>
+    </div>
+    <div class="col-md-4 col-lg-4">
+      <label class="col-form-label">Component Type
+        <span class="text-danger">*</span></label>
+      <select
+        class="form-select"
+        [class.invalid]="
+              salaryStructureForm.get('componentType').invalid &&
+              salaryStructureForm.get('componentType').touched
+            "
+        formControlName="componentType">
+        <option [value] selected disabled>Select Component Type</option>
+        <option *ngFor="let pc of componentType"
+          [value]="pc">
+          {{ pc }}
+        </option>
+      </select>
+      <div
+        *ngIf="
+              salaryStructureForm.get('componentType').invalid &&
+              salaryStructureForm.get('componentType').touched
+            ">
+        <small
+          *ngIf="
+                salaryStructureForm.get('componentType').invalid &&
+                salaryStructureForm.get('componentType').touched
+              "
+          class="text-danger">Component Type required</small>
+      </div>
+    </div>
+
+    <!-- <div class="col-md-6 col-lg-6">
+          <label class="col-form-label">Payroll <span
+              class="text-danger">*</span></label>
+          <select
+            class="form-select"
+            [class.invalid]="
+              salaryStructureForm.get('payrollCode').invalid &&
+              salaryStructureForm.get('payrollCode').touched
+            "
+            formControlName="payrollCode">
+            <option [value] selected disabled>Select Payroll</option>
+            <option *ngFor="let pc of payrollsetups"
+              [value]="pc.payrollCode">
+              {{ pc.payrollCode }}
+            </option>
+          </select>
+          <div
+            *ngIf="
+              salaryStructureForm.get('payrollCode').invalid &&
+              salaryStructureForm.get('payrollCode').touched
+            ">
+            <small
+              *ngIf="
+                salaryStructureForm.get('payrollCode').invalid &&
+                salaryStructureForm.get('payrollCode').touched
+              "
+              class="text-danger">Payroll required</small>
+          </div>
+      </div> -->
+
+    <div class="col-md-4 col-lg-4">
+      <label class="col-form-label">Time Frame <span
+          class="text-danger">*</span></label>
+      <select
+        class="form-select"
+        [class.invalid]="
+              salaryStructureForm.get('timeframe').invalid &&
+              salaryStructureForm.get('timeframe').touched
+            "
+        formControlName="timeframe">
+        <option [value] selected
+          disabled>Time Frame</option>
+        <option *ngFor="let tf of timeframe"
+          [value]="tf.code">
+          {{ tf.name }}
+        </option>
+      </select>
+      <div
+        *ngIf="
+              salaryStructureForm.get('timeframe').invalid &&
+              salaryStructureForm.get('timeframe').touched
+            ">
+        <small
+          *ngIf="
+                salaryStructureForm.get('timeframe').invalid &&
+                salaryStructureForm.get('timeframe').touched
+              "
+          class="text-danger">Timeframe required</small>
+      </div>
+    </div>
+
+    <div class="row m-3">
+      <div class="form-check col-md-12 my-auto mb-2">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="maxLimitInYrQuestion"
+          (change)="maxLimitInYrQuestions()"
+          formControlName="maxLimitInYrQuestion" />
+        <label class="form-check-label"
+          for="maxLimitInYrQuestion">Does this Component have maximum limit in year
+        </label>
+      </div>
+
+      <div class="col-md-6 col-lg-6" style="padding-left: 0px;">
+        <label
+          class="col-form-label">Maximum Limit In Year</label>
+        <input type="number" class="form-control" id="maxLimitInYr"
+          formControlName="maxLimitInYr">
+      </div>
+
+      <div class="form-check  col-md-6 col-lg-6 mt-3 d-flex align-items-center">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="xfrUnusedToAllowance"
+          formControlName="xfrUnusedToAllowance" />
+        <label class="form-check-label ms-2"
+          for="xfrUnusedToAllowance ">xfr Unused To Allowance
+        </label>
+      </div>
+
+      <div class="form-check col-md-6 mt-2">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          (change)="deduction()"
+          id="isDeduction"
+          formControlName="isDeduction" />
+        <label class="form-check-label"
+          for="isDeduction">Is this Component a Deduction? </label>
+      </div>
+
+      <div
+        class="form-check col-md-6 mt-2 ">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="isDeductionCompanyPayable"
+          formControlName="isDeductionCompanyPayable" />
+        <label class="form-check-label"
+          for="isDeductionCompanyPayable">Is this Deduction paid by Company ?
+          </label>
+      </div>
+
+      <div class="form-check col-md-6 mt-2">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="isTaxable"
+          formControlName="isTaxable" />
+        <label class="form-check-label"
+          for="isTaxable">Is this Component Taxable?</label>
+      </div>
+
+      <div class="form-check col-md-6 mt-2 ">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="includeInTotalSalCalc"
+          formControlName="includeInTotalSalCalc" />
+        <label class="form-check-label"
+          for="includeInTotalSalCalc">Is this Component included in Total Salary Calculation?
+        </label>
+      </div>
+      <div class="form-check col-md-6 mt-2 ">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="includeInCtcCalc"
+          formControlName="includeInCtcCalc" />
+        <label class="form-check-label"
+          for="includeInCtcCalc">Is this Component included in CTC Calculation ?
+        </label>
+      </div>
+
+      <div class="form-check col-md-6 mt-2 ">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="isProrata"
+          formControlName="isProrata" />
+        <label class="form-check-label" for="isProrata">
+          In case of Loss of Pay, is this Component Prorated ?</label>
+      </div>
+
+      <div class="form-check col-md-6 mt-2 ">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="isCommission"
+          formControlName="isCommission" />
+        <label class="form-check-label"
+          for="isCommission">Is this Component a Commission ?</label>
+      </div>
+
+      <div class="form-check col-md-10 mt-2  mb-3">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="isactive"
+          formControlName="isactive" />
+        <label class="form-check-label" for="isactive">
+          Is Active
+        </label>
+      </div>
+      <div class="my-1" *ngIf="rulesList">
+        Defined Rules :
+      </div>
+      <div class="row my-2"
+        *ngIf="rulesList?.array.length === 0 && rulesList?.form.calcType && rulesList?.form.calcType !== ''">
+        <div class="d-flex" [ngStyle]="{ 'color': rulesList?.form.isactive ? '' : 'red'  }">
+          1. <span class="mx-2">
+            <b>{{salaryStructureForm.get('componentCode').value}}</b></span> is
+          <span class="mx-2" *ngIf="rulesList?.form.calcType === 'pct'">
+            <b> {{rulesList?.form.percentage}}</b> %</span>
+          <span *ngIf="rulesList?.form.calcType === 'fixed'">
+            <b class="mx-2">{{rulesList?.form.fixedAmount}}</b> Fixed</span>
+          <span class="mx-2" *ngIf="rulesList?.form.calcType === 'pct'"> of
+            <b class="mx-2">{{rulesList?.form.parentComponentCode}} </b></span>
+             <span class="mx-2" *ngIf="rulesList?.form.calcType === 'remainder'"> the balance of the remaining amount.</span>
+        </div>
+      </div>
+
+      <!-- <div class="row" *ngIf="rulesList?.array.length > 0">
+        <div class="col-md-12">
+          <div class="table-responsive card p-3">
+            <table id="datatable"
+              class="table table-hover custom-table mb-0 datatable">
+              <thead class="thead-all">
+                <tr class="tr-th-all">
+                  <th>Calculation Type</th>
+                  <th>Type Amount </th>
+                  <th>Parent Component</th>
+                  <th>Comparator Component</th>
+                  <th>Comparator</th>
+                  <th>Param1 Value </th>
+                  <th>Param2 Value </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="dasboard-td"
+                  *ngFor="let item of rulesList?.array;let i = index">
+                  <td>{{item.calcType}}</td>
+                  <td>
+                    <span *ngIf="item.calcType === 'pct'">
+                      {{item.percentage}}</span>
+                    <span *ngIf="item.calcType === 'fixed'">
+                      {{item.fixedAmount}}</span>
+                  </td>
+                  <td>{{item.parentComponentCode}}</td>
+                  <td>{{item.comparatorComponent }}</td>
+                  <td>{{item.comparator }}</td>
+                  <td>{{item.param1Value }}</td>
+                  <td>{{item.param2Value }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div> -->
+      <div class="my-2" *ngIf="rulesList?.array.length > 0">
+        <ng-container *ngFor="let item of rulesList?.array;let i = index">
+          <div class="row"  [ngStyle]="{ 'color': item.isactive ? '' : 'red'  }">
+            <div class="d-flex"> {{i +1}}. If <span class="mx-2"> <b>
+                  {{item.comparatorComponent}} </b> </span> is
+              <span class="mx-2">{{item.comparator}} <span class="ms-2">
+                  {{item.param1Value}}</span> </span>
+              <span *ngIf="item.comparator === 'BETWEEN'" class="mx-2">and
+                <b class="mx-2"> {{item.param2Value}}</b></span>
+              then <b class="mx-2"> {{item.componentCode}} </b> is
+              <span *ngIf="item.calcType === 'pct'">
+                <b class="mx-2"> {{item.percentage}}</b> %</span>
+              <span *ngIf="item.calcType === 'fixed'">
+                <b class="mx-2">{{item.fixedAmount}}</b> Fixed</span>
+              <span *ngIf="item.calcType !== 'fixed'"> <span class="ms-2"> of
+                </span>
+                <b class="mx-2">{{item.parentComponentCode}} </b></span></div>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- <div class="row"
+        *ngIf="rulesList?.array.length === 0 && rulesList?.form.calcType && rulesList?.form.calcType !== ''">
+        <div class="col-md-12">
+          <div class="table-responsive card p-3">
+            <table id="datatable"
+              class="table table-hover custom-table mb-0 datatable">
+              <thead class="thead-all">
+                <tr class="tr-th-all">
+                  <th>Calculation Type</th>
+                  <th>Type Amount </th>
+                  <th>Parent Component</th>
+                  <th>Comparator Component</th>
+                  <th>Comparator</th>
+                  <th>Param1 Value </th>
+                  <th>Param2 Value </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="dasboard-td">
+                  <td>{{rulesList?.form.calcType}}</td>
+                  <td>
+                    <span *ngIf="rulesList?.form.calcType === 'pct'">
+                      {{rulesList?.form.percentage}}</span>
+                    <span *ngIf="rulesList?.form.calcType === 'fixed'">
+                      {{rulesList?.form.fixedAmount}}</span>
+                  </td>
+                  <td> {{rulesList?.form.parentComponentCode}}</td><td></td>
+                  <td></td><td></td><td></td>
+        
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div> -->
+
+      <div class="row col-md-12">
+        <button *ngIf="!view"
+          [disabled]="salaryStructureForm.invalid"
+          (click)="addRules()"
+          class="btn add-btn">Add Rules</button>
+      </div>
+    </div>
+    <div class="row mt-3 mb-3" *ngIf="!view">
+      <div class="col-lg-6 col-sm-12">
+        <button (click)="cancel()"
+          class="btn delete-btn float-start">Cancel</button>
+      </div>
+      <div class="col-lg-6 col-sm-12">
+        <button *ngIf="!update && !view"
+          [disabled]="salaryStructureForm.invalid"
+          (click)="submit()"
+          class="btn add-btn">Submit</button>
+        <button *ngIf="update && !view"
+          [disabled]=" salaryStructureForm.invalid"
+          (click)="Update()"
+          class="btn add-btn">Update</button>
+      </div>
+    </div>
+    <div class="col-lg-12 col-sm-12 d-flex justify-content-center "
+      *ngIf="view">
+      <button (click)="cancel()"
+        class="btn delete-btn float-start">Close</button>
+    </div>
+  </div>

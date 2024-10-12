@@ -1,0 +1,53 @@
+a {
+    text-decoration: none;
+}
+
+.icon {
+    font-size: 18px !important;
+}
+
+.present {
+    color: #28ba62 !important;
+}
+
+.absent {
+    color: #cc7b4a !important;
+}
+
+.fixeddrow {
+    position: sticky;
+    left: 0;
+    background-color: #f9f9f9 !important;
+    z-index: 1;
+}
+.form-control {
+    height: 50px;
+}
+   td.selected {
+       background-color: #96daff;
+   }
+
+   .add-btn {
+       background-color: #5470C6 !important;
+   }
+@media screen and (max-width:701px) {
+    .hovercard {
+        width: 40%;
+    }
+}
+
+@media screen and (min-width:701.98px) {
+    .hovercard {
+        width: 15%;
+    }
+}
+.mat-mdc-form-field-has-icon-suffix .mat-mdc-text-field-wrapper {
+    padding-right: 0;
+    height: calc(42px + calc(var(--mo-border-width) * 2));
+}
+.mat-mdc-form-field {
+    display: block !important;
+}
+.itemHover:hover {
+    background-color: rgb(235, 241, 247);
+}

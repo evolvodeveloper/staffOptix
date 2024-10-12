@@ -1,0 +1,249 @@
+<!-- Page Content -->
+<div class="content container-fluid">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="row">
+          <div class="col-sm-12">
+            <h3 class="page-title">Change Password</h3>
+          </div>
+        </div>
+      </div>
+      <!-- /Page Header -->
+
+      <form (ngSubmit)="submitChangePassword()" [formGroup]="changePassword">
+        <div class="form-group input">
+          <!-- <label>Email</label> -->
+          <div class="input-group">
+            <input
+              id="email"
+              placeholder="Enter Your Registered Email"
+              class="form-control"
+              type="text"
+              [formControl]="changePassword.controls.email"
+              [email]="true"
+              (keyup)="onEmailChange(changePassword.controls.email.value)"
+            />
+
+            <span
+              id="email"
+              class="input-group-custom"
+              *ngIf="showSuccessEmailToolTip === 'EMAIL NOT EXISTS'"
+              data-toggle="tooltip"
+              data-placement="right"
+              title="Email Not Exists"
+            >
+              <i
+                id="email"
+                style="color: #dc3545"
+                class="fa fa-exclamation-triangle"
+                aria-hidden="true"
+              ></i>
+            </span>
+            <span
+              id="email"
+              class="input-group-custom"
+              *ngIf="showSuccessEmailToolTip === 'EMAIL ALREADY EXIST'"
+              data-toggle="tooltip"
+              data-placement="right"
+              title="Email Already Exits"
+            >
+              <i
+                style="color: #35ef57"
+                id="email"
+                class="far fa-check-circle"
+                aria-hidden="true"
+              ></i>
+            </span>
+            <span
+              class="input-group-custom"
+              *ngIf="showSuccessEmailToolTip === 'nothing'"
+              data-toggle="tooltip"
+              data-placement="right"
+              title
+            >
+              <div id="loading-mini"></div>
+            </span>
+          </div>
+          <div
+            style="color: #dc3545"
+            *ngIf="
+              changePassword.get('email').hasError('required') &&
+              changePassword.get('email').touched
+            "
+          >
+            Email is required.
+          </div>
+          <div
+            style="color: #dc3545"
+            *ngIf="
+              changePassword.get('email').hasError('email') &&
+              changePassword.get('email').touched
+            "
+          >
+            Please enter a valid email address.
+          </div>
+        </div>
+
+        <!-- <div class="form-group input">
+                    <div class="input-group">
+                    <input placeholder="Enter Your New Password" 
+                    [type]="showPassword ? 'text' : 'password'"
+                     class="form-control"
+                     [class.invalid]="changePassword.get('password').invalid && changePassword.get('password').touched"
+                    formControlName="password">
+                     <span class="input-group-custom"
+                                        id="password">
+                                        <i alt="show" class="far fa-eye"
+                                            id="password"
+                                            *ngIf="showPassword"
+                                            [name]="showPassword?'eye-off' : 'eye'"
+                                            (click)="showPassword = !showPassword"></i>
+                                        <i alt="hide" id="password"
+                                            class="far fa-eye-slash eye-hide"
+                                            *ngIf="!showPassword"
+                                            (click)="showPassword = !showPassword"></i>
+                                    </span>
+                                     <span
+                                        class="input-group-custom"
+                                        *ngIf="changePassword.controls['password'].hasError('minlength')"
+                                        data-toggle="tooltip"
+                                        id="password"
+                                        data-placement="right"
+                                        title="Must be at least 8 characters!">
+                                        <div style="color: #dc3545">
+                                            <i
+                                                class="fa fa-exclamation-triangle"
+                                                aria-hidden="true"></i>
+                                        </div>
+                                    </span>
+                    <div
+                    *ngIf="changePassword.get('password').invalid && changePassword.get('password').touched">
+                   
+                </div>
+                 <small
+                        *ngIf="changePassword.get('password').invalid && changePassword.get('password').touched"
+                        class="text-danger"> *New password is required</small>
+                </div>
+                <div  style="color: #dc3545;"
+                    *ngIf="changePassword.get('password').hasError('required') && changePassword.get('password').touched">
+                   *New password is required.
+                  </div>
+                </div> -->
+
+        <div class="form-group input">
+          <div class="input-group">
+            <input
+              name="password"
+              [type]="showPassword ? 'text' : 'password'"
+              class="form-control pwd-control"
+              (keyup)="onPasswordChange()"
+              [formControl]="changePassword.controls.password"
+              id="password-field"
+              placeholder="Enter Your Password"
+            />
+
+            <span class="input-group-custom" id="password-field">
+              <i
+                alt="show"
+                class="far fa-eye"
+                id="password-field"
+                *ngIf="showPassword"
+                [name]="showPassword ? 'eye-off' : 'eye'"
+                (click)="showPassword = !showPassword"
+              ></i>
+              <i
+                alt="hide"
+                id="password-field"
+                class="far fa-eye-slash eye-hide"
+                *ngIf="!showPassword"
+                (click)="showPassword = !showPassword"
+              ></i>
+            </span>
+            <span
+              class="input-group-custom"
+              *ngIf="changePassword.controls['password'].hasError('minlength')"
+              data-toggle="tooltip"
+              id="password-field"
+              data-placement="right"
+              title="Must be at least 8 characters!"
+            >
+              <div style="color: #dc3545">
+                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              </div>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group input">
+          <div class="input-group">
+            <input
+              name="password"
+              [type]="confirmpassword ? 'text' : 'password'"
+              class="form-control pwd-control"
+              placeholder="Re-Enter Your Password"
+              id="confirmpassword"
+              (keyup)="onPasswordChange()"
+              [formControl]="changePassword.controls.confirm_password"
+            />
+            <span class="input-group-custom" id="confirmpassword">
+              <i
+                alt="show"
+                class="far fa-eye"
+                id="confirmpassword"
+                *ngIf="confirmpassword"
+                [name]="confirmpassword ? 'eye-off' : 'eye'"
+                (click)="confirmpassword = !confirmpassword"
+              ></i>
+              <i
+                alt="hide"
+                class="far fa-eye-slash eye-hide"
+                id="confirmpassword"
+                *ngIf="!confirmpassword"
+                (click)="confirmpassword = !confirmpassword"
+              ></i>
+            </span>
+            <span
+              class="input-group-custom"
+              *ngIf="confirm_password.hasError('mismatch')"
+              style="color: #dc3545"
+              data-toggle="tooltip"
+              id="confirmpassword"
+              data-placement="right"
+              title="Password Does not match"
+            >
+              <div style="color: #dc3545">
+                <i
+                  id="confirmpassword"
+                  class="fa fa-exclamation-triangle"
+                  aria-hidden="true"
+                ></i></div
+            ></span>
+          </div>
+        </div>
+
+        <!-- <div class="form-group">
+                    <label>Confirm password</label>
+                    <input type="password" class="form-control" [class.invalid]="changePassword.get('confirmPassword').invalid && changePassword.get('confirmPassword').touched"
+                    formControlName="confirmPassword">
+                    <div
+                    *ngIf="changePassword.get('confirmPassword').invalid && changePassword.get('confirmPassword').touched">
+                    <small
+                        *ngIf="changePassword.get('confirmPassword').invalid && changePassword.get('confirmPassword').touched"
+                        class="text-danger"> *Confirm password is required</small>
+                </div>
+                </div> -->
+        <div class="submit-section">
+          <button
+            class="btn btn-primary submit-btn"
+            [disabled]="changePassword.invalid || changePassword.pristine"
+          >
+            Change Password
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- /Page Content -->

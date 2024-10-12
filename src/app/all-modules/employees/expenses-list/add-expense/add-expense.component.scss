@@ -1,0 +1,106 @@
+.images {
+    height: 100px;
+    width: auto;
+        object-fit: contain;
+    display: flex;
+        justify-content: center;
+        margin: 10px;
+        /* Increase margin for more space */
+        padding: 5px;
+    border: 2px dashed #eaeaec;
+        border-radius: 10px;
+}
+
+.widthfit {
+    width: fit-content;
+}
+
+.uploadbtn {
+    background: #5470C6;
+    color: #5470C6;
+    border: 2px solid #5470C6;
+
+    padding: 7px 20px;
+    border-radius: 5px;
+}
+
+.uploadbtn:hover {
+    background: #5470C6;
+    color: #fff;
+    border: 2px solid #5470C6;
+}
+
+.uploaddiv {
+    // width: 350px;
+    border: 2px dashed #eaeaec;
+    border-radius: 10px;
+    background-color: #ffffff;
+    // padding: 56px 30px;
+        height: 100px;
+        width: 200px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    text-align: center;
+}
+
+::ng-deep .mdc-form-field {
+    display: inline-block !important;
+}
+
+.items-table {
+    border: 1px solid #d9d4d4;
+    padding: 0;
+    background-color: #ffffff;
+}
+
+.items-table .item-row {
+    display: flex !important;
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    position: relative;
+    border-bottom: 1px solid #d9d4d4;
+}
+
+.items-table .item-row.head {
+    // background-color: #f7f7f7;
+    background-color: #DCE8FF;
+}
+
+.btnAddItem {
+    background-color: #5470C6;
+    color: #fff;
+    border: 1px solid #5470C6;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+
+}
+
+.items-table .item-row .item-h {
+    //text-transform: uppercase;
+    font-weight: normal;
+    padding: 2px 5px;
+    font-size: 13px;
+    line-height: 15px;
+    overflow-wrap: break-word;
+    border-right: 1px solid #ced4da;
+    // display:flex;
+    // align-items:center;
+}
+
+.items-table .item-row .item-h .titlediv {
+    display: inline-grid;
+    height: 40px;
+    align-content: center;
+    padding-left: 10px;
+}
+
+.items-table .item-row .item-h:last-child {
+    border-right: 0;
+}
+
+.items-table .item-row:last-child {
+    border-bottom: 0;
+}

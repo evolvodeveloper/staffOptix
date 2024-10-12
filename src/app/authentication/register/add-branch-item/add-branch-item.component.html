@@ -1,0 +1,311 @@
+<div class="modal-header fw-bold">
+    <h4 class="modal-title">Enter Branch Details</h4>
+
+    <i class="fa-solid fa-xmark float-end fs-4" data-bs-dismiss="modal" (click)="close()"></i>
+</div>
+<div class="modal-body">
+    <form [formGroup]="branchForm">
+
+        <div class="row">
+  <div class="input col-md-6  mt-3">
+              <label
+                ><span
+                  >Branch Code<span style="color: red; margin-left: 1px"
+                    >*</span
+                  ></span
+                ></label>
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  type="text"
+                  placeholder="Enter Your Branch Code"
+                  [formControl]="branchForm.controls.branchCode"
+                />
+                <span
+                  class="input-group-custom"
+                  *ngIf="
+                    branchForm.controls['branchCode'].invalid &&
+                    (branchForm.controls['branchCode'].dirty ||
+                      branchForm.controls['branchCode'].touched)
+                  "
+                  data-toggle="tooltip"
+                  data-placement="right"
+                  title="branchCode Filed Required "
+                >
+                  <div
+                    *ngIf="branchForm.controls['branchCode'].errors.required"
+                    style="color: #dc3545"
+                  >
+                    <i
+                      class="fa fa-exclamation-triangle"
+                      aria-hidden="true"
+                    ></i>
+                  </div>
+                </span>
+              </div>
+            </div>
+
+                <div class="input col-md-6  mt-3">
+              <label
+                ><span
+                  >Branch Name<span style="color: red; margin-left: 1px"
+                    >*</span
+                  ></span
+                ></label>
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  type="text"
+                  placeholder="Enter Your Branch Name"
+                  [formControl]="branchForm.controls.branchName"
+                />
+                <span
+                  class="input-group-custom"
+                  *ngIf="
+                    branchForm.controls['branchName'].invalid &&
+                    (branchForm.controls['branchName'].dirty ||
+                      branchForm.controls['branchName'].touched)
+                  "
+                  data-toggle="tooltip"
+                  data-placement="right"
+                  title="branch Name Filed Required"
+                >
+                  <div
+                    *ngIf="branchForm.controls['branchName'].errors.required"
+                    style="color: #dc3545"
+                  >
+                    <i
+                      class="fa fa-exclamation-triangle"
+                      aria-hidden="true"
+                    ></i>
+                  </div>
+                </span>
+              </div>
+            </div>
+
+              <div class=" col-md-6 input mt-3">
+              <label>Short Name <span style="color: red; margin-left: 1px" >*</span ></label>
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  type="text"
+                  maxlength="3"
+                  placeholder="Enter Your Branch Shortname"
+                  [formControl]="branchForm.controls.shortName"
+                />
+              </div>
+            </div>
+            <div class=" col-md-6 input mt-3">
+              <label>Phone Number</label>
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  type="number"
+                  placeholder="Enter Your Branch Phone Number"
+                  [formControl]="branchForm.controls.phoneNo"
+                />
+              </div>
+            </div>
+            <div class=" col-md-6 input mt-3">
+              <label class="form-label mb-0"
+                >Timezone&nbsp;<span style="color: red; margin-left: 1px"
+                  >*</span
+                ></label
+              >
+                  <div style="
+                    position: relative;
+                    display: flex;
+                    width: 100%;
+                    align-items: stretch;
+                  ">
+                <!-- <span class="input-group-text">
+                  <img
+                    src="assets/img/icon/Time.svg"
+                    width="25"
+                    height="25"
+                  />
+                </span> -->
+              <ng-select
+                [items]="fromParent.apiData.timeZone"
+                bindLabel="t"
+                bindValue="t"
+                [multiple]="false"
+                  style="
+                      width: 100%;
+                      margin-left: calc(var(--mo-border-width) * -1);
+                      border-top-left-radius: 0;
+                      border-bottom-left-radius: 0;
+                    "
+                aria-placeholder="Select Time Zone"
+                placeholder="Select Timezone"
+                class="ngSelectform"
+                [formControl]="branchForm.controls.timezone"
+              >
+              </ng-select>
+                  </div>
+            </div>
+              <div class=" col-md-6 input mt-3">
+              <label>Date Format</label>
+              <div class="input-group">
+                <!-- <span class="input-group-text">
+                  <img
+                    src="assets/img/icon/DF.svg"
+                    width="25"
+                    height="25"
+                  />
+                </span> -->
+                <select
+                  class="select form-select"
+                  aria-label="Default select example"
+                  [formControl]="branchForm.controls.dateFormat"
+                >
+                  <option value="" disabled selected>Select Date Format</option>
+
+                  <option *ngFor="let d of dateFormats" [value]="d">
+                    {{ d }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-6 input mt-3">
+              <label>City</label>
+              <div  style="
+                    position: relative;
+                    display: flex;
+                    width: 100%;
+                    align-items: stretch;
+                  ">
+                <!-- <span class="input-group-text">
+                  <img
+                    src="assets/img/icon/Location.svg"
+                    width="25"
+                    height="25"
+                  />
+                </span> -->
+                <input
+                  class="form-control"
+                  type="text"
+                  placeholder="Enter Your City"
+                  [formControl]="branchForm.controls.city"
+                />
+                 <!-- <ng-select
+                    [items]="cityNames[i]"
+                    bindLabel="name"
+                    bindValue="name"
+                    [multiple]="false"
+                    placeholder="Select Branch City "
+                    style="
+                      width: 100%;
+                      margin-left: calc(var(--mo-border-width) * -1);
+                      border-top-left-radius: 0;
+                      border-bottom-left-radius: 0;
+                    "
+                    class="ngSelectform"
+                    [formControl]="branchForm.controls.city"
+                  >
+                  </ng-select> -->
+              </div>
+        </div>
+           <!-- </div> -->
+            <div class=" col-md-6 input mt-3">
+              <label>State</label>
+              <div style="
+                    position: relative;
+                    display: flex;
+                    width: 100%;
+                    align-items: stretch;
+                  ">
+                <!-- <span class="input-group-text">
+                  <img
+                    src="assets/img/icon/Location.svg"
+                    width="25"
+                    height="25"
+                  />
+                </span> -->
+                <!--  (change)="onStateChange(i)" -->
+                  <ng-select
+                    [items]="stateNames"
+                    bindLabel="state"
+                    bindValue="state"
+                    [multiple]="false"
+                    placeholder="Select State"
+                    style="
+                      width: 100%;
+                      margin-left: calc(var(--mo-border-width) * -1);
+                      border-top-left-radius: 0;
+                      border-bottom-left-radius: 0;
+                    "
+                    class="ngSelectform"
+                    [formControl]="branchForm.controls.state"
+                  >
+                  </ng-select>
+              </div>
+            </div>
+            <div class="col-md-6 input mt-3">
+              <label>Country</label>
+              <div  style="
+                    position: relative;
+                    display: flex;
+                    width: 100%;
+                    align-items: stretch;
+                  ">
+                  <ng-select
+                    [items]="fromParent.apiData.country"
+                    bindLabel="country"
+                    bindValue="country"
+                    [multiple]="false"
+                    placeholder="Select"
+                    style="
+                      width: 100%;
+                      margin-left: calc(var(--mo-border-width) * -1);
+                      border-top-left-radius: 0;
+                      border-bottom-left-radius: 0;
+                    "
+                    class="ngSelectform"
+                    (change)="getStatesForThatCmp(branchForm.controls.country.value)"
+                    [formControl]="branchForm.controls.country"
+                  >
+                  </ng-select>
+              </div>
+            </div>
+            <div class="col-md-6 input mt-3">
+              <label>Zipcode</label>
+              <div class="input-group">
+                <!-- <span class="input-group-text">
+                  <img
+                    src="assets/img/icon/Landmark.svg"
+                    width="25"
+                    height="25"
+                  />
+                </span> -->
+                <input
+                  class="form-control"
+                  type="number"
+                   [maxlength]="6"
+                  placeholder="Enter Your Zipcode"
+                  [formControl]="branchForm.controls.zipCode"
+                />
+              </div>
+            </div>
+          
+            <div class="form-check col-md-3 mt-1 ms-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                value=""
+                id="flexCheckDefault"
+                [formControl]="branchForm.controls.headoffice"
+              />
+              <label class="form-check-label" for="flexCheckDefault">
+                Head Office
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-primary" data-dismiss="modal" (click)="close()">Cancel</button>
+    <button type="button" class="btn btn-primary "  [disabled]="branchForm.invalid" (click)="saveBranch()">Save Branch</button>
+</div>

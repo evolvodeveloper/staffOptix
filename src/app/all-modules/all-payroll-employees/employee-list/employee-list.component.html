@@ -1,0 +1,64 @@
+<p>
+
+ <a
+        id="add_employee"
+        class="btn add-btn"
+        (click)="create()"><i class="fa fa-plus"></i>
+        Add Employee
+      </a>
+    
+</p>
+
+<table>
+
+     <tbody *ngIf="allemps.length > 0">
+          <ng-container
+            *ngFor="let row of allemps ; let i=index;">
+            <tr class="dasboard-td">
+              <td class="text-left">{{ row.employeeMaster.employeeName }}</td>
+              <td class="text-left">{{ row.employeeMaster.employeeCode }}</td>
+              <td class="text-left">{{ row.employeeMaster.designation }}</td>
+              <td class="text-left">{{ row.employeeMaster.projectCode }}</td>
+              <td class="text-center">
+                <i
+                  *ngIf="row.employeeMaster.isactive"
+                  class="fa-solid fa-circle"
+                  style="color: #55ce63"></i>
+                <i
+                  *ngIf="!row.employeeMaster.isactive"
+                  class="fa-solid fa-circle"
+                  style="color: #f62d51"></i>
+              </td>
+              <td style="text-align: center">
+                <div
+                  class="btn-group me-2"
+                  role="group"
+                  aria-label="Second group">
+                  <button
+                    type="button"
+                    class="btn btn-light me-1 text-info"
+                    placement="top"
+                    ngbTooltip="View"
+                    (click)="viewEmployee(row)">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                  <button
+                    type="button"
+                    *ngIf="hasPermissionToUpdate"
+                    class="btn btn-light me-1 text-secondary"
+                    placement="top"
+                    ngbTooltip="Edit"
+                  (click)="editEmployee(row)">
+                    <i class="fa-solid fa-pen"></i>
+                  </button>
+                  <!-- <button type="button"  *ngIf="hasPermissionToUpdate" class="btn btn-light me-1 text-danger" placement="top" ngbTooltip="Delete">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button> -->
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+
+

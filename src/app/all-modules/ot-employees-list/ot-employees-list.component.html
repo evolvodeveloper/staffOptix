@@ -1,0 +1,117 @@
+<div class="page-header">
+  <div class="row align-items-center">
+    <div class="col">
+      <div class="d-flex align-items-baseline">
+        <i style="font-size:20px" class="fa fa-arrow-left" (click)="back()"
+          aria-label="back"></i>
+        <h3 class="ms-4 page-title">OT Assignment</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-3">
+  <div class="col-sm-12 col-lg-3 col-md-3">
+    <div class="input-group">
+      <input type="text" class="form-control"
+        [(ngModel)]="searhedFor"
+        placeholder="search by employee name" (keyup)="updateFilter($event)"
+        style="border-radius: 8px 0px 0px 8px;">
+      <span class="input-group-text" id="basic-addon1">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </span>
+    </div>
+  </div>
+  <div class="col-lg-2 col-md-2 mt-30px">
+    <label class="form-label"> Payroll</label>
+    <select
+      class="form-select"
+      id="shiftCode"
+      (change)="getOtAssignedEmps()"
+      [(ngModel)]="payrollCode">
+      <option [value]="pcode.payrollCode"
+        *ngFor="let pcode of payrollCodesList">
+        {{ pcode.payrollCode }}
+      </option>
+    </select>
+  </div>
+  <div class="col-lg-2  col-md-2 mt-30px">
+    <label class="form-label">Date</label>
+    <input
+      type="date"
+      class="form-control"
+      id="FromDate"
+      placeholder="Enter Date"
+      [(ngModel)]="startdate"
+      (change)="getOtAssignedEmps()" />
+  </div>
+  <div class="col-lg-3">
+    <!--  *ngIf="hasPermissionToUpdate" -->
+    <a class="btn add-btn"
+      (click)="openOtAssignment()"><i class="fa fa-plus"></i>
+      Assign OT
+    </a>
+  </div>
+  <div class="col-lg-2 col-md-2">
+    <select class="form-select"
+      (change)="resultsPerPage($event)">
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+      <option value="all">All</option>
+    </select>
+  </div>
+
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="table-responsive">
+      <table
+        class="table table-hover table-nowrap custom-table mb-0 datatable">
+        <thead class="thead-all">
+          <tr class="tr-th-all">
+            <th scope="col">Date </th>
+            <th scope="col" class="text-center">Employee Code</th>
+            <th scope="col">Employee Name</th>
+            <th scope="col">Payroll</th>
+            <th scope="col" class="text-center"
+              [hidden]="otAssignedEmps[0]?.status==='Payroll Completed'">Action</th>
+
+            <!-- <th *ngIf="hasPermissionToUpdate">Action</th> -->
+          </tr>
+        </thead>
+        <tbody *ngIf="otAssignedEmps.length === 0">
+          <tr style=" text-align: center; height: 150px;">
+            <td colspan="7">
+              "No records were found with the selected filter criteria."
+            </td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="otAssignedEmps.length > 0">
+          <tr class="dasboard-td"
+            *ngFor="let row of otAssignedEmps  | paginate: config; let i = index">
+            <ng-container *ngIf="row.status !== 'Deleted'">
+              <td>{{row.dateCode | date: dateFormat}}</td>
+              <td class="text-center">{{row.employeeCode}}</td>
+              <td>{{row.employeeName}}</td>
+              <td>{{row.payrollCode}}</td>
+              <td style="text-align: center"
+                [hidden]="otAssignedEmps[0]?.status==='Payroll Completed'">
+                <div class="btn-group me-2" role="group"
+                  aria-label="Second group">
+                  <button id="deleteOT" type="button"
+                    class="btn btn-danger me-1"
+                    placement="top" ngbTooltip="Delete"
+                    (click)="deleteRow(row)">
+                    <i id="deleteOT"
+                      class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

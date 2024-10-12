@@ -1,0 +1,76 @@
+<div class="modal-header fw-bold">
+    <h4 class="modal-title">Shift Assignment</h4>
+    <i class="fa-solid fa-xmark float-end fs-4" style="cursor: pointer;"
+        data-bs-dismiss="modal" (click)="closeModal('dismiss')"></i>
+</div>
+<div class="modal-body">
+    <div class="my-2 d-flex align-items-center" *ngIf="empShiftData.source === 'assignShift'">
+        Which shift you want to assign
+        <div class="col-md-3 ms-2">
+            <select class="form-select" [(ngModel)]="shiftCode"
+                (change)="shifytChanged()">
+                <option [value]="sh.shiftCode"
+                    *ngFor="let sh of shifts">{{sh.shiftCode}}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="table-responsive card p-3">
+        <table
+            class="table table-hover table-nowrap custom-table mb-0 datatable">
+            <thead class="thead-all">
+                <tr class="tr-th-all">
+                    <th scope="col">Emp Code <i class="fa fa-sort"
+                            data-column="employeeCode"
+                            (click)="sortData('employeeCode')"
+                            [ngClass]="{'asc': sortColumn === 'employeeCode' && sortOrder === 'asc',
+            'desc': sortColumn === 'employeeCode' && sortOrder === 'desc'}"></i></th>
+
+                    <th scope="col">Emp Name <i class="fa fa-sort"
+                            data-column="employeeName"
+                            (click)="sortData('employeeName')"
+                            [ngClass]="{'asc': sortColumn === 'employeeName' && sortOrder === 'asc',
+            'desc': sortColumn === 'employeeName' && sortOrder === 'desc'}"></i></th>
+                    <th scope="col">Department <i class="fa fa-sort"
+                            data-column="deptCode"
+                            (click)="sortData('deptCode')"
+                            [ngClass]="{'asc': sortColumn === 'deptCode' && sortOrder === 'asc',
+            'desc': sortColumn === 'deptCode' && sortOrder === 'desc'}"></i></th>
+                    <th scope="col">Start Date <i class="fa fa-sort"
+                            data-column="startDate"
+                            (click)="sortData('startDate')"
+                            [ngClass]="{'asc': sortColumn === 'startDate' && sortOrder === 'asc',
+            'desc': sortColumn === 'startDate' && sortOrder === 'desc'}"></i></th>
+                    <th scope="col">End Date <i class="fa fa-sort"
+                            data-column="endDate"
+                            (click)="sortData('endDate')"
+                            [ngClass]="{'asc': sortColumn === 'endDate' && sortOrder === 'asc',
+            'desc': sortColumn === 'endDate' && sortOrder === 'desc'}"></i></th>
+                    <th scope="col">Shift <i class="fa fa-sort"
+                            data-column="shift"
+                            (click)="sortData('shift')"
+                            [ngClass]="{'asc': sortColumn === 'shift' && sortOrder === 'asc',
+            'desc': sortColumn === 'shift' && sortOrder === 'desc'}"></i></th>
+                </tr>
+            </thead>
+            <tbody *ngFor="let row of modifiedObj  ;let i = index">
+                <tr class="dasboard-td">
+                    <td>{{row.employeeCode}}</td>
+                    <td>{{row.employeeName}}</td>
+                    <td>{{row.deptCode}}</td>
+                    <td>{{row.startDate}}</td>
+                    <td>{{row.endDate}}</td>
+                    <td>{{row.shiftCode}}</td>
+
+                </tr></tbody></table></div>
+
+</div>
+
+<div class="modal-footer">
+    <button type="button" id="cancel_btn" class="btn delete-btn "
+        data-dismiss="modal"
+        (click)="closeModal('close')">Cancel</button>
+    <button type="button" id="update_shift" class="btn add-btn add-btn"
+        [disabled]="!modified" (click)="submit()">Update Shift</button>
+
+</div>

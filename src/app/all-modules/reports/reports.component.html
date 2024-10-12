@@ -1,0 +1,55 @@
+<div class="page-header">
+  <div class="row align-items-center">
+    <div class="col-sm-12 col-lg-8">
+      <h3 class="page-title">Reports</h3>
+    </div>
+  </div>
+</div>
+<div class="row" *ngFor="let page of pages;let i = index" >
+  <div class="col-12 col-md-3 col-sm-12 col-lg-3 col-xl-3"
+    *ngFor="let subPage of page.subPages" style="cursor:pointer;">
+    <div class="profile-widget" (click)="goto(subPage.link)">
+      <div class="profile-img custalign">
+        <span class="dash-widget-icon m-0"
+          style="background-color: rgb(163 163 163 / 20%)">
+          <img src="{{subPage.icon}}" alt class="iconsimg" />
+        </span>
+      </div>
+      <h5 class="user-name m-t-10 mb-0 text-ellipsis"
+        >{{subPage.name}}</h5>
+    </div>
+  </div>
+
+  <!-- style="margin-bottom: -25px;"
+  <ng-container *ngIf="page.header === 'Time Reports'" >
+    <h4 class="page-title mb-3">{{page.header}}</h4>
+    <div class="col-12 col-md-6 col-sm-12 col-lg-6 col-xl-4"
+      *ngFor="let subPage of page.subPages" style="cursor:pointer;">
+      <div class="card" (click)="goto(subPage.link)">
+        <div class="card-body">
+          <div class="text-section">
+            <h5 class="card-title" style="margin-bottom: 5px;" > <img src="{{subPage.icon}}" alt class="card-img-top" /> <span class="ms-2" > {{subPage.name}}</span></h5>
+            <p class="card-text text-muted">{{subPage.description}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container> -->
+
+  <!-- <ng-container *ngIf="page.header === 'Payroll Reports'">
+    <h4 class="page-title mb-3">{{page.header}}</h4>
+
+    <div class="col-12 col-md-6 col-sm-12 col-lg-6 col-xl-4"
+      *ngFor="let subPage of page.subPages" style="cursor:pointer;">
+      <div class="card" (click)="goto(subPage.link)">
+        <div class="card-body">
+          <div class="text-section">
+            <h5 class="card-title" style="margin-bottom: 5px;" > <img src="{{subPage.icon}}" alt class="card-img-top" /> <span class="ms-2" > {{subPage.name}}</span></h5>
+            <p class="card-text text-muted">{{subPage.description}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </ng-container> -->
+</div>

@@ -1,0 +1,26 @@
+.submenu-slidedown {
+    display: block;
+    transition: display 2s ease-out;
+  }
+  
+  .submenu-slideup {
+    display: none;
+  }
+
+  a {
+    text-decoration: none !important;
+  }
+:not(.mini-sidebar) .mainsub.is-active {
+  display: block;
+}
+
+
+.mainsub.is-active {
+  display: block;
+}
+
+.mainsub {
+  display: none;
+  // background: #eefbff;
+    // border-radius: 12px 12px 12px 12px;
+}

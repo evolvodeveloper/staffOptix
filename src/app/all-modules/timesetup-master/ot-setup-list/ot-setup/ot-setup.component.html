@@ -1,0 +1,362 @@
+
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col-sm-12 col-lg-8">
+            <div class="d-flex align-items-baseline">
+                <i style="font-size:20px" class="fa fa-arrow-left"
+                    (click)="back()" aria-label="back"></i>
+                <h3 class="ms-4 page-title">Over Time Setup</h3>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card p-3">
+    <form [formGroup]="overtimesetup">
+
+        <div class="form-group input">
+            <label class="mb-1 text-sm" id="overtimeCode">Overtime
+                Code&nbsp;<span
+                    style="color: red; margin-left: 1px">*</span></label>
+            <div>
+                <input type="text"
+                    maxlength="{{ charLimit }}"
+                    [formControl]="overtimesetup.controls.overtimeCode"
+                    id="overtimeCode" class="form-control ms-2">
+                <div id="overtimeCode"
+                    *ngIf="overtimesetup.controls['overtimeCode'].invalid &&
+               (overtimesetup.controls['overtimeCode'].dirty ||
+                overtimesetup.controls['overtimeCode'].touched)"
+                    style="padding: 0px">
+                    <div
+                        *ngIf="overtimesetup.controls['overtimeCode'].errors.required"
+                        style="color: #dc3545">
+                        Overtime Setup is required.
+                    </div>
+                </div>
+                <div
+                    *ngIf="overtimesetup.get('overtimeCode').hasError('invalidFormat')"
+                    style="color: #dc3545">field should not contain
+                    special
+                    characters</div>
+            </div>
+        </div>
+        <div>
+
+        </div>
+        <div class="d-flex my-3">
+            <div>
+                <input type="checkbox" id="addEmpManually"
+                    class="form-check-input me-2"
+                    [formControl]="overtimesetup.controls.addEmpManually"></div>
+            In the future, would you prefer to manually assign overtime to
+            employees?
+        </div>
+
+        <!-- header for work Day -->
+        <div><b>
+                Working Day</b></div>
+        <div class="ms-3">
+            <div class="d-flex my-3">
+                <div>
+                    <input type="checkbox" id="allowOtOnWorkdays"
+                        class="form-check-input me-2" (change)="checkInital()"
+                        [formControl]="overtimesetup.controls.allowOtOnWorkdays"></div>
+                Is overtime allowed for extra hours on working days ?
+            </div>
+            <div class="d-flex my-3 align-items-center" id="otRatePct">
+                <div id="otRatePct">
+                    What percentage of Salary will working days overtime be
+                </div>
+                <div class="d-flex">
+                    <div>
+                        <input type="number"
+                            [formControl]="overtimesetup.controls.otRatePct"
+                            (change)="allowMax('otRatePct')"
+                            id="otRatePct" class="form-control ms-2">
+                        <div style="color: #dc3545"
+                            *ngIf="overtimesetup.controls.otRatePct.value > 100">
+                            Cannot be morethan 100%
+                        </div>
+                    </div>
+                    <span
+                        class="d-flex mx-2 align-items-center">%</span>
+                    <span
+                        class="d-flex me-2 align-items-center"> of</span>
+                    <select id="salaryComponentCode" class="form-select ms-2"
+                        [formControl]=" overtimesetup.controls.salaryComponentCode">
+                        <option [value]="sal.componentCode"
+                            *ngFor="let sal of salaryCompCodes">{{sal.componentCode}}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="d-flex my-3">
+                Calculate Overtime on the basis of?
+            </div>
+            <div class="ms-3">
+                <input type="radio" name="otBasis" value="Hours"
+                    id="otBasis-Hours"
+                    [formControl]="overtimesetup.controls.otBasis"
+                    class="form-check-input me-2"> <span>Extra hours worked than
+                    scheduled work hours (could be before/after shift)</span>
+                <br>
+                <input type="radio" name="otBasis" value="ShiftEnd"
+                    id="otBasis-ShiftEnd"
+                    [formControl]="overtimesetup.controls.otBasis"
+                    class="form-check-input me-2"> <span>Extra hours worked
+                    after shift ends</span>
+            </div>
+            <div class="d-flex my-3 align-items-center">
+                <div
+                    class="d-flex align-items-center">
+                    Allow Overtime only after
+                    <div>
+                        <input type="number" class="form-control mx-2"
+                            id="allowOtAfter"
+                            (change)="allowMax('allowOtAfter')"
+                            [formControl]="overtimesetup.controls.allowOtAfter">
+                        <div style="color: #dc3545"
+                            *ngIf="overtimesetup.controls.allowOtAfter.value > 12">
+                            Cannot be morethan 12Hrs
+                        </div>
+                    </div>
+                    hours after shift ends (Cutoff time)
+                </div>
+            </div>
+
+            <div class="my-3">How do you want to calculate overtime?</div>
+            <div class="ms-3">
+                <input type="radio" name="allowFullOt" [value]="true"
+                    id="allowFullOt-True"
+                    [formControl]="overtimesetup.controls.allowFullOt"
+                    class="form-check-input me-2"> <span>Calculate Overtime
+                    amount from the time shift ends</span>
+                <br>
+                <input type="radio" name="allowFullOt" [value]="false"
+                    id="allowFullOt-False"
+                    [formControl]="overtimesetup.controls.allowFullOt"
+                    class="form-check-input me-2"> <span>Calculate Overtime
+                    amount from the Cutoff time</span>
+            </div>
+        </div>
+
+        <!-- header for work Day ends -->
+
+        <!-- header for WeekOff -->
+
+        <div class="my-3"><b>
+                <!-- <input type="checkbox" class="form-check-input me-2"
+            id="weAllowFullOt"
+            [formControl]="overtimesetup.controls.weAllowFullOt"> -->
+                WeekOffs</b></div>
+
+        <div class="ms-3">
+            <div class="d-flex my-3">
+                <div>
+                    <input type="checkbox" class="form-check-input me-2"
+                        id="allowOtOnWeekend" (change)="checkInital()"
+                        [formControl]="overtimesetup.controls.allowOtOnWeekend"></div>
+                Is overtime allowed for hours worked on WeekOffs
+            </div>
+
+            <div class="d-flex my-3  align-items-center">
+                What percentage of Salary will weekend overtime be
+                <div class="d-flex">
+                    <div>
+                        <input type="number"
+                            (change)="allowMax('weOtRatePct')"
+                            [formControl]="overtimesetup.controls.weOtRatePct"
+                            id="weOtRatePct" class="form-control ms-2">
+                        <div style="color: #dc3545"
+                            *ngIf="overtimesetup.controls.weOtRatePct.value > 100">
+                            Cannot be morethan 100%
+                        </div>
+                    </div>
+                    <span
+                        class="d-flex mx-2 align-items-center">%</span>
+                    <span
+                        class="d-flex me-2 align-items-center"> of</span>
+                    <select id="weSalaryComponentCode" class="form-select ms-2"
+                        [formControl]=" overtimesetup.controls.weSalaryComponentCode">
+                        <option [value]="sal.componentCode"
+                            *ngFor="let sal of salaryCompCodes">{{sal.componentCode}}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="d-flex my-3 align-items-center">
+                <div
+                    class="d-flex align-items-center">
+                    Allow Overtime only if atleast
+                    <div>
+                        <input type="number" class="form-control mx-2"
+                            id="weAllowOtAfter"
+                            (change)="allowMax('weAllowOtAfter')"
+                            [formControl]="overtimesetup.controls.weAllowOtAfter">
+                        <div style="color: #dc3545"
+                            *ngIf="overtimesetup.controls.weAllowOtAfter.value > 12">
+                            Cannot be morethan 12
+                        </div>
+                    </div>
+                    hours are worked on weekoff
+                </div>
+            </div>
+        </div>
+        <!-- header for WeekOff ends -->
+
+        <!-- header for Holiday  -->
+
+        <div><b>
+                <!-- <input type="checkbox" class="form-check-input me-2"
+            id="holAllowFullOt"
+            [formControl]="overtimesetup.controls.holAllowFullOt"> -->
+                Holidays</b></div>
+        <div class="ms-3">
+            <div class="d-flex my-3">
+                <div>
+                    <input type="checkbox" class="form-check-input me-2"
+                        id="allowOtOnHoliday" (change)="checkInital()"
+                        [formControl]="overtimesetup.controls.allowOtOnHoliday"></div>
+                Is overtime allowed for hours worked on Holidays
+            </div>
+            <div class="d-flex my-3  align-items-center">
+                What percentage of Salary will holiday overtime be
+                <div class="d-flex">
+                    <div>
+                        <input type="number"
+                            (change)="allowMax('holOtRatePct')"
+                            [formControl]="overtimesetup.controls.holOtRatePct"
+                            id="holOtRatePct"
+                            id="holOtRatePct" class="form-control ms-2">
+                        <div style="color: #dc3545"
+                            *ngIf="overtimesetup.controls.holOtRatePct.value > 100">
+                            Cannot be morethan 100%
+                        </div>
+                    </div>
+                    <span
+                        class="d-flex mx-2 align-items-center">%</span>
+                    <span
+                        class="d-flex me-2 align-items-center"> of</span>
+                    <select id="holSalaryComponentCode" class="form-select ms-2"
+                        [formControl]="overtimesetup.controls.holSalaryComponentCode">
+                        <option [value]="sal.componentCode"
+                            *ngFor="let sal of salaryCompCodes">{{sal.componentCode}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex my-3 align-items-center">
+                <div
+                    class="d-flex align-items-center">
+                    Allow Overtime only if atleast
+                    <div>
+                        <input type="number" class="form-control mx-2"
+                            id="holAllowOtAfter"
+                            (change)="allowMax('holAllowOtAfter')"
+                            [formControl]="overtimesetup.controls.holAllowOtAfter">
+                        <div style="color: #dc3545"
+                            *ngIf="overtimesetup.controls.holAllowOtAfter.value > 100">
+                            Cannot be morethan 100%
+                        </div>
+                    </div>
+                    hours are worked on a holiday
+                </div>
+            </div>
+        </div>
+        <!-- header for Holiday  ends -->
+
+        <!-- header for FullAttendance -->
+
+        <div><b>Full Attendance</b></div>
+        <div class="ms-3">
+            <div class="d-flex my-3">
+                <div>
+                    <input type="checkbox" class="form-check-input me-2"
+                        id="allowFullAttendanceBonus" (change)="checkInital()"
+                        [formControl]="overtimesetup.controls.allowFullAttendanceBonus"></div>
+                Do you have incentives for Full Attendance during the salary
+                period
+            </div>
+            <div>How is the incentive given ?</div>
+
+            <div class="ms-3">
+                <input type="radio" name="faBonusType" value="Fixed"
+                    id="faBonusType-Fixed" (change)="faBonus()"
+                    [formControl]="overtimesetup.controls.faBonusType"
+                    class="form-check-input me-2"> <span>Is the incentive given
+                    as a fixed amount</span>
+                <div class="d-flex my-3  ms-3 align-items-center"
+                    *ngIf="overtimesetup.controls.faBonusType.value === 'Fixed'">
+                    Incentive Amount <div>
+                        <input type="number" id="faBonusValue-Fixed"
+                            [formControl]=" overtimesetup.controls.faBonusValueFixed"
+                            class="form-control ms-2">
+                    </div>
+                </div>
+            </div>
+            <div class="ms-3">
+                <input type="radio" name="faBonusType" value="Days"
+                    id="faBonusType-Days" (change)="faBonus()"
+                    [formControl]="overtimesetup.controls.faBonusType"
+                    class="form-check-input me-2"> <span>Is the incentive given
+                    as a additional Days salary</span>
+
+                <div class="d-flex my-3  ms-3  align-items-center"
+                    *ngIf="overtimesetup.controls.faBonusType.value === 'Days'">
+                    No. of days<div>
+                        <div>
+                            <input type="number"
+                                (change)="allowMax('faBonusType')"
+                                [formControl]=" overtimesetup.controls.faBonusValueDays"
+                                id="faBonusValue-Days"
+                                class="form-control ms-2">
+                            <div style="color: #dc3545"
+                                *ngIf="overtimesetup.controls.faBonusValueDays.value > 31">
+                                Cannot be morethan 31 days
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+    <!-- header for FullAttendance  ends-->
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-2"
+        *ngIf="!view">
+        <button
+            id="cancel"
+            (click)="back()"
+            class="btn delete-btn me-1 float-start">
+            Cancel
+        </button>
+        <!--             [disabled]="overtimesetup.invalid"
+ -->
+        <button
+            id="create_payroll"
+            [hidden]="view || update" [disabled]="overtimesetup.invalid"
+            (click)="create()"
+            class="btn add-btn  float-end">
+            Create
+        </button>
+        <button
+            id="update_payroll"
+            [disabled]="overtimesetup.pristine || overtimesetup.invalid"
+            *ngIf="update"
+            (click)="Update()"
+            class="btn add-btn  float-end">
+            Update
+        </button>
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center mt-4 mb-2"
+        *ngIf="view">
+        <button
+            id="cancel"
+            (click)="back()"
+            class="btn delete-btn me-1">
+            Close
+        </button>
+    </div>
+
+</div>

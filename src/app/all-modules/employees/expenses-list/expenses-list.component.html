@@ -1,0 +1,564 @@
+<div class="page-header">
+  <div class="row align-items-center">
+    <div class="col-sm-12 col-lg-8 d-flex align-items-baseline">
+      <i style="font-size:20px" class="fa fa-arrow-left me-4"
+        routerLink="/dashboard" aria-label="back"></i>
+      <h3 class="page-title">Expenses</h3>
+    </div>
+  </div>
+</div>
+<div class="row mt-3">
+  <div class="col-sm-12 col-lg-3 col-md-6 mb-1">
+    <div class="input-group">
+      <input *ngIf="firstTab"
+        type="text"
+        id="filter"
+        class="form-control"
+        placeholder="search by expense type or title" [(ngModel)]="searchedFor"
+        (keyup)="updateFilter($event)"
+        style="border-radius: 8px 0px 0px 8px; height: 55px;height: calc(2.5rem + calc(var(--mo-border-width) * 2));" />
+      <input *ngIf="secondTab"
+        type="text"
+        class="form-control"
+        placeholder="search by type or title"
+        [(ngModel)]="searchedForunassign"
+        (keyup)="updateFilter1($event)"
+        style="border-radius: 8px 0px 0px 8px" />
+      <input *ngIf="thirdTab"
+        type="text"
+        class="form-control"
+        placeholder="search by employee name or code or title"
+        [(ngModel)]="searchedForAllEmp"
+        (keyup)="updateFilter2($event)"
+        style="border-radius: 8px 0px 0px 8px" />
+      <span class="input-group-text" id="basic-addon1">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </span>
+    </div>
+  </div>
+  <div class="col-lg-2 col-md-6 col-sm-12">
+    <input
+      class="form-control"
+      type="month"
+      style="height: calc(2.5rem + calc(var(--mo-border-width)* 2));"
+      placeholder="Month/YYYY"
+      [(ngModel)]="fulldate" (change)="modified()" />
+    <!-- <input
+      class="form-control"
+      type="month"
+      *ngIf="thirdTab"
+      style="height: calc(2.5rem + calc(var(--mo-border-width)* 2));"
+      placeholder="Month/YYYY"
+      [(ngModel)]="fulldate3" (change)="modified3()" /> -->
+  </div>
+  <div class="col-lg-2 col-md-6 col-sm-12"></div>
+
+  <div
+    class="col-sm-6 col-md-6 col-lg-5 d-flex align-items-baseline justify-content-end">
+    <a class="btn add-btn" (click)="addExpense()"><i class="fa fa-plus"></i>
+      Add Expense
+    </a>
+  </div>
+
+</div>
+<div class="row">
+  <div class="col-sm-12  col-md-12 col-lg-12 mb-3">
+    <div class="col-md-3 col-sm-6 col-lg-2 float-end">
+      <label class="form-label">Records/page</label>
+      <select class="form-select" *ngIf="firstTab"
+        (change)="resultsPerPage($event)">
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="all">All</option>
+      </select>
+      <select class="form-select" *ngIf="secondTab"
+        (change)="resultsPerPage1($event)">
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="all">All</option>
+      </select>
+      <select class="form-select" *ngIf="thirdTab"
+        (change)="resultsPerPage2($event)">
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="all">All</option>
+      </select>
+    </div>
+
+  </div>
+
+</div>
+<div class="card card-border-style p-3">
+  <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button (click)="tab1()" class="nav-link " [ngClass]="{'active':firstTab}"
+        id="pills-Expense-tab"
+        data-bs-toggle="pill" data-bs-target="#pills-Expense" type="button"
+        role="tab" aria-controls="pills-Expense" aria-selected="true">Expense
+        History</button>
+    </li>
+    <li class="nav-item ms-2" role="presentation">
+      <button (click)="tab2()" class="nav-link" [ngClass]="{'active':secondTab}"
+        id="pills-Claimed-tab"
+        data-bs-toggle="pill" data-bs-target="#pills-Claimed" type="button"
+        role="tab" aria-controls="pills-Claimed"
+        aria-selected="false">Claimed</button>
+    </li>
+    <li class="nav-item ms-2" role="presentation"
+      *ngIf="hasPermissionToApprove">
+      <button (click)="tab3()" class="nav-link" [ngClass]="{'active':thirdTab}"
+        id="pills-allExpenses-tab"
+        data-bs-toggle="pill" data-bs-target="#pills-allExpenses" type="button"
+        role="tab" aria-controls="pills-allExpenses" aria-selected="false">All
+        Expenses</button>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade " [ngClass]="{'show active':firstTab}"
+      id="pills-Expense" role="tabpanel"
+      aria-labelledby="pills-Expense-tab" tabindex="0">
+      <div class="table-responsive">
+        <table
+          class="table table-hover container-xxl small table-nowrap custom-table mb-0 datatable">
+          <thead class="thead-all">
+            <tr class="tr-th-all">
+              <th></th>
+              <th scope="col" class> Date</th>
+              <th scope="col" class> Title</th>
+              <th scope="col" class>Expense Type</th>
+              <th scope="col" class="text-end">Amount</th>
+              <th scope="col" class="text-center">Notes</th>
+              <th scope="col" class="text-center">Status</th>
+              <!-- <th scope="col" class="text-center">Claimed</th> -->
+              <th scope="col" class="text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="rows.length === 0">
+            <tr
+              style=" text-align: center; height: 150px;">
+              <td colspan="8">
+                "No records were found with the selected filter criteria."
+              </td>
+            </tr>
+          </tbody>
+
+          <tbody *ngIf="rows.length >0">
+            <ng-container
+              *ngFor="
+              let row of rows | paginate : config;
+              let i = index
+            ">
+              <ng-container
+                *ngIf="row.status !== 'CLAIMED' && row.status !== 'REJECTED' && row.status !== 'CANCELLED'">
+                <tr class="dasboard-td">
+                  <td>
+                    <small><i
+                        *ngIf="!row.expand"
+                        class="fa fa-angle-up fs-5"
+                        aria-hidden="true"
+                        (click)="expandRow(row)"></i></small>
+                    <small><i
+                        *ngIf="row.expand"
+                        class="fa fa-angle-down fs-5"
+                        aria-hidden="true"
+                        (click)="collapseRow(row)"></i></small>
+                  </td>
+                  <td class>{{ row.billDate | date:dateFormat}}</td>
+                  <td class>{{ row.title }}</td>
+                  <td class>{{ row.subcategoryCode }}</td>
+                  <td class="text-end"> {{ row.totalAmt }}</td>
+                  <td class="text-center" style="text-wrap: balance;"> {{
+                    row.notes }}</td>
+                  <td class="text-center">{{ row.status }}</td>
+                  <!-- <td class="text-center">
+                <i
+                  *ngIf="row.status === 'APPROVED'"
+                  class="fa-solid fa-circle"
+                  style="color: #55ce63"
+                ></i>
+                <i
+                 *ngIf="row.status !== 'APPROVED'"
+                  class="fa-solid fa-circle"
+                  style="color: #f62d51"
+                ></i>
+              </td> -->
+
+                  <td class="text-center">
+                    <div class="btn-group" role="group"
+                      *ngIf="row.status !== 'APPROVED'">
+                      <button
+                        id="expense_history_view"
+                        type="button"
+                        class="btn btn-light me-1 text-info"
+                        placement="top"
+                        ngbTooltip="View"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="To View expense"
+                        (click)="viewData(row,'view')">
+                        <i class="fa-solid fa-eye"></i>
+                      </button>
+
+                      <button
+                        id="expense_history_edit"
+                        type="button"
+                        *ngIf="row.status !== 'APPROVED' && row.status !== 'REJECTED' && row.status !== 'CANCELLED'"
+                        class="btn btn-light me-1 text-info"
+                        placement="top"
+                        ngbTooltip="edit"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="To Edit Expense"
+                        (click)="editData(row,'edit')">
+                        <i class="fa fa-pencil"></i>
+                      </button>
+                      <button
+                        *ngIf="
+                            row.status !== 'CANCELLED' &&
+                            row.status !== 'REJECTED' &&
+                            row.status !== 'APPROVED'
+                          "
+                        type="button"
+                        id="Expense_cancel"
+                        class="btn btn-light me-1 text-danger"
+                        placement="top"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="To Cancel your Expense"
+                        ngbTooltip="Withdraw my Expense"
+                        (click)="cancel(row)">
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngIf="row.expand">
+                  <td colspan="8" style="padding: 0">
+                    <table class="table table-bordered ">
+                      <thead class="thead-all">
+                        <tr class="tr-th-all">
+                          <th scope="col" class="text-center">Item Names</th>
+                          <th scope="col" class="text-center">Item Qty</th>
+                          <th scope="col" class="text-center">Item Rate</th>
+                          <th scope="col" class="text-end">Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody
+                        *ngFor="let x of row.employeeExpenseLines; let i = index">
+                        <tr class="tr-th-all">
+                          <td class="text-center">{{ x.itemName }}</td>
+                          <td class="text-center">{{ x.itemQty }}</td>
+                          <td class="text-center">{{ x.itemRate }}</td>
+                          <td class="text-end">{{ x.itemAmount }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </ng-container>
+            </ng-container>
+          </tbody>
+        </table>
+        <div
+          *ngIf="firstTab && rows.length > config.itemsPerPage"
+          class="text-center mt-3">
+          <pagination-controls
+            (pageChange)="pageChanged($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" [ngClass]="{'show active':secondTab}"
+      id="pills-Claimed" role="tabpanel"
+      aria-labelledby="pills-Claimed-tab" tabindex="0">
+      <!-- <div class="row"> -->
+      <div class="table-responsive card">
+        <table
+          class="table table-hover small table-nowrap custom-table mb-0 datatable">
+          <thead class="thead-all">
+            <tr class="tr-th-all">
+              <th></th>
+              <th scope="col" class> Date</th>
+              <th scope="col" class> Title</th>
+              <th scope="col" class>Expense Type</th>
+              <th scope="col" class="text-end">Amount</th>
+              <th scope="col" class="text-center">Notes</th>
+              <th scope="col" class="text-center">Status</th>
+              <!-- <th scope="col" class="text-center">Claimed</th> -->
+              <th scope="col" class="text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="expensesClaimedByEmp.length === 0">
+            <tr
+              style=" text-align: center; height: 150px;">
+              <td colspan="8">
+                "No records were found with the selected filter criteria."
+              </td>
+            </tr>
+          </tbody>
+
+          <tbody *ngIf="expensesClaimedByEmp.length >0">
+            <ng-container
+              *ngFor="
+              let Eemp of expensesClaimedByEmp | paginate : config1;
+              let i = index
+            ">
+              <tr class="dasboard-td">
+                <td>
+                  <small><i
+                      *ngIf="!Eemp.expand"
+                      class="fa fa-angle-up fs-5"
+                      aria-hidden="true"
+                      (click)="expandRow(Eemp)"></i></small>
+                  <small><i
+                      *ngIf="Eemp.expand"
+                      class="fa fa-angle-down fs-5"
+                      aria-hidden="true"
+                      (click)="collapseRow(Eemp)"></i></small>
+                </td>
+                <td class>{{ Eemp.billDate | date:dateFormat}}</td>
+                <td class>{{ Eemp.title }}</td>
+                <td class>{{ Eemp.subcategoryCode }}</td>
+                <td class="text-end"> {{ Eemp.totalAmt }}</td>
+                <td class="text-center" style="text-wrap: balance;"> {{
+                  Eemp.notes }}</td>
+                <td class="text-center">{{ Eemp.status }}</td>
+                <td class="text-center">
+                  <div class="btn-group" role="group">
+                    <button
+                      id="expense_history_view"
+                      type="button"
+                      class="btn btn-light me-1 text-info"
+                      placement="top"
+                      ngbTooltip="View"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title="To View expense"
+                      (click)="viewData(Eemp,'view')">
+                      <i class="fa-solid fa-eye"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="Eemp.expand">
+                <td colspan="8" style="padding: 0">
+                  <table class="table table-bordered ">
+                    <thead class="thead-all">
+                      <tr class="tr-th-all">
+                        <th scope="col" class="text-center">Item Names</th>
+                        <th scope="col" class="text-center">Item Qty</th>
+                        <th scope="col" class="text-center">Item Rate</th>
+                        <th scope="col" class="text-end">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody
+                      *ngFor="let x of Eemp.employeeExpenseLines; let i = index">
+                      <tr class="tr-th-all">
+                        <td class="text-center">{{ x.itemName }}</td>
+                        <td class="text-center">{{ x.itemQty }}</td>
+                        <td class="text-center">{{ x.itemRate }}</td>
+                        <td class="text-end">{{ x.itemAmount }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+        <div
+          *ngIf="secondTab && expensesClaimedByEmp.length > config1.itemsPerPage"
+          class="text-center mt-3">
+          <pagination-controls
+            (pageChange)="pageChanged1($event)"></pagination-controls>
+        </div>
+      </div>
+      <!-- </div> -->
+    </div>
+
+    <div class="tab-pane fade" [ngClass]="{'show active':thirdTab}"
+      id="pills-allExpenses" role="tabpanel"
+      aria-labelledby="pills-allExpenses-tab" tabindex="0">
+      <!-- <div class="row"> -->
+      <div class="table-responsive card">
+        <table
+          class="table table-hover small table-nowrap custom-table mb-0 datatable">
+          <thead class="thead-all">
+            <tr class="tr-th-all">
+              <th></th>
+              <th scope="col" class> Date</th>
+              <th scope="col" class> Employee</th>
+              <th scope="col" class> Title</th>
+              <th scope="col" class>Expense Type</th>
+              <th scope="col" class="text-end">Amount</th>
+              <th scope="col" class="text-center">Notes</th>
+              <th scope="col" class="text-center">Status</th>
+              <!-- <th scope="col" class="text-center">Claimed</th> -->
+              <th scope="col" class="text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="allRecords.length === 0 && status === 'loaded'">
+            <tr
+              style=" text-align: center; height: 150px;">
+              <td colspan="10">
+                "No records were found with the selected filter criteria."
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="allRecords.length === 0 && status === 'loading' ">
+            <tr
+              style=" text-align: center; height: 150px;">
+              <td colspan="10">
+                "Please Wait..."
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="allRecords.length === 0 && status === 'error' ">
+            <tr
+              style=" text-align: center; height: 150px;">
+              <td colspan="10">
+                "We encountered an error. Please try again later."
+              </td>
+            </tr>
+          </tbody>
+          <tbody
+            *ngFor="let allEmpR of allRecords | paginate : config2; let i = index ">
+            <tr class="dasboard-td">
+              <td>
+                <small><i
+                    *ngIf="!allEmpR.expand"
+                    class="fa fa-angle-up fs-5"
+                    aria-hidden="true"
+                    (click)="expandRow(allEmpR)"></i></small>
+                <small><i
+                    *ngIf="allEmpR.expand"
+                    class="fa fa-angle-down fs-5"
+                    aria-hidden="true"
+                    (click)="collapseRow(allEmpR)"></i></small>
+              </td>
+              <td class>{{ allEmpR.billDate | date:dateFormat}}</td>
+              <td class>
+                {{ allEmpR.createdby }} <br />
+                <span class="text-muted">
+                  {{ allEmpR.employeeCode }}
+                </span>
+              </td>
+              <td class>{{ allEmpR.title }}</td>
+              <td class>{{ allEmpR.subcategoryCode }}</td>
+              <td class="text-end"> {{ allEmpR.totalAmt }}</td>
+              <td class="text-center" style="text-wrap: balance;">
+                {{ allEmpR.notes }}
+              </td>
+              <td class="text-center">{{ allEmpR.status }}</td>
+              <td class="text-center">
+                <div class="btn-group" role="group"
+                  *ngIf="allEmpR.status !== 'APPROVED'">
+                  <button
+                    id="expense_history_view"
+                    type="button"
+                    class="btn btn-light me-1 text-info"
+                    placement="top"
+                    ngbTooltip="View"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="To View expense"
+                    (click)="viewData(allEmpR,'view')">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+
+                  <button
+                    id="expense_history_approve"
+                    type="button"
+                    class="btn btn-light me-1 text-success"
+                    placement="top"
+                    ngbTooltip="approve"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="To approve Expense"
+                    (click)="Approve(allEmpR)">
+                    <i class="fa-solid fa-circle-check"></i>
+                  </button>
+                  <button
+                    id="expense_history_reject"
+                    type="button"
+                    class="btn btn-light me-1 text-danger"
+                    placement="top"
+                    ngbTooltip="reject"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="To reject Expense"
+                    (click)="Reject(allEmpR)">
+                    <i class="fa-solid fa-times"></i>
+                  </button>
+                </div>
+                <div class="btn-group" role="group"
+                  *ngIf="allEmpR.status === 'APPROVED'">
+                  <button
+                    id="expense_history_view"
+                    type="button"
+                    class="btn btn-light me-1 text-info"
+                    placement="top"
+                    ngbTooltip="View"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="To View expense"
+                    (click)="viewData(allEmpR,'view')">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+
+                  <button
+                    id="expense_history_Claim"
+                    type="button"
+                    class="btn btn-light me-1 text-success"
+                    placement="top"
+                    ngbTooltip="Pay"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="To Pay Expense"
+                    (click)="ClaimAmount(allEmpR)">
+                    <i class="fa-solid fa-money-bill-transfer"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="allEmpR.expand">
+              <td colspan="8" style="padding: 0">
+                <table class="table table-bordered ">
+                  <thead class="thead-all">
+                    <tr class="tr-th-all">
+                      <th scope="col" class="text-center">Item Names</th>
+                      <th scope="col" class="text-center">Item Qty</th>
+                      <th scope="col" class="text-center">Item Rate</th>
+                      <th scope="col" class="text-end">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    *ngFor="let x of allEmpR.employeeExpenseLines; let i = index">
+                    <tr class="tr-th-all">
+
+                      <td class="text-center">{{ x.itemName }}</td>
+                      <td class="text-center">{{ x.itemQty }}</td>
+                      <td class="text-center">{{ x.itemRate }}</td>
+                      <td class="text-end">{{ x.itemAmount }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div
+          *ngIf="thirdTab && allRecords.length > config2.itemsPerPage"
+          class="text-center mt-3">
+          <pagination-controls
+            (pageChange)="pageChanged2($event)"></pagination-controls>
+        </div>
+      </div>
+      <!-- </div> -->
+    </div>
+  </div>
+
+</div>

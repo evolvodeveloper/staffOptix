@@ -1,0 +1,633 @@
+<div class="account-content p-0">
+    <!-- <a routerLink = "/login/joblist" class="btn btn-primary apply-btn">Apply Job</a> -->
+    <div class="container-fluid">
+        <div class="row">
+  <div class="col-md-6 text-center justify-content-center account-login-right">
+
+              <div class=" d-flex align-items-center flex-column justify-content-center"  style="gap: 37px;">
+            <div class="d-flex flex-row-start align-items-center" style="gap: 11px;">
+                            <img style="height: 108px; width: 108px;" alt="" src="assets/img/atlas-logo-full.png" />
+              <!-- <img style="height: 58px; width: 168px;" alt="" src="assets/img/atlas-logo-white-name.png" /> -->
+
+
+              <!-- <b class="text-white fs-2" style="letter-spacing: 3px;">Atlas</b> -->
+            </div>
+            <div class=" align-items-start  position-relative " style="padding: 0 42px; gap: 10px;font-size: 20px;">
+              <div class=" position-relative rounded bg-white overflow-hidden" style="width: 389px;  height: 283.63px">
+                <img class="mt-4" style="height: 248px; width: 253px;" alt="" src="assets/img/forgot-passwrod.svg" />
+              </div>
+ 
+            </div>
+          </div>
+  </div>
+
+          <div class="col-md-6 d-flex justify-content-center styleofcompany" style="min-height: 100vh; align-items: center;
+    justify-content: center;">
+
+  <div class="account-box" *ngIf="showForgotPassword">
+    <div class="account-wrapper" >
+        <h3 class="account-title mb-5">Forgot Password?</h3>
+                <!-- <p class="account-subtitle">Enter your email to get a password reset </p> -->
+
+                <form  [formGroup]="forgotForm" novalidate>
+                         <div class="form-group input">
+                    <!-- <label
+                      ><span
+                        >Email<span style="color: red; margin-left: 1px"
+                          >*</span
+                        ></span
+                      ></label
+                    > -->
+                    <div class="input-group">
+                      <!-- <span class="input-group-text">
+                        <img
+                          src="assets/img/icon/email-icon.svg"
+                          width="30"
+                          height="30"
+                        />
+                      </span> -->
+                      <input
+                      id="email"
+                      placeholder="Email Your Email"
+                        class="form-control"
+                        type="text"
+                        [formControl]="forgotForm.controls.email"
+                        [email]="true"
+                      />
+                      <span
+                      id="email"
+                        class="input-group-custom"
+                        *ngIf="
+                          forgotForm.controls['email'].hasError('required') &&
+                          (forgotForm.controls['email'].dirty ||
+                            forgotForm.controls['email'].touched)
+                        "
+                        data-toggle="tooltip"
+                        data-placement="right"
+                        title="Email Field Required"
+                      >
+                        <div
+                      id="email"
+
+                          *ngIf="forgotForm.controls['email'].errors.required"
+                          style="color: #dc3545"
+                        >
+                          <i
+                      id="email"
+
+                            class="fa fa-exclamation-triangle"
+                            aria-hidden="true"
+                          ></i>
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+                   
+                       <div class="form-group input">
+                    <!-- <label
+                      ><span
+                        >Company Name<span style="color: red; margin-left: 1px"
+                          >*</span
+                        ></span
+                      ></label
+                    > -->
+                    <div class="input-group">
+                      <!-- <span class="input-group-text">
+                        <img
+                          src="assets/img/icon/company-icon.svg"
+                          width="30"
+                          height="30"
+                        />
+                      </span> -->
+                      <input
+                      id="companyName"
+                      placeholder="Enter Your Company Name"
+                        class="form-control"
+                        type="text"
+                        [formControl]="forgotForm.controls.companyCode"
+                      />
+                      <span
+                      id="companyCode"
+                        class="input-group-custom"
+                        *ngIf="
+                          forgotForm.controls['companyCode'].invalid &&
+                          (forgotForm.controls['companyCode'].dirty ||
+                            forgotForm.controls['companyCode'].touched)
+                        "
+                        data-toggle="tooltip"
+                        data-placement="right"
+                        title="Company Code Filed Required"
+                      >
+                        <div
+                      id="companyCode"
+                          *ngIf="
+                            forgotForm.controls['companyCode'].errors.required
+                          "
+                          style="color: #dc3545"
+                        >
+                          <i
+                      id="companyCode"
+                            class="fa fa-exclamation-triangle"
+                            aria-hidden="true"
+                          ></i>
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+
+                    <div class="form-group text-center">
+                        <button id="reset_password" class="btn btn-primary account-btn" (click)="checkResetPassword()" [disabled]="forgotForm.invalid || forgotForm.pristine" >Reset Password</button>
+                    </div>
+                    <div class="account-footer">
+                        <p>Remember your password? <a routerLink = "/auth">Sign In</a></p>
+                    </div>
+                </form>
+    </div>
+  </div>
+
+          <div class="account-box" *ngIf="showOTP">
+                <div class="account-wrapper">
+                <i class="fa fa-arrow-left" (click)="back()" style="font-size:19px"></i>
+                    <h3 class="account-title mb-5">OTP</h3>
+                    <!-- <p class="account-subtitle">Enter your OTP & reset your password.</p> -->
+
+                 
+                    <form action="dashboard" [formGroup]="restPasswordForm" novalidate>
+                         <div class="form-group">
+                        <!-- <label>Enter OTP</label> -->
+                        <input class="form-control" placeholder="Enter OTP" id="otp"   [formControl]="restPasswordForm.controls.Otp" type="number">
+                    </div>
+
+                          <div class="form-group input">
+                    <!-- <label
+                      ><span
+                        >Password<span style="color: red; margin-left: 1px"
+                          >*</span
+                        ></span
+                      ></label
+                    > -->
+                    <div class="input-group">
+                      <!-- <span class="input-group-text">
+                        <img
+                          src="assets/img/icon/lock-icon.svg"
+                          width="32"
+                          height="32"
+                        />
+                      </span> -->
+                      <input
+                        id="password"
+                        class="form-control"
+                        type="password"
+                        placeholder="Enter Password"
+                        (keyup)="onPasswordChange()"
+                        [formControl]="restPasswordForm.controls.password"
+                      />
+                      <span
+                        id="password"
+                        class="input-group-custom"
+                        *ngIf="
+                          restPasswordForm.controls['password'].hasError('minlength')
+                        "
+                        data-toggle="tooltip"
+                        data-placement="right"
+                        title="Must be at least 8 characters!"
+                      >
+                        <div style="color: #dc3545">
+                          <i
+                        id="password"
+                            class="fa fa-exclamation-triangle"
+                            aria-hidden="true"
+                          ></i>
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <!-- <label
+                      ><span
+                        >Re-Enter Password<span
+                          style="color: red; margin-left: 1px"
+                          >*</span
+                        ></span
+                      ></label
+                    > -->
+                    <div class="input-group">
+                      <!-- <span class="input-group-text">
+                        <img
+                          src="assets/img/icon/lock-icon.svg"
+                          width="32"
+                          height="32"
+                        />
+                      </span> -->
+                      <input
+                        id="confirm_password"
+                        placeholder="Re-Enter Password"
+                        class="form-control"
+                        type="password"
+                        (keyup)="onPasswordChange()"
+                        [formControl]="restPasswordForm.controls.confirm_password"
+                      />
+                      <span
+                        id="confirm_password"
+                        class="input-group-custom"
+                        *ngIf="confirm_password.hasError('mismatch')"
+                        style="color: #dc3545"
+                        data-toggle="tooltip"
+                        data-placement="right"
+                        title="Password Does not match"
+                      >
+                        <div style="color: #dc3545">
+                          <i
+                        id="confirm_password"
+                            class="fa fa-exclamation-triangle"
+                            aria-hidden="true"
+                          ></i></div
+                      ></span>
+                    </div>
+                  </div>
+                        <div class="form-group text-center">
+                            <button class="btn btn-primary account-btn" [disabled]="restPasswordForm.invalid || restPasswordForm.pristine" (click)="verifyOTP()" type="submit">Submit</button>
+                        </div>
+                        <div class="account-footer">
+                            <p>Not yet received? <a class="color-primary" (click)="checkResetPassword()">Resend OTP</a></p>
+                        </div>
+                    </form>
+               
+
+                </div>
+            </div>
+
+                         <div class="account-box" *ngIf="resetPassword">
+            <div class="account-wrapper">
+                <h3 class="account-title mb-5">Forgot Password?</h3>
+                <i class="fa fa-arrow-left" (click)="back()" style="font-size:19px"></i>
+                <!-- <p class="account-subtitle">Enter your new password</p> -->
+
+                <form>
+                   <div class="form-group input">
+                            <!-- <label>Password</label> -->
+                            <input class="form-control" id="password" [(ngModel)]="password" [ngModelOptions]="{ standalone: true }" type="password">
+                        </div>
+                        <div class="form-group input">
+                            <!-- <label>Comfirm Password</label> -->
+                            <input class="form-control"  id="confirm_password"
+                             [(ngModel)]="confirmPassword" [ngModelOptions]="{ standalone: true }" type="password">
+                        </div>
+                    <div class="form-group text-center">
+                        <button class="btn btn-primary account-btn" (click)="checkConfirmPassword()" [disabled]="!password" >Reset Password</button>
+                    </div>
+    
+                    <div class="account-footer">
+                        <p>Remember your password? <a routerLink = "/auth">Sign In</a></p>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+</div>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <!--<div class="account-content">
+
+    <div class="container">
+
+
+        <div class="account-logo">
+            <a routerLink="/dashboard"><img src="assets/img/atlaslogo.png" alt="Dreamguy's Technologies"></a>
+        </div>
+
+
+        <div class="account-box" *ngIf="showForgotPassword">
+            <div class="account-wrapper">
+                <h3 class="account-title">Forgot Password?</h3>
+                <p class="account-subtitle">Enter your email to get a password reset </p>
+
+                <form  [formGroup]="forgotForm" novalidate>
+                         <div class="form-group">
+                    <label
+                      ><span
+                        >Email<span style="color: red; margin-left: 1px"
+                          >*</span
+                        ></span
+                      ></label
+                    >
+                    <div class="input-group">
+                      <span class="input-group-text">
+                        <img
+                          src="assets/img/icon/email-icon.svg"
+                          width="30"
+                          height="30"
+                        />
+                      </span>
+                      <input
+                      id="email"
+                        class="form-control"
+                        type="text"
+                        [formControl]="forgotForm.controls.email"
+                        [email]="true"
+                      />
+                      <span
+                      id="email"
+                        class="input-group-custom"
+                        *ngIf="
+                          forgotForm.controls['email'].hasError('required') &&
+                          (forgotForm.controls['email'].dirty ||
+                            forgotForm.controls['email'].touched)
+                        "
+                        data-toggle="tooltip"
+                        data-placement="right"
+                        title="Email Field Required"
+                      >
+                        <div
+                      id="email"
+
+                          *ngIf="forgotForm.controls['email'].errors.required"
+                          style="color: #dc3545"
+                        >
+                          <i
+                      id="email"
+
+                            class="fa fa-exclamation-triangle"
+                            aria-hidden="true"
+                          ></i>
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+                   
+                       <div class="form-group">
+                    <label
+                      ><span
+                        >Company Name<span style="color: red; margin-left: 1px"
+                          >*</span
+                        ></span
+                      ></label
+                    >
+                    <div class="input-group">
+                      <span class="input-group-text">
+                        <img
+                          src="assets/img/icon/company-icon.svg"
+                          width="30"
+                          height="30"
+                        />
+                      </span>
+                      <input
+                      id="companyName"
+                        class="form-control"
+                        type="text"
+                        [formControl]="forgotForm.controls.companyCode"
+                      />
+                      <span
+                      id="companyCode"
+                        class="input-group-custom"
+                        *ngIf="
+                          forgotForm.controls['companyCode'].invalid &&
+                          (forgotForm.controls['companyCode'].dirty ||
+                            forgotForm.controls['companyCode'].touched)
+                        "
+                        data-toggle="tooltip"
+                        data-placement="right"
+                        title="Company Code Filed Required"
+                      >
+                        <div
+                      id="companyCode"
+                          *ngIf="
+                            forgotForm.controls['companyCode'].errors.required
+                          "
+                          style="color: #dc3545"
+                        >
+                          <i
+                      id="companyCode"
+                            class="fa fa-exclamation-triangle"
+                            aria-hidden="true"
+                          ></i>
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+
+                    <div class="form-group text-center">
+                        <button id="reset_password" class="btn btn-primary account-btn" (click)="checkResetPassword()" [disabled]="forgotForm.invalid || forgotForm.pristine" >Reset Password</button>
+                    </div>
+                    <div class="account-footer">
+                        <p>Remember your password? <a routerLink = "/sign-in">Sign In</a></p>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <div class="account-box" *ngIf="showOTP">
+                <div class="account-wrapper">
+                <i class="fa fa-arrow-left" (click)="back()" style="font-size:19px"></i>
+                    <h3 class="account-title">OTP</h3>
+                    <p class="account-subtitle">Enter your OTP & reset your password.</p>
+
+                 
+                    <form action="dashboard" [formGroup]="restPasswordForm" novalidate>
+                         <div class="form-group">
+                        <label>Enter OTP</label>
+                        <input class="form-control"  id="otp"   [formControl]="restPasswordForm.controls.Otp" type="number">
+                    </div>
+
+                          <div class="form-group">
+                    <label
+                      ><span
+                        >Password<span style="color: red; margin-left: 1px"
+                          >*</span
+                        ></span
+                      ></label
+                    >
+                    <div class="input-group">
+                      <span class="input-group-text">
+                        <img
+                          src="assets/img/icon/lock-icon.svg"
+                          width="32"
+                          height="32"
+                        />
+                      </span>
+                      <input
+                        id="password"
+                        class="form-control"
+                        type="password"
+                        id="password"
+                        (keyup)="onPasswordChange()"
+                        [formControl]="restPasswordForm.controls.password"
+                      />
+                      <span
+                        id="password"
+                        class="input-group-custom"
+                        *ngIf="
+                          restPasswordForm.controls['password'].hasError('minlength')
+                        "
+                        data-toggle="tooltip"
+                        data-placement="right"
+                        title="Must be at least 8 characters!"
+                      >
+                        <div style="color: #dc3545">
+                          <i
+                        id="password"
+                            class="fa fa-exclamation-triangle"
+                            aria-hidden="true"
+                          ></i>
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label
+                      ><span
+                        >Re-Enter Password<span
+                          style="color: red; margin-left: 1px"
+                          >*</span
+                        ></span
+                      ></label
+                    >
+                    <div class="input-group">
+                      <span class="input-group-text">
+                        <img
+                          src="assets/img/icon/lock-icon.svg"
+                          width="32"
+                          height="32"
+                        />
+                      </span>
+                      <input
+                        id="confirm_password"
+                        class="form-control"
+                        type="password"
+                        id="confirm_password"
+                        (keyup)="onPasswordChange()"
+                        [formControl]="restPasswordForm.controls.confirm_password"
+                      />
+                      <span
+                        id="confirm_password"
+                        class="input-group-custom"
+                        *ngIf="confirm_password.hasError('mismatch')"
+                        style="color: #dc3545"
+                        data-toggle="tooltip"
+                        data-placement="right"
+                        title="Password Does not match"
+                      >
+                        <div style="color: #dc3545">
+                          <i
+                        id="confirm_password"
+                            class="fa fa-exclamation-triangle"
+                            aria-hidden="true"
+                          ></i></div
+                      ></span>
+                    </div>
+                  </div>
+                        <div class="form-group text-center">
+                            <button class="btn btn-primary account-btn" [disabled]="restPasswordForm.invalid || restPasswordForm.pristine" (click)="verifyOTP()" type="submit">Submit</button>
+                        </div>
+                        <div class="account-footer">
+                            <p>Not yet received? <a style="color: #ff9b44;" (click)="checkResetPassword()">Resend OTP</a></p>
+                        </div>
+                    </form>
+               
+
+                </div>
+            </div>
+
+             <div class="account-box" *ngIf="resetPassword">
+            <div class="account-wrapper">
+                <h3 class="account-title">Forgot Password?</h3>
+                <i class="fa fa-arrow-left" (click)="back()" style="font-size:19px"></i>
+                <p class="account-subtitle">Enter your new password</p>
+
+                <form>
+                   <div class="form-group">
+                            <label>Password</label>
+                            <input class="form-control" id="password" [(ngModel)]="password" [ngModelOptions]="{ standalone: true }" type="password">
+                        </div>
+                        <div class="form-group">
+                            <label>Comfirm Password</label>
+                            <input class="form-control"  id="confirm_password"
+                             [(ngModel)]="confirmPassword" [ngModelOptions]="{ standalone: true }" type="password">
+                        </div>
+                    <div class="form-group text-center">
+                        <button class="btn btn-primary account-btn" (click)="checkConfirmPassword()" [disabled]="!password" >Reset Password</button>
+                    </div>
+    
+                    <div class="account-footer">
+                        <p>Remember your password? <a routerLink = "/sign-in">Sign In</a></p>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div> -->
+
+

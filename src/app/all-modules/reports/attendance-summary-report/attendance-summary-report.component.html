@@ -1,0 +1,161 @@
+<!-- Page Content -->
+<div class="content container-fluid">
+
+    <!-- Page Header -->
+    <div class="mb-2">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="d-flex align-items-baseline">
+                    <i style="font-size:20px" class="fa fa-arrow-left"
+                        routerLink="/rpt" aria-label="back"></i>
+                    <h3 class="ms-4 page-title">Attendance Summary Report</h3>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row filter-row">
+        <div class="col-md">
+            <div class="">
+                <label>Department</label>
+                <select class="form-select" id="departments"
+                    [(ngModel)]="reportObj.department"
+                    (change)="employeesByDepartmentAndProject()"
+                    (change)="modified()">
+                    <option [value]="dtypes.deptCode"
+                        *ngFor="let dtypes of departments">{{dtypes.deptName}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="">
+                <label>Project</label>
+                <select class="form-select" id="projects"
+                    [(ngModel)]="reportObj.project" (change)="modified()"
+                    (change)="employeesByDepartmentAndProject()">
+                    <option [value]="cat.categoryCode"
+                        *ngFor="let cat of projects">{{cat.categoryCode}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md d-flex" [ngClass]="{'d-flex':!stopSpinner}">
+            <div class *ngIf="stopSpinner">
+                <label
+                    class>Employee</label>
+                <ng-select
+                    [items]="employee"
+                    bindLabel="mergeName"
+                    bindValue="employeeCode"
+                    [multiple]="false"
+                    placeholder="Select an employee"
+                    class="ngSelectform"
+                    [(ngModel)]="reportObj.empCode">
+                </ng-select>
+            </div>
+            <div id="loading" *ngIf="!stopSpinner"></div>
+        </div>
+        <div class="col-md">
+            <label>Date From & To</label>
+            <div class="">
+                <input id="selectedDateRange" type="text" ngxDaterangepickerMd
+                    [(ngModel)]="selectedDateRange" (change)="modified()"
+                    class="form-control" />
+            </div>
+        </div>
+
+    </div>
+    <div class="row g-2 mb-2 mt-2">
+        <div class="col-sm-6 col-lg-2 ">
+            <label class="form-label ms-2">Show entries</label>
+            <select class="form-select" (change)="resultsPerPage($event)">
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="all">All</option>
+            </select>
+        </div>
+        <div class="col-md d-flex justify-content-end align-items-end">
+            <button id="save_excel" class="btn add-btn float-end mx-2"
+            [disabled]="rows.length === 0"
+            (click)="saveExcel()">Save as Excel</button>
+             <button id="save_pdf" class="btn add-btn float-end mx-2"
+            [disabled]="rows.length === 0"
+            (click)="savePDF()">Save as PDF</button>
+            <button id="submit_leave_rpt" class="btn add-btn float-end mx-2"
+                (click)="submit()">Submit</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive card p-3">
+                <table datatable
+                    class="table table-hover custom-table mb-0 datatable">
+                    <thead class="thead-all">
+                        <tr class="tr-th-all">
+                            <th *ngIf="reportObj.empCode === 'ALL'"> Emp Name <span class="block text-muted">Emp Code</span></th>
+                            <th class="text-center">Calendar days</th>
+                            <th class="text-center">Working Days</th>
+                            <th class="text-center">Present Days</th>
+                            <th class="text-center">Absents</th>
+                            <th class="text-center">Leaves</th>
+                            <th class="text-center">Worked On <span class="block">Holiday</span></th>
+                            <th class="text-center">Worked On <span class="block">Weekend</span></th>
+                            <th class="text-center">Late Check-in</th>
+                            <th class="text-center">Early Check-out</th>
+                            <th class="text-center">Holidays</th>
+                             <th class="text-center">Weekends</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="rows.length === 0 && message === 'modified'">
+                        <tr
+                            style=" text-align: center; height: 150px;">
+                            <td colspan="15">
+                                "No records were found with the selected filter criteria."
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody
+                        *ngIf="rows.length === 0 && message === 'clickOnsubmit'">
+                        <tr
+                            style=" text-align: center; height: 150px;">
+                            <td colspan="15">
+                                "Great choices! Finalize your selection by clicking 'Submit' to generate a report with the filtered data you've chosen."
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="rows.length === 0 && message === 'error'">
+                        <tr
+                            style=" text-align: center; height: 150px;">
+                            <td colspan="15">
+                                "Sorry for the Inconvenience!"
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="rows.length > 0">
+                        <tr class="dasboard-td"
+                            *ngFor="let rw of rows| paginate: config; let i=index;">
+                            <td *ngIf="reportObj.empCode === 'ALL'">{{rw.empName}} <span class="block text-muted"> {{rw.empCode}}</span></td>
+                            <!-- <td><a routerLink = "/accounts/rw-view">{{rw.number}}</a></td> -->
+                            <td class="text-end pe-3">{{rw.caldays }}</td>
+                            <td class="text-end pe-3">{{rw.workingDays}}</td>
+                            <td class="text-end pe-3">{{rw.workedDays}}</td>
+                            <td class="text-end pe-3">{{rw.absents}}</td>
+                            <td class="text-end pe-3">{{rw.leaves}}</td>
+                            <td class="text-end pe-3">{{rw.workedOnHoliday}}</td>
+                            <td class="text-end pe-3">{{rw.workedOnWeekend}}</td>
+                            <td class="text-end pe-3">{{rw.cameLateDays}}</td>
+                            <td class="text-end pe-3">{{rw.leftEarlyDays}}</td>
+                            <td class="text-end pe-3">{{rw.holidays}}</td>
+                            <td class="text-end pe-3">{{rw.weekends}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div *ngIf="rows.length > config.itemsPerPage"
+                    class="text-center mt-3">
+                    <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

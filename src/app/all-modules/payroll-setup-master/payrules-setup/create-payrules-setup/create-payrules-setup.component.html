@@ -1,0 +1,356 @@
+<div class="modal-header modal-lg">
+    <h3 class="modal-title">{{view ? 'View' : update ? 'Update' : 'Create'}}
+        Pay Rules </h3>
+</div>
+
+<div class="card p-3">
+    <div class="row modal-body">
+        <form [formGroup]="payruleSetupForm">
+            <div class="col-md-12 col-lg-12 d-flex">
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="isConditional"
+                    (change)="checkCondition(payruleSetupForm.controls.isConditional.value)"
+                    [(formControl)]="payruleSetupForm.controls.isConditional" />
+                <p class="isConditional ms-2">
+                  Does this rule have conditions?
+                </p>
+            </div>
+
+            <div class="row"
+                *ngIf="!payruleSetupForm.controls.isConditional.value">
+                <div class="col-md-4 col-lg-4">
+                    <div class>
+                        <label class="col-form-label"
+                            for="calcType">Calculation Type
+                            &nbsp;<span
+                                style="color: red; margin-left: 1px">*</span>
+                        </label>
+                        <select
+                            class="form-select" id="calcType"
+                            [class.is-invalid]="payruleSetupForm.controls.calcType.invalid 
+                            && (payruleSetupForm.controls.calcType.dirty || payruleSetupForm.controls.calcType.touched)"
+                            formControlName="calcType">
+                            <option selected value disabled>Select Calculation
+                                Type
+                            </option>
+                            <option *ngFor="let ct of calcTypes"
+                                [value]="ct.code">
+                                {{ ct.name }}
+                            </option>
+                        </select>
+                        <small class="block"
+                            *ngIf="
+                payruleSetupForm.get('calcType').invalid &&
+                payruleSetupForm.get('calcType').touched
+              " class="text-danger">
+                            Calculation Type required</small>
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-4">
+                    <div class=" "
+                        *ngIf="payruleSetupForm.controls.calcType.value === 'pct'">
+                        <label
+                            class="col-form-label">Percentage&nbsp;<span
+                                style="color: red; margin-left: 1px">*</span></label>
+                        <input
+                            class="form-control"
+                            type="number"
+                            placeholder="Enter percentage"
+                            formControlName="percentage" />
+                        <small class="block"
+                            *ngIf="
+                payruleSetupForm.get('percentage').invalid &&
+                payruleSetupForm.get('percentage').touched
+              " class="text-danger"> Percentage required</small>
+                    </div>
+
+                    <div class=" "
+                        *ngIf="payruleSetupForm.controls.calcType.value === 'fixed'">
+                        <label
+                            class="col-form-label">Fixed Amount &nbsp;<span
+                                style="color: red; margin-left: 1px">*</span>
+                        </label>
+                        <input
+                            placeholder="Enter fixed amount"
+                            class="form-control"
+                            type="number"
+                            formControlName="fixedAmount" />
+
+                        <small class="block"
+                            *ngIf="
+                payruleSetupForm.get('fixedAmount').invalid &&
+                payruleSetupForm.get('fixedAmount').touched
+              " class="text-danger"> Amount required</small>
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-4"
+                    *ngIf="payruleSetupForm.controls.calcType.value === 'pct'">
+                    <label
+                        class="col-form-label">Parent Component&nbsp;<span
+                            style="color: red; margin-left: 1px">*</span></label>
+                    <select
+                        class="form-select mx-2"
+                        id="parentComponentCode"
+                        formControlName="parentComponentCode">
+                        <option selected value
+                            disabled>Parent Component</option>
+                        <option
+                            *ngFor="let pc of salaryMasterList"
+                            [value]="pc.componentCode">
+                            {{ pc.componentCode }}
+                        </option>
+                    </select>
+                   
+                </div>
+            </div>
+        </form>
+        <div class="col-md-12"
+            *ngIf="payruleSetupForm.controls.isConditional.value">
+            <mat-accordion class="example-headers-align">
+                <ng-container
+                    *ngFor="let payruleSetupFormArray of PayruleSetupItems().controls ; let index = index "
+                    [formGroup]="payruleSetupFormArray">
+
+                    <mat-expansion-panel [expanded]="stepRules === index"
+                        (opened)="setStepRules(index)">
+
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <span *ngIf="payruleSetupFormArray.get('componentCode').value"> 
+                                    {{payruleSetupFormArray.get('componentCode').value}}_{{index +1}}
+
+                                </span>
+                            </mat-panel-title>
+                            <mat-panel-description>
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        <div class="d-flex my-3 align-items-center"
+                            id="percentage">
+                            <div class="d-flex text-nowrap">
+                                <span
+                                    class="d-flex align-items-center">Calculation Type&nbsp;<span
+                                        style="color: red; margin-left: 1px">*</span></span>
+                                <span>
+
+                                    <select
+                                        class="form-select ms-2 widthFit"
+                                        id="calcType"
+                                        (change)="setValidationsInArray(payruleSetupFormArray)"
+                                        [class.is-invalid]="payruleSetupFormArray.get('calcType').invalid &&
+                                     (payruleSetupFormArray.get('calcType').dirty ||
+                                    payruleSetupFormArray.get('calcType').touched)"
+                                        formControlName="calcType">
+                                        <option selected value
+                                            disabled>Calculation
+                                            Type</option>
+                                        <option *ngFor="let ct of calcTypes"
+                                            [value]="ct.code">
+                                            {{ ct.name }}
+                                        </option>
+                                    </select>
+                                    <div>
+                                        <small
+                                            *ngIf="
+                payruleSetupFormArray.get('calcType').invalid &&
+                payruleSetupFormArray.get('calcType').touched
+              "
+                                            class="text-danger">
+                                            Calculation Type required</small>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="d-flex my-3 align-items-center"
+                                id="comparatorComponent">
+                                if <div class="d-flex text-nowrap">
+                                    <span class="mx-2">
+                                        <select
+                                            class="form-select widthFit"
+                                            [class.is-invalid]="payruleSetupFormArray.get('comparatorComponent').invalid &&
+                                     (payruleSetupFormArray.get('comparatorComponent').dirty ||
+                                    payruleSetupFormArray.get('comparatorComponent').touched)"
+                                            id="comparatorComponent"
+                                            formControlName="comparatorComponent">
+                                            <option selected value
+                                                disabled>Comparator
+                                                Component</option>
+                                            <option
+                                                *ngFor="let pc of salaryMasterList"
+                                                [value]="pc.componentCode">
+                                                {{ pc.componentCode }}
+                                            </option>
+                                        </select>
+                                        <div>
+                                            <small
+                                                *ngIf="
+                payruleSetupFormArray.get('comparatorComponent').invalid &&
+                payruleSetupFormArray.get('comparatorComponent').touched
+              " class="text-danger">Comparator Component required</small>
+                                        </div>
+                                    </span>
+
+                                    <span class="mx-2 my-auto"> is </span>
+                                    <span class="mx-2">
+
+                                        <select
+                                            class="form-select widthFit"
+                                            id="comparator"
+                                            [class.is-invalid]="payruleSetupFormArray.get('comparator').invalid &&
+                                     (payruleSetupFormArray.get('comparator').dirty ||
+                                    payruleSetupFormArray.get('comparator').touched)"
+                                            formControlName="comparator">
+                                            <option selected value
+                                                disabled>Select
+                                                Comparator</option>
+                                            <option
+                                                *ngFor="let pc of comparatorsList"
+                                                [value]="pc.code">
+                                                {{ pc.name }}
+                                            </option>
+                                        </select>
+                                        <div>
+                                            <small
+                                                *ngIf="
+                payruleSetupFormArray.get('comparator').invalid &&
+                payruleSetupFormArray.get('comparator').touched
+              " class="text-danger">
+                                                Comparator required</small>
+                                        </div>
+                                    </span>
+                                    <span>
+                                        <input
+                                            [class.is-invalid]="payruleSetupFormArray.get('param1Value').invalid &&
+                                     (payruleSetupFormArray.get('param1Value').dirty ||
+                                    payruleSetupFormArray.get('param1Value').touched)"
+                                            *ngIf=" payruleSetupFormArray.controls.comparator.value !== ''"
+                                            class="form-control widthFit mx-2"
+                                            type="number"
+                                            placeholder="{{payruleSetupFormArray.controls.comparator.value !== 'BETWEEN' ? 'enter  Amt': 'enter Min Amt'}}"
+                                            formControlName="param1Value" />
+                                        <div>
+                                        </div>
+                                    </span>
+                                    <span
+                                        *ngIf="payruleSetupFormArray.controls.comparator.value === 'BETWEEN'"
+                                        class="mx-2 my-auto">
+                                        and
+                                    </span>
+                                    <input
+                                        *ngIf="payruleSetupFormArray.controls.comparator.value === 'BETWEEN'"
+                                        placeholder="enter Max Amt"
+                                        class="form-control widthFit"
+                                        type="number"
+                                        formControlName="param2Value" />
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="d-flex my-3 align-items-center">
+                                <span class="me-2 d-flex my-auto"> then
+                                    {{this.fromParent.prop1}} = </span>
+                                <input
+                                    *ngIf="payruleSetupFormArray.controls.calcType.value === 'fixed'"
+                                    class="form-control widthFit"
+                                    type="number"
+                                    [class.is-invalid]="payruleSetupFormArray.get('fixedAmount').invalid &&
+                                     (payruleSetupFormArray.get('fixedAmount').dirty ||
+                                    payruleSetupFormArray.get('fixedAmount').touched)"
+                                    placeholder="fixed amount"
+                                    formControlName="fixedAmount" />
+                                <div class="d-flex my-3 align-items-center"
+                                    id="percentage"
+                                    *ngIf="payruleSetupFormArray.controls.calcType.value === 'pct'">
+                                    <div class="d-flex text-nowrap">
+                                        <input type="number"
+                                            placeholder="percentage"
+                                            formControlName="percentage"
+                                            [class.is-invalid]="payruleSetupFormArray.get('percentage').invalid &&
+                                     (payruleSetupFormArray.get('percentage').dirty ||
+                                    payruleSetupFormArray.get('percentage').touched)"
+                                            id="percentage"
+                                            class="form-control">
+                                        <span
+                                            class="d-flex mx-2 align-items-center">%
+                                            of</span>
+                                        <select
+                                            class="form-select widthFit mx-2"
+                                            id="parentComponentCode"
+                                                [class.is-invalid]="payruleSetupFormArray.get('parentComponentCode').invalid &&
+                                     (payruleSetupFormArray.get('parentComponentCode').dirty ||
+                                    payruleSetupFormArray.get('parentComponentCode').touched)"
+                                            formControlName="parentComponentCode">
+                                            <option selected value
+                                                disabled>Parent
+                                                Component</option>
+                                            <option
+                                                *ngFor="let pc of salaryMasterList"
+                                                [value]="pc.componentCode">
+                                                {{ pc.componentCode }}
+                                            </option>
+                                        </select> <span
+                                            class="mx-2 my-auto">will be
+                                            calculated.
+                                        </span>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-check col-md-10 mt-2 mb-3">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="isactive"
+                                formControlName="isactive" />
+                            <label class="form-check-label" for="isactive">
+                                Is Active
+                            </label>
+                        </div>
+
+                        <span class="d-flex justify-content-end"
+                            *ngIf="!payruleSetupFormArray.controls.ruleId.value">
+                            <button type="button" class="btn delete-btn"
+                                (click)="removePayruleSetupItem(index)">Delete</button>
+                        </span>
+                    </mat-expansion-panel>
+                </ng-container>
+            </mat-accordion>
+            <div class="d-flex justify-content-center mt-2">
+                <button type="button" class="btn add-btn"
+                    [disabled]="payruleSetupFormArray.invalid"
+                    (click)="addPayruleSetupItem()"> Add More Rules</button>
+
+            </div>
+        </div>
+
+    </div>
+    <div class="row modal-footer  mt-3 ">
+        <div class="col-lg-12 col-sm-12" *ngIf="!view">
+            <button (click)="cancel()"
+                class="btn delete-btn float-start">Cancel</button>
+            <button
+                *ngIf="PayruleSetupItems().controls.length ===0 "
+                [disabled]="payruleSetupForm.invalid"
+                (click)="submit()"
+                class="btn add-btn">Submit</button>
+            <button *ngIf="PayruleSetupItems().controls.length >0 "
+                [disabled]="!payruleSetupForm.get('payruleSetupFormArray').valid"
+                (click)="submit()"
+                class="btn add-btn">Submit</button>
+        </div>
+        <div class="col-lg-12 col-sm-12 d-flex justify-content-center "
+            *ngIf="view">
+            <button (click)="cancel()"
+                class="btn delete-btn float-start">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- </div></div> -->

@@ -1,0 +1,450 @@
+<div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="mb-2">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="d-flex align-items-baseline">
+                    <i style="font-size:20px" class="fa fa-arrow-left"
+                        routerLink="/rpt" aria-label="back"></i>
+                    <h3 class="ms-4 page-title">Monthly Attendance Report</h3>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md">
+            <div class="">
+                <label>Department</label>
+                <select id="departments" class="form-select"
+                    [(ngModel)]="reportObj.deptCode"
+                    (change)="employeesByDepartmentAndProject()"
+                    (change)="modified()">
+                    <option [value]="dtypes.deptCode"
+                        *ngFor="let dtypes of departments">{{dtypes.deptName}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="">
+                <label>Project</label>
+                <select class="form-select" id="projects"
+                    [(ngModel)]="reportObj.projectCode" (change)="modified()"
+                    (change)="employeesByDepartmentAndProject()">
+                    <option [value]="cat.categoryCode"
+                        *ngFor="let cat of projects">{{cat.categoryCode}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md d-flex" [ngClass]="{'d-flex':!stopSpinner}">
+            <div class="" *ngIf="stopSpinner">
+                <label>Employee</label>
+               <ng-select
+                    [items]="employee"
+                    bindLabel="mergeName"
+                    bindValue="employeeCode"
+                    [multiple]="false"
+                    id="emp"
+                    placeholder="Select an employee"
+                    class="ngSelectform"
+                    (change)="modified()"
+                    [(ngModel)]="reportObj.empCode">
+                </ng-select>
+            </div>
+            <div id="loading" *ngIf="!stopSpinner"></div>
+        </div>
+
+        <div class="col-md">
+            <div class="">
+                <label class for="Date">Date </label>
+                <input
+                    class="form-control"
+                    type="month"
+                    [max]="reportObj.maxDt"
+                    (change)="modified()"
+                    placeholder="Month/YYYY"
+                    [(ngModel)]="reportObj.fulldate" />
+
+            </div>
+        </div>
+        <div class="row g-2 mb-2 mt-2  align-items-end">
+            <div class="col-sm-6 col-lg-3 ">
+                <div class="input-group">
+                    <input type="text" class="form-control"
+                        placeholder="search by employee name or code"
+                        (keyup)="updateFilter($event)"
+                        style="border-radius: 8px 0px 0px 8px;">
+                    <span class="input-group-text" id="basic-addon1">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-2 ">
+                <label class="form-label ms-2">Show entries</label>
+                <select class="form-select" (change)="resultsPerPage($event)">
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="all">All</option>
+                </select>
+            </div>
+            <div class="col-md  d-flex justify-content-end align-items-end">
+                <!-- <button id="save_pdf" class="btn add-btn float-end mx-2" [disabled]="rows.length === 0"
+                (click)="savePDF()">Save as PDF</button> -->
+                <button id="save_excel" class="btn add-btn float-end mx-2"
+                    [disabled]="rows.length === 0"
+                    (click)="saveExcel()">Save as Excel</button>
+                <button id="submit_absent_report"
+                    class="btn add-btn float-end mx-2"
+                    (click)="submit()">Submit</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive card p-3">
+                    <table datatable
+                        class="table table-hover custom-table mb-0 datatable">
+                        <thead class="thead-all">
+                            <tr class="tr-th-all">
+                                <th *ngIf="reportObj.empCode === 'ALL'">Employee
+                                    Code</th>
+                                <th *ngIf="reportObj.empCode === 'ALL'">Employee
+                                    Name</th>
+                                <th
+                                    *ngIf="reportObj.deptCode === 'ALL'">Department</th>
+                                <th scope="col" class="text-end">Calendar
+                                    Days</th>
+                                <th scope="col" class="text-end">Working
+                                    Days</th>
+                                <th scope="col" class="text-end">Present
+                                    Days</th>
+                                <th scope="col" class="text-end">Leave</th>
+                                <th scope="col" class="text-end">LOP</th>
+                                <th scope="col"
+                                    class="text-end">Holidays</th>
+                                <th scope="col" class="text-end">Weekends</th>
+                                <th scope="col" class="text-end">Worked On
+                                    Holiday</th>
+                                <th scope="col" class="text-end">Worked On
+                                    Weekend</th>
+                                <th scope="col" class="text-end">Came Late
+                                    Days</th>
+                                <th scope="col" class="text-end">Left Early
+                                    Days</th>
+                                <th
+                                    class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody *ngIf="rows.length > 0">
+                            <tr class="dasboard-td"
+                                *ngFor="let rw of rows | paginate: config; let i=index;">
+                                <td *ngIf="reportObj.empCode === 'ALL'">
+                                    <h2
+                                        class="table-avatar blue-link" style="cursor: pointer;"
+                                        data-bs-target="#showRecord"
+                                        data-bs-toggle="modal"
+                                        (click)="showEmpRecord(rw)">
+                                        <a
+                                            data-bs-target="#showRecord"
+                                            data-bs-toggle="modal">{{rw.empCode}}</a>
+                                    </h2>
+                                </td>
+                                <td
+                                    *ngIf="reportObj.empCode === 'ALL'">{{rw.empName}}</td>
+                                <td
+                                    *ngIf="reportObj.deptCode === 'ALL'">{{rw.deptCode}}</td>
+                                <td class="text-end pe-2">{{rw.caldays}}</td>
+                                <td
+                                    class="text-end pe-2">{{rw.workingDays}}</td>
+                                <td class="text-end pe-2">{{rw.workedDays}}</td>
+                                <td class="text-end pe-2">{{rw.leaves}}</td>
+                                <td class="text-end pe-2">{{rw.absents}}</td>
+                                <td class="text-end pe-2">{{rw.holidays}}</td>
+                                <td class="text-end pe-2">{{rw.weekends}}</td>
+                                <td
+                                    class="text-end pe-2">{{rw.workedOnHoliday}}</td>
+                                <td
+                                    class="text-end pe-2">{{rw.workedOnWeekend}}</td>
+                                <td
+                                    class="text-end pe-2">{{rw.cameLateDays}}</td>
+                                <td
+                                    class="text-end pe-2">{{rw.leftEarlyDays}}</td>
+
+                                <td class="text-center">
+                                    <button
+                                        type="button"
+                                        class="btn btn-light me-1 text-info"
+                                        placement="top"
+                                        ngbTooltip="View"
+                                        data-bs-target="#showRecord"
+                                        data-bs-toggle="modal"
+                                        (click)="showEmpRecord(rw)">
+                                        <i
+                                            class="fa-regular fa-file"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                        <tbody
+                            *ngIf="rows.length === 0 && message === 'modified'">
+                            <tr
+                                style=" text-align: center; height: 150px;">
+                                <td colspan="16">
+                                    "No records were found with the selected filter criteria."
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody
+                            *ngIf="rows.length === 0 && message === 'clickOnsubmit'">
+                            <tr
+                                style=" text-align: center; height: 150px;">
+                                <td colspan="16">
+                                    "Great choices! Finalize your selection by clicking 'Submit' to generate a report with the filtered data you've chosen."
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody *ngIf="rows.length === 0 && message === 'error'">
+                            <tr
+                                style=" text-align: center; height: 150px;">
+                                <td colspan="16">
+                                    "Sorry for the Inconvenience!"
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div *ngIf="rows.length > config.itemsPerPage"
+                        class="text-center mt-3">
+                        <pagination-controls
+                            (pageChange)="pageChanged($event)"></pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="showRecord" class="modal custom-modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-xl"
+            role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Monthly Attendance Summary
+                        Report</h5>
+                    <i class="fa-solid fa-xmark fs-4"
+                        id="close_model" data-bs-dismiss="modal"
+                        (click)="closeModel('dismiss')"></i></div>
+                <div class="modal-body">
+                    <div class="row">
+                        <table
+                            class="table table-nowrap custom-table mb-0">
+                            <thead class="thead-all">
+                                <tr class="tr-th-all">
+                                    <th
+                                        class="text-center"
+                                        colspan="4"> Employee Information of
+                                        {{ reportObj.fulldate ? (
+                                        reportObj.fulldate | date: 'MMM-yyyy') :
+                                        ''}}</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="dasboard-td">
+                                    <td scope="col">
+                                        Employee
+                                        Code :
+                                    </td>
+                                    <td
+                                        class
+                                        scope="col">{{setData?.empCode}}
+                                    </td>
+                                    <td scope="col">
+                                        Calendar
+                                        Days :
+                                    </td>
+                                    <td
+                                        class="text-end"
+                                        scope="col">{{setData?.caldays}}
+                                    </td>
+                                </tr>
+                                <tr class="dasboard-td">
+                                    <td scope="col">
+                                        Employee
+                                        Name :
+                                    </td>
+                                    <td
+                                        class
+                                        scope="col">{{setData?.empName}}
+                                    </td>
+                                    <td scope="col">
+                                        Working
+                                        Days :
+                                    </td>
+                                    <td
+                                        class="text-end"
+                                        scope="col">{{setData?.workingDays}}
+                                    </td>
+
+                                </tr>
+                                <tr class="dasboard-td">
+                                    <td scope="col">
+                                        Leaves :
+                                    </td>
+                                    <td
+                                        class
+                                        scope="col">{{setData?.leaves}}
+                                    </td>
+                                    <td scope="col">
+                                        Worked
+                                        Days :
+                                    </td>
+                                    <td
+                                        class="text-end"
+                                        scope="col">{{setData?.workedDays}}
+                                    </td>
+                                </tr>
+
+                                <tr class="dasboard-td">
+
+                                    <td scope="col">
+                                        Absent :
+                                    </td>
+                                    <td scope="col">{{setData?.absents}}
+                                    </td>
+
+                                    <td scope="col">
+                                        Holidays
+                                        :
+                                    </td>
+                                    <td
+                                        class="text-end"
+                                        scope="col">{{setData?.holidays}}
+                                    </td>
+                                </tr>
+                                <tr class="dasboard-td">
+                                    <td scope="col">
+                                        Worked On Weekends:
+                                    </td>
+                                    <td
+                                        class
+                                        scope="col">{{setData?.workedOnWeekend}}
+                                    </td>
+                                    <td scope="col">
+                                        Weekends :
+                                    </td>
+                                    <td
+                                        class="text-end"
+                                        scope="col">
+                                        {{setData?.weekends}}
+                                    </td>
+                                </tr>
+                                <tr class="dasboard-td">
+                                    <td scope="col">
+                                        Worked On Holiday :
+                                    </td>
+                                    <td
+                                        class
+                                        scope="col">{{setData?.workedOnHoliday}}
+                                    </td>
+                                    <td scope="col">
+                                        Join Date :
+                                    </td>
+                                    <td
+                                        class="text-end"
+                                        scope="col">
+                                        {{setData?.joinDate | date: dateFormat}}
+                                    </td>
+                                </tr>
+                                <tr class="dasboard-td">
+                                    <td scope="col">
+                                        Came Late Days :
+                                    </td>
+                                    <td
+                                        class
+                                        scope="col">{{setData?.cameLateDays}}
+                                    </td>
+                                    <td scope="col">
+                                        Left Early Days
+                                    </td>
+                                    <td
+                                        class="text-end"
+                                        scope="col">
+                                        {{setData?.leftEarlyDays}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-md-12 d-flex">
+
+                            <div class="table-responsive card p-3">
+                                <table datatable
+                                    class="table table-hover custom-table mb-0 datatable">
+                                    <thead class="thead-all">
+                                        <tr class="tr-th-all">
+                                            <th scope="col">Date
+                                                <span class="block">Day</span>
+                                            </th>
+                                            <th scope="col">Shift</th>
+                                            <th scope="col">In Time</th>
+                                            <th scope="col">Out Time</th>
+                                            <th scope="col"
+                                                class="text-end pe-2">Late
+                                                By</th>
+                                            <th scope="col"
+                                                class="text-end pe-2">Left Early
+                                                By</th>
+                                            <th scope="col"
+                                                class="text-end pe-2">Effective
+                                                Hours</th>
+                                            <th scope="col"
+                                                class="text-end pe-2">Total
+                                                Hours</th>
+                                            <th scope="col"
+                                                class="text-end pe-2">OT
+                                                Hrs</th>
+                                            <th scope="col" class>Status</th>
+                                            <th scope="col"
+                                                class="text-center">Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody *ngIf="setData">
+                                        <tr class="dasboard-td"
+                                            *ngFor="let row of setData['presentRpt'];let i=index;">
+                                            <td>{{row.dateCode | date:
+                                                dateFormat}}
+                                                <span
+                                                    class="block">{{row.dayName}}</span>
+                                            </td>
+                                            <td>{{row.shift}}</td>
+                                        <td class [innerHTML]="row.mixedInTime"></td>
+                                        <td class [innerHTML]="row.mixedOutTime"></td>
+                                            <td
+                                                class="text-end pe-2" [innerHTML]="row.mixedLateBy  !== '00:00' ? row.mixedLateBy : '--:--' "></td>
+                                            <td
+                                                class="text-end pe-2" [innerHTML]="row.mixedLeftEarlyBy !== '00:00' ? row.mixedLeftEarlyBy : '--:--' " ></td>
+                                            <td
+                                                class="text-end pe-2">{{row.effectiveHrs1
+                                                !== '00:00' ? row.effectiveHrs1
+                                                : '--:--' }}</td>
+                                            <td
+                                                class="text-end pe-2">{{row.totalHours1
+                                                !== '00:00' ? row.totalHours1 :
+                                                '--:--' }}</td>
+                                            <td
+                                                class="text-end pe-2">{{row.otHrs1
+                                                !== '00:00' ? row.otHrs1 :
+                                                '--:--' }}</td>
+                                            <td>{{row.mixedAttStatus}}</td>
+                                            <td
+                                                class="text-center">{{row.mixedRemark}} </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>

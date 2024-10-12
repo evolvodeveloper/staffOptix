@@ -1,0 +1,53 @@
+.form-floating>.form-select {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    height: 40px;
+}
+
+
+.form-floating>.form-control {
+    height: 40px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+
+td {
+    border-bottom: none;
+}
+
+.inputwid {
+    margin: 3px;
+    height: 36px;
+}
+
+
+@media only screen and (max-width: 767.98px) {
+    .table-leftblock {
+        border-right: 1px solid #ccc;
+        padding: 10px;
+        // background: #F3F4F7;
+    }
+
+    .table-rightblock {
+        // border: 1px solid #ccc;
+        padding: 10px;
+        // background: #F3F4F7;
+    }
+}
+
+@media only screen and (min-width: 767.99px) {
+    .table-leftblock {
+        border-right: 1px solid #ccc;
+        padding: 10px;
+        // background: #F3F4F7;
+        // border-radius: 5px 0px 0px 5px;
+    }
+
+    .table-rightblock {
+        // border: 1px solid #ccc;
+        padding: 10px;
+        // background: #F3F4F7;
+        // border-radius: 0px 5px 5px 0px;
+    }
+}

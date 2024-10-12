@@ -1,0 +1,23 @@
+<div class="main-wrapper" [ngClass]="{'special-background': isSpecialRoute}"
+    style=" background: #F3F4F7; overflow: auto; scrollbar-width: thin;  scrollbar-color: #d5d1d1 #ffffff;">
+    <app-sidebar></app-sidebar>
+    <app-header></app-header>
+    <div class="page-wrapper" (resized)="onResize($event)"
+        [ngStyle]="{ 'height' : innerHeight }">
+        <div class="content container-fluid"
+            [ngStyle]="{ 'position': remainingdays <= 31 ? 'relative' : ''  }">
+            <div *ngIf="remainingdays <= 31"
+                style="position: fixed; right : 2% ; z-index: 1000;">
+                <div class="alert alert-danger alert-dismissible fade show"
+                    role="alert">
+                    Your Plan is about to expire in {{remainingdays}} days
+                    <button type="button" class="close border-0 "
+                        data-bs-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

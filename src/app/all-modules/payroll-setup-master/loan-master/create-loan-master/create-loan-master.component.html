@@ -1,0 +1,145 @@
+<div class="modal fade modal-right" style="padding-right: 17px; display: none;"
+    [ngClass]="{'show':open}"
+    [ngStyle]="open && {'display': 'block'}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">{{view ? 'View' : update ? 'Update' :
+                    'Create'}} Loan Master </h1>
+                <button type="button" class="btn-close" (click)="closeModal()"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <form [formGroup]="loanMaster" novalidate>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-md">
+                                    <label>Loan Name&nbsp;<span
+                                            style="color: red; margin-left: 1px">*</span></label>
+                                    <div class="input-group">
+                                        <input type="text"
+                                            name="loanCode" class="form-control"
+                                            [formControl]="loanMaster.controls.loanCode">
+                                    </div>
+                                    <div
+                                        *ngIf="loanMaster.controls['loanCode'].invalid && (loanMaster.controls['loanCode'].dirty ||
+                                            loanMaster.controls['loanCode'].touched) "
+                                        style="padding: 0px">
+                                        <div class="ms-2"
+                                            *ngIf="loanMaster.controls['loanCode'].errors.required"
+                                            style="color: #dc3545">
+                                            loan name is required.
+                                        </div>
+                                    </div>
+                                    <div
+                                        *ngIf="loanMaster.get('loanCode').hasError('invalidFormat')"
+                                        style="color: #dc3545">field should not
+                                        contain special characters</div>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-md">
+                                    <label>Loan Description</label>
+                                    <div class="input-group">
+                                        <textarea type="textarea"
+                                            name="loanDescription"
+                                            class="form-control"
+                                            [formControl]="loanMaster.controls.loanDescription"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-2 mb-3">
+                                <div class="col-md">
+                                    <label>Loan Type&nbsp;<span
+                                            style="color: red; margin-left: 1px">*</span></label>
+                                    <div class="input-group">
+                                        <select for="loanType"
+                                            class="form-select"
+                                            [formControl]="loanMaster.controls.loanType"
+                                            (change)="onTypeChange(loanMaster.controls.loanType.value)">
+                                            <option value="Loan">Loan</option>
+                                            <option
+                                                value="Advance">Advance</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- <div class="row g-2 mb-3" *ngIf="loanMaster.controls.loanType.value !== 'Advance'">
+                                <div class="col-md">
+                                    <label>Emi Type&nbsp;<span
+                                            style="color: red; margin-left: 1px">*</span></label>
+                                    <div class="input-group">
+                                        <select for="emiType" class="form-select" [formControl]="loanMaster.controls.emiType">
+                                            <option value="Flat">Flat</option>
+                                            <option value="Diminshing">Diminshing</option>
+                                        </select> 
+                                    </div>
+                                </div>
+                            </div> -->
+
+                            <div class="row g-2 mb-3"
+                                *ngIf="loanMaster.controls.loanType.value !== 'Advance'">
+                                <div class="col-md">
+                                    <label>Number Of Instalments&nbsp;<span
+                                            style="color: red; margin-left: 1px">*</span></label>
+                                    <div class="input-group">
+                                        <input type="number"
+                                            name="noOfInstalments"
+                                            class="form-control"
+                                            [formControl]="loanMaster.controls.noOfInstalments">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-2 mb-3">
+                                <div class="col-md">
+                                    <label>Maximum Loan Amount</label>
+                                    <div class="input-group">
+                                        <input type="number"
+                                            name="maxLoanAmount"
+                                            class="form-control"
+                                            [formControl]="loanMaster.controls.maxLoanAmount">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-md">
+                                    <div class="form-check form-check-inline">
+                                        <input id="accountLocked"
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            [formControl]="loanMaster.controls.isFixed">
+                                        <label class="form-check-label">
+                                            This is fixed loan amount?
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel_loanMaster" type="button"
+                    class="btn delete-btn"
+                    (click)="closeModal()">Cancel</button>
+                <button id="create_loanMaster"
+                    [disabled]="loanMaster.pristine || loanMaster.invalid"
+                    [hidden]="view || update"
+                    (click)="create()" class="btn add-btn">
+                    Create
+                </button>
+                <button id="update_loanMaster" *ngIf="update"
+                    [disabled]="loanMaster.pristine || loanMaster.invalid" (click)="Update()"
+                    class="btn add-btn">
+                    Update
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="open" class="modal-backdrop fade show"></div>

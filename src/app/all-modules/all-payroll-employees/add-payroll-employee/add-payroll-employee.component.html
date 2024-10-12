@@ -1,0 +1,1994 @@
+ <div class="row">
+  <div class="col-sm-12">
+    <div class="d-flex align-items-baseline">
+      <i style="font-size: 20px"
+        class="fa fa-arrow-left"
+        (click)="back()"
+        aria-label="back"></i>
+      <h3 class="ms-4 page-title"> {{ view ? "View" : update ? "Update" :
+        "Create" }} Employee</h3>
+    </div>
+  </div>
+</div>
+
+<div class="card p-3">
+  <div class="row">
+    <div class="col-md-12">
+      <ng-stepper class="cdk-step" #cdkStepper [linear]="false" class="mt-1">
+        <cdk-step [stepControl]="stepOne.stepOneForm" [optional]="true">
+          <ng-template cdkStepLabel>
+            <div
+              class="step-bullet"
+              style="width: 40px; height: 40px; z-index: 105">
+              <img
+                src="assets/img/icon/User_Add.svg"
+                height="20"
+                width="20" />
+            </div>
+            <div class="step-title">1. Employee Details</div>
+          </ng-template>
+          <form [formGroup]="addEmployeeForm">
+            <div #stepOne>
+              <div class="row mt-3">
+                <div class="row">
+                  <div class="row col-md-8">
+                    <div class="col-md-6"
+                      *ngIf="view || update || allowAutoGenerateEmpCode">
+                      <div class="form-group">
+                        <label class="col-form-label">Employee Code&nbsp;<span
+                            class="text-danger">*</span></label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          placeholder="Enter employee code"
+                          formControlName="employeeCode" />
+                           <div
+                          *ngIf="addEmployeeForm.get('employeeCode').hasError('invalidFormat')"
+                          style="color: #dc3545">field should not contain
+                          special characters</div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="col-form-label"
+                          for="employeeName">Employee Name &nbsp;<span
+                            class="text-danger">*</span></label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          placeholder="Enter Employee Name"
+                          id="employeeName"
+                          [class.invalid]="
+                        addEmployeeForm.get('employeeName').invalid &&
+                        addEmployeeForm.get('employeeName').touched
+                      "
+                          formControlName="employeeName" />
+                        <div
+                          *ngIf="
+                        addEmployeeForm.get('employeeName').invalid &&
+                        addEmployeeForm.get('employeeName').touched
+                      ">
+                          <small
+                            *ngIf="
+                          addEmployeeForm.get('employeeName').invalid &&
+                          addEmployeeForm.get('employeeName').touched
+                        "
+                            class="text-danger">Employee Name is
+                            required</small>
+                        </div>
+                        <div
+                          *ngIf="addEmployeeForm.get('employeeName').hasError('invalidFormat')"
+                          style="color: #dc3545">field should not contain
+                          special characters</div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="col-form-label" for="lastName">Last
+                          Name</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          placeholder="Enter last name"
+                          
+                          id="lastName"
+                          formControlName="lastName" />
+                        <div
+                          *ngIf="
+                        addEmployeeForm.get('lastName').invalid &&
+                        addEmployeeForm.get('lastName').touched
+                      ">
+                          <small
+                            *ngIf="
+                          addEmployeeForm.get('lastName').invalid &&
+                          addEmployeeForm.get('lastName').touched
+                        "
+                            class="text-danger">Last Name is
+                            required</small>
+                        </div>
+                        <div
+                          *ngIf="addEmployeeForm.get('lastName').hasError('invalidFormat')"
+                          style="color: #dc3545">field should not contain
+                          special characters</div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="col-form-label" for="aliasName">Alias
+                          Name</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          placeholder="Enter nick name"
+                          id="aliasName"
+                          formControlName="aliasName" />
+                        <div
+                          *ngIf="addEmployeeForm.get('aliasName').hasError('invalidFormat')"
+                          style="color: #dc3545">field should not contain
+                          special characters</div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="col-form-label">Gender &nbsp;<span
+                            class="text-danger">*</span></label>
+                        <select class="form-select" formControlName="gender">
+                          <option [value]="gn.code" *ngFor="let gn of genders">
+                            {{ gn.name }}
+                          </option>
+                        </select>
+                        <div
+                          *ngIf="
+                        addEmployeeForm.get('gender').invalid &&
+                        addEmployeeForm.get('gender').touched
+                      ">
+                          <small
+                            *ngIf="
+                          addEmployeeForm.get('gender').invalid &&
+                          addEmployeeForm.get('gender').touched
+                        "
+                            class="text-danger">Gender is
+                            required</small>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="col-form-label">Contact Number &nbsp;<span
+                            class="text-danger">*</span></label>
+                        <input
+                          class="form-control"
+                          type="number"
+                          placeholder="Enter contact number"
+                          [class.invalid]="
+                        addEmployeeForm.get('contactNo').invalid &&
+                        addEmployeeForm.get('contactNo').touched
+                      "
+                          formControlName="contactNo" />
+                        <div
+                          *ngIf="
+                        addEmployeeForm.get('contactNo').invalid &&
+                        addEmployeeForm.get('contactNo').touched
+                      ">
+                          <small
+                            *ngIf="
+                          addEmployeeForm.get('contactNo').invalid &&
+                          addEmployeeForm.get('contactNo').touched
+                        "
+                            class="text-danger">Contact Number required</small>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="col-form-label">Email &nbsp;<span
+                            class="text-danger">*</span></label>
+                        <div class="input-group">
+                          <input
+                            class="form-control"
+                            type="email"
+                            placeholder="Enter email"
+                            [email]="true"
+                            (keyup)="
+                          onEmailChange(addEmployeeForm.controls.email.value)
+                        "
+                            [class.invalid]="addEmployeeForm.get('email').invalid && addEmployeeForm.get('email').touched"
+                            formControlName="email" />
+                          <span
+                            id="email"
+                            class="input-group-custom"
+                            *ngIf="
+                          showSuccessEmailToolTip === 'EMAIL ALREADY EXIST' || addEmployeeForm.get('email').invalid
+                        "
+                            data-toggle="tooltip"
+                            data-placement="right"
+                            title="Email Already Exists">
+                            <i
+                              id="email"
+                              style="color: #dc3545"
+                              class="fa fa-exclamation-triangle"
+                              aria-hidden="true"></i>
+                          </span>
+                          <span
+                            id="email"
+                            class="input-group-custom"
+                            *ngIf="showSuccessEmailToolTip === 'EMAIL NOT EXISTS' && !addEmployeeForm.get('email').invalid"
+                            data-toggle="tooltip"
+                            data-placement="right"
+                            title>
+                            <i
+                              style="color: #35ef57"
+                              id="email"
+                              class="far fa-check-circle"
+                              aria-hidden="true"></i>
+                          </span>
+                        </div>
+                        <small
+                          *ngIf="
+                        addEmployeeForm.get('email').invalid &&
+                        addEmployeeForm.get('email').touched
+                      "
+                          class="text-danger">Enter Valid Email</small>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="col-form-label">Alternate Email</label>
+                        <div class="input-group">
+                          <input
+                            class="form-control"
+                            type="email"
+                            (change)="checkEmailsAreSameOrNot()"
+                            placeholder="Enter alternate email"
+                            formControlName="alternateEmail" />
+                        </div>
+
+                        <small
+                          *ngIf="
+                        addEmployeeForm.get('alternateEmail').invalid &&
+                        addEmployeeForm.get('alternateEmail').touched
+                      "
+                          class="text-danger">Enter Valid Email </small>
+                        <!-- <small
+                          *ngIf="bothAreSame"
+                          class="text-danger">email and alternate email  should be different.</small> -->
+                      </div>
+                    </div>
+                    <div class="col-md-6 ">
+                      <div class="form-group">
+                        <label class="col-form-label">Designation</label>
+                        <div class="input-group">
+                          <select class="form-select"
+                            formControlName="designation">
+                            <option selected value>-</option>
+                            <option
+                              [value]="desg.designation"
+                              *ngFor="let desg of designationList">
+                              {{ desg.designation }}
+                            </option>
+                          </select>
+                          <span
+                            *ngIf="iAmAdmin && !update && !view"
+                            id="designation"
+                            class="input-group-custom"
+                            data-toggle="tooltip"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addDesignation"
+                            data-placement="right"
+                            title>
+                            <i class="fa-solid fa-circle-plus"
+                              id="designation"></i>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="col-form-label">Join Date </label>
+                        <!-- <div class="cal-icon"> -->
+                        <input
+                          class="form-control datetimepicker"
+                          type="date"
+                          formControlName="joinDate" />
+                        <!-- </div> -->
+                      </div>
+                    </div>
+
+                    <div class="col-md-6 ">
+                      <div class="form-group">
+                        <label class="col-form-label">Department &nbsp;<span
+                            class="text-danger">*</span></label>
+                        <div class="input-group">
+                          <select class="form-select"
+                            formControlName="deptCode">
+                            <option selected value>-</option>
+                            <option
+                              [value]="dep.deptCode"
+                              *ngFor="let dep of deptCodes">
+                              {{ dep.deptName }}
+                            </option>
+                          </select>
+                          <span
+                            *ngIf="iAmAdmin && !update && !view"
+                            id="deptCode"
+                            class="input-group-custom"
+                            data-toggle="tooltip"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addDepartment"
+                            data-placement="right"
+                            title>
+                            <i class="fa-solid fa-circle-plus"
+                              id="deptCode"></i>
+                          </span>
+                        </div>
+                        <div
+                          *ngIf="
+                    addEmployeeForm.controls['deptCode'].invalid &&
+                    (addEmployeeForm.controls['deptCode'].dirty ||
+                      addEmployeeForm.controls['deptCode'].touched)
+                  "
+                          style="padding: 0px">
+                          <div
+                            *ngIf="addEmployeeForm.controls['deptCode'].errors.required"
+                            style="color: #dc3545">
+                            Department is required.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6 ">
+                      <div class="form-group">
+                        <label class="col-form-label">Project </label>
+                        <div class="input-group">
+                          <select
+                            class="form-select"
+                            formControlName="projectCode">
+                            <option selected value>-</option>
+                            <option
+                              [value]="code.categoryCode"
+                              *ngFor="let code of empCat">
+                              {{ code.categoryCode }}
+                            </option>
+                          </select>
+                          <span
+                            *ngIf="iAmAdmin && !update && !view"
+                            id="projectCode"
+                            class="input-group-custom"
+                            data-toggle="tooltip"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addProject"
+                            data-placement="right"
+                            title>
+                            <i class="fa-solid fa-circle-plus"
+                              id="projectCode"></i>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6 ">
+                      <div class="form-group">
+                        <label class="col-form-label">Location </label>
+                        <div class="input-group">
+                          <select class="form-select"
+                            formControlName="locationCode">
+                            <option selected value>-</option>
+                            <option
+                              [value]="loc.locationCode"
+                              *ngFor="let loc of locationList">
+                              {{ loc.locationCode }}
+                            </option>
+                          </select>
+                          <span
+                            *ngIf="iAmAdmin && !update && !view"
+                            id="locationCode"
+                            class="input-group-custom"
+                            data-toggle="tooltip"
+                            data-bs-toggle="modal"
+                            (click)="OpenLocation()"
+                            data-bs-target="#addLocation"
+                            data-placement="right"
+                            title>
+                            <i class="fa-solid fa-circle-plus"
+                              id="locationCode"></i>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-check col-md-6 mt-2 ms-3 mb-3">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="isactive"
+                        formControlName="isActive" />
+                      <label class="form-check-label" for="isactive">
+                        Is Active
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="row">
+                      <label for class="col-form-label">Employee Image</label>
+                      <div class="row ">
+
+                        <div class="col-md-5 col-sm-5">
+                          <div class="emp-profile-img-wrap">
+                            <img
+                              *ngIf="emp?.image"
+                              style="width: -webkit-fill-available"
+                              [src]="emp?.image" />
+                            <img
+                              *ngIf="!emp?.image"
+                              src="assets/img/emp-default-img.svg" />
+                          </div>
+                        </div>
+
+                        <div *ngIf="!view"
+                          class="col-md-7 col-sm-7 img-box d-flex justify-content-center"
+                          style="
+                        flex-direction: column;
+                        height: 130px;
+                      ">
+                          <div class="drop-your-images-here-or-browse">
+                            <span>
+                              <span
+                                class="drop-your-images-here-or-browse-span">
+                                Click to upload image or
+                              </span>
+                              <span
+                                class="drop-your-images-here-or-browse-span2"
+                                *ngIf="!view"
+                                (click)="open()">browse</span>
+                            </span>
+                          </div>
+                          <div class="supports-jpg-png-of-300-x-300-size">
+                            Supports .jpg &amp; .png
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <section *ngIf="!view">
+                <button class="btn delete-btn  me-3"
+                  (click)="back()">Cancel</button>
+                <button
+                  class="btn add-btn"
+                  type="submit"
+                  [disabled]="addEmployeeForm.invalid || showSuccessEmailToolTip === 'EMAIL ALREADY EXIST'"
+                  cdkStepperNext>
+                  Next
+                </button>
+
+              </section>
+              <section *ngIf="view">
+                <button class="btn delete-btn  me-3"
+                  (click)="back()">Close</button>
+
+                <button
+                  class="btn add-btn"
+                  type="submit"
+                  cdkStepperNext>
+                  Next
+                </button>
+              </section>
+            </div>
+          </form>
+        </cdk-step>
+
+        <cdk-step [stepControl]="stepTwo.stepTwoForm" [optional]="true">
+          <ng-template cdkStepLabel>
+            <div class="step-bullet"
+              style="width: 40px; height: 40px;z-index:106">
+              <img src="assets/img/icon/Compass.svg" height="20" width="20" />
+            </div>
+            <div class="step-title">2. Additional Info</div>
+          </ng-template>
+          <div #stepTwo>
+            <form [formGroup]="othersForm">
+              <div *ngFor="let fields of filteredForm" class="mb-3">
+                <div class="columnName my-3">{{ fields.columnName }}</div>
+
+                <div class="row">
+                  <ng-container *ngFor="let field of fields.array">
+                    <span *ngIf="field.sameLine === false"> <ng-container
+                        class="block"></ng-container></span>
+                    <!-- for text field -->
+                    <div
+                      *ngIf="field.dataType === 'text'"
+                      class="my-1"
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <label for="{{ field.columnName }}">{{ field.label }}
+                        <span
+                          *ngIf="field.mandatory === true"
+                          class="text-danger">
+                          *</span>
+                      </label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName" />
+                    </div>
+                    <!-- text field end-->
+
+                    <!-- for textarea field -->
+                    <div
+                      *ngIf="field.dataType === 'textarea'"
+                      class="my-1"
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <label for="{{ field.columnName }}">{{ field.label }}
+                        <span
+                          *ngIf="field.mandatory === true"
+                          class="text-danger">
+                          *</span>
+                      </label>
+                      <textarea
+                        type="text"
+                        class="form-control"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName"></textarea>
+                    </div>
+                    <!-- for textarea field  ends-->
+
+                    <!-- for dropdown field with given options-->
+                    <div
+                      *ngIf="
+                          field.dataType === 'dropdown' &&
+                          field.defaultValues?.tags
+                        "
+                      class="my-1"
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <label for="{{ field.columnName }}">{{
+                        field.label
+                        }}</label>
+                      <select
+                        class="form-select"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName">
+                        <option
+                          *ngFor="let data of field.dropDownData"
+                          [value]="data">
+                          {{ data }}
+                        </option>
+                      </select>
+                    </div>
+                    <!-- for dropdown field with given options ends-->
+
+                    <!-- for dropdown field with not given options-->
+                    <div
+                      *ngIf="
+                          field.dataType === 'dropdown' &&
+                          !field.defaultValues?.tags
+                        "
+                      class="my-1"
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <label for="{{ field.columnName }}">{{
+                        field.label
+                        }}</label>
+                      <select
+                        class="form-select"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName">
+                        <option
+                          *ngFor="let data of field.dropDownData"
+                          [value]="data[field.defaultValues.key]">
+                          {{ data[field.defaultValues.output] }}
+                        </option>
+                      </select>
+                    </div>
+                    <!-- for dropdown field with not given options-->
+
+                    <!-- for date field -->
+                    <div
+                      *ngIf="field.dataType === 'date'"
+                      class="my-1"
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <label for="{{ field.columnName }}">{{
+                        field.label
+                        }}</label>
+                      <input
+                        type="date"
+                        class="form-control"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName" />
+                    </div>
+                    <!-- for date field ends-->
+
+                    <!-- for number field -->
+                    <div
+                      *ngIf="field.dataType === 'number'"
+                      class="my-1"
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <label for="{{ field.columnName }}">{{
+                        field.label
+                        }}</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName" />
+                    </div>
+                    <!-- for number field ends-->
+
+                    <!-- for checkbox field-->
+                    <div
+                      *ngIf="field.dataType === 'checkbox'"
+                      class="form-check my-1"
+                      [ngClass]="
+                          field.pctSize !== null
+                            ? 'col-md-' + field.pctSize
+                            : 'col-md'
+                        ">
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        [placeholder]="
+                            field.placeHolder !== null
+                              ? [field.placeHolder]
+                              : 'Enter ' + [field.label]
+                          "
+                        [formControlName]="field.columnName" />
+                      <label for="{{ field.columnName }}">{{ field.label }}
+                        <span
+                          *ngIf="field.mandatory === true"
+                          class="form-check-label text-danger">
+                          *</span>
+                      </label>
+                    </div>
+                    <!-- for checkbox field ends-->
+                  </ng-container>
+                </div>
+              </div>
+            </form>
+            <div class="form-check col-md-10 mt-2 ms-3 mb-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="submitPayrollQuestion"
+                [formControl]="addEmployeeForm.controls.submitPayrollQuestion" />
+              <label class="form-check-label" for="submitPayrollQuestion">
+                Do you want to submit payroll for this employee ?
+              </label>
+            </div>
+
+            <!-- <div class="form-check col-md-10 mt-2 ms-3 mb-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="showDoc"
+                [formControl]="addEmployeeForm.controls.showDoc" />
+              <label class="form-check-label" for="showDoc">
+                Do you want to Upload Employee Documents ?
+              </label>
+            </div> -->
+            <section *ngIf="!view">
+              <button
+                class="btn btn-secondary secondary-btn"
+                type="submit"
+                cdkStepperPrevious>
+                Previous
+              </button>
+              <!-- if user want to submit only employee -->
+              <!-- <span
+                *ngIf="addEmployeeForm.controls.submitPayrollQuestion.value === false">
+                <button *ngIf="!update"
+                  [disabled]="addEmployeeForm.invalid || othersForm.invalid ||  showSuccessEmailToolTip === 'EMAIL ALREADY EXIST'"
+                  class="btn add-btn"
+                  (click)="saveEmployee('onlyEmp')"
+                  type="submit">
+                  Save
+                </button>
+                <button *ngIf="update"
+                  class="btn add-btn"
+                  (click)="updateEmployeeandPayroll('onlyEmp')"
+                  type="submit">
+                  Update
+                </button>
+              </span> -->
+
+              <!-- if user want to create payroll -->
+              <span
+                *ngIf="addEmployeeForm.controls.showDoc.value === true">
+                <button *ngIf="!update"
+                  class="btn add-btn"
+                  type="submit"
+                  [disabled]="addEmployeeForm.invalid || othersForm.invalid"
+                  cdkStepperNext>
+                  Next
+                </button>
+                <button *ngIf="update"
+                  class="btn add-btn"
+                  type="submit"
+                  [disabled]="addEmployeeForm.invalid || othersForm.invalid"
+                  cdkStepperNext>
+                  Next
+                </button>
+              </span>
+            </section>
+            <section *ngIf="view">
+              <button
+                class="btn btn-secondary secondary-btn"
+                type="submit"
+                cdkStepperPrevious>
+                Previous
+              </button>
+
+              <button
+                *ngIf="addEmployeeForm.controls.showDoc.value === true "
+                class="btn add-btn"
+                type="submit"
+                cdkStepperNext>
+                Next
+              </button>
+              <button class="btn delete-btn  me-3" style="float: right;"
+                *ngIf="addEmployeeForm.controls.showDoc.value === false"
+                (click)="back()">Cancel</button>
+            </section>
+          </div>
+        </cdk-step>
+        <cdk-step [stepControl]="stepThree.stepThreeForm" style="z-index: 10;"
+          [optional]="true"
+          *ngIf="addEmployeeForm.controls.showDoc.value === true">
+          <ng-template cdkStepLabel>
+            <div class="step-bullet"
+              style="width: 40px; height: 40px;z-index: 100;">
+              <i class="fa-regular fa-image"></i>
+            </div>
+            <div class="step-title">3. Employee Documents</div>
+          </ng-template>
+          <div #stepThree>
+
+            <div class="columnName">Upload Employee Documents (accepts only
+              .png, .jpg, .jpeg, .pdf files)</div>
+            <!-- <div class="row ">
+                <div class="startDiv col-xl-3 col-sm-6 col-12"
+                  *ngFor="let fileInput  of empDoc ;let i = index">
+                  <p class="w-100"
+                    [ngClass]="{'mt-1' :!fileInput.imageByteCode}"
+                    style="color: #6990f2;"><span>{{
+                      fileInput.documentName }}</span>
+                    <span class="float-end" data-bs-toggle="modal"
+                      *ngIf="fileInput.imageByteCode"
+                      data-bs-target="#previewFile"
+                      data-placement="right" (click)="previewRow(fileInput) "><i
+                        class='fa fa-eye'></i></span>
+                  </p>
+                  <div *ngIf="!fileInput.imageByteCode">
+                    <div class="uploaddiv"
+                      (click)="openFileInput(fileInput.documentId)">
+                      <input
+                        type="file"
+                        class="file-input"
+                        name="file"
+                        [disabled]="view"
+                        [id]="fileInput.documentId"
+                        accept=".pdf, .png, .jpg, .jpeg"
+                        (change)="getBase64($event, fileInput)"
+                        style="display: none" />
+                      <i
+                        class="fas fa-cloud-upload-alt d-flex justify-content-center"
+                        style="color: #6990f2; font-size: 50px;"></i>
+                      <p value="Upload Images" class="ms-2"
+                        style="color: #6990f2; font-size: 16px;">&nbsp;Browse
+                        File to Upload</p>
+                    </div>
+                  </div>
+                  <div class="text-center" *ngIf="fileInput.imageByteCode"
+                    (click)="openFileInput(fileInput.documentId)">
+                    <input
+                      type="file"
+                      class="file-input"
+                      name="file"
+                      [id]="fileInput.documentId"
+                      accept=".pdf, .png, .jpg, .jpeg"
+                      [disabled]="view"
+                      (change)="getBase64($event, fileInput)"
+                      style="display: none" />
+                    <i class=" text-success fa-solid fa-circle-check"
+                      style="font-size: x-large;"></i>
+                    <p *ngIf="fileInput.fileName">{{fileInput.documentName}}.{{fileInput.fileType}} uploaded</p>
+                  </div>
+                  <span class="text-end w-100" *ngIf="fileInput.imageByteCode && !view"
+                    (click)="removeImg(i)"> <i class="fa-solid fa-trash"
+                      style="color: #dc3545"></i></span>
+                </div>
+              </div> -->
+
+            <div class="row">
+              <div class="col-12 col-sm-12 col-md-12 col-lg-12 m-1"
+                *ngFor="let item of groupedDocuments">
+                <div class="d-flex align-items-baseline">
+                  <span class="d-flex align-items-center"><img
+                      src="../../../../assets/img/icon/attendance-summary.svg"
+                      height="70px">
+                    <h4 class="ms-2"> {{item.docType}}</h4>
+                  </span>
+                </div>
+                <div class="row mt-1 ms-2">
+                  <div class="startDiv col-xl-3 col-sm-6 col-12"
+                    *ngFor="let fileInput  of item.documents ;let i = index">
+                    <p class="w-100"
+                      [ngClass]="{'mt-1' :!fileInput.imageByteCode}"
+                      style="color: #6990f2;"><span>{{
+                        fileInput.documentName }}</span>
+                      <span class="float-end" data-bs-toggle="modal"
+                        *ngIf="fileInput.imageByteCode"
+                        data-bs-target="#previewFile"
+                        data-placement="right"
+                        (click)="previewRow(fileInput) "><i
+                          class='fa fa-eye'></i></span>
+                    </p>
+                    <div *ngIf="!fileInput.imageByteCode">
+                      <div class="uploaddiv"
+                        (click)="openFileInput(fileInput.documentId)">
+                        <input
+                          type="file"
+                          class="file-input"
+                          name="file"
+                          [disabled]="view"
+                          [id]="fileInput.documentId"
+                          accept=".pdf, .png, .jpg, .jpeg"
+                          (change)="getBase64($event, fileInput)"
+                          style="display: none" />
+                        <i
+                          class="fas fa-cloud-upload-alt d-flex justify-content-center"
+                          style="color: #6990f2; font-size: 50px;"></i>
+                        <p value="Upload Images" class="ms-2"
+                          style="color: #6990f2; font-size: 16px;">&nbsp;Browse
+                          File to Upload</p>
+                      </div>
+                    </div>
+                    <div class="text-center" *ngIf="fileInput.imageByteCode"
+                      (click)="openFileInput(fileInput.documentId)">
+                      <input
+                        type="file"
+                        class="file-input"
+                        name="file"
+                        [id]="fileInput.documentId"
+                        accept=".pdf, .png, .jpg, .jpeg"
+                        [disabled]="view"
+                        (change)="getBase64($event, fileInput)"
+                        style="display: none" />
+                      <i class=" text-success fa-solid fa-circle-check"
+                        style="font-size: x-large;"></i>
+                      <p
+                        *ngIf="fileInput.fileName">{{fileInput.documentName}}.{{fileInput.fileType}}
+                        uploaded</p>
+                    </div>
+                    <span class="text-end w-100"
+                      *ngIf="fileInput.imageByteCode && !view"
+                      (click)="removeImg(i)"> <i class="fa-solid fa-trash"
+                        style="color: #dc3545"></i></span>
+                  </div>
+                  <!-- </div> -->
+                </div>
+              </div>
+            </div>
+
+            <section *ngIf="!view">
+              <button
+                class="btn btn-secondary secondary-btn"
+                type="submit"
+                cdkStepperPrevious>
+                Previous
+              </button>
+              <!-- if user want to submit only employee -->
+              <span
+                *ngIf="addEmployeeForm.controls.submitPayrollQuestion.value === false">
+                <button *ngIf="!update"
+                  [disabled]="addEmployeeForm.invalid || othersForm.invalid ||  showSuccessEmailToolTip === 'EMAIL ALREADY EXIST'"
+                  class="btn add-btn"
+                  (click)="saveEmployee('onlyEmp')"
+                  type="submit">
+                  Save
+                </button>
+                <button *ngIf="update"
+                  class="btn add-btn"
+                  (click)="updateEmployeeandPayroll('onlyEmp')"
+                  type="submit">
+                  Update
+                </button>
+              </span>
+
+              <!-- if user want to create payroll -->
+              <span
+                *ngIf="addEmployeeForm.controls.submitPayrollQuestion.value === true && payrollEmp">
+                <button *ngIf="!update"
+                  class="btn add-btn"
+                  type="submit"
+                  [disabled]="addEmployeeForm.invalid || othersForm.invalid"
+                  cdkStepperNext>
+                  Save & Next
+                </button>
+                <button *ngIf="update"
+                  class="btn add-btn"
+                  type="submit"
+                  [disabled]="addEmployeeForm.invalid || othersForm.invalid"
+                  cdkStepperNext>
+                  Update & Next
+                </button>
+              </span>
+            </section>
+            <section *ngIf="view">
+              <button
+                class="btn btn-secondary secondary-btn"
+                type="submit"
+                cdkStepperPrevious>
+                Previous
+              </button>
+
+              <button
+                *ngIf="addEmployeeForm.controls.submitPayrollQuestion.value === true && payrollEmp"
+                class="btn add-btn"
+                type="submit"
+                cdkStepperNext>
+                Next
+              </button>
+              <button class="btn delete-btn  me-3" style="float: right;"
+                *ngIf="addEmployeeForm.controls.submitPayrollQuestion.value === false && payrollEmp"
+                (click)="back()">Cancel</button>
+            </section>
+
+          </div>
+        </cdk-step>
+
+        <cdk-step [stepControl]="stepFour.stepFourForm" style="z-index: 10;"
+          [optional]="true"
+          *ngIf="payrollEmp && addEmployeeForm.controls.submitPayrollQuestion.value === true">
+          <ng-template cdkStepLabel>
+            <div class="step-bullet"
+              style="width: 40px; height: 40px;z-index: 100;">
+              <img
+                src="assets/img/icon/Chart_Pie.svg"
+                height="20"
+                width="20" />
+            </div>
+            <div class="step-title">4. Employee Payroll</div>
+          </ng-template>
+          <div #stepFour>
+            <!-- <div class="row mt-3 mb-3">
+              <div class="col-md-12 w-auto d-flex m-auto">
+                <div class="opPayroll d-flex p-3">
+                  <div class="note">Note :</div>
+                  <div
+                    class="payroll-setup-is-optional-and-can-be-done-in-later-insider-the-application">
+                    Employee Payroll is optional and can be done in later
+                    insider
+                    the application
+                  </div>
+                </div>
+              </div>
+            </div> -->
+            <form [formGroup]="payrollForm">
+              <div class="row">
+                <div class="row col-md-8">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="col-form-label">Employee Ref Code</label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        placeholder="Enter employee ref code"
+                        formControlName="employeeRefCode" />
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="col-form-label">Payroll Type &nbsp;<span
+                          class="text-danger">*</span></label>
+                      <select
+                        class="form-select"
+                        [class.invalid]="
+                        payrollForm.get('payrollType').invalid &&
+                        payrollForm.get('payrollType').touched
+                      "
+                        formControlName="payrollType">
+                        <option
+                          [value]="ptype.code"
+                          *ngFor="let ptype of pytypes">
+                          {{ ptype.code }}
+                        </option>
+                      </select>
+                      <div
+                        *ngIf="
+                        payrollForm.get('payrollType').invalid &&
+                        payrollForm.get('payrollType').touched
+                      ">
+                        <small
+                          *ngIf="
+                          payrollForm.get('payrollType').invalid &&
+                          payrollForm.get('payrollType').touched
+                        "
+                          class="text-danger">
+                          Payroll Type required</small>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="col-form-label">Payroll &nbsp;<span
+                          class="text-danger">*</span></label>
+                      <select
+                        class="form-select"
+                        [class.invalid]="
+                        payrollForm.get('payrollCode').invalid &&
+                        payrollForm.get('payrollCode').touched
+                      "
+                        formControlName="payrollCode"
+                        (change)="getsalaryComp()">
+                        <option selected value>
+                          -
+                        </option>
+                        <option
+                          *ngFor="let pc of payrollsetups"
+                          [value]="pc.payrollCode">
+                          {{ pc.payrollCode }}
+                        </option>
+                      </select>
+                      <div
+                        *ngIf="
+                        payrollForm.get('payrollCode').invalid &&
+                        payrollForm.get('payrollCode').touched
+                      ">
+                        <small
+                          *ngIf="
+                          payrollForm.get('payrollCode').invalid &&
+                          payrollForm.get('payrollCode').touched
+                        "
+                          class="text-danger">Payroll required</small>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="col-form-label">Capture Type </label>
+                      <select class="form-select"
+                        formControlName="capturePolicy">
+                        <option
+                          [value]="c?.captureCode"
+                          *ngFor="let c of capturesTypes">
+                          {{ c?.captureCode }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="col-form-label"
+                        for="policyCode">Tracking Policy</label>
+                      <select
+                        class="form-select"
+                        id="policyCode"
+                        formControlName="policyCode">
+                        <option selected value>-</option>
+                        <option [value]="code.trackingPolicy.policyCode"
+                          *ngFor="let code of policyCodes">
+                          {{ code.trackingPolicy.policyCode }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="col-form-label">Employee Type </label>
+                      <select class="form-select"
+                        formControlName="employeeType">
+                        <option
+                          [value]="etype.code"
+                          *ngFor="let etype of emptypes">
+                          {{ etype.code }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="col-form-label">Supervisor </label>
+                      <select class="form-select" formControlName="supervisorId"
+                        (change)="onSupervisorChange(payrollForm.controls.supervisorId.value)">
+                        <option
+                          *ngFor="let sup of supervisors"
+                          [value]="sup.employeeCode">
+                          {{ sup.employeeName }} ({{ sup.employeeCode }})
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="col-form-label">Bank Account Number</label>
+                      <input
+                        class="form-control"
+                        type="number"
+                        placeholder="Enter account number"
+                        formControlName="bankAccountNo" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="col-form-label">Bank Name</label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        placeholder="Enter bank name"
+                        formControlName="bankName" />
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="col-form-label">Bank Code</label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        placeholder="Enter bank code/IFSC code"
+                        formControlName="bankCode" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="col-form-label">Bank Branch</label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        placeholder="Enter branch name of the bank"
+                        formControlName="bankBranch" />
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="col-form-label">Bank Address</label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        placeholder="Enter address of bank"
+                        formControlName="bankAddress" />
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="update || view">
+                    <div class="form-group">
+                      <label class="col-form-label">Last Working Date</label>
+                      <!-- <div class="cal-icon"> -->
+                      <input
+                        class="form-control datetimepicker"
+                        type="date"
+                        formControlName="lastWorkingDate" />
+                      <!-- </div> -->
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="col-form-label">Total Salary &nbsp;<span
+                          class="text-danger">*</span></label>
+                      <input
+                        class="form-control"
+                        type="number"
+                        (change)="salaryValue()"
+                        [class.invalid]="
+                        payrollForm.get('salary').invalid &&
+                        payrollForm.get('salary').touched
+                      "
+                        formControlName="salary" />
+                      <small
+                        *ngIf="
+                        payrollForm.get('salary').invalid &&
+                        payrollForm.get('salary').touched
+                      "
+                        class="text-danger">
+                        Salary is required</small>
+                    </div>
+                    <!-- <div
+                      *ngIf="payrollForm.controls.rulesQuestion.value === true">
+                      <button class="btn btn-primary"
+                        (click)="getsalaryComp()">Calculate</button>
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-check col-md-10 mt-2" *ngIf="hasRules">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="rulesQuestion"
+                  formControlName="rulesQuestion" (change)="getsalaryComp()" />
+                <label class="form-check-label" for="rulesQuestion">
+                  Do you want to calculate salary by pay rules
+                </label>
+              </div>
+            </form>
+            <!--  -->
+
+            <div class="row mt-5"
+              *ngIf="showComponentCode && salaryComponents.length > 0">
+              <h4>Salary Breakup</h4>
+              <div class="col-md-8 d-flex">
+                <div class="table-leftblock col-md-6">
+                  <table
+                    class="table table-nowrap mb-0">
+                    <thead
+                      class="thead-all">
+                      <tr
+                        class="tr-th-all">
+                        <th class="text-left">Earnings</th>
+                        <th class="text-center">%</th>
+                        <th
+                          class="text-end">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody
+                      style="font: 300 12px/150% CircularStd, sans-serif; border: #fbffff;">
+                      <ng-container
+                        *ngFor="let row of salaryComponents">
+                        <ng-container
+                          *ngIf="row?.isDeduction === false">
+                          <tr class>
+                            <td scope="col">
+                              <span class="d-flex align-items-center">
+                                <input
+                                  type="checkbox"
+                                  class="form-check me-2"
+                                  [disabled]="view"
+                                  [ngModel]="row?.checkedSalary"
+                                  (click)="checkedSalary($event, row)"
+                                  style="zoom: 1.4" />{{ row.componentCode }}
+                              </span>
+                            </td>
+                            <td scope="col">
+                              <input
+                                type="number"
+                                (keyup)="onChangeperct($event.target.value,row)"
+                                placeholder="0.00"
+                                style="width: 70px;"
+                                class="form-control text-end inputwid d-flex justify-content-end"
+                                [(ngModel)]="row.pct"
+                                [ngModelOptions]="{standalone: true}"
+                                [disabled]="!row.checkedSalary || view" />
+                            </td>
+                            <td
+                              class="text-end"
+                              scope="col"> <input
+                                type="number"
+                                (keyup)="onChangeBal($event.target.value,row)"
+                                placeholder="0.00"
+                                class="form-control text-end inputwid"
+                                [(ngModel)]="row.amount"
+                                [ngModelOptions]="{standalone: true}"
+                                [disabled]="!row.checkedSalary || view" />
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+                <div
+                  class="table-right block ms-3 col-md-6">
+                  <table
+                    class="table table-nowrap  mb-0">
+                    <thead
+                      class="thead-all">
+                      <tr
+                        class="tr-th-all">
+                        <th
+                          class="text-left">Deductions</th>
+                        <th class="text-center">%</th>
+                        <th class="text-end">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody
+                      style="font: 300 12px/150% CircularStd, sans-serif; border: #fbffff;">
+                      <ng-container *ngFor="let row of salaryComponents">
+                        <ng-container
+                          *ngIf="row.isDeduction === true">
+                          <tr
+                            class>
+                            <td
+                              scope="col"> <span
+                                class="d-flex align-items-center">
+                                <input
+                                  type="checkbox"
+                                  class="form-check me-2"
+                                  [disabled]="view"
+                                  [ngModel]="row?.checkedSalary"
+                                  (click)="checkedSalary($event, row)"
+                                  style="zoom: 1.4" />{{ row.componentCode }}
+                              </span>
+                            </td>
+                            <td scope="col">
+                              <input
+                                type="number"
+                                (keyup)="onChangeperct($event.target.value,row)"
+                                placeholder="0.00"
+                                style="width: 70px;"
+                                class="form-control text-end inputwid d-flex justify-content-end"
+                                [(ngModel)]="row.pct"
+                                [ngModelOptions]="{standalone: true}"
+                                [disabled]="!row.checkedSalary || view" />
+                            </td>
+                            <td
+                              scope="col"
+                              class="text-end"> <input
+                                type="number"
+                                (keyup)="onChangeBal($event.target.value,row)"
+                                placeholder="0.00"
+                                class="form-control text-end inputwid"
+                                [(ngModel)]="row.amount"
+                                [ngModelOptions]="{standalone: true}"
+                                [disabled]="!row.checkedSalary || view" />
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="col-md-8 d-flex"
+                style="font: 600 12px/150% CircularStd, sans-serif; padding: 5px;">
+                <div
+                  class="col-md-6 border-bottom border-top py-1">
+                  <div
+                    class="d-flex justify-content-between">
+                    <span
+                      style="padding-left: 15px; ">Gross
+                      Earnings</span>
+                    <span
+                      style="padding-right: 15px;">
+                      {{totalearningAmt
+                      | number
+                      :
+                      "1.2-2"}}</span>
+                  </div>
+                </div>
+                <div
+                  class="col-md-6 border-bottom border-top py-1">
+                  <div
+                    class="d-flex justify-content-between">
+                    <span
+                      style="padding-left: 15px;">Total
+                      Deductions</span>
+                    <span
+                      style="padding-right: 15px;">
+                      {{totalDeduction
+                      | number
+                      :
+                      "1.2-2"}}</span>
+                  </div>
+                </div>
+              </div>
+              <!--     border-bottom: white; -->
+              <div
+                class="col-md-8  d-flex justify-content-between"
+                style="font: 600 12px/150% CircularStd, sans-serif; padding: 5px;">
+                <span
+                  style="padding-left: 15px;">
+
+                  Total
+                  Net
+                  Payable
+                  <span
+                    class="block text-muted">
+
+                    Gross
+                    Earnings
+                    -
+                    Total
+                    Deductions
+                  </span>
+                </span>
+                <span
+                  style="padding-right: 15px;">
+                  {{totalSalary | number :
+                  "1.2-2"}}
+                </span>
+              </div>
+            </div>
+            <section class="form-group mt-3" *ngIf="!view">
+              <button
+                class="btn btn-secondary secondary-btn mb-3"
+                type="submit"
+                cdkStepperPrevious>
+                Previous
+              </button>
+
+              <button class="btn add-btn mb-3" type="submit" *ngIf="!update"
+                [disabled]="addEmployeeForm.invalid || payrollForm.invalid ||  showSuccessEmailToolTip === 'EMAIL ALREADY EXIST'"
+                (click)="saveEmployee()">
+                <!-- addEmployeeAndPayroll -->
+                Submit
+              </button>
+              <button class="btn add-btn mb-3" type="submit"
+                *ngIf="update" (click)="updateEmployeeandPayroll()">
+                <!-- UpdateEmpAndPayroll -->
+                Update
+              </button>
+            </section>
+
+            <section class="form-group mt-3" *ngIf="view">
+              <button
+                class="btn btn-secondary secondary-btn mb-3"
+                type="submit"
+                cdkStepperPrevious>
+                Previous
+              </button>
+              <button class="btn delete-btn  me-3" style="float: right;"
+                (click)="back()">Cancel</button>
+            </section>
+          </div>
+
+        </cdk-step>
+      </ng-stepper>
+    </div>
+  </div>
+</div>
+<!-- create employee ends -->
+
+<!-- create department model starts -->
+<div id="addDepartment" class="modal custom-modal fade" role="dialog">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Department</h5>
+        <button
+          id="leave_setup_close"
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close" (click)="closeDept()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <form [formGroup]="departmentForm" novalidate>
+            <div class="form-group input">
+              <label class="mb-1 text-sm">
+                Department&nbsp;<span
+                  class="text-danger" style=" margin-left: 1px">*</span>
+              </label>
+              <input
+                class="form-control"
+                id="deptCode"
+                maxlength="{{ charLimit }}"
+                placeholder="Enter Department Code"
+                [formControl]="departmentForm.controls.deptCode"
+                [class.is-invalid]="departmentForm.controls.deptCode.invalid && (departmentForm.controls.deptCode.dirty || departmentForm.controls.deptCode.touched)" />
+
+              <div
+                *ngIf="
+                    departmentForm.controls['deptCode'].invalid &&
+                    (departmentForm.controls['deptCode'].dirty ||
+                      departmentForm.controls['deptCode'].touched)
+                  "
+                style="padding: 0px">
+                <div
+                  *ngIf="departmentForm.controls['deptCode'].errors.required"
+                  style="color: #dc3545">
+                  Department Code is required.
+                </div>
+              </div>
+
+              <div
+                *ngIf="
+                    departmentForm.controls['deptCode'].value?.length >
+                    charLimit - 1
+                  "
+                style="color: #dc3545">
+                Max {{ charLimit }} Characters
+              </div>
+              <div
+                *ngIf="departmentForm.get('deptCode').hasError('invalidFormat')"
+                style="color: #dc3545">field should not contain special
+                characters</div>
+            </div>
+
+            <div class="form-group input">
+              <label class="mb-1 text-sm">
+               Department Name &nbsp;<span
+                  style="color: red; margin-left: 1px">*</span>
+              </label>
+              <input
+                
+                class="form-control"
+                id="deptName"
+                required
+                maxlength="{{ charLimit }}"
+                placeholder="Enter Department Name"
+                [formControl]="departmentForm.controls.deptName"
+                [class.is-invalid]="departmentForm.controls.deptName.invalid && (departmentForm.controls.deptName.dirty || departmentForm.controls.deptName.touched)" />
+
+              <div
+                *ngIf="
+                    departmentForm.controls['deptName'].invalid &&
+                    (departmentForm.controls['deptName'].dirty ||
+                      departmentForm.controls['deptName'].touched)
+                  "
+                style="padding: 0px">
+                <div
+                  *ngIf="departmentForm.controls['deptName'].errors.required"
+                  style="color: #dc3545">
+                  Department Name is required.
+                </div>
+              </div>
+              <div
+                *ngIf="departmentForm.get('deptName').hasError('invalidFormat')"
+                style="color: #dc3545">field should not contain special
+                characters</div>
+            </div>
+            <!-- (keydown.space)="$event.preventDefault()" -->
+            <div class="mb-3 form-check">
+              <input
+                class="form-check-input"
+                id="isactive"
+                color="primary"
+                type="checkbox"
+                [formControl]="departmentForm.controls.isactive" />
+              <label class="form-check-label">
+               Active </label>
+            </div>
+          </form>
+        </div>
+
+        <div class="row">
+          <div class="items-table">
+            <div class="item-row head w-100">
+              <div class="col-12 item-h">
+                <div class="titlediv">
+                  <h5 class="mb-0" *ngIf="!view">Add Department Access</h5>
+                  <h5 class="mb-0"
+                    *ngIf="view && roleAccessArray.length > 0">View Department
+                    Access Users</h5>
+                  <h5 class="mb-0" *ngIf="view && roleAccessArray.length === 0">
+                    No Department Access Fond for this Department.
+                  </h5>
+                </div>
+                <div style="float: right">
+                  <button *ngIf="!view"
+                    type="button"
+                    (click)="addUser()"
+                    class="btn btn-primary btn-sm mt-1 me-2 align-items-end d-flex">
+                    <i class="material-icons me-2">add</i> Add More
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngFor="let c of roleAccessArray; let i = index">
+          <div class="row mt-2 w-100" *ngIf="c.status !== 'delete'">
+            <div class="col-md-5 item-h">
+              <div class="form-group input">
+                <label class="mb-1 text-sm">Role Code&nbsp;<span
+                    style="color: red; margin-left: 1px">*</span>
+                </label>
+                <select
+                  id="deptRoleCode"
+                  class="form-select br-rm"
+                  [(ngModel)]="c.deptRoleCode"
+                  [disabled]="view"
+                  [ngModelOptions]="{ standalone: true }">
+                  <option value>-</option>
+                  <option *ngFor="let e of roleTypes"
+                    [value]="e.name">
+                    {{ e.name }}
+                  </option>
+                </select>
+                <div *ngIf="!c.deptRoleCode"
+                  style="color: #dc3545">
+                  Role is required.
+                </div>
+              </div>
+            </div>
+            <div class="col-md-5 item-h">
+              <div class="form-group input">
+                <label class="mb-1 text-sm">User Name&nbsp;<span
+                    style="color: red; margin-left: 1px">*</span>
+                </label>
+                <select
+                  id="userName"
+                  class="form-select br-rm"
+                  [(ngModel)]="c.userName"
+                  [disabled]="view"
+                  [ngModelOptions]="{ standalone: true }">
+                  <option value>-</option>
+                  <option
+                    *ngFor="let e of userNames"
+                    [value]="e">
+                    {{ e }}
+                  </option>
+                </select>
+                <div *ngIf="!c.userName"
+                  style="color: #dc3545">
+                  Username is required.
+                </div>
+
+              </div>
+            </div>
+            <div class="item-h col-md-2 d-flex align-items-center"
+              [hidden]="view">
+              <i class="fa-solid fa-trash fs-5 text-danger mt-3 px-2 c-ptr"
+                (click)="removeItem(i)"></i>
+            </div>
+          </div>
+        </div>
+        <div class="mt-2">
+          <button
+            id="designation_close"
+            type="button"
+            class="btn delete-btn closeDept"
+            data-bs-dismiss="modal"
+            aria-label="Close">Cancel</button>
+          <button id="submit_Dept" class="btn add-btn"
+            [disabled]="departmentForm.invalid || departmentForm.pristine ||roleAccessArray.length ===0 "
+            (click)="submit()" type="submit">Create</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- create department model ends -->
+
+<!-- create project model starts -->
+<div id="addProject" class="modal custom-modal fade" role="dialog">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Project</h5>
+        <button
+          id="leave_setup_close"
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <form [formGroup]="projectForm" novalidate>
+            <div class="form-group input">
+              <label class="text-sm mb-1">
+                Project&nbsp;<span
+                  style="color: red; margin-left: 1px">*</span>
+              </label>
+              <input
+                
+                class="form-control"
+                id="categoryCode"
+                maxlength="{{ charLimit }}"
+                placeholder="Enter Project Code"
+                [formControl]="projectForm.controls.categoryCode" />
+
+              <div
+                *ngIf="
+                    projectForm.controls['categoryCode'].invalid &&
+                    (projectForm.controls['categoryCode'].dirty ||
+                      projectForm.controls['categoryCode'].touched)
+                  "
+                style="padding: 0px">
+                <div
+                  *ngIf="projectForm.controls['categoryCode'].errors.required"
+                  style="color: #dc3545">
+                  Project is required.
+                </div>
+              </div>
+
+              <div
+                *ngIf="
+                    projectForm.controls['categoryCode'].value?.length >
+                    charLimit - 1
+                  "
+                style="color: #dc3545">
+                Max
+                {{ charLimit }}
+                Characters
+              </div>
+               <div
+                *ngIf="projectForm.get('categoryCode').hasError('invalidFormat')"
+                style="color: #dc3545">field should not contain special
+                characters</div>
+
+            </div>
+
+            <div class="mt-2 form-group input">
+              <label class="text-sm mb-1">Project Short Name </label>
+              <input
+                class="form-control"
+                id="shortName"
+                maxlength="3"
+                placeholder="Project Short Name"
+                [formControl]="projectForm.controls.shortName" />
+            </div>
+
+            <div class="mt-2 form-group">
+              <label
+                class="text-sm mb-1">{{getProjectLabelDescription('projectType')}}</label>
+              <select
+                class="form-select"
+                id="projectTypes"
+                [formControl]="projectForm.controls.projectType">
+                <option [value]="p.name" *ngFor="let p of projectTypes">
+                  {{ p.name }}
+                </option>
+              </select>
+            </div>
+
+            <div class="mt-2 form-group">
+              <label class="text-sm mb-1">
+                {{getProjectLabelDescription('description')}} </label>
+              <input
+                class="form-control"
+                id="description"
+                placeholder="{{getPlaceholdersDescription('description')}}"
+                [formControl]="projectForm.controls.description" />
+            </div>
+          </form>
+        </div>
+
+        <div class="row">
+          <div class="items-table">
+            <div class="item-row head w-100">
+              <div class="col-12 item-h">
+                <div class="titlediv">
+                  <h5 class="mb-0" *ngIf="!view">Add Project Access</h5>
+                  <h5 class="mb-0"
+                    *ngIf="view && roleAccessArrayProject.length > 0">View
+                    Project
+                    Access</h5>
+                  <h5 class="mb-0"
+                    *ngIf="view && roleAccessArrayProject.length === 0 ">
+                    No Project Access found for this Project.
+                  </h5>
+                </div>
+                <div style="float: right">
+                  <button *ngIf="!view"
+                    type="button"
+                    (click)="addUserInProject()"
+                    class="btn btn-primary btn-sm mt-1 me-2 align-items-end d-flex">
+                    <i class="material-icons me-2">add</i> Add More
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div *ngFor="let c of roleAccessArrayProject; let i = index">
+          <div class="row mt-4 w-100" *ngIf="c.status !== 'delete'">
+            <div class="col-md-5 item-h">
+              <div class="form-floating">
+                <select
+                  id="projectRoleCode"
+                  class="form-select br-rm"
+                  [(ngModel)]="c.projectRoleCode"
+                  [disabled]="view"
+                  [ngModelOptions]="{ standalone: true }">
+                  <option
+                    *ngFor="let e of roleTypes"
+                    [value]="e.name">
+                    {{ e.name }}
+                  </option>
+                </select>
+                <label>
+                  Role Code&nbsp;<span
+                    style="color: red; margin-left: 1px">*</span>
+                </label>
+              </div>
+            </div>
+            <div class="col-md-5 item-h">
+              <div class="form-floating">
+
+                <select
+                  id="userName"
+                  class="form-select br-rm"
+                  [(ngModel)]="c.userName"
+                  [disabled]="view"
+                  [ngModelOptions]="{ standalone: true }">
+                  <option
+                    *ngFor="let e of userNames"
+                    [value]="e">
+                    {{ e }}
+                  </option>
+                </select>
+                <label>User Name&nbsp;<span
+                    style="color: red; margin-left: 1px">*</span></label>
+              </div>
+            </div>
+            <div class="item-h col-md-2" [hidden]="view">
+              <i
+                class="fa-solid fa-trash fs-5 text-danger mt-3 px-2 c-ptr"
+                (click)="removeItemProjects(i)"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-2">
+          <button
+            id="designation_close"
+            type="button"
+            class="btn delete-btn closePrj"
+            data-bs-dismiss="modal"
+            aria-label="Close">Cancel</button>
+          <button
+            id="create_project"
+            [disabled]="projectForm.pristine || projectForm.invalid  ||roleAccessArrayProject.length ===0"
+            [hidden]="view || update"
+            (click)="createApi()"
+            class="btn add-btn ">
+            Create
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- create projet model ends -->
+
+<!-- create designation model starts -->
+<div id="addDesignation" class="modal custom-modal fade" role="dialog">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Designation</h5>
+        <button
+          id="leave_setup_close"
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close" (click)="closeDesig()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <form [formGroup]="designationForm" novalidate>
+            <div class="form-group input">
+              <label class="mb-1 text-sm"> Designation&nbsp;<span
+                  style="color: red; margin-left: 1px">*</span>
+              </label>
+              <input  class="form-control" id="designation"
+                maxlength={{charLimit}}
+                [formControl]="designationForm.controls.designation"
+                placeholder="Enter Designation" />
+
+              <div
+                *ngIf="designationForm.controls['designation'].invalid && (designationForm.controls['designation'].dirty ||
+                          designationForm.controls['designation'].touched)"
+                style="padding: 0px">
+                <div
+                  *ngIf="designationForm.controls['designation'].errors.required"
+                  style="color: #dc3545">
+                  Designation is required.
+                </div>
+              </div>
+              <div [hidden]="view"
+                *ngIf="designationForm.controls['designation'].value?.length > charLimit - 1"
+                style="color: #dc3545">Max
+                {{charLimit}}
+                Characters
+              </div>
+                <div
+                *ngIf="designationForm.get('designation').hasError('invalidFormat')"
+                style="color: #dc3545">field should not contain special
+                characters</div>
+            </div>
+            <div class="mt-2">
+              <div class="mb-3 form-check">
+                <input class="form-check-input" id="isManager" color="primary"
+                  type="checkbox"
+                  [formControl]="designationForm.controls.isManager">
+                <label class="form-check-label">
+                  Is Manager
+                </label>
+              </div>
+              <div class="mb-3 form-check">
+                <input class="form-check-input" id="isManager" color="primary"
+                  type="checkbox"
+                  [formControl]="designationForm.controls.isactive">
+                <label class="form-check-label">
+                  Is Active
+                </label>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="mt-2">
+          <button
+            id="designation_close"
+            type="button"
+            class="btn delete-btn closeDesig"
+            data-bs-dismiss="modal"
+            aria-label="Close"> Cancel</button>
+          <button id="submit_Desi" class="btn add-btn"
+            [disabled]="designationForm.invalid || designationForm.pristine "
+            (click)="submitDesignation()" type="submit">Create</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- create designation model ends -->
+<!-- preview image/documents -->
+<div id="previewFile" class="modal custom-modal fade" role="dialog">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+    <div class="modal-content">
+      <ng-container *ngIf="PreviewObject?.fileType === 'pdf'">
+        <embed [src]="PreviewObject?.fileContent" type="application/pdf"
+          width="100%" height="600px" />
+
+      </ng-container>
+      <ng-container
+        *ngIf="PreviewObject?.fileType === 'png' || PreviewObject?.fileType === 'jpg'|| PreviewObject?.fileType === 'jpeg'">
+        <div style="overflow: auto;">
+          <img width="100%" [src]="PreviewObject?.imageByteCode " alt>
+        </div>
+      </ng-container>
+      <div class="my-2 text-center">
+        <button
+          id="previewFile_close"
+          type="button"
+          class="btn delete-btn closeDesig"
+          data-bs-dismiss="modal"
+          aria-label="Close"> Cancel</button>
+
+      </div>
+    </div>
+  </div>
+</div>
+<!--  -->

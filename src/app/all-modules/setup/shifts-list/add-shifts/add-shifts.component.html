@@ -1,0 +1,496 @@
+<div class="modal-header fw-bold">
+    <h4 class="modal-title" *ngIf="!update &&  !view">Add Shift</h4>
+    <h4 class="modal-title" *ngIf="update">Update Shift</h4>
+    <h4 class="modal-title" *ngIf="view">View Shift</h4>
+
+    <i class="fa-solid fa-xmark float-end fs-4" id="close_model"
+        data-bs-dismiss="modal"
+        (click)="closeModal('dismiss')"></i>
+</div>
+<div class="modal-body">
+    <form [formGroup]="shiftForm">
+
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+
+                <div class="mb-3">
+                    <label class="form-label text-sm" for="shiftCode">Name <span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="shiftCode"
+                        formControlName="shiftCode" id="shiftCode"
+                        maxlength="{{ charLimit }}"
+                        placeholder="e.g. morning shift">
+                    <div
+                        *ngIf="
+                    shiftForm.controls['shiftCode'].invalid &&
+                    (shiftForm.controls['shiftCode'].dirty ||
+                      shiftForm.controls['shiftCode'].touched)
+                  "
+                        style="padding: 0px">
+                        <div
+                            *ngIf="shiftForm.controls['shiftCode'].errors.required"
+                            style="color: #dc3545">
+                            Shift is required.
+                        </div>
+                    </div>
+
+                    <div
+                        *ngIf="shiftForm.controls['shiftCode'].value?.length > charLimit - 1"
+                        style="color: #dc3545">Max
+                        {{charLimit}}
+                        Characters
+                    </div>
+                    <div
+                        *ngIf="shiftForm.get('shiftCode').hasError('invalidFormat')"
+                        style="color: #dc3545">field should not contain special
+                        characters</div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="mb-3">
+                    <label class="form-label text-sm" for="shortName">
+                       Enter Short name for the Shift <span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control"
+                        name="shortName" formControlName="shortName"
+                        id="shortName"
+                        maxlength="3"
+                        placeholder="Enter Shortname max 3 Characters">
+                    <div
+                        *ngIf="shiftForm.controls['shortName'].invalid &&
+                    (shiftForm.controls['shortName'].dirty ||
+                      shiftForm.controls['shortName'].touched)"
+                        style="padding: 0px">
+                        <div
+                            *ngIf="shiftForm.controls['shortName'].errors.required"
+                            style="color: #dc3545">
+                            Short Name is required.
+                        </div>
+                    </div>
+                    <div
+                        *ngIf="shiftForm.get('shortName').hasError('invalidFormat')"
+                        style="color: #dc3545">field should not contain special
+                        characters</div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="mb-3">
+                    <label for="timezone" class="form-label text-sm">
+                        Time Zone&nbsp;<span
+                            style="color: red; margin-left: 1px">*</span></label>
+                    <ng-select [items]="timeZones" bindLabel="t" bindValue="t"
+                        [multiple]="false"
+                        id="timezone"
+                        placeholder="Select" class="ngSelectform"
+                        formControlName="timezone">
+                    </ng-select>
+                    <div
+                        *ngIf="
+                    shiftForm.controls['timezone'].invalid &&
+                    (shiftForm.controls['timezone'].dirty ||
+                      shiftForm.controls['timezone'].touched)
+                  "
+                        style="padding: 0px">
+                        <div
+                            *ngIf="shiftForm.controls['timezone'].errors.required"
+                            style="color: #dc3545">
+                            Timezone is required.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="mb-3">
+                    <label for="calendarCode" class="form-label text-sm">
+                        Select the Holiday Calendar&nbsp;<span
+                            style="color: red; margin-left: 1px">*</span></label>
+                    <select class="form-select" formControlName="calendarCode"
+                        id="calendarCode">
+                        <option *ngFor="let c of calenderCodes"
+                            [value]="c.calendarCode">{{c.calendarCode}}</option>
+                    </select>
+                    <div
+                        *ngIf="
+                    shiftForm.controls['calendarCode'].invalid &&
+                    (shiftForm.controls['calendarCode'].dirty ||
+                      shiftForm.controls['calendarCode'].touched)
+                  "
+                        style="padding: 0px">
+                        <div
+                            *ngIf="shiftForm.controls['calendarCode'].errors.required"
+                            style="color: #dc3545">
+                            Calendar is required.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="mb-3">
+                    <label class="form-label text-sm" for="graceTimeInHrs">
+                       Enter the grace time (in minutes) <span
+                            class="text-muted"> (Eg: 1 hour = 60
+                            minutes)</span></label>
+                    <input type="number" class="form-control"
+                        id="graceTimeInHrs"
+                        formControlName="graceTimeInHrs"
+                        (change)="TimeConverter($event.target.value)">
+                </div>
+            </div>
+   
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="mb-3">
+                    <label class="form-label text-sm"
+                        for="minHrsInTimeframe">Minimum hours in a Day</label>
+                    <input type="number" id="minHrsInTimeframe"
+                        class="form-control" (change)="minHrsPerDay()"
+                        formControlName="minHrsInTimeframe">
+                    <div
+                        *ngIf="shiftForm.controls.minHrsInTimeframe.invalid && shiftForm.controls.minHrsInTimeframe.dirty"
+                        class="text-danger">Minimum hours should be between 0
+                        and 23.</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="mb-3 mt-4 form-check">
+                        <input class="form-check-input" id="allowHalfDays"
+                            type="checkbox"
+                            formControlName="allowHalfDays">
+                        <label class="form-check-label" for="allowHalfDays">
+                            Allow Half-days
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="mb-3"
+                        *ngIf="shiftForm.controls.allowHalfDays.value === true">
+                        <label class="form-label text-sm"
+                            for="minHrsToMarkHalfDay">Minimum hours needed to be
+                            counted
+                            as Half-day</label>
+                        <input type="number" class="form-control"
+                            id="minHrsToMarkHalfDay"
+                            (change)="minHrsToMarkHalfDay()"
+                            formControlName="minHrsToMarkHalfDay">
+                        <div
+                            *ngIf="shiftForm.controls.minHrsToMarkHalfDay.invalid && shiftForm.controls.minHrsToMarkHalfDay.dirty"
+                            class="text-danger">Minimum hours should be between
+                            0
+                            and 23.</div>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+                Does the shift have flexible weekends ? <span class="ms-4"
+                    id="hasFlexibleWeekends">
+                    <span id="hasFlexibleWeekends" class="me-4"><input
+                            type="radio" id="hasFlexibleWeekends"
+                            name="question"
+                            [value]="true"
+                            [formControl]="shiftForm.controls.hasFlexibleWeekends"
+                            (change)="weekendquestion()"> Yes</span>
+                    <span id="hasFlexibleWeekends"><input type="radio"
+                            name="question" id="hasFlexibleWeekends"
+                            [value]="false"
+                            [formControl]="shiftForm.controls.hasFlexibleWeekends"
+                            (change)="weekendquestion()"> No</span> </span>
+
+            </p>
+            <p>
+                Does the shift have flexible work hours ? <span class="ms-4"
+                    id="hasFlexibleWorkhours">
+                    <span id="hasFlexibleWorkhours" class="me-4"><input
+                            type="radio" id="hasFlexibleWorkhours"
+                            name="hrsquestion"
+                            [value]="true"
+                            [formControl]="shiftForm.controls.hasFlexibleWorkhours"
+                            (change)="workhoursquestion()"> Yes</span>
+                    <span id="hasFlexibleWorkhours"><input type="radio"
+                            name="hrsquestion" id="hasFlexibleWorkhours"
+                            [value]="false"
+                            [formControl]="shiftForm.controls.hasFlexibleWorkhours"
+                            (change)="workhoursquestion()"> No</span> </span>
+
+            </p>
+
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12"
+                *ngIf="shiftForm.controls.hasFlexibleWeekends.value">
+                <div class="mb-3">
+                    <label class="form-label text-sm"
+                        for="weekends">Weekends</label>
+                    <ng-select
+                        [items]="days"
+                        [readonly]="true"
+                        bindLabel="dayName"
+                        id="weekends"
+                        bindValue="dayName"
+                        [multiple]="true"
+                        (change)="changeWeekends(shiftForm.controls.weekends.value)"
+                        placeholder="Select Weekends"
+                        formControlName="weekends">
+                    </ng-select>
+                </div>
+
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12"
+                *ngIf="!shiftForm.controls.hasFlexibleWeekends.value">
+                <div class="mb-3">
+                    <label class="form-label text-sm"
+                        for="weekends">Weekends</label>
+                    <ng-select
+                        [items]="days"
+                        bindLabel="dayName"
+                        bindValue="dayName"
+                        [multiple]="true"
+                        id="weekends"
+                        (change)="changeWeekends(shiftForm.controls.weekends.value)"
+                        placeholder="Select Weekends"
+                        formControlName="weekends">
+                    </ng-select>
+                </div>
+
+            </div>
+
+            <div class="col-sm-6 col-md-6 col-lg-2">
+                <div class="mb-3">
+                    <label class="form-label text-sm"
+                        for="noOfWorkdaysInWeek">Work days/Week</label>
+                    <input type="number" class="form-control" max="7"
+                        (change)="putOnly7()"
+                        (change)="multiplyWorkdaysHrsPDayWeek()"
+                        (keyup)="multiplyWorkdaysHrsPDayWeek()"
+                        id="noOfWorkdaysInWeek"
+                        formControlName="noOfWorkdaysInWeek">
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-2">
+                <div class="mb-3">
+                    <label class="form-label text-sm" for="workHoursPerDay">Work
+                        hours/day</label>
+                    <input type="number" class="form-control"
+                        id="workHoursPerDay"
+                        (keyup)="multiplyWorkdaysHrsPDayWeek()"
+                        (change)="multiplyWorkdaysHrsPDayWeek()"
+                        formControlName="workHoursPerDay">
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-6 col-lg-2">
+                <div class="mb-3">
+                    <label class="form-label text-sm"
+                        for="workhoursPerWeek">Work hours/Week</label>
+                    <input type="number" class="form-control"
+                        id="workhoursPerWeek"
+                        formControlName="workhoursPerWeek">
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="mb-3 form-check">
+                    <input class="form-check-input" type="checkbox"
+                        id="isDefault"
+                        formControlName="isDefault" (change)="checkDefault()">
+                    <label class="form-check-label" for="isDefault">
+                        Is default
+                    </label>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="mb-3 form-check">
+                    <input class="form-check-input" type="checkbox"
+                        id="isStrict"
+                        formControlName="isStrict">
+                    <label class="form-check-label" for="isStrict">
+                        Is strict
+                    </label>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="mb-3 form-check">
+                    <input class="form-check-input" type="checkbox"
+                        id="isactive"
+                        formControlName="isactive">
+                    <label class="form-check-label" for="isactive">
+                        Is Active
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="my-3">
+            <label class="form-label text-sm">Selected working days&nbsp;
+                <span *ngIf="totalSelectedDays>0"
+                    class="badge text-bg-secondary">
+                    {{totalSelectedDays}}
+                </span>
+            </label>
+            <br>
+            <ng-container *ngFor="let day of days;let i = index">
+                <button *ngIf="day.isactive" [disabled]="true" type="button"
+                    class="btn btn-primary btn-sm m-1"
+                    (click)="changeWorkingDays(day)">{{day.code}}</button>
+                <button *ngIf="!day.isactive" [disabled]="true" type="button"
+                    class="btn btn-light btn-sm m-1"
+                    (click)="changeWorkingDays(day)">{{day.code}}</button>
+            </ng-container>
+        </div>
+    </form>
+    <p>
+        Do you have break shifts ? <span class="ms-4">
+            <!-- formControlName="shiftHasBreaks" -->
+            <span class="me-4"><input type="radio" name="shiftHasBreaks"
+                    id="shiftHasBreaks"
+                    [formControl]="shiftForm.controls.shiftHasBreaks"
+                    (change)="breaKShift()" [value]="true">Yes</span>
+            <span><input type="radio" name="shiftHasBreaks" [value]="false"
+                    id="shiftHasBreaks"
+                    [formControl]="shiftForm.controls.shiftHasBreaks"
+                    (change)="breaKShift()">No</span> </span>
+
+    </p>
+    <!-- 
+<table *ngIf="!sectionTwo">
+    <thead  >
+        <th class="form-label text-sm"> Enter the working hours</th>
+        <th colspan="4" class="text-center" *ngIf="!sectionTwo" >Session 1 </th>
+        <th colspan="1"  *ngIf="!sectionTwo"></th>
+       <th colspan="4"   *ngIf="!sectionTwo" class="text-center">Session 2</th>
+    </thead>
+
+    <tbody >
+            <ng-container *ngFor="let day of days;let i = index">
+
+        <tr *ngIf="day.isactive">
+            <td>{{day.dayName}}</td>
+            <td> <input class="form-control time-input" type="time" [(ngModel)]="day.session1.startTime" [disabled]="view" (change)="checkTime(day)"></td>
+            <td colspan="2" class="text-center" style="width: 40px;">To</td>
+            <td class="mr-2"  > <input class="form-control time-input" type="time"  [ngClass]="{'warnthem' : day.session1.previous1TimeWrng}" [(ngModel)]="day.session1.endTime" [disabled]="view" (change)="checkTime(day)"></td>
+            <td colspan="1" style="width: 20px;" > <span class="border-start" ></span> </td>
+            <td    ><input class="form-control time-input" type="time" [ngClass]="{'warnthem' : day.session2.previous2TimeWrng}"  [(ngModel)]="day.session2.startTime2" [disabled]="view" (change)="checkTime(day)"></td>
+            <td  colspan="2" class="text-center" style="width: 40px;">To</td>
+            <td  ><input class="form-control time-input" type="time"  [(ngModel)]="day.session2.endTime2" [disabled]="view" (change)="checkTime(day)"></td>
+      
+      <div *ngIf="i===firstSelectedDayIndex" class="border-start" [hidden]="view">
+          <span (click)="copyToAll(day)">
+              <i class="fa-solid fa-copy"></i>&nbsp;Copy to all
+            </span>
+        </div>
+    </tr>
+    </ng-container>
+    </tbody>
+</table> -->
+    <!-- if break shift  -->
+    <table>
+
+        <tbody *ngIf="shiftForm.controls.shiftHasBreaks.value">
+            <tr>
+                <th class="form-label text-sm"> Enter start and end time</th>
+
+                <td> <input class="form-control time-input" type="time"
+                        id="startTime"
+                        [(ngModel)]="breakShift.startTime" [disabled]="view"
+                        (change)="changedTime()"
+                        (change)="breakShiftYes(breakShift)"></td>
+                <td colspan="2" class="text-center" style="width: 40px;">To</td>
+                <td class="mr-2"> <input class="form-control time-input"
+                        type="time" id="endTime" (change)="changedTime()"
+                        [ngClass]="{'warnthem' : breakShift.previous1TimeWrng}"
+                        [(ngModel)]="breakShift.endTime" [disabled]="view"
+                        (change)="breakShiftYes(breakShift)"></td>
+                <td colspan="1" style="width: 20px;"> <span
+                        class="border-start"></span>
+                </td>
+                <td><input class="form-control time-input" type="time"
+                        id="startTime2"
+                        [ngClass]="{'warnthem' : breakShift.previous2TimeWrng}"
+                        [(ngModel)]="breakShift.startTime2" [disabled]="view"
+                        (change)="changedTime()"
+                        (change)="breakShiftYes(breakShift)"></td>
+                <td colspan="2" class="text-center" style="width: 40px;">To</td>
+                <td><input class="form-control time-input" type="time"
+                        id="endTime2"
+                        [(ngModel)]="breakShift.endTime2" [disabled]="view"
+                        (change)="changedTime()"
+                        (change)="breakShiftYes(breakShift)"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="mb-3" *ngIf="!shiftForm.controls.shiftHasBreaks.value">
+        <label class="form-label text-sm">Enter start and end time </label>
+        <ng-container *ngFor="let day of days;let i = index">
+            <div *ngIf="day.isactive" class="row mx-4">
+                <div class="col-md-10 col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-3 p-2">
+                            {{day.dayName}}
+                        </div>
+                        <div class="col-sm-4 col-md-3">
+                            <input class="form-control time-input" type="time"
+                                id="startTime"
+                                [(ngModel)]="day.startTime" [disabled]="view"
+                                (change)="changedTime()"
+                                (change)="timechage(day)">
+                        </div>
+                        <div class="col-sm-2 col-md-1">
+                            to
+                        </div>
+                        <div class="col-sm-4 col-md-3">
+                            <input class="form-control time-input" type="time"
+                                id="endTime"
+                                [(ngModel)]="day.endTime" [disabled]="view"
+                                (change)="changedTime()"
+                                (change)="timechage(day)">
+                        </div>
+                        <div class="col-sm-2 col-md-2">
+                            {{(day.totalTime)}}
+                        </div>
+
+                        <!-- 
+                         <div class="col-sm-4 col-md-3">
+                            <input class="form-control time-input" type="time"[(ngModel)]="day.startTime" [disabled]="view" (change)="timechage(day)">
+                        </div>
+                        <div class="col-sm-2 col-md-1">
+                            to
+                        </div>
+                        <div class="col-sm-4 col-md-3">
+                            <input class="form-control time-input" type="time"  [(ngModel)]="day.endTime" [disabled]="view" (change)="timechage(day)">
+                        </div> -->
+                    </div>
+                </div>
+
+                <div *ngIf="i===firstSelectedDayIndex"
+                    class="col-md-2 col-sm-12 border-start copyAll"
+                    [hidden]="view">
+                    <span id="copyAll" (click)="copyToAll(day)">
+                        <i class="fa-solid fa-copy" id="copyAll"></i>&nbsp;Copy
+                        to all
+                    </span>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button type="button" id="cancel_btn" class="btn delete-btn "
+        data-dismiss="modal"
+        (click)="closeModal('close')">Cancel</button>
+    <button type="button" id="save_shift" class="btn add-btn add-btn "
+        [hidden]="view || update"
+        [disabled]="shiftForm.invalid" (click)="saveShift()">Save Shift</button>
+    <button type="button" id="update_shift" class="btn add-btn add-btn "
+        *ngIf="update && !modified"
+        [disabled]="shiftForm.pristine" (click)="Update()">Update
+        Shift</button>
+    <button type="button" id="update_shift" class="btn add-btn add-btn "
+        *ngIf="update && modified"
+        (click)="Update()">Update
+        Shift</button>
+
+</div>

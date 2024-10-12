@@ -1,0 +1,29 @@
+.input-group-custom {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e3e3e3;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    padding: 0.375rem 0.75rem;
+border-radius: 0 0.375rem 0.375rem 0;
+}
+ng-select:focus,
+ng-select:hover {
+    outline: none;
+    border-color: rgba(129, 140, 248);
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 0 5px rgb(129 140 248 / 30%);
+}
+.card {
+    cursor: pointer;
+    margin: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.card.selected {
+    background-color: #1DAC3D;
+    color: white;
+}

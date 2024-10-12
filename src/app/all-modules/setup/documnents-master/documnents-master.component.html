@@ -1,0 +1,173 @@
+
+<div class="container-xxl">
+    <div class="row mb-2">
+        <div class="col-sm-12 d-flex justify-content-between">
+            <div class="d-flex align-items-baseline">
+                <i style="font-size:20px;" class="fa fa-arrow-left"
+                    (click)="back()" aria-label="back"></i>
+                <h3 class="ms-4 page-title">Documents Master</h3>
+            </div>
+
+        </div>
+        <div class="text-end">
+            <button
+                (click)="addNew('','create')"
+                data-bs-target="#Doc_info"
+                data-bs-toggle="modal"
+                class="btn add-btn mx-2 float-none">
+                Add New Type
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-sm col-md col-lg customecard m-1 p-4"
+            *ngFor="let item of groupedDocuments"> 
+            <div
+                class="mb-2 d-flex align-items-baseline justify-content-between">
+                <span class="d-flex align-items-center"><img
+                        src="../../../../assets/img/icon/attendance-summary.svg"
+                        height="70px">
+                    <h4 class="ms-2"> {{item.docType}}</h4>
+                </span>
+                <span style="margin: auto 0;" data-bs-target="#Doc_info"
+                    data-bs-toggle="modal" (click)="addNew(item,'edit')"><i
+                        class="fas fa-edit"></i></span>
+            </div>
+            <div class="row p-3">
+                <div class="col-md-6" style="padding: 0px 0px 8px 8px;"
+                    *ngFor="let it of item.documents">
+                    {{it.documentName}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="Doc_info" data-backdrop="static" role="dialog"
+        class="modal custom-modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-lg"
+            role="document">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-between">
+                    <h4></h4>
+                    <h5 class="modal-title">{{editDoc ? 'Edit' : 'Add'}}
+                        Document Type</h5>
+                    <i class="fa-solid fa-xmark  fs-4 " id="close_model"
+                        data-bs-dismiss="modal"
+                        (click)="closeModel('dismiss')"></i>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class>
+                            <div class="form-group">
+                                <label class="col-form-label"
+                                    for="docType">Document Type
+                                    &nbsp;<span
+                                        class="text-danger">*</span></label>
+                                <input
+                                    class="form-control"
+                                    type="text"
+                                    placeholder="Enter Document Type"
+                                    appCaseSensitive
+                                    id="docType"
+                                    [disabled]="editDoc"
+                                    [(ngModel)]="docType" />
+                                <div *ngIf="docType === ''">
+                                    <small class="text-danger">Document Type is
+                                        required</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <button
+                                (click)="AddDocType()"
+                                class="btn add-btn mx-2 float-none">
+                                Add Documents
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row"
+                        *ngFor="let doc of listOfNames;let i = index">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-form-label"
+                                    for="documentName">Document Name
+                                    &nbsp;<span
+                                        class="text-danger">*</span></label>
+                                <input
+                                    class="form-control"
+                                    type="text"
+                                    placeholder="Enter Document Name"
+                                    appCaseSensitive
+                                    id="{{i}}"
+                                    [disabled]="doc.documentId"
+                                    [(ngModel)]="doc.documentName" />
+                                <div *ngIf="doc.documentName === ''">
+                                    <small class="text-danger">Document Name is
+                                        required</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="col-md d-flex align-items-center justify-content-around">
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input"
+                                    id="isactive"
+                                    color="primary"
+                                    type="checkbox"
+                                    [(ngModel)]="doc.isMandatory" />
+                                <label class="form-check-label"> Is Mandatory
+                                    ?</label>
+                            </div>
+
+                            <span *ngIf="doc.documentId === undefined"
+                                (click)="remove(i)"><i class="fa fa-trash"
+                                    style="color: red;"
+                                    aria-hidden="true"></i></span>
+                        </div>
+                    </div>
+
+                    <!-- <div class="text-end" *ngIf="listOfNames.length >= 1">
+
+                        <button
+                            *ngIf="!editDoc"
+                            [disabled]="!docType"
+                            (click)="create()"
+                            class="btn add-btn mx-2 float-none">
+                            Create
+                        </button>
+                        <button
+                            *ngIf="editDoc"
+                            (click)="Update()"
+                            class="btn add-btn mx-2 float-none">
+                            Update
+                        </button>
+                    </div> -->
+
+                    <div class="mt-2">
+                        <button
+                            id="doc_close"
+                            type="button"
+                            class="btn delete-btn delete-btn"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">Cancel</button>
+                      <button
+                            *ngIf="!editDoc"
+                            [disabled]="!docType"
+                            (click)="create()"
+                            class="btn add-btn mx-2 float-end">
+                            Create
+                        </button>
+                        <button
+                            *ngIf="editDoc"
+                            (click)="Update()"
+                            class="btn add-btn mx-2 float-end">
+                            Update
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

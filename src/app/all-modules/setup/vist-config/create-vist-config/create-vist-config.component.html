@@ -1,0 +1,228 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="d-flex align-items-baseline">
+      <i
+        style="font-size: 20px"
+        class="fa fa-arrow-left"
+        (click)="back()"
+        aria-label="back"
+      ></i>
+      <h3 class="ms-4 page-title">
+        {{ view ? "View" : update ? "Update" : "Create" }} Visit Config
+      </h3>
+    </div>
+  </div>
+</div>
+
+<div class="card p-3">
+  <form [formGroup]="visitConfig">
+    <div class="row">
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+        <div class="form-group input">
+          <label class="mb-1 col-form-label" id="purpose"
+            >Purpose &nbsp;<span style="color: red; margin-left: 1px"
+              >*</span
+            ></label
+          >
+          <div>
+            <select formControlName="purpose" class="form-select">
+              <option *ngFor="let d of purposes" [value]="d.name">
+                {{ d.name }}
+              </option>
+            </select>
+            <!-- <input type="text"
+                formControlName="purpose"
+                placeholder="Enter purpose"
+                id="purpose" class="form-control"> -->
+            <div
+              id="purpose"
+              *ngIf="
+                visitConfig.controls['purpose'].invalid &&
+                (visitConfig.controls['purpose'].dirty ||
+                  visitConfig.controls['purpose'].touched)
+              "
+              style="padding: 0px"
+            >
+              <div
+                *ngIf="visitConfig.controls['purpose'].errors.required"
+                style="color: #dc3545"
+              >
+                purpose is required.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="col-form-label d-flex ">
+            <div>
+              <input type="checkbox" formControlName="otpAuth" id="otpAuth" class="form-check-input me-2"
+              >
+            </div>
+            <label for="otpAuth">
+                OTP Auth
+            </label>
+          </div> -->
+
+        <div class="d-flex my-4">
+          <div>
+            <input
+              type="checkbox"
+              formControlName="capturePayment"
+              class="form-check-input me-2"
+              id="capturePayment"
+            />
+          </div>
+          <label for="capturePayment"> Capture Payment </label>
+        </div>
+
+        <div class="d-flex my-4">
+          <div>
+            <input
+              type="checkbox"
+              formControlName="goodsImages"
+              class="form-check-input me-2"
+              id="goodsImages"
+            />
+          </div>
+          <label for="goodsImages"> Goods Images </label>
+        </div>
+
+        <div class="col-form-label d-flex">
+          <div>
+            <input
+              type="checkbox"
+              formControlName="visitImages"
+              id="visitImages"
+              class="form-check-input me-2"
+            />
+          </div>
+          <label for="visitImages"> Visit Images </label>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+          <!-- <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="mb-3" *ngIf="stopSpinner">
+                        <label class="form-label " for="visitConfigIds">
+                            Visit Config Ids</label>
+                            <select
+                            formControlName="visitConfigIds"
+                              class="form-select"
+                             >            
+                              <option *ngFor="let d of ids" [value]="d.id">
+                                {{ d.purpose }}
+                              </option>
+                            </select>
+                    </div>
+                <div id="loading" *ngIf="!stopSpinner"></div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" >
+                    
+                </div>
+    
+    
+        </div> -->
+
+        
+      </div>
+    </div>
+  </form>
+  <div class="row">
+    <!-- <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+      <div class="form-group input">
+        <label class="mb-1 col-form-label" for="deptCode">
+          Department</label
+        >
+        <ng-select
+[(ngModel)]="selectedDepartments"
+(change)="updateDisabledEmployees()"
+[items]="departments"
+[ngModelOptions]="{standalone: true}"
+bindLabel="mergeName"
+bindValue="deptCode"
+[multiple]="true"
+id="dept"
+placeholder="Select a department"
+class="ngSelectform">
+</ng-select>
+      </div>
+    </div> -->
+    <form [formGroup]="mappingForm">
+
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+      <div class="form-group input">
+        <label class="mb-1 col-form-label" for="empCode"
+          >Employee
+        </label>
+
+        
+        <ng-select
+        formControlName="empCode"
+        [items]="employees_list"
+        bindLabel="mergeName"
+        bindValue="employeeCode"
+        [multiple]="true"
+        id="emp"
+        placeholder="Select an employee"
+        class="ngSelectform">
+      </ng-select>
+      
+      </div>
+      <!-- <div id="loading" *ngIf="stopSpinner"></div> -->
+    </div>
+    </form>
+  </div>
+      <!-- <div class="mb-3">
+          <label>Select Option:</label>
+          <div class="mt-2">
+              <input type="radio" id="employeeOption" value="employee" [(ngModel)]="selectedOption" [ngModelOptions]="{standalone: true}"  name="option" (change)="selectOption('employee')">
+              <label for="employeeOption" class="radio-label m-3">Employee</label>
+              
+              <input type="radio" id="departmentOption" value="department" [(ngModel)]="selectedOption" [ngModelOptions]="{standalone: true}" name="option" (change)="selectOption('department')">
+              <label for="departmentOption" class="radio-label m-3">Department</label>
+          </div>
+      </div> -->
+
+</div>
+
+<div class="footer mt-4" *ngIf="!view">
+  <button
+    id="cancel_apply_visitConfig"
+    type="button"
+    class="btn delete-btn"
+    (click)="back()"
+  >
+    Cancel
+  </button>
+  <button
+    id="submit_apply_visitConfig"
+    type="button"
+    class="btn add-btn"
+    *ngIf="!update"
+    [disabled]="visitConfig.pristine || visitConfig.invalid"
+    (click)="create()"
+  >
+    Submit
+  </button>
+  <button
+    id="_update_visitConfig"
+    type="button"
+    class="btn add-btn"
+    *ngIf="update"
+    [disabled]="visitConfig.invalid"
+    (click)="Update()"
+  >
+    Update
+  </button>
+</div>
+
+<div class="footer text-center mt-4" *ngIf="view">
+  <button
+    id="_cancel_visitConfig"
+    type="button"
+    class="btn delete-btn"
+    (click)="back()"
+  >
+    Cancel
+  </button>
+</div>

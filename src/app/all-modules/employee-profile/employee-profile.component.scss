@@ -1,0 +1,355 @@
+a {
+    text-decoration: none;
+}
+
+.danger-color {
+    color: #990000;
+}
+
+.uploaddiv {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.close {
+    background-color: #f8d7da;
+}
+// nav pills
+.nav-pills .nav-link,
+.nav-pills .show>.nav-link {
+    background-color: #cfdbff;
+    min-width: 100px;
+}
+
+.nav-pills .nav-link {
+    background: none;
+    border: 0;
+    border-radius: var(--mo-nav-pills-border-radius);
+    color: #5470C6;
+    font-size: small;
+    background-color: #fff;
+    // font-weight: 600;
+}
+.nav-pills .nav-link.active,
+.nav-pills .show>.nav-link {
+    color: #fff;
+    background-color: #5470C6;
+}
+// nav pills ends
+
+.content-wrapper {
+    display: flex;
+    align-items: stretch;
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+h4 {
+    margin-top: 0;
+    // margin-bottom: 1rem;
+    font-weight: 500;
+    line-height: 1.1;
+    // color: #636578;
+        color: #343333;
+    font-size: 1.375rem;
+}
+
+.fw-medium {
+    font-weight: 200 !important;
+    color: #828393;
+}
+
+@media(max-width: 767.98px) {
+    .user-profile-header-banner img {
+        height: 150px
+    }
+    .user-profile-header .user-profile-img {
+        width: 100px
+    }
+}
+.icon {
+    color: #343333;
+}
+.card {
+    background-clip: padding-box;
+    box-shadow: 0 0.125rem 0.625rem 0 rgba(76, 78, 100, .22);
+}
+.content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.content .list {
+    display: flex;
+    flex-direction: column;
+    width: 13%;
+    margin-right: 50px;
+    position: relative;
+}
+
+.content .list label {
+    height: 60px;
+    // font-size: 22px;
+    font-weight: 500;
+    line-height: 60px;
+    cursor: pointer;
+    padding-left: 25px;
+    transition: all 0.5s ease;
+    color: #333;
+    z-index: 12;
+}
+
+#home:checked~.list label.home,
+#blog:checked~.list label.blog,
+#help:checked~.list label.help,
+#code:checked~.list label.code,
+#about:checked~.list label.about {
+    color: #fff;
+}
+.content .list label:hover {
+    color: #5470C6;
+}
+.content .slider {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 60px;
+    width: 100%;
+    border-radius: 12px;
+    background: #5470C6;
+    transition: all 0.4s ease;
+}
+#home:checked~.list .slider {
+    top: 0;
+}
+
+#blog:checked~.list .slider {
+    top: 60px;
+}
+
+#help:checked~.list .slider {
+    top: 120px;
+}
+
+#code:checked~.list .slider {
+    top: 180px;
+}
+
+#about:checked~.list .slider {
+    top: 240px;
+}
+
+.content .text-content {
+    width: 80%;
+    height: 100%;
+}
+
+.content .text {
+    display: none;
+}
+
+.content .text .title {
+    // font-size: 25px;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.content .text p {
+    text-align: justify;
+}
+
+.content .text-content .home {
+    display: block;
+}
+
+#home:checked~.text-content .home,
+#blog:checked~.text-content .blog,
+#help:checked~.text-content .help,
+#code:checked~.text-content .code,
+#about:checked~.text-content .about {
+    display: block;
+}
+
+#blog:checked~.text-content .home,
+#help:checked~.text-content .home,
+#code:checked~.text-content .home,
+#about:checked~.text-content .home {
+    display: none;
+}
+
+.content input {
+    display: none;
+}
+
+
+
+
+
+
+::selection {
+    color: #fff;
+    background: #6990F2;
+}
+
+// .wrapper {
+//     // width: 430px;
+//     // background: #fff;
+//     border-radius: 5px;
+//     padding: 30px;
+//     box-shadow: 7px 7px 12px rgba(0, 0, 0, 0.05);
+// }
+
+.wrapper header {
+    color: #6990F2;
+    font-size: 27px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.wrapper form {
+    height: 167px;
+    display: flex;
+    cursor: pointer;
+    margin: 30px 0;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 5px;
+    border: 2px dashed #6990F2;
+}
+
+form :where(i, p) {
+    color: #6990F2;
+}
+
+form i {
+    font-size: 50px;
+}
+
+form p {
+    margin-top: 15px;
+    font-size: 16px;
+}
+
+section .row {
+    margin-bottom: 10px;
+    // background: #E9F0FF;
+    list-style: none;
+    padding: 15px 20px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+.progress-area .row .content {
+    width: 100%;
+    margin-left: 15px;
+}
+
+.progress-area .details {
+    display: flex;
+    align-items: center;
+    margin-bottom: 7px;
+    justify-content: space-between;
+}
+
+.progress-area .content .progress-bar {
+    height: 6px;
+    width: 100%;
+    margin-bottom: 4px;
+    background: #fff;
+    border-radius: 30px;
+}
+
+.content .progress-bar .progress {
+    height: 100%;
+    width: 0%;
+    background: #6990F2;
+    border-radius: inherit;
+}
+
+h3 {
+    font-size: larger;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: #343333;
+
+}
+.uploaded-area {
+    max-height: 232px;
+    overflow-y: scroll;
+}
+
+.uploaded-area.onprogress {
+    max-height: 150px;
+}
+
+.uploaded-area::-webkit-scrollbar {
+    width: 0px;
+}
+
+.uploaded-area .row .content {
+    display: flex;
+    align-items: center;
+}
+
+.uploaded-area .row .details {
+    display: flex;
+    margin-left: 15px;
+    flex-direction: column;
+}
+
+.uploaded-area .row .details .size {
+    color: #404040;
+    font-size: 11px;
+}
+
+.uploaded-area i.fa-check {
+    font-size: 16px;
+}
+
+.uploaddiv {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.startDiv {
+    height: 130px;
+    display: flex;
+    cursor: pointer;
+    margin: 15px 10px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 5px;
+    border: 2px dashed #6990F2;
+}
+.customecard {
+    background: white;
+    border: 1px solid #ededed;
+    border-radius: 0.375rem;
+    box-shadow: 0 0.125rem 1rem -10px;
+    // 0 0.125rem 0.625rem 0
+}
+
+@media (max-width: 768px) {
+    .centerme {
+        text-align: center;
+    }
+
+    .justifyMeCenter {
+        justify-content: center;
+    }
+}

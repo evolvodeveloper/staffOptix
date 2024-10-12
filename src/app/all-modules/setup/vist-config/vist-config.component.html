@@ -1,0 +1,204 @@
+<div class="page-header">
+  <div class="row align-items-center">
+    <div class="col-sm-12 col-lg-8">
+      <div class="d-flex align-items-baseline">
+        <i
+          style="font-size: 20px"
+          class="fa fa-arrow-left"
+          id="backbtn"
+          (click)="back()"
+          aria-label="back"
+        ></i>
+        <h3 class="ms-4 page-title">Visit Config</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="row mb-3">
+      <div class="col-sm-12 col-lg-3">
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="search by purpose"
+            [(ngModel)]="searchedFor"
+            (keyup)="updateFilter($event)"
+            style="border-radius: 8px 0px 0px 8px"
+          />
+          <span class="input-group-text" id="basic-addon1">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </span>
+        </div>
+      </div>
+      <div class="col-lg-3"></div>
+      <div class="col-lg-2"></div>
+      <!-- [disabled]="rows?.length >= 2" -->
+      <div class="col-lg-2">
+        <button
+        [disabled]="rows?.length >= 2"
+          type="button"
+          id="add_config"
+          class="btn add-btn float-end d-flex"
+          (click)="addConfig()"
+        >
+          <i id="add_config" class="material-icons me-2">add</i> Add New
+        </button>
+      </div>
+
+      <div class="col-sm-6 col-lg-2 mt-30px">
+        <label class="form-label ms-2">Show entries</label>
+        <select class="form-select" (change)="resultsPerPage($event)">
+          <!-- <option value="10">10</option> -->
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="all">All</option>
+        </select>
+      </div>
+    </div>
+    <div class="table-responsive card p-3">
+      <table class="table table-hover table-nowrap custom-table mb-0 datatable">
+        <thead class="thead-all">
+          <tr class="tr-th-all">
+            <th></th>
+            <th scope="col">Purpose</th>
+            <!-- <th scope="col" class="text-center">Otp Auth</th> -->
+            <th scope="col" class="text-center">Capture Payment</th>
+            <th scope="col" class="text-center">Goods Images</th>
+            <th scope="col" class="text-center">Visit Images</th>
+            <th scope="col" class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="rows.length === 0">
+          <tr style="text-align: center; height: 150px">
+            <td colspan="6">
+              "No records were found with the selected filter criteria."
+            </td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="rows.length > 0">
+            <ng-container *ngFor="let row of rows | paginate : config; let i = index">
+          <tr
+            class="dasboard-td"
+           
+          >
+            <td>
+              <small
+                ><i
+                  *ngIf="!row.expand"
+                  class="fa fa-angle-up fs-5"
+                  aria-hidden="true"
+                  (click)="expandRow(row)"
+                ></i
+              ></small>
+              <small
+                ><i
+                  *ngIf="row.expand"
+                  class="fa fa-angle-down fs-5"
+                  aria-hidden="true"
+                  (click)="collapseRow(row)"
+                ></i
+              ></small>
+            </td>
+            <td>{{ row.purpose }}</td>
+
+            <td class="text-center">
+              <i
+                *ngIf="row.capturePayment"
+                class="fa-solid fa-circle"
+                style="color: #55ce63"
+              ></i>
+              <i
+                *ngIf="!row.capturePayment"
+                class="fa-solid fa-circle"
+                style="color: #f62d51"
+              ></i>
+            </td>
+
+            <td class="text-center">
+              <i
+                *ngIf="row.goodsImages"
+                class="fa-solid fa-circle"
+                style="color: #55ce63"
+              ></i>
+              <i
+                *ngIf="!row.goodsImages"
+                class="fa-solid fa-circle"
+                style="color: #f62d51"
+              ></i>
+            </td>
+            <td class="text-center">
+              <i
+                *ngIf="row.visitImages"
+                class="fa-solid fa-circle"
+                style="color: #55ce63"
+              ></i>
+              <i
+                *ngIf="!row.visitImages"
+                class="fa-solid fa-circle"
+                style="color: #f62d51"
+              ></i>
+            </td>
+            <td style="text-align: center">
+              <div
+                class="btn-group me-2"
+                role="group"
+                aria-label="Second group"
+              >
+                <button
+                  type="button"
+                  class="btn btn-light me-1 text-info"
+                  placement="top"
+                  ngbTooltip="View"
+                  (click)="viewData(row)"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+                <!-- *ngIf="hasPermissionToUpdate" -->
+                <button
+                  type="button"
+                  class="btn btn-light me-1 text-secondary"
+                  placement="top"
+                  ngbTooltip="Edit"
+                  (click)="editData(row)"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="row.expand">
+            <td
+              colspan="6"
+              style="padding: 0"
+            >
+              <table class="table table-bordered table-responsive-sm">
+                <thead class="thead-all">
+                  <tr class="tr-th-all">
+                    <th scope="col" class="text-center">Emp Code</th>
+                    <!-- <th scope="col" class="text-center"></th> -->
+                  </tr>
+                </thead>
+                <tbody  *ngFor="let d of row.empVisitList">
+                  <tr class="tr-th-all">
+                    <td class="text-center">{{ d.empCode }}</td>
+                    <!-- <td class="text-center">{{ d.userName }}</td> -->
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </table>
+      <div *ngIf="rows.length > config.itemsPerPage" class="text-center mt-3">
+        <pagination-controls
+          (pageChange)="pageChanged($event)"
+        ></pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,517 @@
+<div class="page-header">
+  <div class="row align-items-center">
+    <div class="col-sm-12 col-lg-8">
+      <div class="d-flex align-items-baseline">
+        <i
+          style="font-size: 20px"
+          class="fa fa-arrow-left"
+          routerLink="/dashboard"
+          aria-label="back"></i>
+        <h3 class="ms-4 page-title">Leave History</h3>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-12 col-lg-3 col-md-6 mb-4">
+    <div class="input-group">
+      <input
+        *ngIf="firstTab"
+        type="text"
+        id="filter"
+        class="form-control"
+        placeholder="search by leave type"
+        [(ngModel)]="searchedFor"
+        (keyup)="updateFilter($event)"
+        style="
+                border-radius: 8px 0px 0px 8px;
+                height: 55px;
+                height: calc(2.5rem + calc(var(--mo-border-width) * 2));
+              " />
+      <input
+        *ngIf="secondTab"
+        type="text"
+        class="form-control"
+        placeholder="search by employee/leave type"
+        [(ngModel)]="searchedForunApproved"
+        (keyup)="updateFilter1($event)"
+        style="
+                border-radius: 8px 0px 0px 8px;
+                height: 55px;
+                height: calc(2.5rem + calc(var(--mo-border-width) * 2));
+              " />
+                 <input
+        *ngIf="thirdTab"
+        type="text"
+        class="form-control"
+        placeholder="search by leave type"
+        [(ngModel)]="searchedInBalance"
+        (keyup)="updateFilter2($event)"
+        style="
+                border-radius: 8px 0px 0px 8px;
+                height: 55px;
+                height: calc(2.5rem + calc(var(--mo-border-width) * 2));
+              " />
+      <span class="input-group-text" id="basic-addon1">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </span>
+    </div>
+  </div>
+  <div class="col-lg-2" *ngIf="thirdTab"></div>
+
+  <div class="col-lg-2 col-md-6 col-sm-12" *ngIf="firstTab || secondTab ">
+    <mat-form-field appearance="outline">
+      <mat-label>Month and Year</mat-label>
+      <input
+        matInput
+        [matDatepicker]="dp"
+        [min]="minDate"
+        [max]="maxDate"
+        [(ngModel)]="date" />
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="dp"></mat-datepicker-toggle>
+      <mat-datepicker
+        #dp
+        startView="multi-year"
+        (monthSelected)="setMonthAndYear($event, dp)"
+        panelClass="example-month-picker">
+      </mat-datepicker>
+    </mat-form-field>
+  </div>
+  
+
+  <div class="col-sm-6 col-md-6 col-lg-5">
+    <a class="btn add-btn" (click)="applyLeave('', '')" *ngIf="this.userProfile"><i class="fa fa-plus"></i>
+      Apply Leave
+    </a>
+  </div>
+  <div class="col-sm-6 col-md-6 col-lg-2 mt-30px">
+    <label class="form-label">Records/page</label>
+    <select class="form-select"   *ngIf="firstTab" (change)="resultsPerPage($event)">
+      <!-- <option value="10">10</option> -->
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+      <option value="all">All</option>
+    </select>
+        <select class="form-select"    *ngIf="secondTab" (change)="resultsPerPage1($event)">
+      <!-- <option value="10">10</option> -->
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+      <option value="all">All</option>
+    </select>
+        <select class="form-select"   *ngIf="thirdTab" (change)="resultsPerPage2($event)">
+      <!-- <option value="10">10</option> -->
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+      <option value="all">All</option>
+    </select>
+  </div>
+</div>
+<div class="card card-border-style p-3">
+  <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button
+        (click)="tab1()"
+        class="nav-link"  [ngClass]="{'active':firstTab}"
+        id="pills-history-tab"
+        data-bs-toggle="pill"
+        data-bs-target="#pills-history"
+        type="button"
+        role="tab"
+        aria-controls="pills-history"
+        aria-selected="true">
+        Applied Leave
+      </button>
+    </li>
+    <li
+      class="nav-item ms-2"
+      role="presentation"
+      id="tab_leave_unapproved_leaves"
+      *ngIf="hasPermissionToApprove">
+      <button
+        (click)="tab2()"
+        class="nav-link" [ngClass]="{'active':secondTab}"
+        id="pills-unapproved-tab"
+        data-bs-toggle="pill"
+        data-bs-target="#pills-unapproved"
+        type="button"
+        role="tab"
+        aria-controls="pills-unapproved"
+        aria-selected="false">
+        Unapproved Leaves
+      </button>
+    </li>
+    <li class="nav-item ms-2" role="presentation">
+      <button
+        (click)="tab3()"
+        class="nav-link" [ngClass]="{'active':thirdTab}"
+        id="pills-balance-tab"
+        data-bs-toggle="pill"
+        data-bs-target="#pills-balance"
+        type="button"
+        role="tab"
+        aria-controls="pills-balance"
+        aria-selected="false">
+        Balance Leaves
+      </button>
+    </li>
+  </ul>
+  <div class="row">
+    <div class="col-md-12">
+
+      <div class="tab-content" id="pills-tabContent">
+        <!-- history tab starts -->
+
+        <div
+          class="tab-pane fade"  [ngClass]="{'show active':firstTab}"
+          id="pills-history"
+          role="tabpanel"
+          aria-labelledby="pills-history-tab"
+          tabindex="0">
+          <div class="p-3 table-responsive">
+            <table
+              class="table table-hover  small table-nowrap custom-table mb-0 datatable">
+              <thead class="thead-all">
+                <tr class="tr-th-all">
+                  <th scope="col" class="text-center">Emp Code</th>
+                  <!-- <th scope="col" class="text-center">Emp Name</th> -->
+                  <th scope="col" class="text-center">From Date</th>
+                  <th scope="col" class="text-center">To Date</th>
+                  <th scope="col" class="text-center">Leave Type</th>
+                  <th scope="col" class="text-center">Num Leaves</th>
+                  <th scope="col" class="text-center">Status</th>
+                  <th scope="col" class="text-center">Approved</th>
+                  <!-- <th scope="col" class="text-center">canMixOtherLeave</th> -->
+
+                  <th scope="col" class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody *ngIf="leaveHistory.length === 0">
+                <tr style="text-align: center; height: 150px">
+                  <td colspan="8"> "Kudos to Your Commitment: No Leaves Taken!"</td>
+                </tr>
+              </tbody>
+              <tbody *ngIf="leaveHistory.length > 0">
+                <ng-container
+                  *ngFor="
+                    let row of leaveHistory | paginate : config;
+                    let i = index
+                  ">
+                  <tr class="dasboard-td">
+                    <td class="text-center">{{ row.employeeCode }}</td>
+                    <!-- <td class="text-center">{{ row.employeeName }}</td> -->
+                    <td class="text-center">
+                      {{ row.leaveFromdate | date : dateFormat }}
+                    </td>
+                    <td class="text-center">
+                      {{ row.leaveTodate | date : dateFormat }}
+                    </td>
+                    <td class="text-center">{{ row.leaveTypeCode }}</td>
+                    <td class="text-center">{{ row.numLeaves }}</td>
+                    <td class="text-center">{{ row.status }}</td>
+                    <td class="text-center">
+                      <i
+                        *ngIf="row.status === 'APPROVED'"
+                        class="fa-solid fa-circle"
+                        style="color: #55ce63"></i>
+                      <i
+                        *ngIf="row.status !== 'APPROVED'"
+                        class="fa-solid fa-circle"
+                        style="color: #f62d51"></i>
+                    </td>
+
+                    <td class="text-center">
+                      <div class="btn-group" role="group">
+                        <button
+                          id="leave_history_view"
+                          type="button"
+                          class="btn btn-light me-1 text-info"
+                          placement="top"
+                          ngbTooltip="View"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="top"
+                          title="To View leave"
+                          (click)="applyLeave(row, 'view')">
+                          <i class="fa-solid fa-eye"></i>
+                        </button>
+
+                        <!-- <button
+                          id="leave_history_edit"
+                          type="button"
+                          *ngIf="
+                            row.status !== 'APPROVED' &&
+                            row.status !== 'REJECTED' &&
+                            row.status !== 'CANCELLED'
+                          "
+                          class="btn btn-light me-1 text-info"
+                          placement="top"
+                          ngbTooltip="edit"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="top"
+                          title="To Edit leave"
+                          (click)="applyLeave(row, 'edit')">
+                          <i class="fa fa-pencil"></i>
+                        </button> -->
+
+                        <button
+                          *ngIf="
+                            row.status !== 'CANCELLED' &&
+                            row.status !== 'REJECTED' &&
+                            row.status !== 'APPROVED'
+                          "
+                          type="button"
+                          id="leave_history_cancel"
+                          class="btn btn-light me-1 text-danger"
+                          placement="top"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="top"
+                          title="To Cancel your leave"
+                          ngbTooltip="Withdraw my Leave"
+                          (click)="cancel(row)">
+                          <i class="fa-solid fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+            <div
+              *ngIf="firstTab && leaveHistory.length > config.itemsPerPage"
+              class="text-center mt-3" id="leaveHistorypagination">
+              <pagination-controls
+                (pageChange)="pageChanged($event)"></pagination-controls>
+            </div>
+          </div>
+        </div>
+
+        <!-- history tab ends -->
+
+        <!-- unapproved tab starts -->
+
+        <div
+          class="tab-pane fade" [ngClass]="{'show active':secondTab}"
+          *ngIf="hasPermissionToApprove"
+          id="pills-unapproved"
+          role="tabpanel"
+          aria-labelledby="pills-unapproved-tab"
+          tabindex="0">
+          <div class="row">
+            <div class="p-3 table-responsive">
+              <table
+                class="table table-hover small table-nowrap custom-table mb-0 datatable">
+                <thead class="thead-all">
+                  <tr class="tr-th-all">
+                    <th scope="col" class="text-center">Emp Code</th>
+                    <th scope="col" class>Emp Name</th>
+                    <th scope="col" class="text-center">From Date</th>
+                    <th scope="col" class="text-center">To Date</th>
+                    <th scope="col">Leave Type</th>
+                    <th scope="col">Num Leaves</th>
+                    <th scope="col" class="text-center">Status</th>
+                    <!-- <th scope="col" class="text-center">Approved</th> -->
+                    <!-- <th scope="col" class="text-center">canMixOtherLeave</th> -->
+
+                    <th scope="col" class="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody *ngIf="unapprovedLeaves.length === 0">
+                  <tr style="text-align: center; height: 150px">
+                    <td colspan="8">"Hooray! At present, there are no leave requests that require approval."</td>
+                  </tr>
+                </tbody>
+                <tbody *ngIf="unapprovedLeaves.length > 0">
+                  <ng-container
+                    *ngFor="
+                      let row of unapprovedLeaves | paginate : config1;
+                      let i = index
+                    ">
+                    <tr class="dasboard-td">
+                      <td class="text-center">{{ row.employeeCode }}</td>
+                      <td>{{ row.employeeName }}</td>
+                      <td class="text-center">
+                        {{ row.leaveFromdate | date : dateFormat }}
+                      </td>
+                      <td class="text-center">
+                        {{ row.leaveTodate | date : dateFormat }}
+                      </td>
+                      <td>{{ row.leaveTypeCode }}</td>
+                      <td>{{ row.numLeaves }}</td>
+                      <td class="text-center">{{ row.status }}</td>
+                      <td class="text-center">
+                        <div class="btn-group" role="group">
+                          <button
+                            id="unapproved_leaves_view"
+                            type="button"
+                            class="btn btn-light me-1 text-info"
+                            placement="top"
+                            ngbTooltip="View"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="To View there leave"
+                            (click)="applyLeave(row, 'view')">
+                            <i class="fa-solid fa-eye"></i>
+                          </button>
+                          <button
+                            id="unapproved_leaves_approve"
+                            type="button"
+                            *ngIf="
+                              hasPermissionToApprove &&
+                              row.status !== 'APPROVED' &&
+                              row.status !== 'REJECTED'
+                            "
+                            class="btn btn-light me-1 text-success"
+                            placement="top"
+                            ngbTooltip="Approve"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="To Approve the leave"
+                            (click)="approveData(row)">
+                            <i class="fa-solid fa-circle-check"></i>
+                          </button>
+                          <button
+                            *ngIf="
+                              hasPermissionToApprove &&
+                              row.status !== 'APPROVED' &&
+                              row.status !== 'REJECTED'
+                            "
+                            type="button"
+                            id="unapproved_leaves_reject"
+                            class="btn btn-light me-1 text-danger"
+                            placement="top"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="To Reject the leave"
+                            (click)="reject(row)">
+                            <i class="fa-solid fa-times"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+              <div id="unapprovedLeavespagination"
+                *ngIf="secondTab && unapprovedLeaves.length > config1.itemsPerPage"
+                class="text-center mt-3">
+                <pagination-controls
+                  (pageChange)="pageChanged1($event)"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- unapproved tab ends -->
+
+        <!-- balance tab starts -->
+        <div
+          class="tab-pane fade"  [ngClass]="{'show active':thirdTab}"
+          id="pills-balance"
+          role="tabpanel"
+          aria-labelledby="pills-balance-tab"
+          tabindex="0">
+          <div class="row">
+            <div class="p-3 table-responsive">
+              <table  [ngClass]="{'widthOftable' :balanceLeaves.length > 0 }"
+                class="table table-hover small table-nowrap custom-table mb-0 datatable">
+                <thead class="thead-all">
+                  <tr class="tr-th-all">
+                    <th scope="col" class="text-center">Calendar Year</th>
+                    <th scope="col">Emp Code</th>
+                    <th scope="col" class>Leave Plan</th>
+                    <th scope="col">Leave Type</th>
+                    <th scope="col" class="text-center">Current Balance</th>
+                    <!-- <th scope="col">Num Leaves</th>
+                    <th scope="col" class="text-center">Status</th>
+                    <th scope="col" class="text-center">Action</th> -->
+                  </tr>
+                </thead>
+                <tbody *ngIf="balanceLeaves.length === 0">
+                  <tr style="text-align: center; height: 150px">
+                    <td colspan="5">"Oops! As of now, there are no available leave days for application or management has not granted any leave for you."</td>
+                  </tr>
+                </tbody>
+                <tbody *ngIf="balanceLeaves.length >0">
+                  <ng-container
+                    *ngFor="
+                      let row of balanceLeaves | paginate : config2;
+                      let i = index
+                    ">
+                    <tr class="dasboard-td">
+                       <td class="text-center">
+                        {{ row.calendarYear | date : dateFormat }}
+                      </td>
+                      <td >{{ row.employeeCode }}</td>
+                      <td>{{ row.leavePlanCode }}</td>
+                      <td>{{ row.leaveTypeCode }}</td>
+                      <td class="text-center">{{ row.currentBalance }}</td>
+                      <!-- <td class="text-center">{{ row.status }}</td>
+                      <td class="text-center">
+                        <div class="btn-group" role="group">
+                          <button
+                            id="unapproved_leaves_view"
+                            type="button"
+                            class="btn btn-light me-1 text-info"
+                            placement="top"
+                            ngbTooltip="View"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="To View there leave"
+                            (click)="applyLeave(row, 'view')">
+                            <i class="fa-solid fa-eye"></i>
+                          </button>
+                          <button
+                            id="unapproved_leaves_approve"
+                            type="button"
+                            *ngIf="
+                              hasPermissionToApprove &&
+                              row.status !== 'APPROVED' &&
+                              row.status !== 'REJECTED'
+                            "
+                            class="btn btn-light me-1 text-success"
+                            placement="top"
+                            ngbTooltip="Approve"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="To Approve the leave"
+                            (click)="approveData(row)">
+                            <i class="fa-solid fa-circle-check"></i>
+                          </button>
+                          <button
+                            *ngIf="
+                              hasPermissionToApprove &&
+                              row.status !== 'APPROVED' &&
+                              row.status !== 'REJECTED'
+                            "
+                            type="button"
+                            id="unapproved_leaves_reject"
+                            class="btn btn-light me-1 text-danger"
+                            placement="top"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="To Reject the leave"
+                            (click)="reject(row)">
+                            <i class="fa-solid fa-times"></i>
+                          </button>
+                        </div>
+                      </td> -->
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+              <div id="balanceLeavespagination"
+                *ngIf="thirdTab && balanceLeaves.length > config2.itemsPerPage"
+                class="text-center mt-3">
+                <pagination-controls
+                  (pageChange)="pageChanged2($event)"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

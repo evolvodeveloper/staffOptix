@@ -1,0 +1,20 @@
+.ngSelectform {
+    border: var(--mo-border-width) solid var(--mo-border-color);
+    border-radius: var(--mo-border-radius);
+}
+  .swal2-container {
+      z-index: 10000;
+      /* Ensure the dialog is above other content */
+  }
+
+  .swal2-html-container {
+      text-align: center;
+  }
+
+  .custom-confirm-btn,
+  .custom-secondary-btn {
+      width: 150px;
+      /* Adjust width as needed */
+      margin: 0 10px;
+      /* Spacing between buttons */
+  }

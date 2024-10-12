@@ -1,0 +1,712 @@
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="d-flex align-items-baseline">
+            <i style="font-size: 20px"
+                class="fa fa-arrow-left"
+                aria-label="back" (click)="back()"></i>
+            <h3 class="ms-4 page-title"> Create Offer Letter</h3>
+        </div>
+    </div>
+</div>
+<div class="col-12">
+    <div id="carouselExampleSlidesOnly" #carouselExampleSlidesOnly
+        class="carousel slide"
+        style="min-height: 70vh;" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item card  p-4 selectOfferTemplate active">
+                <p>
+                    Please select an offer template by clicking on
+                    <i class="fa-solid fa-person-walking-arrow-right ms-2"></i>
+                    icon
+                </p>
+
+                <div class="row" *ngIf="Offertemplates.length == 0 && process">
+                    <div class="col-12 col-sm-3 col-md-3 col-lg-3"></div>
+                    <p class="text-danger">
+                        Could you please create an offer template in the system?
+                        To do this, navigate to Setup > Organization Setup >
+                        Offer Template menu.
+
+                    </p>
+                </div>
+
+                <div class="row" *ngIf="Offertemplates.length >0">
+                    <div class="col-md-3 mb-4"
+                        *ngFor="let card of Offertemplates">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ card.templateSubject
+                                    }}</h5>
+                            </div>
+                            <div class="card-footer text-end">
+                                <i
+                                    class="fa-solid fa-person-walking-arrow-right"
+                                    style="font-size: large;"
+                                    (click)="makeOffer(card)"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item card  p-4 red">
+                <div class="row ms-2">
+                    <div class="col-md-12">
+
+                        <div class="col-md-8">
+
+                            <div class="col-12 row">
+                                <div class="col-md-5 form-group">
+                                    <label class="col-form-label" id="date">
+                                        Date&nbsp;<span class="text-danger"
+                                            style="margin-left: 1px">*</span>
+                                    </label>
+                                    <input
+                                        class="form-control"
+                                        id="date"
+                                        type="date"
+                                        [(ngModel)]="employeeObj.date"
+                                        placeholder="Select Date"
+                                        required #date="ngModel" />
+                                    <div
+                                        *ngIf="date.invalid && (date.dirty || date.touched)">
+                                        <small class="text-danger"
+                                            *ngIf="date.errors?.required">Date
+                                            is required</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 row">
+                                <div class=" col-md-5  form-group input">
+                                    <label class="col-form-label" id="empName">
+                                        Applicant Name&nbsp;<span
+                                            class="text-danger"
+                                            style=" margin-left: 1px">*</span>
+                                    </label>
+                                    <input
+                                        class="form-control"
+                                        id="empName"
+                                        [(ngModel)]="employeeObj.empName"
+                                        placeholder="Enter applicant name"
+                                        required #empName="ngModel" />
+                                    <div
+                                        *ngIf="empName.invalid && (empName.dirty || empName.touched)">
+                                        <small class="text-danger"
+                                            *ngIf="empName.errors?.required">Applicant
+                                            name is required</small>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5 form-group">
+                                    <label class="col-form-label"
+                                        id="Email">Applicant Email &nbsp;<span
+                                            class="text-danger">*</span></label>
+                                    <input
+                                        class="form-control"
+                                        id="empName"
+                                        [(ngModel)]="employeeObj.email"
+                                        placeholder="Enter Email"
+                                        required #email="ngModel" />
+                                    <div
+                                        *ngIf="email.invalid && (email.dirty || email.touched)">
+                                        <small class="text-danger"
+                                            *ngIf="email.errors?.required">Email
+                                            is required</small>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5 form-group">
+                                    <label class="col-form-label"
+                                        id="Designation">Department &nbsp;<span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-select"
+                                        [(ngModel)]="employeeObj.deptCode"
+                                        required #deptCode="ngModel"
+                                        id="Designation">
+                                        <option *ngFor="let dp of deptCodes"
+                                            [value]="dp.deptCode">{{dp.deptName}}
+                                        </option>
+                                    </select>
+                                    <div
+                                        *ngIf="deptCode.invalid && (deptCode.dirty || deptCode.touched)">
+                                        <small class="text-danger"
+                                            *ngIf="deptCode.errors?.required">Department
+                                            is required</small>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5 form-group">
+                                    <label class="col-form-label"
+                                        id="Designation">Designation &nbsp;<span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-select"
+                                        [(ngModel)]="employeeObj.designation"
+                                        required #designation="ngModel"
+                                        id="Designation">
+                                        <option
+                                            *ngFor="let ds of designationList"
+                                            [value]="ds.designation">{{ds.designation}}
+                                        </option>
+                                    </select>
+                                    <div
+                                        *ngIf="designation.invalid && (designation.dirty || designation.touched)">
+                                        <small class="text-danger"
+                                            *ngIf="designation.errors?.required">Designation
+                                            is required</small>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5 form-group input">
+                                    <label class="col-form-label">
+                                        Date of Join&nbsp;<span
+                                            class="text-danger"
+                                            style=" margin-left: 1px">*</span>
+                                    </label>
+                                    <input
+                                        class="form-control"
+                                        id="empDateOfJoin"
+                                        type="date"
+                                        [(ngModel)]="employeeObj.empDateOfJoin"
+                                        placeholder="Select joining date"
+                                        required #doj="ngModel" />
+                                    <div
+                                        *ngIf="doj.invalid && (doj.dirty || doj.touched)">
+                                        <small class="text-danger"
+                                            *ngIf="doj.errors?.required">Date Of
+                                            Join
+                                            is required</small>
+                                    </div>
+                                </div>
+
+                                <div class=" col-md-5 form-group input">
+                                    <label class="col-form-label"
+                                        id="empAddress">
+                                        Applicant Address&nbsp;<span
+                                            class="text-danger"
+                                            style=" margin-left: 1px">*</span>
+                                    </label>
+                                    <textarea
+                                        class="form-control"
+                                        id="empAddress"
+                                        [(ngModel)]="employeeObj.empAddress"
+                                        required
+                                        #empAddress="ngModel"
+                                        placeholder="Enter applicant address"> </textarea>
+                                    <div
+                                        *ngIf="empAddress.invalid && (empAddress.dirty || empAddress.touched)">
+                                        <small class="text-danger"
+                                            *ngIf="empAddress.errors?.required">Applicant
+                                            Address
+                                            is required</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md">
+
+                </div>
+            </div>
+            <div class="carousel-item card  p-4   orange">
+                <div class="row col-md-12 ms-2">
+                    <div class="col-md-5 form-group">
+                        <label class="col-form-label"
+                            id="Payroll">Payroll &nbsp;<span
+                                class="text-danger">*</span></label>
+                        <select class="form-select"
+                            [(ngModel)]="employeeObj.payrollCode"
+                            required #Payroll="ngModel"
+                            id="Payroll" (change)="getsalaryComponents()">
+                            <option *ngFor="let pl of payrollList"
+                                [value]="pl.payrollCode">{{pl.payrollCode}}
+                            </option>
+                        </select>
+                        <div
+                            *ngIf="Payroll.invalid && (Payroll.dirty || Payroll.touched)">
+                            <small class="text-danger"
+                                *ngIf="Payroll.errors?.required">Payroll
+                                is required</small>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5 form-group input">
+                        <label class="col-form-label" id="salary">
+                            Salary&nbsp;<span class="text-danger"
+                                style=" margin-left: 1px">*</span>
+                        </label>
+                        <input
+                            class="form-control"
+                            id="salary"
+                            type="number"
+                            (change)="onSalaryChange()"
+                            [(ngModel)]="employeeObj.salary"
+                            placeholder="Enter Amount"
+                            required #salary="ngModel" />
+
+                        <div
+                            *ngIf="salary.invalid && (salary.dirty || salary.touched)">
+                            <small class="text-danger"
+                                *ngIf="salary.errors?.required">Salary
+                                is required</small>
+                        </div>
+                    </div>
+                    <div class="col-md-12 p-2">
+                        <p>
+                            Please provide a detailed salary breakup, This will
+                            help us in future processes, including converting
+                            the offer letter into the onboarding document for
+                            the applicant.
+                        </p>
+
+                    </div>
+                    <div class="form-check col-md-10 mt-2"
+                        *ngIf="hasRules && employeeObj.salary">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            [(ngModel)]="employeeObj.calculateByRules"
+                            id="rulesQuestion"
+                            (change)="getsalaryComp($event)" />
+                        <label class="form-check-label" for="rulesQuestion">
+                            Do you want to calculate salary by pay rules
+                        </label>
+                    </div>
+                    <div class="row mt-5"
+                        *ngIf="showComponentCode && salaryComponents.length > 0">
+                        <h4>Salary Breakup</h4>
+                        <div class="col-md-12 d-flex p-3"
+                            style="background-color: white;">
+                            <div class="table-leftblock col-md-6">
+                                <table
+                                    class="table table-nowrap mb-0">
+                                    <thead
+                                        class="thead-all">
+                                        <tr
+                                            class="tr-th-all">
+                                            <th class="text-left">Earnings</th>
+                                            <th class="text-center">%</th>
+                                            <th
+                                                class="text-end">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody
+                                        style="font: 300 12px/150% CircularStd, sans-serif; border: #fbffff;">
+                                        <ng-container
+                                            *ngFor="let row of salaryComponents">
+                                            <ng-container
+                                                *ngIf="row?.isDeduction === false">
+                                                <tr class>
+                                                    <td scope="col">
+                                                        <span
+                                                            class="d-flex align-items-center">
+                                                            <input
+                                                                type="checkbox"
+                                                                class="form-check me-2"
+                                                                [disabled]="view"
+                                                                [ngModel]="row?.checkedSalary"
+                                                                (click)="checkedSalary($event, row)"
+                                                                style="zoom: 1.4" />{{
+                                                            row.componentCode }}
+                                                        </span>
+                                                    </td>
+                                                    <td scope="col">
+                                                        <input
+                                                            type="number"
+                                                            (keyup)="onChangeperct($event.target.value,row)"
+                                                            placeholder="0.00"
+                                                            style="width: 70px;"
+                                                            class="form-control text-end inputwid d-flex justify-content-end"
+                                                            [(ngModel)]="row.pct"
+                                                            [ngModelOptions]="{standalone: true}"
+                                                            [disabled]="!row.checkedSalary || view" />
+                                                    </td>
+                                                    <td
+                                                        class="text-end"
+                                                        scope="col"> <input
+                                                            type="number"
+                                                            (keyup)="onChangeBal($event.target.value,row)"
+                                                            placeholder="0.00"
+                                                            class="form-control text-end inputwid"
+                                                            [(ngModel)]="row.amount"
+                                                            [ngModelOptions]="{standalone: true}"
+                                                            [disabled]="!row.checkedSalary || view" />
+                                                    </td>
+                                                </tr>
+                                            </ng-container>
+                                        </ng-container>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div
+                                class="table-right block col-md-6">
+                                <table
+                                    class="table table-nowrap  mb-0">
+                                    <thead
+                                        class="thead-all">
+                                        <tr
+                                            class="tr-th-all">
+                                            <th
+                                                class="text-left">Deductions</th>
+                                            <th class="text-center">%</th>
+                                            <th class="text-end">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody
+                                        style="font: 300 12px/150% CircularStd, sans-serif; border: #fbffff;">
+                                        <ng-container
+                                            *ngFor="let row of salaryComponents">
+                                            <ng-container
+                                                *ngIf="row.isDeduction === true">
+                                                <tr
+                                                    class>
+                                                    <td
+                                                        scope="col"> <span
+                                                            class="d-flex align-items-center">
+                                                            <input
+                                                                type="checkbox"
+                                                                class="form-check me-2"
+                                                                [disabled]="view"
+                                                                [ngModel]="row?.checkedSalary"
+                                                                (click)="checkedSalary($event, row)"
+                                                                style="zoom: 1.4" />{{
+                                                            row.componentCode }}
+                                                        </span>
+                                                    </td>
+                                                    <td scope="col">
+                                                        <input
+                                                            type="number"
+                                                            (keyup)="onChangeperct($event.target.value,row)"
+                                                            placeholder="0.00"
+                                                            style="width: 70px;"
+                                                            [max]="100"
+                                                            class="form-control text-end inputwid d-flex justify-content-end"
+                                                            [(ngModel)]="row.pct"
+                                                            [ngModelOptions]="{standalone: true}"
+                                                            [disabled]="!row.checkedSalary || view" />
+                                                    </td>
+                                                    <td
+                                                        scope="col"
+                                                        class="text-end"> <input
+                                                            type="number"
+                                                            (keyup)="onChangeBal($event.target.value,row)"
+                                                            placeholder="0.00"
+                                                            class="form-control text-end inputwid"
+                                                            [(ngModel)]="row.amount"
+                                                            [ngModelOptions]="{standalone: true}"
+                                                            [disabled]="!row.checkedSalary || view" />
+                                                    </td>
+                                                </tr>
+                                            </ng-container>
+                                        </ng-container>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-12 d-flex"
+                            style="font: 600 12px/150% CircularStd, sans-serif; padding: 5px;">
+                            <div
+                                class="col-md-6 border-bottom border-top py-1">
+                                <div
+                                    class="d-flex justify-content-between">
+                                    <span
+                                        style="padding-left: 15px; ">Gross
+                                        Earnings</span>
+                                    <span
+                                        style="padding-right: 15px;">
+                                        {{totalearningAmt
+                                        | number
+                                        :
+                                        "1.2-2"}}</span>
+                                </div>
+                            </div>
+                            <div
+                                class="col-md-6 border-bottom border-top py-1">
+                                <div
+                                    class="d-flex justify-content-between">
+                                    <span
+                                        style="padding-left: 15px;">Total
+                                        Deductions</span>
+                                    <span
+                                        style="padding-right: 15px;">
+                                        {{totalDeduction
+                                        | number
+                                        :
+                                        "1.2-2"}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="col-md-12  d-flex justify-content-between"
+                            style="font: 600 12px/150% CircularStd, sans-serif; padding: 5px;">
+                            <span
+                                style="padding-left: 15px;">
+
+                                Total
+                                Net
+                                Payable
+                                <span
+                                    class="block text-muted">
+
+                                    Gross
+                                    Earnings
+                                    -
+                                    Total
+                                    Deductions
+                                </span>
+                            </span>
+                            <span
+                                style="padding-right: 15px;">
+                                {{totalSalary | number :
+                                "1.2-2"}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="carousel-item blue p-4">
+                <div class="row col-md-12">
+                    <div class="col-md-8">
+                        <div class="hero" id="contentToConvert"
+                            style=" border: 1px solid;" #offerLetter>
+                            <div
+                                [ngStyle]="{'background-image': 'url(' + templateSrc + ')'}"
+                                style="background-size: cover;">
+                                <div class="hero__text">
+                                    <!-- <div style="display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                margin-bottom: 0.5rem ;">
+                                        <p
+                                            style="text-align: center;font-size:20px">{{companyInfo?.companyName}}</p>
+                                        <p> <img [src]="pageProfileLogo"
+                                                width="40"
+                                                height="50" alt
+                                                class="widthfit"
+                                                *ngIf="pageProfileLogo"> </p>
+                                        <p *ngIf="!pageProfileLogo"></p>
+                                    </div>
+                                    <p>
+                                        <b>{{employeeObj.empName ?
+                                            employeeObj.empName :
+                                            '@Employee Name'}}</b>,<br>
+                                        <b>{{employeeObj.empAddress ?
+                                            employeeObj.empAddress :
+                                            '@Employee Address'}}</b>,<br>
+                                        <b>Date : {{employeeObj.date ?
+                                            employeeObj.date :
+                                            '@DD-MM-YYYY'}}</b><br>
+                                    </p>
+                                    <p>
+                                        Dear <b>{{employeeObj.empName ?
+                                            employeeObj.empName :
+                                            '@Employee Name'}}</b>,
+                                    </p> -->
+                                    <span
+                                        [innerHTML]="replacePlaceholders(templatebody).firstPart"></span>
+
+                                    <div class="row mt-3"
+                                        *ngIf="!hideSalaryStructure">
+                                        <div class="col-md-12 d-flex">
+                                            <div
+                                                class="table-leftblock col-md-6">
+                                                <table
+                                                    class="table table-nowrap mb-0">
+                                                    <thead
+                                                        class="thead-all">
+                                                        <tr class="tr-th-all">
+                                                            <th
+                                                                class="text-left">Earnings</th>
+                                                            <th
+                                                                class="text-end">Amount</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody
+                                                        style="font: 300 12px/150% CircularStd, sans-serif; border: #fbffff;">
+                                                        <ng-container
+                                                            *ngFor="let row of salaryComponents">
+                                                            <ng-container
+                                                                *ngIf="row?.isDeduction === false  && row?.checkedSalary=== true">
+                                                                <tr
+                                                                    class>
+                                                                    <td
+                                                                        scope="col">{{
+                                                                        row.componentCode
+                                                                        }}
+                                                                    </td>
+                                                                    <td
+                                                                        class="text-end"
+                                                                        scope="col">{{row.amount|
+                                                                        number:"1.2-2"}}
+                                                                    </td>
+                                                                </tr>
+                                                            </ng-container>
+                                                        </ng-container>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div
+                                                class="table-right block col-md-6">
+                                                <table
+                                                    class="table table-nowrap  mb-0">
+                                                    <thead
+                                                        class="thead-all">
+                                                        <tr
+                                                            class="tr-th-all">
+                                                            <th
+                                                                class="text-left">Deductions</th>
+                                                            <th
+                                                                class="text-end">Amount</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody
+                                                        style="font: 300 12px/150% CircularStd, sans-serif; border: #fbffff;">
+                                                        <ng-container
+                                                            *ngFor="let row of salaryComponents">
+                                                            <ng-container
+                                                                *ngIf="row.isDeduction === true  && row?.checkedSalary=== true">
+                                                                <tr
+                                                                    class>
+                                                                    <td
+                                                                        scope="col">{{row.componentCode}}
+                                                                    </td>
+                                                                    <td
+                                                                        scope="col"
+                                                                        class="text-end">{{row.amount
+                                                                        |number
+                                                                        :
+                                                                        "1.2-2"}}
+                                                                    </td>
+                                                                </tr>
+                                                            </ng-container>
+
+                                                        </ng-container> </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 d-flex"
+                                            style="font: 600 12px/150% CircularStd, sans-serif; padding: 5px;">
+                                            <div
+                                                class="col-md-6 border-bottom border-top py-1">
+                                                <div
+                                                    class="d-flex justify-content-between">
+                                                    <span
+                                                        style="padding-left: 15px; ">Gross
+                                                        Earnings</span>
+                                                    <span
+                                                        style="padding-right: 15px;">
+                                                        {{totalearningAmt
+                                                        | number
+                                                        :
+                                                        "1.2-2"}}</span>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="col-md-6 border-bottom border-top py-1">
+                                                <div
+                                                    class="d-flex justify-content-between">
+                                                    <span
+                                                        style="padding-left: 15px;">Total
+                                                        Deductions</span>
+                                                    <span
+                                                        style="padding-right: 15px;">
+                                                        {{totalDeduction
+                                                        | number
+                                                        :
+                                                        "1.2-2"}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="col-md-12  d-flex justify-content-between"
+                                            style="font: 600 12px/150% CircularStd, sans-serif; padding: 5px;">
+                                            <span
+                                                style="padding-left: 15px;">
+                                                Total
+                                                Net
+                                                Payable
+                                                <span
+                                                    class="block text-muted">
+                                                    Gross
+                                                    Earnings
+                                                    -
+                                                    Total
+                                                    Deductions
+                                                </span>
+                                            </span>
+                                            <span
+                                                style="padding-right: 15px;">
+                                                {{totalSalary | number :
+                                                "1.2-2"}}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <span
+                                        [innerHTML]="replacePlaceholders(templatebody).secondPart"></span>
+                                    <!-- <p><span class="block">Sincerely,</span>
+                                        <b>{{companyInfo?.companyName}}</b></p> -->
+                                    <!-- <div class="bottom">
+                                        <hr>
+                                        <p class="text-center">
+                                            <span>{{companyInfo?.address ?
+                                                companyInfo?.address + ',' :
+                                                ''}}
+                                                {{companyInfo?.city ?
+                                                companyInfo?.city + ',' : ''}}
+                                                {{companyInfo?.state ?
+                                                companyInfo?.state + ',' : ''}}
+                                                {{companyInfo?.zipCode ?
+                                                companyInfo?.zipCode + ',' :
+                                                ''}}
+                                                {{companyInfo?.country ?
+                                                companyInfo?.country + '.' :
+                                                ''}}
+                                            </span>
+                                        </p>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 m-auto">
+                        <div style="text-align: end; margin: auto;">
+                            <div *ngFor="let tem of templates" class="my-2">
+                                <div>
+                                    <input type="radio" name="pic"
+                                        class="pic me-2" [value]="tem.code"
+                                        id="pic-{{tem.code}}"
+                                        (click)="onTemplateChange(tem.code)">
+                                    <label for="pic-{{tem.code}}">
+                                        <img [src]="tem.img" alt width="100px"
+                                            height="100px"
+                                            style="margin: auto 0px; object-fit: contain; "
+                                            (click)="onTemplateChange(tem.code)">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 d-flex justify-content-between card-footer"
+        style="border-top: none;    background: transparent;">
+        <div>
+            <button (click)="Prev()" *ngIf="showPrevBtn"
+                class="btn add-btn me-2"> Previous</button>
+        </div>
+        <div>
+            <button (click)="nextSlide()" class="btn add-btn"
+                *ngIf="showNextBtn">Next</button>
+            <button class="btn success-btn"
+                *ngIf="showDownloadPdfBtn && !update"
+                (click)="downloadPdf('create')"> Create Offer letter</button>
+            <button class="btn success-btn" *ngIf="showDownloadPdfBtn && update"
+                (click)="downloadPdf('update')"> Update Offer letter</button>
+        </div>
+    </div>
+</div>
