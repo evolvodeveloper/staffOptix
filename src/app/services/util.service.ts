@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 import Swal from 'sweetalert2';
 
 @Injectable({
@@ -10,6 +11,13 @@ export class UtilService {
   theseComponentsShouldBeHiden = ['Late Arrival Deduction', 'WorkHours Deduction', 'No Show Deduction', 'Total Salary', 'OT Allowance', 'Loan Recover']
   showGif: boolean = false;
   userProfileData: any;
+
+  private userProfile = new BehaviorSubject<boolean>(false);
+  isVisible$ = this.userProfile.asObservable();
+
+  setVisibility(isVisible: boolean): void {
+    this.userProfile.next(isVisible);
+  }
   viewData;
   editData;
   approveData;

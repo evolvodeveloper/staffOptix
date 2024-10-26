@@ -92,7 +92,7 @@
                 </li>
             </ul>
         </li>
-        <li class="nav-item dropdown has-arrow main-drop"
+        <!-- <li class="nav-item dropdown has-arrow main-drop"
             *ngIf="hasPermissionToUpdate">
             <a class="nav-link dropdown-toggle" role="button"
                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -103,22 +103,22 @@
                 <li *ngFor="let sc of headerShortCuts"><a class="dropdown-item"
                         routerLink="{{sc.link}}">{{sc.reportCode}}</a></li>
             </ul>
-        </li>
+        </li> -->
 
-        <select class="me-4 custselect " *ngIf="displayBranch && onlyoneBranch"
+        <!-- <select class="me-4 custselect " *ngIf="displayBranch && onlyoneBranch"
             [(ngModel)]="branchCode"
             (change)="getBranchCategory()">
             <option class="select-option" *ngFor="let b of branchs"
                 [value]="b.branchCode">
                 {{b.branchName}}</option>
-        </select>
-
+        </select> -->
+<!-- 
         <li class="nav-item" *ngIf="displayBranch && !onlyoneBranch">
             <a class="nav-link dropdown-toggle" role="button"
                 aria-expanded="false">
                 {{branchName}}
             </a>
-        </li>
+        </li> -->
         <li class="nav-item dropdown has-arrow main-drop">
             <a class="nav-link dropdown-toggle" role="button"
                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -136,7 +136,7 @@
                 <span class>{{username}}</span>
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" a
+                <li><a class="dropdown-item"
                         routerLink="/emp-profile">Profile</a></li>
                 <!-- <li><a class="dropdown-item" >Company</a></li> -->
                 <li><a class="dropdown-item" routerLink="/changepswd">Change
@@ -164,43 +164,3 @@
     <!-- /Mobile Menu -->
 </div>
 <!-- /Header -->
-
-<li class="dropdown dropdown-submenu">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown Link
-        5</a>
-    <ul class="dropdown-menu">
-        <li><a href="#">Dropdown Submenu Link 5.1</a></li>
-        <li><a href="#">Dropdown Submenu Link 5.2</a></li>
-        <li><a href="#">Dropdown Submenu Link 5.3</a></li>
-        <li class="divider"></li>
-        <li class="dropdown dropdown-submenu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown
-                Submenu Link 5.4</a>
-            <ul class="dropdown-menu">
-                <li><a href="#">Dropdown Submenu Link 5.4.1</a></li>
-                <li><a href="#">Dropdown Submenu Link 5.4.2</a></li>
-                <li class="divider"></li>
-                <li class="dropdown dropdown-submenu">
-                    <a href="#" class="dropdown-toggle"
-                        data-toggle="dropdown">Dropdown Submenu Link 5.4.3</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Dropdown Submenu Link 5.4.3.1</a></li>
-                        <li><a href="#">Dropdown Submenu Link 5.4.3.2</a></li>
-                        <li><a href="#">Dropdown Submenu Link 5.4.3.3</a></li>
-                        <li><a href="#">Dropdown Submenu Link 5.4.3.4</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown dropdown-submenu"><a href="#"
-                        class="dropdown-toggle" data-toggle="dropdown">Dropdown
-                        Submenu Link 5.4.4</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Dropdown Submenu Link 5.4.4.1</a></li>
-                        <li><a href="#">Dropdown Submenu Link 5.4.4.2</a></li>
-                        <li><a href="#">Dropdown Submenu Link 5.4.4.3</a></li>
-                        <li><a href="#">Dropdown Submenu Link 5.4.4.4</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </li>
-    </ul>
-</li>
