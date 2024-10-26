@@ -1,4 +1,4 @@
-<div class="sidebar" id="sidebar"
+<div class="sidebar d-flex flex-column justify-content-between" id="sidebar"
   style="overflow: auto; scrollbar-width: none;scroll-behavior: smooth;  scrollbar-width: thin;
     scrollbar-color: #d5d1d1 #ffffff;">
   <div class="sidebar-inner slimscroll">
@@ -9,7 +9,7 @@
     gap: 17px;">
         <ul *ngFor="let menu of menu_listJSON" id="menublock">
           <!-- main header -->
-          <li class="menu-title" id="menuTitle" [routerLink]="menu.link" >
+          <li class="menu-title" id="menuTitle" [routerLink]="menu.link">
             <img src="{{menu.icon}}" class="me-2" alt />
             <!-- <i [class]="menu.icon" class="me-3"></i> -->
             <span>{{ menu.header }}</span>
@@ -17,7 +17,7 @@
             <i class="fa fa-angle-down menu-arrow"></i>
           </li>
           <!-- *ngIf="menu.header !== 'Reports'" -->
-          <div 
+          <div
             class="mainsub"
             id="submenu"
             [routerLinkActive]="['is-active']"
@@ -63,5 +63,20 @@
         </ul>
       </div>
     </perfect-scrollbar>
+  </div>
+  <div class="text-light p-3 dropright" *ngIf="displayBranch && onlyoneBranch">
+    <div class="dropdown">
+      <a class="nav-link dropdown-toggle"  data-bs-toggle="dropdown"
+        aria-expanded="false" style="cursor: pointer;">{{branchName}}</a>
+      <div class="dropdown-menu dropdown-menu-right"> 
+        <!--  [ngClass]="{'active': branchCode === b.branchCode}" -->
+        <a class="dropdown-item" *ngFor="let b of branchs"
+          (click)="getBranchCategory(b.branchCode)">{{b.branchName}} 
+          <span *ngIf="branchCode === b.branchCode" class="text-success float-end fs-6">&#x2714;</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="text-light p-3" *ngIf="displayBranch && !onlyoneBranch">
+    <a class="nav-link" style="cursor: pointer;">{{branchName}}</a>
   </div>
 </div>
