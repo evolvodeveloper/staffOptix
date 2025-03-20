@@ -1,69 +1,60 @@
-<div class="sidebar" id="sidebar"
-  style="overflow: auto; scrollbar-width: none;scroll-behavior: smooth;  scrollbar-width: thin;
-    scrollbar-color: #d5d1d1 #ffffff;">
-  <div class="sidebar-inner slimscroll">
-    <perfect-scrollbar [scrollIndicators]="false" class="my-scroll-container "
-      id="container">
-      <div id="sidebar-menu" class="sidebar-menu" style=" display: flex;
-    flex-direction: column;
-    gap: 17px;">
+<div class="sidebar d-flex flex-column justify-content-between" id="sidebar"
+  style="overflow: hidden; scrollbar-width: none; scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: #d5d1d1 #ffffff;">
+  
+  <div class="sidebar-inner flex-grow-1">
+    <perfect-scrollbar [scrollIndicators]="false" class="my-scroll-container" id="container">
+      <div id="sidebar-menu" class="sidebar-menu" style="display: flex; flex-direction: column; gap: 17px;">
         <ul *ngFor="let menu of menu_listJSON" id="menublock">
           <!-- main header -->
-          <li class="menu-title" id="menuTitle" [routerLink]="menu.link" >
+          <li class="menu-title" id="menuTitle" [routerLink]="menu.link">
             <img src="{{menu.icon}}" class="me-2" alt />
-            <!-- <i [class]="menu.icon" class="me-3"></i> -->
             <span>{{ menu.header }}</span>
-            <!-- <i class="fa fa-arrow-right  menu-arrow"></i> -->
             <i class="fa fa-angle-down menu-arrow"></i>
           </li>
-          <!-- *ngIf="menu.header !== 'Reports'" -->
-          <div
-            class="mainsub"
-            id="submenu"
-            [routerLinkActive]="['is-active']"
-            [routerLinkActiveOptions]="{ exact: true }">
-            <!-- sub and child header -->
+
+          <div class="mainsub" id="submenu" [routerLinkActive]="['is-active']" [routerLinkActiveOptions]="{ exact: true }">
             <ng-container *ngFor="let sub of menu.subHeaders">
-              <!-- sub headers without child headers -->
-              <li
-                routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }"
-                *ngIf="!sub.childHeaders">
+              <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" *ngIf="!sub.childHeaders">
                 <a [routerLink]="sub.subHead.link">
-                  <!-- <i class="fa fa-stop-fill"></i> -->
-                  <!-- <i [class]="sub.subHead.icon" class="me-2"></i> -->
                   <img src="{{sub.subHead.icon}}" class="me-2" alt />
- 
                   <span>{{ sub.subHead.name }}</span>
                 </a>
               </li>
- 
-              <!-- sub headers with child headers -->
               <li *ngIf="sub.childHeaders" class="submenu" id="sub">
-                <!-- href="javascript:" -->
                 <a>
-                  <!-- <i class="fa fa-stop-fill"></i> -->
                   <i [class]="sub.subHead.icon" class="me-2"></i>
-                  <span> {{ sub.subHead.category }}</span>
+                  <span>{{ sub.subHead.category }}</span>
                   <i class="fa fa-arrow-right menu-arrow"></i>
                 </a>
- 
-                <!-- child headers -->
                 <ul style="display: none">
-                  <li id="childSub"
-                    *ngFor="let child of sub.childHeaders"
-                    [routerLink]="child.childHead.link">
+                  <li id="childSub" *ngFor="let child of sub.childHeaders" [routerLink]="child.childHead.link">
                     <a href="javascript:">{{ child.childHead.name }}</a>
                   </li>
                 </ul>
               </li>
- 
             </ng-container>
           </div>
         </ul>
       </div>
     </perfect-scrollbar>
   </div>
+  
+  <!-- Display Branch Section - Will be at the bottom -->
+  <div class="text-dark bg-light p-3 dropright" *ngIf="displayBranch && onlyoneBranch">
+    <div class="dropdown">
+      <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+        {{branchName}}
+      </a>
+      <div class="dropdown-menu dropdown-menu-right">
+        <a class="dropdown-item" *ngFor="let b of branchs" (click)="getBranchCategory(b.branchCode)">
+          {{b.branchName}} 
+          <span *ngIf="branchCode === b.branchCode" class="text-success float-end fs-6">&#x2714;</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-dark  bg-light p-3" *ngIf="displayBranch && !onlyoneBranch">
+    <a class="nav-link" style="cursor: pointer;">{{branchName}}</a>
+  </div>
 </div>
- 
- 

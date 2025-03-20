@@ -19,16 +19,22 @@ export class SidebarComponent implements OnInit {
     subUrl: "",
     childUrl: "",
   };
+  branchName: string;
+  onlyoneBranch = false;
+
+  companyName: string;
   sidebarMenus = {
     default: true,
     chat: false,
     settings: false,
   };
-
+  displayBranch = false;
+  branchCode: string;
+  branchs: any;
   constructor(
     private router: Router,
     private httpGet: HttpGetService,
-    private UtilServ: UtilService,
+    private utilServ: UtilService,
     private globalServ: GlobalvariablesService
   ) {
     this.router.events.subscribe((event: any) => {
@@ -56,12 +62,30 @@ export class SidebarComponent implements OnInit {
     // this.getSortedMenu();
   }
 
+
+  checkLocalStorage() {
+    const branch = localStorage.getItem('branch');
+    if (branch !== null) {
+      // branchCode
+      this.branchs = JSON.parse(branch);
+      this.branchSetting();
+    }
+
+    else {
+      setTimeout(() => {
+        this.checkLocalStorage.call(this);
+      }, 1000);
+    }
+  }
+
   ngOnInit() {
+    this.companyName = localStorage.getItem('companyName');
     const container =
       document.querySelector('#container');
     // or just with selector string
     const ps = new PerfectScrollbar('#container');
     container.scrollTop = 0;
+    this.checkLocalStorage.call(this);
 
     $(document).on("click", "#sidebar-menu li", function (e) {
       e.stopImmediatePropagation();
@@ -94,5 +118,56 @@ export class SidebarComponent implements OnInit {
       }
     });
     this.menu_listJSON = this.globalServ.menu_listJSON;
+  }
+  getBranchCategory(code) {
+    this.branchCode = code;
+    console.warn('branchCode', this.branchCode);
+    this.httpGet
+      .getMasterList('switchtoken?branch=' + this.branchCode)
+      .subscribe(
+        (res: any) => {
+          if (res.status.message === 'SUCCESS') {
+            location.reload();
+            this.globalServ.setAppvariables(res.response);
+          }
+        },
+        (err) => {
+          console.error(err);
+        }
+      );
+  }
+  branchSetting() {
+    if (this.branchs.length > 0) {
+      this.displayBranch = true;
+      // if (this.branchs.length == 1) {
+      //   this.onlyoneBranch = true;
+      // }
+      console.log('branchs', this.branchs, this.onlyoneBranch, localStorage.getItem('branchCode'));
+      this.onlyoneBranch = this.utilServ.userProfileData ? this.utilServ.userProfileData.isMultibranch:false;
+
+      if (localStorage.getItem('branchCode')) {
+        const row = this.branchs.find(x => x.branchCode === localStorage.getItem('branchCode'));
+        if (row) {
+          this.branchCode = row.branchCode;
+          this.branchName = row.branchName;
+        } else {
+          this.branchs.forEach((x) => {
+            if (x.headoffice == true) {
+              localStorage.setItem('branchCode', x.branchCode)
+              this.branchCode = x.branchCode;
+              this.branchName = x.branchName;
+            }
+          })
+        }
+      } else {
+        this.branchs.forEach((x) => {
+          if (x.headoffice == true) {
+            localStorage.setItem('branchCode', x.branchCode)
+            this.branchCode = x.branchCode;
+            this.branchName = x.branchName;
+          }
+        });
+      }
+    }
   }
 }

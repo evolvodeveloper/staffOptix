@@ -103,7 +103,7 @@ export class GlobalvariablesService {
 
   showLabel(divId: string): Promise<string> {
     const label = this.labels?.find(item => item.colCode.trim() === divId);
-    return label ? label.labelDescription : '';
+    return label ? label.labelDescription : null;
   }
   hasInteger(colCode: string): Promise<boolean> {
     const label = this.labels.find(item => item.colCode === colCode);
@@ -120,12 +120,12 @@ export class GlobalvariablesService {
   }
   showPlaceholder(divId: string): Promise<string> {
     const pc = this.placeholder?.find(item => item.placeholderColCode === divId);
-    return pc ? pc.placeholderDescription : '';
+    return pc ? pc.placeholderDescription : null;
   }
 
   showerror(divId: string): Promise<string> {
     const pc = this.ErrorsMsgs?.find(item => item.colCode === divId);
-    return pc ? pc.description : '';
+    return pc ? pc.description : null;
   }
 
   // to get the data from g_labels and g_errors which has form code  Global 
@@ -147,23 +147,23 @@ export class GlobalvariablesService {
   getGlobalNames(divId: string): Promise<string> {
     const label: any = this.globalData;
     if (Array.isArray(label)) {
-      const found = label ? label.find(x => x.colCode === divId) : ''
-      return found ? found.labelDescription : '';
+      const found = label ? label.find(x => x.colCode === divId) : null
+      return found ? found.labelDescription : null;
     }
   }
   showGlobalplaceholders(divId: string): Promise<string> {
     let pl: any = this.globalPlaceholderData;
     // const pl = [];
     if (Array.isArray(pl)) {
-      const found = pl ? pl.find(x => x.placeholderColCode === divId) : '';
-      return found ? found?.placeholderDescription : '';
+      const found = pl ? pl.find(x => x.placeholderColCode === divId) : null;
+      return found ? found?.placeholderDescription : null;
     }
   }
   showGlobalErrors(divId: string): Promise<string> {
     const label: any = this.globalErrorsData;
     if (Array.isArray(label)) {
-      const found = label ? label.find(x => x.colCode === divId) : ''
-      return found ? found.description : '';
+      const found = label ? label.find(x => x.colCode === divId) : null
+      return found ? found.description : null;
     }
   }
 
@@ -177,7 +177,7 @@ export class GlobalvariablesService {
     this.setCoPreferences();
     this.getBranchList();
     this.getCompanysPricingDetails();
-
+    this.getProfile();
     this.getGlobalData();
     this.getGlobalPlaceHolders();
     this.getGlobalErrors();
@@ -245,6 +245,22 @@ export class GlobalvariablesService {
       }
     );
     // }
+  }
+  async getProfile() {
+    this.httpGet.getMasterList('profile').subscribe(async (res: any) => {
+      // this.getPunchDetails();
+      this.utilServ.userProfileData = res.response;
+      // if (res.response.isMultibranch) {
+      //   if (this.branchs.length > 1) {
+      //     this.displayBranch = true;
+      //     this.onlyoneBranch = res.response.isMultibranch;
+      //   } else {
+      //     this.displayBranch = true;
+      //     this.onlyoneBranch = false;
+      //   }
+      // }
+  
+    })
   }
 
   getMenuAccessData(): Observable<any> {

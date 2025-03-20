@@ -24,13 +24,10 @@ export class HeaderComponent implements OnInit {
 
   headerShortCuts = [];
   pageProfileLogo: any;
-  branchCode: string;
   profilePic: any;
   dateFormat: string;
-  branchName: string;
   punchInMarked: string;
-  displayBranch = false;
-  branchs: any;
+
   companyName: string;
   userProfile: any;
   showLeave = true;
@@ -54,34 +51,21 @@ export class HeaderComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private utilServ: UtilService
   ) { }
-  checkLocalStorage() {
-    const branch = localStorage.getItem('branch');
-    if (branch !== null) {
-      // branchCode
-      this.branchs = JSON.parse(branch);
-      this.branchSetting();
-    }
 
-    else {
-      setTimeout(() => {
-        this.checkLocalStorage.call(this);
-      }, 1000);
-    }
-  }
   async getProfile() {
     this.httpGet.getMasterList('profile').subscribe(async (res: any) => {
       this.userProfile = await res.response;
       // this.getPunchDetails();
       this.utilServ.userProfileData = res.response;
-      if (res.response.isMultibranch) {
-        if (this.branchs.length > 1) {
-          this.displayBranch = true;
-          this.onlyoneBranch = res.response.isMultibranch;
-        } else {
-          this.displayBranch = true;
-          this.onlyoneBranch = false;
-        }
-      }
+      // if (res.response.isMultibranch) {
+      //   if (this.branchs.length > 1) {
+      //     this.displayBranch = true;
+      //     this.onlyoneBranch = res.response.isMultibranch;
+      //   } else {
+      //     this.displayBranch = true;
+      //     this.onlyoneBranch = false;
+      //   }
+      // }
       if (this.utilServ.userProfileData.image) {
         const header = 'data:image/' + this.utilServ.userProfileData.fileType + ';base64,';
         this.profilePic = header.concat(this.utilServ.userProfileData.image)
@@ -90,7 +74,6 @@ export class HeaderComponent implements OnInit {
         const shortName = res.response.name ? res.response.name?.charAt(0) : '';
         this.shortName = shortName.toLocaleUpperCase();
       }
-
     })
   }
   showLanguages() {
@@ -138,21 +121,27 @@ export class HeaderComponent implements OnInit {
   }
   async ngOnInit() {
     this.getLang();
-
+    if (this.utilServ.userProfileData.image) {
+        const header = 'data:image/' + this.utilServ.userProfileData.fileType + ';base64,';
+        this.profilePic = header.concat(this.utilServ.userProfileData.image)
+      }
+      else {
+      const shortName = this.utilServ.userProfileData.name ? this.utilServ.userProfileData.name?.charAt(0) : '';
+        this.shortName = shortName.toLocaleUpperCase();
+      }
     const userData = JSON.parse(localStorage.getItem('user-data'));
     // userData = JSON.parse(localStorage.getItem('user-data'));
     const isAdmin = userData.roles.some(role => role === 'ADMIN');
     this.dateFormat = this.globalServ.dateFormat;
     if (isAdmin) {
       this.hasPermissionToUpdate = true;
-      this.getDashboardShortCuts();
+      // this.getDashboardShortCuts();
       this.getNotifications();
     } else {
       this.hasPermissionToUpdate = false;
     }
     this.getLogo();
     this.getProfile();
-    this.checkLocalStorage.call(this);
     // this.getDatas("notification");
     // this.getDatas("message");
     this.username = localStorage.getItem('userName');
@@ -186,63 +175,33 @@ export class HeaderComponent implements OnInit {
     })
 
   }
-  getDashboardShortCuts() {
-    this.httpGet.getMasterList('dashboardshortcuts').subscribe((res: any) => {
-      res.response.unshift({
-        reportCode: 'Employee Dashboard',
-        link: 'attendance/employee-dashboard'
-      })
-      this.headerShortCuts = res.response
-    })
-  }
-  branchSetting() {
-    if (this.branchs.length > 0) {
-      this.displayBranch = true;
-      // if (this.branchs.length == 1) {
-      //   this.onlyoneBranch = true;
-      // }
-      if (localStorage.getItem('branchCode')) {
-        const row = this.branchs.find(x => x.branchCode === localStorage.getItem('branchCode'));
-        if (row) {
-          this.branchCode = row.branchCode;
-          this.branchName = row.branchName;
-        } else {
-          this.branchs.forEach((x) => {
-            if (x.headoffice == true) {
-              localStorage.setItem('branchCode', x.branchCode)
-              this.branchCode = x.branchCode;
-              this.branchName = x.branchName;
-            }
-          })
-        }
-      } else {
-        this.branchs.forEach((x) => {
-          if (x.headoffice == true) {
-            localStorage.setItem('branchCode', x.branchCode)
-          this.branchCode = x.branchCode;
-          this.branchName = x.branchName;
-        }
-      });
-      }
-    }
-  }
-  getBranchCategory() {
-    console.warn('branchCode', this.branchCode);
+  // getDashboardShortCuts() {
+  //   this.httpGet.getMasterList('dashboardshortcuts').subscribe((res: any) => {
+  //     res.response.unshift({
+  //       reportCode: 'Employee Dashboard',
+  //       link: 'attendance/employee-dashboard'
+  //     })
+  //     this.headerShortCuts = res.response
+  //   })
+  // }
 
-    this.httpGet
-      .getMasterList('switchtoken?branch=' + this.branchCode)
-      .subscribe(
-        (res: any) => {
-          if (res.status.message === 'SUCCESS') {
-            location.reload();
-            this.globalServ.setAppvariables(res.response);
-          }
-        },
-        (err) => {
-          console.error(err);
-        }
-      );
-  }
+  // getBranchCategory() {
+  //   console.warn('branchCode', this.branchCode);
+
+  //   this.httpGet
+  //     .getMasterList('switchtoken?branch=' + this.branchCode)
+  //     .subscribe(
+  //       (res: any) => {
+  //         if (res.status.message === 'SUCCESS') {
+  //           location.reload();
+  //           this.globalServ.setAppvariables(res.response);
+  //         }
+  //       },
+  //       (err) => {
+  //         console.error(err);
+  //       }
+  //     );
+  // }
   getLogo() {
     this.httpGet.getMasterList('company/logo').subscribe(
       (res: any) => {
