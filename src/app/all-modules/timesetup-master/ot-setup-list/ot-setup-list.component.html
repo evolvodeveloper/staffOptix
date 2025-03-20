@@ -4,7 +4,9 @@
             <div class="d-flex align-items-baseline">
                 <i style="font-size:20px" class="fa fa-arrow-left"
                     (click)="back()" aria-label="back"></i>
-                <h3 class="ms-4 page-title">OT Setup List</h3>
+                <h3 class="ms-4 page-title">
+                    {{globalServ.showLabel('OTSetupHeader')}}
+                </h3>
             </div>
         </div>
     </div>
@@ -14,7 +16,8 @@
         <div class="row mb-3">
             <div class="col-sm-12 col-lg-3">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search"
+                    <input type="text" class="form-control" 
+                     placeholder="{{globalServ.showGlobalplaceholders('search')}}"
                         (keyup)="updateFilter($event)"
                          [(ngModel)]="searchedFor" 
                         style="border-radius: 8px 0px 0px 8px;">
@@ -32,12 +35,11 @@
                 <button type="button" id="add_project"
                     class="btn add-btn float-end d-flex"
                     *ngIf="hasPermissionToUpdate" (click)="create()"><i
-                        id="add_project" class="material-icons me-2">add</i> Add
-                    New</button>
+                        id="add_project" class="material-icons me-2">add</i> {{globalServ.getGlobalNames('addNew')}}</button>
             </div>
 
             <div class="col-sm-6 col-lg-2 mt-30px">
-                <label class="form-label ms-2">Show entries</label>
+                <label class="form-label ms-2">{{globalServ.getGlobalNames('ShowEntries')}}</label>
                 <select class="form-select" (change)="resultsPerPage($event)">
                     <!-- <option value="10">10</option> -->
                     <option value="25">25</option>
@@ -52,20 +54,34 @@
                 class="table table-hover table-nowrap custom-table mb-0 datatable">
                 <thead class="thead-all">
                     <tr class="tr-th-all">
-                        <th scope="col">Over Time</th>
-                        <th scope="col">OT Rate %</th>
-                        <th scope="col" class="text-center">Allow Full OT</th>
-                        <th scope="col" class="text-center">Allow OT After</th>
-                        <th scope="col" class="text-center">Allow OT On Holiday</th>
-                        <th scope="col" class="text-center">Allow OT On Weekend</th>
-                        <th scope="col" class="text-center" width="200">Action</th>
+                        <th scope="col">
+                            {{globalServ.showLabel('overTime')}}
+                        </th>
+                        <th scope="col">
+                            {{globalServ.showLabel('otRatePct2')}}
+                        </th>
+                        <th scope="col" class="text-center">
+                            {{globalServ.showLabel('allowFullOT2')}}
+                        </th>
+                        <th scope="col" class="text-center">
+                            {{globalServ.showLabel('allowOTAfter2')}}
+                        </th>
+                        <th scope="col" class="text-center">
+                            {{globalServ.showLabel('allowOTOnHoliday2')}}
+                        </th>
+                        <th scope="col" class="text-center">
+                            {{globalServ.showLabel('allowOTOnWeekend2')}}
+                        </th>
+                        <th scope="col" class="text-center" width="200">
+                            {{globalServ.getGlobalNames('action')}}
+                        </th>
                     </tr>
                 </thead>
                 <tbody *ngIf="otSetupList.length === 0">
                     <tr
                         style=" text-align: center; height: 150px;">
                         <td colspan="7">
-                            "No records were found on OT."
+                            {{globalServ.getGlobalNames('nodatafound')}}
                         </td>
                     </tr>
                 </tbody>

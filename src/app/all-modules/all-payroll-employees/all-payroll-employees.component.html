@@ -9,8 +9,10 @@
           class="fa fa-arrow-left"
           (click)="back()"
           aria-label="back"></i>
-        <h3 class="ms-4 page-title">Employee {{ iAmFromDir ? 'Directory' :
-          'List' }}</h3>
+        <h3 class="ms-4 page-title">
+          {{globalServ.getGlobalNames('employee')}} {{ iAmFromDir ?
+          globalServ.showLabel('employeeDirectory') :
+          globalServ.showLabel('list') }}</h3>
       </div>
     </div>
     <div id="add_employee" class="col-auto float-right ml-auto">
@@ -19,7 +21,7 @@
         class="btn add-btn"
         *ngIf="hasPermissionToUpdate"
         (click)="create()"><i class="fa fa-plus"></i>
-        Add Employee
+        {{globalServ.showLabel('addemployee')}}
       </a>
       <!-- <a
         id="add_employee_excel"
@@ -39,7 +41,7 @@
         type="text"
         class="form-control"
         [(ngModel)]="searchedFor"
-        placeholder="search by name"
+        placeholder="{{globalServ.showPlaceholder('searchEmployee')}}"
         (keyup)="updateFilter($event)"
         style="
           border-radius: 8px 0px 0px 8px;
@@ -50,7 +52,7 @@
         type="text"
         class="form-control"
         [(ngModel)]="searchedInfalse"
-        placeholder="search by name"
+        placeholder="{{globalServ.showPlaceholder('searchEmployee')}}"
         (keyup)="updateFilterIsactiveFalse($event)"
         style="
           border-radius: 8px 0px 0px 8px;
@@ -63,7 +65,9 @@
   </div>
 
   <div class="col-sm-6 col-md-6 col-lg-3">
-    <label style="font-size: small">Department</label>
+    <label style="font-size: small">
+      {{globalServ.getGlobalNames('department')}}
+    </label>
     <div class="form-floating mt-1">
       <select *ngIf="showGridView"
         class="form-select"
@@ -90,15 +94,23 @@
   </div>
 
   <div class="col-sm-6 col-md-6 col-lg-3">
-    <label style="font-size: small">Sort records by</label>
+    <label style="font-size: small">
+      {{globalServ.showLabel('sortRecordsby')}}
+    </label>
     <select
       class="form-select mt-1"
       style="height: 40px;min-height: 40px;"
       [(ngModel)]="sortOrderby"
       (change)="makeSort()">
-      <option value="byEmpName">employee name</option>
-      <option value="byEmpCode">employee code</option>
-      <option value="byEmpLastName">employee last name</option>
+      <option value="byEmpName">
+        {{globalServ.getGlobalNames('employeeName')}}
+      </option>
+      <option value="byEmpCode">
+        {{globalServ.getGlobalNames('employeeCode')}}
+      </option>
+      <option value="byEmpLastName">
+        {{globalServ.showLabel('employeeLastname')}}
+      </option>
     </select>
   </div>
 
@@ -135,7 +147,7 @@
             (click)="changeTOGrid()"
             class="fas listGridIcons"
             [ngClass]="{'listGridIconsactive': showListView}">&#xf0ca;</i></td>
-       </tr>
+      </tr>
     </table>
     <div class="dropdown profile-action" style="top: auto;right: 0px;"
       *ngIf="hasPermissionToUpdate && showGridView && iAmFromDir">
@@ -175,7 +187,7 @@
             class="avatar d-flex justify-content-center m-auto align-items-center"
             style="background: #5470C6;">
             <span
-              style="font-size: xx-large; color: #fff">{{emp.employeeMaster?.empShortName}}</span>
+              style="font-size: xx-large; color: #fff" id="empShortName" >{{emp.employeeMaster?.empShortName}}</span>
           </div>
           <a
             class="avatar"
@@ -195,34 +207,77 @@
             aria-expanded="false"><i class="material-icons">more_vert</i></a>
           <div class="dropdown-menu dropdown-menu-right">
             <a class="dropdown-item" (click)="viewEmployee(emp)">
-              <i class="fa-solid fa-eye me-1"></i>&nbsp;View
+              <i class="fa-solid fa-eye me-1"></i>&nbsp;
+              {{globalServ.getGlobalNames('view')}}
             </a>
             <a
               class="dropdown-item"
               *ngIf="hasPermissionToUpdate"
               (click)="editEmployee(emp)">
-              <i class="fa-solid fa-pencil me-1"></i>&nbsp;Edit
+              <i class="fa-solid fa-pencil me-1"></i>&nbsp;
+              {{globalServ.getGlobalNames('edit')}}
             </a>
             <a
               class="dropdown-item"
-              *ngIf="hasPermissionToUpdate && emp?.payrollMaster?.approved === false"
+              *ngIf="hasPermissionToApprove && emp?.payrollMaster?.approved === false"
               (click)="approveEmployee(emp)">
-              <i class="fa-solid fa-check-circle me-1"></i>&nbsp;Approve
+              <i class="fa-solid fa-check-circle me-1"></i>&nbsp;
+              {{globalServ.getGlobalNames('approve')}}
             </a>
           </div>
         </div>
-        <h4 class="user-name m-t-10 mb-0 text-ellipsis">
-          <a>{{ emp.employeeMaster.employeeName }}</a>
-        </h4>
-        <div class="small">{{ emp.employeeMaster.employeeCode }}</div>
 
-        <div class="small text-muted" *ngIf="emp.employeeMaster.designation">
-          {{ emp.employeeMaster.designation }}
+        <div style="text-align: center;" class="mt-3">
+          <div style="display: flex;
+              flex-direction: column;
+              gap: 5px;
+          " >
+            <div class="empName">{{emp.employeeMaster.employeeName}}</div>
+            <div class="span3">{{ emp.employeeMaster.designation }}</div>
+          </div>
+          <div class="linda-framcreative-com3">
+            <span>
+              <span class="span3">Emp ID :</span>
+              <span class="span4">{{ emp.employeeMaster.employeeCode }}</span>
+            </span>
+          </div>
+          <div class="linda-framcreative-com4">
+            <span>
+              <span class="span3">Department :</span>
+              <span class="span4">{{ emp.employeeMaster.deptCode }}</span>
+            </span>
+          </div>
+          <!-- <div class="linda-framcreative-com6">
+            <span>
+              <span class="span3">Email ID :</span>
+              <span class="span4">{{emp.employeeMaster.email}}</span>
+            </span>
+          </div> -->
+
+
+
+
+
+
+
+          <!-- <h4 class="user-name m-t-10 mb-0 text-ellipsis"  id="employeeName">
+            <a>{{ emp.employeeMaster.employeeName }}</a>
+          </h4>
+          <div class="small" id="employeeCode">{{ emp.employeeMaster.employeeCode }}</div>
+  
+          <div class="small text-muted" id="designation" *ngIf="emp.employeeMaster.designation">
+            {{ emp.employeeMaster.designation }}
+          </div>
+          <div class="small text-muted"
+            *ngIf="!emp.employeeMaster.designation"  id="designation"><br /></div> -->
         </div>
-        <div class="small text-muted"
-          *ngIf="!emp.employeeMaster.designation"><br /></div>
+
+        
       </div>
     </div>
+
+    
+
   </ng-container>
   <div *ngIf="employees_list.length > employees_listConfig.itemsPerPage"
     class="text-center mt-3">
@@ -237,50 +292,66 @@
       <table datatable class="table table-hover custom-table mb-0 datatable">
         <thead class="small thead-all">
           <tr class="tr-th-all">
-            <th scope="col" class="text-left">Emp Code <i class="fa fa-sort"
+            <th scope="col"
+              class="text-left">{{globalServ.getGlobalNames('empCode')}}<i
+                class="fa fa-sort"
                 data-column="employeeCode"
                 (click)="sortData('employeeCode')"
                 [ngClass]="{'asc': sortColumn === 'employeeCode' && sortOrder === 'asc',
                'desc': sortColumn === 'employeeCode' && sortOrder === 'desc'}"></i></th>
-            <th scope="col" class="text-left">Emp Name <i class="fa fa-sort"
+            <th scope="col"
+              class="text-left">{{globalServ.getGlobalNames('empName')}}<i
+                class="fa fa-sort"
                 data-column="employeeName"
                 (click)="sortData('employeeName')"
                 [ngClass]="{'asc': sortColumn === 'employeeName' && sortOrder === 'asc',
             'desc': sortColumn === 'employeeName' && sortOrder === 'desc'}"></i></th>
 
-            <th scope="col" class="text-left">Last Name <i class="fa fa-sort"
+            <th scope="col"
+              class="text-left">{{globalServ.showLabel('lastName')}}<i
+                class="fa fa-sort"
                 data-column="lastName"
                 (click)="sortData('lastName')"
                 [ngClass]="{'asc': sortColumn === 'lastName' && sortOrder === 'asc',
             'desc': sortColumn === 'lastName' && sortOrder === 'desc'}"></i></th>
 
-            <th scope="col" class="text-left">Designation <i
+            <th scope="col" class="text-left">
+              {{globalServ.getGlobalNames('designation')}}
+              <i
                 class="fa fa-sort"
                 data-column="designation"
                 (click)="sortData('designation')"
                 [ngClass]="{'asc': sortColumn === 'designation' && sortOrder === 'asc',
                'desc': sortColumn === 'designation' && sortOrder === 'desc'}"></i></th>
-            <th scope="col" class="text-left">Department <i
+            <th scope="col" class="text-left">
+              {{globalServ.getGlobalNames('department')}}
+              <i
                 class="fa fa-sort"
                 data-column="deptCode"
                 (click)="sortData('deptCode')"
                 [ngClass]="{'asc': sortColumn === 'deptCode' && sortOrder === 'asc',
                'desc': sortColumn === 'deptCode' && sortOrder === 'desc'}"></i></th>
-            <th scope="col" class="text-left">Project <i
+            <th scope="col" class="text-left">
+              {{globalServ.getGlobalNames('project')}}
+              <i
                 class="fa fa-sort"
                 data-column="projectCode"
                 (click)="sortData('projectCode')"
                 [ngClass]="{'asc': sortColumn === 'projectCode' && sortOrder === 'asc',
                'desc': sortColumn === 'projectCode' && sortOrder === 'desc'}"></i></th>
 
-            <th scope="col" class="text-center">Active</th>
-            <th scope="col" class="text-center">Action</th>
+            <th scope="col" class="text-center">
+              {{globalServ.getGlobalNames('active')}}
+            </th>
+            <th scope="col" class="text-center">
+              {{globalServ.getGlobalNames('action')}}
+            </th>
           </tr>
         </thead>
         <tbody *ngIf="allEmpRecods.length === 0">
           <tr style=" text-align: center; height: 150px;">
             <td colspan="7">
-              "No records were found with the selected filter criteria."
+              {{globalServ.showGlobalErrors('notFound')}}
             </td>
           </tr>
         </tbody>

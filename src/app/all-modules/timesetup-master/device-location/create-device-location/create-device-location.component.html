@@ -3,8 +3,13 @@
     <div class="col-sm-12 col-lg-8 d-flex align-items-baseline">
       <i style="font-size:20px" class="fa fa-arrow-left"
         (click)="cancel()" aria-label="back"></i>
-      <h3 class="ms-4 page-title"> {{ view ? "View" : update ? "Update" :
-        "Create" }} Device Location</h3>
+      <h3 class="ms-4 page-title"> {{  view ? globalServ.getGlobalNames('view')  
+               : (update ? globalServ.getGlobalNames('update') 
+               :globalServ.getGlobalNames('create')) }}
+              {{globalServ.showLabel('deviceLocationHeader')}}
+                </h3>
+               
+
     </div>
   </div>
 </div>
@@ -16,15 +21,15 @@
         <div class="col-md-6 mt-4">
           <div class="form-group">
             <label class="text-sm mb-1">
-              Device Location&nbsp;<span
+              {{globalServ.showLabel('deviceLocationHeader')}}&nbsp;<span
                 style="color: red; margin-left: 1px">*</span>
             </label>
             <input
               class="form-control"
               id="deviceLocCode"
-              placeholder="Enter Device Location"
+              placeholder="{{globalServ.showPlaceholder('deviceLocCode')}}"
               [formControl]="deviceLocationForm.controls.deviceLocCode" />
-            <div
+            <div class="mt-2"
               *ngIf="deviceLocationForm.controls['deviceLocCode'].invalid &&
                             (deviceLocationForm.controls['deviceLocCode'].dirty ||
                             deviceLocationForm.controls['deviceLocCode'].touched)"
@@ -32,35 +37,34 @@
               <div
                 *ngIf="deviceLocationForm.controls['deviceLocCode'].errors.required"
                 style="color: #dc3545">
-                Device location is required.
+                 {{globalServ.showLabel('deviceLocationHeader')}} {{globalServ.showGlobalErrors('required')}}
               </div>
             </div>
             <div
               *ngIf="deviceLocationForm.get('deviceLocCode').hasError('invalidFormat')"
-              style="color: #dc3545">field should not contain special
-              characters</div>
+              style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
           </div>
         </div>
         <div class="col-md-6 mt-4">
           <div class="form-group">
-            <label class="text-sm mb-1">Description
+            <label class="text-sm mb-1">{{globalServ.showLabel('deviceLocationDesc')}}
             </label>
             <textarea
               class="form-control"
               id="description"
-              placeholder="Enter Description"
+              placeholder="{{globalServ.showPlaceholder('deviceLocationDesc')}}"
               [formControl]="deviceLocationForm.controls.description"></textarea>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group">
-            <label class="text-sm mb-1">Office Location
+            <label class="text-sm mb-1">{{globalServ.showLabel('deviceOfficeLocation')}}
             </label>
             <select
               class="form-select"
               id="projectOwner"
               [formControl]="deviceLocationForm.controls.locationCode">
-              <option selected disabled>Select Location</option>
+              <option selected disabled>-</option>
               <option [value]="p.locationCode"
                 *ngFor="let p of activeOfficeLocations">
                 {{ p.locationCode }}
@@ -74,7 +78,8 @@
               formControlName="isactive"
               color="primary" type="checkbox">
             <label class="form-check-label">
-              Is Active
+              <label class="form-check-label"> {{globalServ.getGlobalNames('active')}} </label>
+
             </label>
           </div>
         </div>
@@ -85,7 +90,7 @@
               (change)="checkIsRestrict()"
               color="primary" type="checkbox">
             <label class="form-check-label">
-              Is Restricted
+              {{globalServ.showLabel('deviceLocRes')}}
             </label>
           </div>
         </div>
@@ -146,7 +151,7 @@
       id="cancel_deviceloc"
       (click)="cancel()"
       class="btn delete-btn me-1">
-      Cancel
+      {{globalServ.getGlobalNames('cancel')}} 
     </button>
     <button
       id="create_deviceloc"
@@ -154,7 +159,7 @@
       [hidden]="view || update"
       (click)="submit()"
       class="btn add-btn  ">
-      Create
+      {{globalServ.getGlobalNames('create')}} 
     </button>
     <button
       id="update_deviceloc"
@@ -162,7 +167,7 @@
        [disabled]="deviceLocationForm.invalid || deviceLocationForm.pristine"
       (click)="Update()"
       class="btn add-btn  ">
-      Update
+      {{globalServ.getGlobalNames('update')}} 
     </button>
   </div>
 

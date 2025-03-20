@@ -97,6 +97,10 @@ $prefix: "mo-";
 -----------------------*/
 
 //  imp------\||/
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-placeholder {
+	position: inherit !important;
+}
+
 @media (min-width: 990px) {
 	.mt-30px {
 		margin-top: -30px;
@@ -747,8 +751,8 @@ table.dataTable thead>tr>td.sorting {
 	display: block;
 	max-width: 100%;
 	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+	// text-overflow: ellipsis;
+	// 	white-space: nowrap;
 }
 
 .text-muted-light {
@@ -1271,7 +1275,7 @@ table.dataTable thead>tr>td.sorting {
 	// background: rgba(183, 76, 114, 0.2);
 	// background-color: rgba(242, 17, 54, 0.12) !important;
 	color: #000000 !important;
-	background-color: rgba(15, 183, 107, 0.12) !important;
+		background-color: rgba(15, 183, 107, 0.12) !important;
 	color: #26af48 !important;
 }
 
@@ -1931,7 +1935,7 @@ table.dataTable thead>tr>td.sorting {
 	// background: -ms-linear-gradient(left, #4b68e7 0%, #764ba2 100%);
 	// background: linear-gradient(to right, #4b68e7 0%, #764ba2 100%);
 	border-bottom: 1px solid transparent;
-	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
+		box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
 	height: 50px;
 	left: 0;
 	position: fixed;
@@ -1997,7 +2001,7 @@ table.dataTable thead>tr>td.sorting {
 	border-top: 0;
 	border-left: 0;
 	border-bottom: 2px solid #fff;
-	border-right: 2px solid #fff;
+		border-right: 2px solid #fff;
 	content: "";
 	height: 8px;
 	display: inline-block;
@@ -2184,7 +2188,6 @@ table.dataTable thead>tr>td.sorting {
 .sidebar-menu li.active a {
 	color: #000000;
 		// border-radius: 12px;
-	margin: 2px 0px;
 	border-right: 3px solid #1000CB;
 	// border: 1px solid rgb(42, 81, 255);
 	// background: #5470c6;
@@ -2453,7 +2456,8 @@ table.dataTable thead>tr>td.sorting {
 }
 
 .page-wrapper>.content {
-	padding: 20px;
+	padding: 30px;
+		// padding: 20px;
 }
 
 .page-header {
@@ -2488,7 +2492,7 @@ table.dataTable thead>tr>td.sorting {
 
 .early-check-ins {
 	color: #001234;
-	font: 500 15px/150% "CircularStd", sans-serif;
+		font: 500 15px/150% "CircularStd", sans-serif;
 	position: relative;
 }
 
@@ -4363,10 +4367,27 @@ table.dataTable thead>tr>td.sorting {
 .modal-header {
 	justify-content: space-between;
 }
+// .profile-widget {
+// 	background: rgb(255, 255, 255);
+// 	// display: flex;
+// 		// flex-direction: row;
+// 		// align-items: center;
+// 	// background-color: #e9edff;
+// 	border: 1px solid #ededed;
+// 	background: #fff;
+// 	border-radius: 4px;
+// 	margin-bottom: 30px;
+// 	padding: 20px;
+// 	text-align: center;
+// 	position: relative;
+// 	// box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
+// 	overflow: hidden;
+// }
 .profile-widget {
 	// background-color: #e9edff;
 	border: 1px solid #ededed;
 	background: #fff;
+	height: 90%;
 	border-radius: 4px;
 	margin-bottom: 30px;
 	padding: 20px;
@@ -4375,7 +4396,6 @@ table.dataTable thead>tr>td.sorting {
 	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
 	overflow: hidden;
 }
-
 .profile-widget .user-name>a {
 	color: #333;
 }

@@ -47,7 +47,7 @@ export class CreateDepartmentComponent implements OnInit, OnChanges, OnDestroy {
     private httpPutService: HttpPutService,
     private UtilServ: UtilService,
     private httpGet: HttpGetService,
-    private globalServ: GlobalvariablesService
+    public globalServ: GlobalvariablesService
   ) { }
 
   ngOnChanges(department: any): void {
@@ -65,8 +65,9 @@ export class CreateDepartmentComponent implements OnInit, OnChanges, OnDestroy {
       delete this.UtilServ.editData;
       this.view = false;
       this.roleAccessArray = [];
-
       this.update = false;
+      // this.labels = department.selectedDepartmentData.currentValue.labels;
+      // this.placeholder = department.selectedDepartmentData.currentValue.placeholder;
       if (
         typeof department.selectedDepartmentData.currentValue.viewData !==
         'undefined'
@@ -89,6 +90,7 @@ export class CreateDepartmentComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+
   closeModal(): void {
     this.open = false;
     this.selectedDepartmentEvent.emit();
@@ -100,23 +102,9 @@ export class CreateDepartmentComponent implements OnInit, OnChanges, OnDestroy {
       this.departmentForm.controls.deptName.setValue(this.departmentForm.controls.deptName.value.replace(/[^a-zA-Z0-9]/g, ''))
     }
   }
-  getLabelDescription(divId: string): string {
-    const label = this.labels?.find(item => item.colCode === divId);
-    return label ? label.labelDescription : '';
-  }
-  getDeptLabels() {
-    this.spinner.show();
-    this.globalServ.getLabels('departmentMaster').subscribe((res: any) => {
-      this.labels = res.response;
-      this.spinner.hide();
-    }, (err) => {
-      this.spinner.hide();
-      console.error(err.error.status.message);
-    });
-  }
+
 
   ngOnInit(): void {
-    this.getDeptLabels();
     this.departmentForm = this.fb.group({
       deptCode: [null, [Validators.required, this.httpPostService.customValidator()]],
       deptName: [null, [Validators.required, this.httpPostService.customValidator()]],
@@ -128,7 +116,7 @@ export class CreateDepartmentComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getUserNames() {
-    this.httpGet.getMasterList('secUser/userName?userType=Employee').subscribe(
+    this.httpGet.getMasterList('secUser/userName?userType=EMPLOYEE').subscribe(
       (res: any) => {
         this.userNames = res.response;
       }
@@ -222,67 +210,67 @@ export class CreateDepartmentComponent implements OnInit, OnChanges, OnDestroy {
       let proceed = false;
       this.roleAccessArray.forEach(x => {
         proceed = false;
-        if (x.userName !== null && x.projectRoleCode !== null) {
+        if (x.userName !== null && x.deptRoleCode !== null) {
           proceed = true
         }
       })
       if (proceed) {
-      this.departmentForm.get('deptCode').setValue(this.globalServ.checkAndRemoveSpecialCharacters(this.departmentForm.controls.deptCode.value), { emitEvent: false });
-      this.departmentForm.get('deptName').setValue(this.globalServ.checkAndRemoveSpecialCharacters(this.departmentForm.controls.deptName.value), { emitEvent: false });
-      this.spinner.show();
-      const obj = {
-        deptDto: {
-          deptCode: this.departmentForm.controls.deptCode.value.trim(),
-          deptName: this.departmentForm.controls.deptName.value.trim(),
-          isactive:
-            this.departmentForm.controls.isactive.value == null
-              ? false
-              : this.departmentForm.controls.isactive.value,
-        },
-        accessDTOs: this.roleAccessArray,
-      };
-      this.httpPostService
-        .create('deptwithaccess', JSON.stringify(obj))
-        .subscribe(
-          (res: any) => {
-            this.spinner.hide();
+        this.departmentForm.get('deptCode').setValue(this.globalServ.checkAndRemoveSpecialCharacters(this.departmentForm.controls.deptCode.value), { emitEvent: false });
+        this.departmentForm.get('deptName').setValue(this.globalServ.checkAndRemoveSpecialCharacters(this.departmentForm.controls.deptName.value), { emitEvent: false });
+        this.spinner.show();
+        const obj = {
+          deptDto: {
+            deptCode: this.departmentForm.controls.deptCode.value.trim(),
+            deptName: this.departmentForm.controls.deptName.value.trim(),
+            isactive:
+              this.departmentForm.controls.isactive.value == null
+                ? false
+                : this.departmentForm.controls.isactive.value,
+          },
+          accessDTOs: this.roleAccessArray,
+        };
+        this.httpPostService
+          .create('deptwithaccess', JSON.stringify(obj))
+          .subscribe(
+            (res: any) => {
+              this.spinner.hide();
 
-            if (res.status.message == 'SUCCESS') {
-              Swal.fire({
-                title: 'Success!',
-                text: this.departmentForm.controls.deptName.value + ' Created',
-                icon: 'success',
-                timer: 10000,
-              }).then(() => {
-                this.UtilServ.allDepartments = [];
-                this.roleAccessArray = [];
-                this.UtilServ.activedepartmentList = [];
-                this.UtilServ.allPayrollEmpDept = {
-                  forTrueList: undefined,
-                  forFalseList: undefined
-                }
-                this.departmentForm.reset();
-                this.departmentForm.controls.isactive.setValue(true);
-                this.router.navigateByUrl('setup/department');
-              });
-            } else {
+              if (res.status.message == 'SUCCESS') {
+                Swal.fire({
+                  title: 'Success!',
+                  text: this.departmentForm.controls.deptName.value + ' Created',
+                  icon: 'success',
+                  timer: 10000,
+                }).then(() => {
+                  this.UtilServ.allDepartments = [];
+                  this.roleAccessArray = [];
+                  this.UtilServ.activedepartmentList = [];
+                  this.UtilServ.allPayrollEmpDept = {
+                    forTrueList: undefined,
+                    forFalseList: undefined
+                  }
+                  this.departmentForm.reset();
+                  this.departmentForm.controls.isactive.setValue(true);
+                  this.router.navigateByUrl('setup/department');
+                });
+              } else {
+                Swal.fire({
+                  title: 'Error!',
+                  text: res.status.message,
+                  icon: 'warning', showConfirmButton: true,
+                });
+              }
+            },
+            (err) => {
+              console.error(err.error.status.message);
+              this.spinner.hide();
               Swal.fire({
                 title: 'Error!',
-                text: res.status.message,
-                icon: 'warning', showConfirmButton: true,
+                text: err.error.status.message,
+                icon: 'error',
               });
             }
-          },
-          (err) => {
-            console.error(err.error.status.message);
-            this.spinner.hide();
-            Swal.fire({
-              title: 'Error!',
-              text: err.error.status.message,
-              icon: 'error',
-            });
-          }
-      );
+          );
       } else {
         Swal.fire({
           title: 'Error!',
@@ -299,69 +287,69 @@ export class CreateDepartmentComponent implements OnInit, OnChanges, OnDestroy {
     let proceed = false;
     this.roleAccessArray.forEach(x => {
       proceed = false;
-      if (x.userName !== null && x.projectRoleCode !== null) {
+      if (x.userName !== null && x.deptRoleCode !== null) {
         proceed = true
       }
     })
     if (proceed) {
-    this.departmentForm.get('deptCode').setValue(this.globalServ.checkAndRemoveSpecialCharacters(this.departmentForm.controls.deptCode.value), { emitEvent: false });
-    this.departmentForm.get('deptName').setValue(this.globalServ.checkAndRemoveSpecialCharacters(this.departmentForm.controls.deptName.value), { emitEvent: false });
+      this.departmentForm.get('deptCode').setValue(this.globalServ.checkAndRemoveSpecialCharacters(this.departmentForm.controls.deptCode.value), { emitEvent: false });
+      this.departmentForm.get('deptName').setValue(this.globalServ.checkAndRemoveSpecialCharacters(this.departmentForm.controls.deptName.value), { emitEvent: false });
       this.spinner.show();
       const obj = {
-      deptDto: {
-        deptId: this.UtilServ.editData.deptId,
-        deptCode: this.UtilServ.editData.deptCode.trim(),
-        deptName: this.departmentForm.controls.deptName.value.trim(),
-        isactive:
-          this.departmentForm.controls.isactive.value == null
-            ? false
-            : this.departmentForm.controls.isactive.value,
-        companyCode: this.UtilServ.editData.companyCode,
-        branchCode: this.UtilServ.editData.branchCode,
-        createdby: this.UtilServ.editData.createdby,
-        createddate: this.UtilServ.editData.createddate,
-      },
-      accessDTOs: this.roleAccessArray,
-    }
-    this.httpPostService.create('deptwithaccess', JSON.stringify(obj)).subscribe(
-      (res: any) => {
-        this.spinner.hide();
-        if (res.status.message == 'SUCCESS') {
-          Swal.fire({
-            title: 'Success!',
-            text: this.departmentForm.controls.deptName.value + ' Updated',
-            icon: 'success',
-            timer: 10000,
-          }).then(() => {
-            this.UtilServ.allDepartments = [];
-            this.UtilServ.activedepartmentList = [];
-            this.UtilServ.allPayrollEmpDept = {
-              forTrueList: undefined,
-              forFalseList: undefined
-            }
-            this.departmentForm.reset();
-            this.departmentForm.controls.isactive.setValue(true);
-            this.closeModal();
-            // this.router.navigateByUrl('department');
-          });
-        } else {
+        deptDto: {
+          deptId: this.UtilServ.editData.deptId,
+          deptCode: this.UtilServ.editData.deptCode.trim(),
+          deptName: this.departmentForm.controls.deptName.value.trim(),
+          isactive:
+            this.departmentForm.controls.isactive.value == null
+              ? false
+              : this.departmentForm.controls.isactive.value,
+          companyCode: this.UtilServ.editData.companyCode,
+          branchCode: this.UtilServ.editData.branchCode,
+          createdby: this.UtilServ.editData.createdby,
+          createddate: this.UtilServ.editData.createddate,
+        },
+        accessDTOs: this.roleAccessArray,
+      }
+      this.httpPostService.create('deptwithaccess', JSON.stringify(obj)).subscribe(
+        (res: any) => {
+          this.spinner.hide();
+          if (res.status.message == 'SUCCESS') {
+            Swal.fire({
+              title: 'Success!',
+              text: this.departmentForm.controls.deptName.value + ' Updated',
+              icon: 'success',
+              timer: 10000,
+            }).then(() => {
+              this.UtilServ.allDepartments = [];
+              this.UtilServ.activedepartmentList = [];
+              this.UtilServ.allPayrollEmpDept = {
+                forTrueList: undefined,
+                forFalseList: undefined
+              }
+              this.departmentForm.reset();
+              this.departmentForm.controls.isactive.setValue(true);
+              this.closeModal();
+              // this.router.navigateByUrl('department');
+            });
+          } else {
+            Swal.fire({
+              title: 'Error!',
+              text: res.status.message,
+              icon: 'warning', showConfirmButton: true,
+            });
+          }
+        },
+        (err) => {
+          console.error(err.error.status.message);
+          this.spinner.hide();
           Swal.fire({
             title: 'Error!',
-            text: res.status.message,
-            icon: 'warning', showConfirmButton: true,
+            text: err.error.status.message,
+            icon: 'error',
           });
         }
-      },
-      (err) => {
-        console.error(err.error.status.message);
-        this.spinner.hide();
-        Swal.fire({
-          title: 'Error!',
-          text: err.error.status.message,
-          icon: 'error',
-        });
-      }
-    );
+      );
     } else {
       Swal.fire({
         title: 'Error!',
@@ -426,8 +414,8 @@ export class CreateDepartmentComponent implements OnInit, OnChanges, OnDestroy {
       this.roleAccessArray.forEach((x) => {
         x.status =
           typeof x.REJECTED !== 'undefined' && x.REJECTED
-          ? 'delete'
-          : typeof x.status === 'undefined'
+            ? 'delete'
+            : typeof x.status === 'undefined'
               ? 'NEW'
               : x.status;
       });

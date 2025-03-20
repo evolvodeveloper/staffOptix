@@ -12,19 +12,18 @@ const routes: Routes = [
     path: 'salaryStructure',
     loadChildren: () =>
       import('../payroll-setup-master/salarycmp/salarycmp.module'
-      ).then((m) => m.SalarycmpModule),
-    resolve: {
-      condition: CheckPermissionResolver
-    }
+      ).then((m) => m.SalarycmpModule), resolve: {
+        condition: CheckPermissionResolver
+      }
+
   },
   {
     path: 'rule_setup',
     loadChildren: () =>
       import('../payroll-setup-master/payrules-setup/payrules-setup.module'
-      ).then((m) => m.PayrulesSetupModule),
-    resolve: {
-      condition: CheckPermissionResolver
-    }
+      ).then((m) => m.PayrulesSetupModule), resolve: {
+        condition: CheckPermissionResolver
+      }
   },
 
   {
@@ -42,29 +41,28 @@ const routes: Routes = [
     loadChildren: () =>
       import('../payroll-setup-master/payroll-component-list/payroll-component-list.module').then(
         (m) => m.PayrollComponentListModule
-      ),
-    resolve: {
-      condition: CheckPermissionResolver
-    }
+      ), resolve: {
+        condition: CheckPermissionResolver
+      }
   },
   {
     path: 'loanMaster',
     loadChildren: () =>
       import('./loan-master/loan-master.module'
-      ).then((m) => m.LoanMasterModule),
-    resolve: {
-      condition: CheckPermissionResolver
-    }
+      ).then((m) => m.LoanMasterModule), resolve: {
+        condition: CheckPermissionResolver
+      }
+
   },
   {
     path: 'expenseType',
     loadChildren: () =>
       import('../payroll-setup-master/expense-type/expense-type.module').then(
         (m) => m.ExpenseTypeModule
-      ),
-    resolve: {
-      condition: CheckPermissionResolver
-    }
+      ), resolve: {
+        condition: CheckPermissionResolver
+      }
+
   },
 
 ];

@@ -245,7 +245,7 @@ export class AdhocAllowanceComponent implements OnInit {
       })
   }
   cancel() {
-    this.activeModal.close();
+    this.activeModal.close('cancel');
   }
   submitAdhoc() {
     this.finalObj.result.forEach(element => {
@@ -268,7 +268,7 @@ export class AdhocAllowanceComponent implements OnInit {
           }).then(() => {
             this.finalObj = null;
             this.issues = [];
-            this.activeModal.close();
+            this.activeModal.close('submit');
           });
         } else {
           const errors = res.response.errorsList.split(',').map(error => error.trim());

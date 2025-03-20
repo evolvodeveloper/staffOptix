@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import moment from 'moment';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { HttpPostService } from 'src/app/services/http-post.service';
 import { HttpPutService } from 'src/app/services/http-put.service';
@@ -52,6 +53,7 @@ export class CreateHolidaycalendarComponent implements OnInit, OnChanges, OnDest
     private httpPutService: HttpPutService,
     private httpGetService: HttpGetService,
     private modalService: NgbModal,
+    public globalServ: GlobalvariablesService
   ) { }
 
 

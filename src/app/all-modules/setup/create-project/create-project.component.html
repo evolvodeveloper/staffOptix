@@ -7,7 +7,10 @@
     <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title">
-          {{ view ? "View" : update ? "Update" : "Create" }} Project
+          {{ view ? globalServ.getGlobalNames('view') : update ?
+          globalServ.getGlobalNames('update') :
+          globalServ.getGlobalNames('create') }}
+          {{globalServ.getGlobalNames('project')}}
         </h3>
         <i
           data-dismiss="modal"
@@ -21,16 +24,16 @@
             <form [formGroup]="projectForm" novalidate>
               <div class="form-group input">
                 <label class="text-sm mb-1">
-                  Project&nbsp;<span
+                  {{globalServ.getGlobalNames('project')}}&nbsp;<span
                     style="color: red; margin-left: 1px">*</span>
                 </label>
                 <input
                   class="form-control"
                   id="categoryCode"
                   maxlength="{{ charLimit }}"
-                  placeholder="Enter Project Code"
+                  placeholder="{{globalServ.showPlaceholder('Project')}}"
                   [formControl]="projectForm.controls.categoryCode" />
-                <div
+                <div class="mt-2"
                   *ngIf="
                     projectForm.controls['categoryCode'].invalid &&
                     (projectForm.controls['categoryCode'].dirty ||
@@ -40,38 +43,39 @@
                   <div
                     *ngIf="projectForm.controls['categoryCode'].errors.required"
                     style="color: #dc3545">
-                    Project is required.
+                    {{globalServ.getGlobalNames('project')}}
+                    {{globalServ.showGlobalErrors('required')}}
                   </div>
                 </div>
                 <div
                   *ngIf="projectForm.get('categoryCode').hasError('invalidFormat')"
-                  style="color: #dc3545">field should not contain special
-                  characters</div>
+                  style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
                 <div
                   *ngIf="
                     projectForm.controls['categoryCode'].value?.length >
                     charLimit - 1
                   "
                   style="color: #dc3545">
-                  Max
-                  {{ charLimit }}
-                  Characters
+                  {{globalServ.showGlobalErrors('max')}} {{ charLimit }}
+                  {{globalServ.showGlobalErrors('char')}}
                 </div>
               </div>
 
               <div class="mt-2 form-group input">
-                <label class="text-sm mb-1">Project Short Name </label>
+                <label
+                  class="text-sm mb-1">{{globalServ.showLabel('ProjectShortName')}}
+                </label>
                 <input
                   class="form-control"
                   id="shortName"
                   maxlength="3"
-                  placeholder="Project Short Name"
+                  placeholder="{{globalServ.showPlaceholder('ProjectShortName')}}"
                   [formControl]="projectForm.controls.shortName" />
               </div>
 
               <div class="mt-2 form-group">
                 <label
-                  class="text-sm mb-1">Project Type&nbsp;<span
+                  class="text-sm mb-1">{{globalServ.showLabel('projectType')}}&nbsp;<span
                     style="color: red; margin-left: 1px">*</span></label>
                 <select
                   class="form-select"
@@ -85,15 +89,13 @@
 
               <div class="mt-2 form-group">
                 <label class="text-sm mb-1">
-                  Description </label>
+                  {{globalServ.showLabel('description')}} </label>
                 <input
                   class="form-control"
                   id="description"
-                  placeholder="{{getPlaceholdersDescription('description')}}"
+                  placeholder="{{globalServ.showPlaceholder('description')}}"
                   [formControl]="projectForm.controls.description" />
               </div>
-
-     
 
               <div class="mb-3 form-check">
                 <input
@@ -102,9 +104,9 @@
                   color="primary"
                   type="checkbox"
                   [formControl]="projectForm.controls.isactive" />
-                <label class="form-check-label">is Active </label>
+                <label
+                  class="form-check-label">{{globalServ.getGlobalNames('active')}}</label>
               </div>
-
             </form>
           </div>
         </div>
@@ -114,13 +116,15 @@
             <div class="item-row head w-100">
               <div class="col-12 item-h">
                 <div class="titlediv">
-                  <h5 class="mb-0" *ngIf="!view">Add Project Access</h5>
                   <h5 class="mb-0"
-                    *ngIf="view && roleAccessArray.length > 0">View Project
-                    Access</h5>
+                    *ngIf="!view">{{globalServ.getGlobalNames('add')}}
+                    {{globalServ.showLabel('projectAccess')}}</h5>
+                  <h5 class="mb-0"
+                    *ngIf="view && roleAccessArray.length > 0">{{globalServ.getGlobalNames('view')}}
+                    {{globalServ.showLabel('projectAccess')}}</h5>
                   <h5 class="mb-0"
                     *ngIf="view && roleAccessArray.length === 0 ">
-                    No Project Access found for this Project.
+                    {{globalServ.getGlobalErrors('noProjectAccess')}}
                   </h5>
                 </div>
                 <div style="float: right">
@@ -129,7 +133,8 @@
                     (click)="addUser()"
                     [disabled]="projectForm.invalid"
                     class="btn btn-primary btn-sm mt-1 me-2 align-items-end d-flex">
-                    <i class="material-icons me-2">add</i> Add More
+                    <i
+                      class="material-icons me-2">add</i>{{globalServ.getGlobalNames('addNew')}}
                   </button>
                 </div>
               </div>
@@ -155,7 +160,7 @@
                   </option>
                 </select>
                 <label>
-                  Role Code&nbsp;<span
+                  {{globalServ.getGlobalNames('roleCode')}}&nbsp;<span
                     style="color: red; margin-left: 1px">*</span>
                 </label>
               </div>
@@ -175,7 +180,7 @@
                     {{ e }}
                   </option>
                 </select>
-                <label>User Name&nbsp;<span
+                <label>{{globalServ.getGlobalNames('userName')}}&nbsp;<span
                     style="color: red; margin-left: 1px">*</span></label>
               </div>
             </div>
@@ -195,7 +200,7 @@
           type="button"
           class="btn delete-btn"
           (click)="closeModal()">
-          Cancel
+          {{globalServ.getGlobalNames('cancel')}}
         </button>
         <button
           id="create_project"
@@ -203,11 +208,13 @@
           [hidden]="view || update"
           (click)="createApi()"
           class="btn add-btn ">
-          Create
+          {{globalServ.getGlobalNames('create')}}
         </button>
-        <button *ngIf="update"  [disabled]="projectForm.invalid || rolesArrLen.length ===0" id="update_project"
+        <button *ngIf="update"
+          [disabled]="projectForm.invalid || rolesArrLen.length ===0"
+          id="update_project"
           (click)="Update()" class="btn add-btn ">
-          Update
+          {{globalServ.getGlobalNames('update')}}
         </button>
       </div>
     </div>

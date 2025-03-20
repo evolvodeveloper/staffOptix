@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { HttpPostService } from 'src/app/services/http-post.service';
 import { HttpPutService } from 'src/app/services/http-put.service';
@@ -41,6 +42,7 @@ export class ExpenseTypeComponent {
     private spinner: NgxSpinnerService,
     private acRoute: ActivatedRoute,
     private fb: FormBuilder,
+    public global: GlobalvariablesService,
     private router: Router,
     private utilServ: UtilService,
     private httpPost: HttpPostService,
@@ -54,10 +56,10 @@ export class ExpenseTypeComponent {
   }
 
   ngOnInit(): void {
+    this.global.getMyCompLabels('expenseType');
+    this.global.getMyCompPlaceHolders('expenseType');
     this.acRoute.data.subscribe(async data => {
       const permission = data.condition
-      console.log(permission);
-
       this.hasPermissionToUpdate = permission.hasPermissionToUpdate
       this.hasPermissionToApprove = permission.hasPermissionToApprove
 
@@ -89,6 +91,7 @@ export class ExpenseTypeComponent {
       (res: any) => {
         this.listOfExpTypes = res.response;
         this.temp = res.response;
+        this.utilServ.empexpsubcategoryList = res.response;
         this.spinner.hide();
       },
       err => {
@@ -120,7 +123,6 @@ export class ExpenseTypeComponent {
     this.httpPost.create('subcategory', obj).subscribe(
       (res: any) => {
         this.spinner.hide();
-
         if (res.status.message == 'SUCCESS') {
           Swal.fire({
             title: 'Success!',
@@ -132,6 +134,7 @@ export class ExpenseTypeComponent {
             this.expenseForm.controls.isactive.setValue(true);
             this.closeModel();
             this.getExpenseType();
+            this.utilServ.empexpsubcategoryList = [];
           });
         } else {
           Swal.fire({

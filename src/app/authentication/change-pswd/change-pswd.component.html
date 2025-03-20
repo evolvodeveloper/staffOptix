@@ -1,12 +1,13 @@
 <!-- Page Content -->
 <div class="page-header">
-  <div class="row align-items-center">
-    <div class="col-sm-12 col-lg-8 d-flex align-items-baseline">
-      <i style="font-size:20px" class="fa fa-arrow-left me-4"
-        routerLink="/dashboard" aria-label="back"></i>
-      <h3 class="page-title">Change Password</h3>
+    <div class="row align-items-center">
+        <div class="col-sm-12 col-lg-8 d-flex align-items-baseline">
+            <i style="font-size:20px" class="fa fa-arrow-left me-4"
+                routerLink="/dashboard" aria-label="back"></i>
+            <h3
+                class="page-title">{{globalServ.showLabel('changePasswordHeader')}}</h3>
+        </div>
     </div>
-  </div>
 </div>
 <div class="content container-fluid">
     <div class="row">
@@ -25,12 +26,12 @@
             <form (ngSubmit)="submitChangePassword()"
                 [formGroup]="changePassword">
                 <div class="form-group">
-                    <label>Old password</label>
+                    <label>{{globalServ.showLabel('oldPassword')}}</label>
 
                     <div class="input-group">
                         <input [type]="showPassword ? 'text' : 'password'"
                             class="form-control" (change)="onPasswordChange()"
-                            placeholder="enter old password"
+                            placeholder="{{globalServ.showPlaceholder('enterOldpassword')}}"
                             [pattern]="noSpacesPattern"
                             [class.invalid]="changePassword.get('oldPassword').invalid && changePassword.get('oldPassword').touched"
                             formControlName="oldPassword">
@@ -47,21 +48,28 @@
                                 (click)="showPassword = !showPassword"></i>
                         </span>
                     </div>
-                    <div
+                    <div class="mt-2"
                         *ngIf="changePassword.get('oldPassword').invalid && changePassword.get('oldPassword').touched">
                         <small
                             *ngIf="changePassword.get('oldPassword').invalid && changePassword.get('oldPassword').touched"
-                            class="text-danger">Old password is required</small>
+                            class="text-danger">
+                            {{globalServ.showLabel('oldPassword')}}
+                            {{globalServ.showGlobalErrors('required')}}
+                        </small>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>New password</label>
+                    <label>{{globalServ.showLabel('newPassword')}}</label>
                     <div class="input-group">
-                    <input placeholder="enter new password"
-            [pattern]="noSpacesPattern"  (change)="onPasswordChange()" [type]="showNewPassword ? 'text' : 'password'" class="form-control"
-                        [class.invalid]="changePassword.get('newPassword').hasError('mismatch') && changePassword.get('newPassword').touched"
-                        formControlName="newPassword">
-                              <span class="input-group-custom"
+                        <input
+                            placeholder="{{globalServ.showPlaceholder('enterNewpassword')}}"
+                            [pattern]="noSpacesPattern"
+                            (change)="onPasswordChange()"
+                            [type]="showNewPassword ? 'text' : 'password'"
+                            class="form-control"
+                            [class.invalid]="changePassword.get('newPassword').hasError('mismatch') && changePassword.get('newPassword').touched"
+                            formControlName="newPassword">
+                        <span class="input-group-custom"
                             id="password">
                             <i alt="show" class="far fa-eye"
                                 id="password"
@@ -73,39 +81,36 @@
                                 *ngIf="!showNewPassword"
                                 (click)="showNewPassword = !showNewPassword"></i>
                         </span>
-                        </div>
-                    <div
+                    </div>
+                    <div class="mt-2"
                         *ngIf="changePassword.get('newPassword').invalid && changePassword.get('newPassword').touched">
                         <small
-                            class="text-danger">New password is required</small>
+                            *ngIf="changePassword.get('newPassword').invalid && changePassword.get('newPassword').touched"
+                            class="text-danger">
+                            {{globalServ.showLabel('newPassword')}}
+                            {{globalServ.showGlobalErrors('required')}}
+                        </small>
                     </div>
                     <div
                         *ngIf="changePassword.get('newPassword').hasError('mismatch') ">
-                        <small  *ngIf="changePassword.get('newPassword').invalid && changePassword.get('newPassword').touched"
-                            class="text-danger">old and new passwords cannot be same</small>
+                        <small
+                            *ngIf="changePassword.get('newPassword').invalid && changePassword.get('newPassword').touched"
+                            class="text-danger">old and new passwords cannot be
+                            same</small>
                     </div>
-                       <div
+                    <div
                         *ngIf="changePassword.get('newPassword').hasError('minLength') ">
                         <small
                             *ngIf="changePassword.get('newPassword').invalid && changePassword.get('newPassword').touched"
-                            class="text-danger">New password length must be 8 characters or more.</small>
+                            class="text-danger">New password length must be 8
+                            characters or more.</small>
                     </div>
                 </div>
-                <!-- <div class="form-group">
-                    <label>Confirm password</label>
-                    <input type="password" class="form-control" [class.invalid]="changePassword.get('confirmPassword').invalid && changePassword.get('confirmPassword').touched"
-                    formControlName="confirmPassword">
-                    <div
-                    *ngIf="changePassword.get('confirmPassword').invalid && changePassword.get('confirmPassword').touched">
-                    <small
-                        *ngIf="changePassword.get('confirmPassword').invalid && changePassword.get('confirmPassword').touched"
-                        class="text-danger"> *Confirm password is required</small>
-                </div>
-                </div> -->
+
                 <div class="submit-section">
                     <button class="btn btn-primary submit-btn"
-                        [disabled]="changePassword.invalid">Update
-                        Password</button>
+                        [disabled]="changePassword.invalid">
+                        {{globalServ.showLabel('updatePassword')}}</button>
                 </div>
             </form>
         </div>

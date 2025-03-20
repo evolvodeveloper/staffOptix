@@ -4,7 +4,8 @@
             <div class="d-flex align-items-baseline">
                 <i style="font-size:20px" class="fa fa-arrow-left"
                     (click)="back()" aria-label="back"></i>
-                <h3 class="ms-4 page-title">WFH/On Duty</h3>
+                <h3
+                    class="ms-4 page-title">{{globalServ.showLabel('wfhodHeader')}}</h3>
             </div>
         </div>
     </div>
@@ -25,7 +26,7 @@
                 aria-controls="pills-WFH"
                 aria-selected="true">
                 <div class="d-flex my-2 justify-content-center">
-                    Work From Home
+                    {{globalServ.showLabel('headerOfWFH')}}
                 </div>
             </button>
         </li>
@@ -41,7 +42,8 @@
                 role="tab"
                 aria-controls="pills-duty"
                 aria-selected="false">
-                <div class="d-flex my-2 justify-content-center">On Duty</div>
+                <div
+                    class="d-flex my-2 justify-content-center">{{globalServ.showLabel('odHeader')}}</div>
             </button>
         </li>
         <!-- <li class="nav-item me-2" role="presentation">
@@ -75,14 +77,14 @@
 
                 <div>
 
-                    <h4> Work From Home</h4>
+                    <h4> {{globalServ.showLabel('headerOfWFH')}}</h4>
                     <div class="d-flex my-4">
                         <div>
                             <input type="checkbox" class="form-check-input me-2"
                                 [formControl]="wfhForm.controls.allowHalfDay">
                         </div>
                         <div class>
-                            Allow half day request?
+                            {{ globalServ.showLabel('halfDay')}}
                         </div>
                     </div>
                     <div class="d-flex my-4">
@@ -91,7 +93,7 @@
                                 [formControl]="wfhForm.controls.isPunchMandatory">
                         </div>
                         <div class>
-                            Is clock in/out mandatory for WFH employees?
+                            {{ globalServ.showLabel('punchMandatoryWfh')}}
                         </div>
                     </div>
                     <div class="d-flex my-4">
@@ -99,12 +101,13 @@
                             <input type="checkbox"
                                 class="form-check-input me-2" />
                         </div>
-                        <div class="mar-10">Employees are allowed to raise
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('wfhRequestLimitInDays')">{{globalServ.splitLabelDescription('wfhRequestLimitInDays').before}}
                             <input type="number"
                                 [formControl]="wfhForm.controls.daysAllowedForWfh"
                                 class="mx-1 form-control"
-                                placeholder="days" />
-                            days of wfh request in a
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
+                            {{globalServ.splitLabelDescription('wfhRequestLimitInDays').after}}
                             <select name id class="form-select"
                                 [formControl]="wfhForm.controls.timeframeForDaysAllowed"
                                 style="display: inline-flex; width: fit-content;">
@@ -118,11 +121,13 @@
                             <input type="checkbox"
                                 class="form-check-input me-2">
                         </div>
-                        <div class="mar-10"> Employees are allowed to raise
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('wfhRequestLimitInTime')">
+                            {{globalServ.splitLabelDescription('wfhRequestLimitInTime').before}}
                             <input type="number " class="mx-1 form-control"
                                 [formControl]="wfhForm.controls.noOfTimesAllowed"
                                 placeholder="times" />
-                            times of wfh request in a
+                            {{globalServ.splitLabelDescription('wfhRequestLimitInTime').after}}
                             <select name id class="form-select"
                                 [formControl]="wfhForm.controls.timeframeForTimesAllowed"
                                 style="display: inline-flex; width: fit-content;">
@@ -136,20 +141,21 @@
                             <input type="checkbox"
                                 class="form-check-input me-2">
                         </div>
-                        <div class="mar-10">
-                            Restrict past dated wfh request to
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('restrictPast')">
+                            {{globalServ.splitLabelDescription('restrictPast').before}}
                             <input type="number" class="mx-1 form-control"
                                 [formControl]="wfhForm.controls.pastdaysRestriction"
-                                placeholder="days" />
-                            calendar days back
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
+                            {{globalServ.splitLabelDescription('restrictPast').after}}
                         </div>
                     </div>
                     <div class="d-flex my-4">
                         <div>
                             <input type="checkbox" class="form-check-input me-2"
                                 [formControl]="wfhForm.controls.allowWfhOnWe"></div>
-                        <div class="mar-10">Restrict employees from raising wfh
-                            request on
+                        <div class="mar-10">
+                            {{globalServ.showLabel('restrictRaisingReq')}}
                             <select name id class="form-select"
                                 [(ngModel)]="selectedAllowWfhOn"
                                 [formControl]="wfhForm.controls.allowWfhOn"
@@ -163,14 +169,17 @@
                         <div>
                             <input type="checkbox"
                                 class="form-check-input me-2"></div>
-                        <div class="mar-10"> WFH request requires
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('notice')">
+                            {{globalServ.splitLabelDescription('notice').before}}
                             <input type="number" class="mx-1 form-control"
                                 [formControl]="wfhForm.controls.calendarDaysNotice"
-                                placeholder="days" />
-                            calendar days prior notice containing atleast
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
+                            {{globalServ.splitLabelDescription('notice').after}}
                             <input type="number" class="mx-1 form-control"
                                 [formControl]="wfhForm.controls.workingDaysNotice"
-                                placeholder="days" /> working days
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
+                            {{globalServ.splitLabelDescription('notice').after1}}
                         </div>
                     </div>
 
@@ -178,12 +187,17 @@
                         <div>
                             <input type="checkbox"
                                 class="form-check-input me-2"></div>
-                        <div class="mar-10"> Requires approval if request
-                            exceeds
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('requiresApproval')">
+                            {{
+                            globalServ.splitLabelDescription('requiresApproval').before
+                            }}
                             <input type="number" class="mx-1 form-control"
                                 [formControl]="wfhForm.controls.requireApprovalForGtDays"
-                                placeholder="days" />
-                            in a
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
+                            {{
+                            globalServ.splitLabelDescription('requiresApproval').after
+                            }}
                             <select name id class="form-select"
                                 [formControl]="wfhForm.controls.requireApprovalTimeframe"
                                 style="display: inline-flex; width: fit-content;">
@@ -207,37 +221,39 @@
             <form [formGroup]="onDutyForm">
 
                 <div>
-                    <h4>On Duty</h4>
+                    <h4>{{globalServ.showLabel('headerOfOnDuty')}}</h4>
                     <div class="d-flex my-4">
                         <div>
                             <input type="checkbox" class="form-check-input me-2"
                                 [formControl]="onDutyForm.controls.noOfTimesAllowed"></div>
-                        <div> Is half day request allowed ?
+                        <div> {{globalServ.showLabel('allowHalfday')}}
                         </div></div>
                     <div class="d-flex my-4">
                         <div>
                             <input type="checkbox" class="form-check-input me-2"
                                 [formControl]="onDutyForm.controls.allowHourlyBasis">
                         </div>
-                        <div> Are employees allowed to do hourly On Duty
+                        <div> {{globalServ.showLabel('allowHourlyBasis')}}
                         </div></div>
                     <div class="d-flex my-4">
                         <div>
                             <input type="checkbox" class="form-check-input me-2"
                                 [formControl]="onDutyForm.controls.isPunchMandatory">
                         </div>
-                        <div> Is clock in/out mandatory for employees On Duty?
+                        <div> {{globalServ.showLabel('punchMandatoryOnDuty')}}
                         </div>
                     </div>
                     <div class="d-flex my-4">
                         <div>
                             <input type="checkbox"
                                 class="form-check-input me-2"> </div>
-                        <div class="mar-10">An Employee is allowed to raise
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('odRequestLimitInDays')">
+                            {{globalServ.splitLabelDescription('odRequestLimitInDays').before}}
                             <input type="number " class="form-control mx-1"
-                                placeholder="days"
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}"
                                 [formControl]="onDutyForm.controls.daysAllowedForOd" />
-                            days of On Duty request in a
+                            {{globalServ.splitLabelDescription('odRequestLimitInDays').after}}
                             <select name id class="form-select"
                                 [formControl]="onDutyForm.controls.timeframeForDaysAllowed"
                                 style="display: inline; width: fit-content;">
@@ -250,12 +266,13 @@
                         <div>
                             <input type="checkbox"
                                 class="form-check-input me-2"></div>
-                        <div class="mar-10">
-                            An Employee is allowed to raise <input type="number"
-                                class="form-control mx-1"
-                                placeholder="days"
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('odRequestLimitInTime')">
+                            {{globalServ.splitLabelDescription('odRequestLimitInTime').before}}
+                            <input type="number" class="form-control mx-1"
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}"
                                 [formControl]="onDutyForm.controls.noOfTimesAllowed" />
-                            times of onduty request in a
+                            {{globalServ.splitLabelDescription('odRequestLimitInTime').after}}
                             <select name id class="form-select"
                                 [formControl]="onDutyForm.controls.timeframeForTimesAllowed"
                                 style="display: inline; width: fit-content;">
@@ -268,17 +285,17 @@
     <div class="d-flex my-4">
         <div>
             <input type="checkbox" class="form-check-input me-2"></div>
-        <div class="mar-10"  *ngIf="hasIntegerOd('allowPast')" > {{splitLabelDescriptionOd('allowPast').before}} 
+        <div class="mar-10"  *ngIf="globalServ.hasInteger('allowPast')" > {{globalServ.splitLabelDescription('allowPast').before}} 
             <select name id class="form-select" 
                 style="display: inline; width: fit-content;">
                 <option [value]="cc.code" *ngFor="let cc of pastDutyReq">{{cc.name}}</option>
             </select>
-            {{splitLabelDescriptionOd('allowPast').after}} 
+            {{globalServ.splitLabelDescription('allowPast').after}} 
             <select name id class="form-select"
                 style="display: inline; width: fit-content;">
                 <option [value]="cc.code" *ngFor="let cc of pastDutyReqEnd">{{cc.name}}</option>
             </select>
-                {{splitLabelDescriptionOd('allowPast').after1}} 
+                {{globalServ.splitLabelDescription('allowPast').after1}} 
         </div>
     </div>
     -------------- -->
@@ -286,10 +303,13 @@
                         <div>
                             <input type="checkbox"
                                 class="form-check-input me-2"> </div>
-                        <div class="mar-10"> Restrict past dated wfh request to
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('restrictPast')">
+                            {{globalServ.splitLabelDescription('restrictPast').before}}
                             <input type="number" class="form-control mx-1"
                                 [formControl]="onDutyForm.controls.pastdaysRestriction"
-                                placeholder="days" /> calendar days back
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
+                            {{globalServ.splitLabelDescription('restrictPast').after}}
                         </div>
                     </div>
                     <div class="d-flex my-4">
@@ -297,8 +317,8 @@
                             <input type="checkbox" class="form-check-input me-2"
                                 [formControl]="onDutyForm.controls.allowOdOnWe">
                         </div>
-                        <div class="mar-10"> Restrict employees from raising On
-                            Duty request on
+                        <div class="mar-10"> {{
+                            globalServ.showLabel('restrictRaisingReq')}}
                             <select name id class="form-select"
                                 [formControl]="onDutyForm.controls.allowOdOn"
                                 style="display: inline; width: fit-content;">
@@ -312,35 +332,43 @@
                         <div>
                             <input type="checkbox"
                                 class="form-check-input me-2"></div>
-                        <div class="mar-10"> Apply for On Duty request requires
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('notice')">
+                            {{globalServ.splitLabelDescription('notice').before}}
                             <input type="number" class="form-control mx-1"
                                 [formControl]="onDutyForm.controls.calendarDaysNotice"
-                                placeholder="days" />
-                            calendar days prior notice containing atleast
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
+                            {{globalServ.splitLabelDescription('notice').after}}
                             <input type="number"
                                 [formControl]="onDutyForm.controls.workingDaysNotice"
-                                class="form-control mx-1" placeholder="days" />
-                            working days
+                                class="form-control mx-1"
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
+                            {{globalServ.splitLabelDescription('notice').after1}}
                         </div>
                     </div>
                     <!-- <div class="d-flex my-4">
         <div>
             <input type="checkbox" class="form-check-input me-2"></div>
         <div class="mar-10">
-           {{getLabelDescriptionOd('requiresApproval')}} <input type="number" [formControl]="onDutyForm.controls.allowHourlyBasis" class="form-control mx-1"
-                placeholder="days" />
+           {{showLabel('requiresApproval')}} <input type="number" [formControl]="onDutyForm.controls.allowHourlyBasis" class="form-control mx-1"
+                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
         </div>
     </div> -->
                     <div class="d-flex my-4">
                         <div>
                             <input type="checkbox"
                                 class="form-check-input me-2"></div>
-                        <div class="mar-10"> Requires approval if request
-                            exceeds
+                        <div class="mar-10"
+                            *ngIf="globalServ.hasInteger('requiresApproval')">
+                            {{
+                            globalServ.splitLabelDescription('requiresApproval').before
+                            }}
                             <input type="number" class="mx-1 form-control"
                                 [formControl]="onDutyForm.controls.requireApprovalForGtDays"
-                                placeholder="days" />
-                            in a
+                                placeholder="{{globalServ.showGlobalplaceholders('days')}}" />
+                            {{
+                            globalServ.splitLabelDescription('requiresApproval').after
+                            }}
                             <select name id class="form-select"
                                 [formControl]="onDutyForm.controls.requireApprovalTimeframe"
                                 style="display: inline-flex; width: fit-content;">
@@ -348,22 +376,19 @@
                                     *ngFor="let cc of notExceeds">{{cc.name}}</option>
                             </select>
                         </div>
+
+                        <div
+                            class="tab-pane fade"
+                            id="pills-comp"
+                            role="tabpanel"
+                            aria-labelledby="pills-comp-tab"
+                            tabindex="0">
+                            <div>
+                                <h4 class="mb-3">Compensation off Request
+                                    Settings</h4>
+                            </div>
+                        </div>
+
                     </div>
+
                 </div>
-            </form>
-        </div>
-
-        <div
-            class="tab-pane fade"
-            id="pills-comp"
-            role="tabpanel"
-            aria-labelledby="pills-comp-tab"
-            tabindex="0">
-            <div>
-                <h4 class="mb-3">Compensation off Request Settings</h4>
-            </div>
-        </div>
-
-    </div>
-
-</div>

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
+import { CdkDrag, CdkDragPlaceholder, CdkDropList, DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
@@ -14,7 +15,8 @@ import { AttendanceSummaryReportComponent } from './attendance-summary-report.co
   imports: [
     CommonModule,
     NgSelectModule,
-    FormsModule,
+    CdkDrag,
+    FormsModule, CdkDragPlaceholder, CdkDropList, DragDropModule,
     NgxPaginationModule,
     NgxDaterangepickerMd.forRoot(),
     AttendanceSummaryReportRoutingModule

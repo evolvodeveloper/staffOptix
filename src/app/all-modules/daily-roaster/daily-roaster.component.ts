@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpPutService } from 'src/app/services/http-put.service';
 import { UtilService } from 'src/app/services/util.service';
 import { ShiftmodifyModalComponent } from './shiftmodify-modal/shiftmodify-modal.component';
@@ -95,7 +96,8 @@ export class DailyRoasterComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private modalService: NgbModal,
     private httpPut: HttpPutService,
-    private utilServ: UtilService
+    private utilServ: UtilService,
+    public global: GlobalvariablesService
   ) {
     this.getMonthlyDates();
     this.config = {
@@ -107,7 +109,8 @@ export class DailyRoasterComponent implements OnInit {
   ngOnInit() {
     this.getDepartments();
     this.getShifts();
-    this.disableTillDateRecords = moment().format('YYYY-MM-DD')
+    this.disableTillDateRecords = moment().format('YYYY-MM-DD');
+    this.global.getMyCompLabels('dailyRoaster');
   }
   isRecordDisabled(index: number, j): boolean {
     // Compare the date of the record with the current date

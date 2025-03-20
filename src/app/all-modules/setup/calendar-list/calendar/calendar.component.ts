@@ -22,8 +22,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
   view = false;
   update = false;
   active = false;
-  labels: any;
-  placeholder:any;
   charLimit: number;
   msg: string;
   timezones = [];
@@ -38,10 +36,10 @@ export class CalendarComponent implements OnInit, OnDestroy {
     private utilServ: UtilService,
     private httpGetService: HttpGetService,
     private modalService: NgbModal,
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     public activeModal: NgbActiveModal,
     public httpPutService: HttpPutService
-  ) {}
+  ) { }
 
 
   getTimezone() {
@@ -70,42 +68,10 @@ export class CalendarComponent implements OnInit, OnDestroy {
       }
     );
   }
-  
-  getLabelDescription(divId: string): string {
-    const label = this.labels?.find(item => item.colCode === divId);
-    return label ? label.labelDescription : '';
-  }
 
-  getPlaceholdersDescription(divId: string): string {
-    const pc = this.placeholder?.find(item => item.placeholderColCode === divId);
-    return pc ? pc.placeholderDescription : '';
-  }
-  
-  getcalLabels() {
-    this.spinner.show();
-    this.globalServ.getLabels('calendarSetup').subscribe((res: any) => {
-      this.labels = res.response;
-      this.spinner.hide();
-    }, (err) => {
-      this.spinner.hide();
-      console.error(err.error.status.message);
-    });
-  }
-  getCalPlaceholders() {
-    this.spinner.show();
-    this.globalServ.getPlaceholders('calendarSetup').subscribe((res: any) => {
-      this.placeholder = res.response;
-      this.spinner.hide();
-    }, (err) => {
-      this.spinner.hide();
 
-      console.error(err.error.status.message);
-    });
-  }
 
   async ngOnInit(): Promise<void> {
-    // this.getcalLabels();
-    // this.getCalPlaceholders();
     if (this.utilServ.allCalendars.length > 0) {
       this.calList = this.utilServ.allCalendars;
     } else {

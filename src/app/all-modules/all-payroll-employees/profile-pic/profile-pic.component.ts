@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 
 @Component({
   selector: 'app-profile-pic',
@@ -14,10 +15,12 @@ export class ProfilePicComponent implements OnInit {
     image: null,
     imageByte: null,
   }
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any,
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public globalServ: GlobalvariablesService,
     private dialogRef: MatDialogRef<ProfilePicComponent>,
   ) { }
   ngOnInit() {
+
+
     if (this.data.employee?.fileType !== null && this.data.employee.image !== null) {
       this.emp.fileName = this.data.employee.fileName
       this.emp.fileType = this.data.employee.fileType

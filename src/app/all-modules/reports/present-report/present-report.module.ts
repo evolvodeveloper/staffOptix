@@ -9,6 +9,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { PresentReportRoutingModule } from './present-report-routing.module';
 import { PresentReportComponent } from './present-report.component';
 
+import { CdkDrag, CdkDragPlaceholder, CdkDropList, DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { PresentReportComponent } from './present-report.component';
   imports: [
     CommonModule,
     PresentReportRoutingModule, NgSelectModule,
+    CdkDrag, CdkDragPlaceholder, CdkDropList, DragDropModule,
     FormsModule,
     SharedModule,
     ReactiveFormsModule,

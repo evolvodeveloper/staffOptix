@@ -25,13 +25,12 @@ export class CreateDesignationComponent implements OnInit, OnChanges, OnDestroy 
   active = false;
   charLimit: number;
   open = false;
-  labels:any;
   selectedDesignation: any;
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private httpPostService: HttpPostService,
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private httpPutService: HttpPutService,
     private spinner: NgxSpinnerService,
     private UtilServ: UtilService
@@ -78,22 +77,9 @@ export class CreateDesignationComponent implements OnInit, OnChanges, OnDestroy 
     this.selectedDesignationEvent.emit();
   }
 
-  getLabelDescription(divId: string): string {
-    const label = this.labels?.find(item => item.colCode === divId);
-    return label ? label.labelDescription : '';
-  }
-  getProjectsLabels() {
-    this.spinner.show();
-    this.globalServ.getLabels('designationMaster').subscribe((res: any) => {
-      this.labels = res.response;
-      this.spinner.hide();
-    }, (err) => {
-      this.spinner.hide();
-      console.error(err.error.status.message);
-    });
-  }
+
   ngOnInit(): void {
-    this.getProjectsLabels();
+    // this.globalServ.getMyCompPlaceHolders('Designation');
     this.designationForm = this.fb.group({
       designation: [null, [Validators.required, this.httpPostService.customValidator()]],
       isManager: [true],

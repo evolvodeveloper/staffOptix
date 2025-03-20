@@ -1,12 +1,13 @@
 
-<div class="container-xxl">
+<div class="">
 
     <div class="page-header">
         <div class="row">
             <div class="col-sm-12 col-lg-8 d-flex align-items-baseline">
                 <i style="font-size:20px" class="fa fa-arrow-left me-4"
                     routerLink="/dashboard" aria-label="back"></i>
-                <h3 class="page-title">Loan Application List</h3>
+                <h3
+                    class="page-title">{{global.showLabel("loanAppHeader")}}</h3>
             </div>
         </div>
     </div>
@@ -18,13 +19,13 @@
                 <div class="col-sm-12 col-lg-3">
                     <div class="input-group">
                         <input type="text" class="form-control" *ngIf="firstTab"
-                            placeholder="search by Application id or loan name"
+                            placeholder="{{global.showPlaceholder('searchByAppId')}}"
                             (keyup)="updateFilter1($event)"
                             style="border-radius: 8px 0px 0px 8px;height: calc(2.5rem + calc(var(--mo-border-width) * 2));">
 
                         <input type="text" class="form-control"
                             *ngIf="secondTab"
-                            placeholder="search by Application id or Loan name or Emp code"
+                            placeholder="{{global.showPlaceholder('searchByAppIdemp')}}"
                             (keyup)="updateFilter($event)"
                             style="border-radius: 8px 0px 0px 8px;height: calc(2.5rem + calc(var(--mo-border-width) * 2));">
                         <span class="input-group-text" id="basic-addon1">
@@ -48,12 +49,13 @@
                     <button id="add_user" type="button" *ngIf="this.userProfile"
                         class="btn add-btn float-end d-flex"
                         (click)="create()"><i
-                            class="material-icons">add</i> Apply
-                        Loan</button>
+                            class="material-icons">add</i>
+                        {{global.showLabel("ApplyLoan")}}</button>
                 </div>
 
                 <div class="col-sm-6 col-lg-2 mt-30px">
-                    <label class="form-label ms-2">Show entries</label>
+                    <label class="form-label ms-2">
+                        {{global.getGlobalNames('ShowEntries')}}</label>
                     <select class="form-select" *ngIf="firstTab"
                         (change)="resultsPerPage1($event)">
                         <!-- <option value="10">10</option> -->
@@ -84,7 +86,8 @@
                             data-bs-target="#pills-userLoan"
                             type="button"
                             role="tab" aria-controls="pills-userLoan"
-                            aria-selected="true">Loan Application</button>
+                            aria-selected="true">
+                            {{global.showLabel("LoanApplication")}}</button>
                     </li>
                     <li class="nav-item ms-2" role="presentation">
                         <button (click)="tab2()" class="nav-link"
@@ -93,8 +96,8 @@
                             data-bs-target="#pills-empLoan"
                             type="button"
                             role="tab" aria-controls="pills-empLoan"
-                            aria-selected="false">Employees Loan
-                            Application</button>
+                            aria-selected="false">
+                            {{global.showLabel("EmployeesLoanApplication")}}</button>
                     </li>
                 </ul>
 
@@ -107,21 +110,23 @@
                                 class="table table-hover table-nowrap custom-table mb-0 datatable">
                                 <thead class="thead-all">
                                     <tr class="tr-th-all">
-                                        <th scope="col">Loan Application Id</th>
-                                        <th scope="col">Loan Name</th>
-                                        <th scope="col" class="text-center">Loan
-                                            Amount</th>
+                                        <th scope="col">
+                                            {{global.showLabel("LoanApplicationId")}}</th>
+                                        <th scope="col">
+                                            {{global.showLabel("LoanName")}}</th>
                                         <th scope="col"
-                                            class="text-center">Status</th>
+                                            class="text-center">{{global.showLabel("LoanAmount")}}</th>
                                         <th scope="col"
-                                            class="text-center">Action</th>
+                                            class="text-center">{{global.getGlobalNames('status')}}</th>
+                                        <th scope="col"
+                                            class="text-center">{{global.getGlobalNames('action')}}</th>
                                     </tr>
                                 </thead>
                                 <tbody *ngIf="usersRecords.length === 0">
                                     <tr
                                         style=" text-align: center; height: 150px;">
                                         <td colspan="8">
-                                            "No records were found with the selected filter criteria."
+                                            {{global.showGlobalErrors('notFound')}}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -130,27 +135,27 @@
                                         *ngFor="let row of usersRecords | paginate: config; let i = index">
                                         <!-- <ng-container
                                             *ngIf="row.status !== 'REJECTED'"> -->
-                                            <td>
-                                                <h2 style="padding: 8px 0px;"
-                                                    *ngIf="row.status !== 'APPROVED'">{{row.loanApplicationId}}</h2>
-                                                <h2
-                                                    *ngIf="row.status === 'APPROVED'"
-                                                    class="table-avatar blue-link"
-                                                    style="padding: 8px 0px;"
-                                                    data-bs-target="#showLoanDEtails"
-                                                    data-bs-toggle="modal"
-                                                    (click)="goto(row)">
-                                                    <a>
-                                                        {{row.loanApplicationId}}</a>
-                                                </h2>
-                                            </td>
-                                            <td>{{row.loanCode}}</td>
-                                            <td
-                                                class="text-center">{{row.loanAmount}}</td>
-                                                 <td
-                                                class="text-center">{{row.status}}</td>
+                                        <td>
+                                            <h2 style="padding: 8px 0px;"
+                                                *ngIf="row.status !== 'APPROVED'">{{row.loanApplicationId}}</h2>
+                                            <h2
+                                                *ngIf="row.status === 'APPROVED'"
+                                                class="table-avatar blue-link"
+                                                style="padding: 8px 0px;"
+                                                data-bs-target="#showLoanDEtails"
+                                                data-bs-toggle="modal"
+                                                (click)="goto(row)">
+                                                <a>
+                                                    {{row.loanApplicationId}}</a>
+                                            </h2>
+                                        </td>
+                                        <td>{{row.loanCode}}</td>
+                                        <td
+                                            class="text-center">{{row.loanAmount}}</td>
+                                        <td
+                                            class="text-center">{{row.status}}</td>
 
-                                            <!-- <td class="text-center">
+                                        <!-- <td class="text-center">
                                                 <i *ngIf="row.approved"
                                                     class="fa-solid fa-circle"
                                                     style="color: #55CE63;"></i>
@@ -159,33 +164,33 @@
                                                     style="color: #f62d51;"></i>
                                             </td> -->
 
-                                            <td class="text-center">
-                                                <div class="btn-group"
-                                                    role="group">
-                                                    <span
-                                                        *ngIf="row.status !== 'APPROVED' && row.status !== 'REJECTED'">
-                                                        <button id="view_user"
-                                                            type="button"
-                                                            class="btn btn-light me-1 text-info"
-                                                            placement="top"
-                                                            ngbTooltip="View"
-                                                            (click)="viewData(row)">
-                                                            <i
-                                                                class="fa-solid fa-eye"></i>
-                                                        </button>
-                                                        <button type="button"
-                                                            id="edit_user"
-                                                            *ngIf="hasPermissionToUpdate"
-                                                            class="btn btn-light me-1 text-secondary"
-                                                            placement="top"
-                                                            ngbTooltip="Edit"
-                                                            (click)="editData(row)">
-                                                            <i
-                                                                class="fa-solid fa-pen"></i>
-                                                        </button>
-                                                    </span>
-                                                </div>
-                                            </td>
+                                        <td class="text-center">
+                                            <div class="btn-group"
+                                                role="group">
+                                                <span
+                                                    *ngIf="row.status !== 'APPROVED' && row.status !== 'REJECTED'">
+                                                    <button id="view_user"
+                                                        type="button"
+                                                        class="btn btn-light me-1 text-info"
+                                                        placement="top"
+                                                        ngbTooltip="View"
+                                                        (click)="viewData(row)">
+                                                        <i
+                                                            class="fa-solid fa-eye"></i>
+                                                    </button>
+                                                    <button type="button"
+                                                        id="edit_user"
+                                                        *ngIf="hasPermissionToUpdate"
+                                                        class="btn btn-light me-1 text-secondary"
+                                                        placement="top"
+                                                        ngbTooltip="Edit"
+                                                        (click)="editData(row)">
+                                                        <i
+                                                            class="fa-solid fa-pen"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </td>
                                         <!-- </ng-container> -->
                                     </tr>
                                 </tbody>
@@ -206,22 +211,25 @@
                                 class="table table-hover table-nowrap custom-table mb-0 datatable">
                                 <thead class="thead-all">
                                     <tr class="tr-th-all">
-                                        <th scope="col">Loan Application Id</th>
-                                        <th scope="col">Employee</th>
-                                        <th scope="col">Loan Name</th>
-                                        <th scope="col" class="text-center">Loan
-                                            Amount</th>
+                                        <th scope="col">
+                                            {{global.showLabel("LoanApplicationId")}}</th>
+                                        <th scope="col">
+                                            {{global.getGlobalNames('employee')}}</th>
+                                        <th scope="col">
+                                            {{global.showLabel("LoanName")}}</th>
                                         <th scope="col"
-                                            class="text-center">Status</th>
+                                            class="text-center">{{global.showLabel("LoanAmount")}}</th>
                                         <th scope="col"
-                                            class="text-center">Action</th>
+                                            class="text-center">{{global.getGlobalNames('status')}}</th>
+                                        <th scope="col"
+                                            class="text-center">{{global.getGlobalNames('action')}}</th>
                                     </tr>
                                 </thead>
                                 <tbody *ngIf="allRecords.length === 0">
                                     <tr
                                         style=" text-align: center; height: 150px;">
                                         <td colspan="8">
-                                            "No records were found with the selected filter criteria."
+                                            {{global.showGlobalErrors('notFound')}}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -249,7 +257,7 @@
                                             <td>{{row.loanCode}}</td>
                                             <td
                                                 class="text-center">{{row.loanAmount}}</td>
-                                                 <td
+                                            <td
                                                 class="text-center">{{row.status}}</td>
 
                                             <!-- <td class="text-center">
@@ -317,12 +325,13 @@
                 (loanApplicationEvent)="loanApplicationEvent()"></div>
 
             <div id="showLoanDEtails" class="modal custom-modal fade"
-                role="dialog">
+                role="dialog" data-bs-backdrop="static" data-bs-keyboard="false">
                 <div class="modal-dialog modal-dialog-centered modal-lg"
-                    role="document">
+                    role="dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">Loan Information</h5>
+                            <h5 class="modal-title">
+                                {{global.showLabel("LoanInformation")}}</h5>
                             <i class="fa-solid fa-xmark fs-4"
                                 id="close_model" data-bs-dismiss="modal"
                                 (click)="closeModel('dismiss')"></i></div>
@@ -335,21 +344,23 @@
                                         <tr class="tr-th-all">
                                             <th
                                                 class="text-center"
-                                                colspan="4">Loan Details</th>
-
+                                                colspan="4">
+                                                {{global.showLabel("LoanDetails")}}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr class="dasboard-td">
                                             <td scope="col">
-                                                Employee Code :
+                                                {{global.getGlobalNames('employeeCode')}}
+                                                :
                                             </td>
                                             <td
                                                 class
                                                 scope="col">{{loanDetails?.employeeCode}}
                                             </td>
                                             <td scope="col">
-                                                Loan Application Id :
+                                                {{global.showLabel("LoanApplicationId")}}
+                                                :
                                             </td>
                                             <td
                                                 class="text-end"
@@ -358,14 +369,16 @@
                                         </tr>
                                         <tr class="dasboard-td">
                                             <td scope="col">
-                                                Loan Name :
+                                                {{global.showLabel("LoanName")}}
+                                                :
                                             </td>
                                             <td
                                                 class
                                                 scope="col">{{loanDetails?.loanCode}}
                                             </td>
                                             <td scope="col">
-                                                Loan Amount :
+                                                {{global.showLabel("LoanAmount")}}
+                                                :
                                             </td>
                                             <td
                                                 class="text-end"
@@ -380,22 +393,22 @@
                                     <thead class="thead-all">
                                         <tr class="tr-th-all">
                                             <th
-                                                class="text-center">Loan
-                                                Instalment</th>
+                                                class="text-center">
+                                                {{global.showLabel("LoanInstalment")}}</th>
                                             <th
-                                                class="text-center">Number of
-                                                EMI's</th>
+                                                class="text-center">
+                                                {{global.showLabel("NumberofEMI")}}</th>
                                             <th
-                                                class="text-center">EMI's
-                                                Completed</th>
+                                                class="text-center">
+                                                {{global.showLabel("EMICompleted")}}</th>
                                             <th
-                                                class="text-center">Recovered
-                                                Amount</th>
+                                                class="text-center">
+                                                {{global.showLabel("RecoveredAmount")}}</th>
                                             <th
-                                                class="text-center">Balance
-                                                Amount</th>
+                                                class="text-center">
+                                                {{global.showLabel("BalanceAmount")}}</th>
                                             <th
-                                                class="text-center">Status</th>
+                                                class="text-center">{{global.getGlobalNames('status')}}</th>
                                         </tr>
                                     </thead>
                                     <tbody>

@@ -5,8 +5,10 @@
         class="fa fa-arrow-left"
         (click)="back()"
         aria-label="back"></i>
-      <h3 class="ms-4 page-title"> {{ view ? "View" : update ? "Update" :
-        "Create" }} Employee</h3>
+      <h3 class="ms-4 page-title">{{ view ? globalServ.getGlobalNames('view') :
+        (update ? globalServ.getGlobalNames('update') :
+        globalServ.getGlobalNames('create')) }}
+        {{globalServ.getGlobalNames('employee')}}</h3>
     </div>
   </div>
 </div>
@@ -25,7 +27,8 @@
                 height="20"
                 width="20" />
             </div>
-            <div class="step-title">1. Employee Details</div>
+            <div class="step-title">1.
+              {{globalServ.showLabel('EmployeeDetails')}}</div>
           </ng-template>
           <form [formGroup]="addEmployeeForm">
             <div #stepOne>
@@ -35,36 +38,37 @@
                     <div class="col-md-6"
                       *ngIf="view || update || allowAutoGenerateEmpCode">
                       <div class="form-group">
-                        <label class="col-form-label">Employee Code&nbsp;<span
+                        <label
+                          class="col-form-label">{{globalServ.getGlobalNames('employeeCode')}}&nbsp;<span
                             class="text-danger">*</span></label>
                         <input
                           class="form-control"
                           type="text"
-                          placeholder="Enter employee code"
+                          placeholder="{{globalServ.showPlaceholder('enterempCode')}}"
                           formControlName="employeeCode" />
-                           <div
+                        <div
                           *ngIf="addEmployeeForm.get('employeeCode').hasError('invalidFormat')"
-                          style="color: #dc3545">field should not contain
-                          special characters</div>
+                          style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
                       </div>
                     </div>
 
                     <div class="col-md-6">
                       <div class="form-group">
                         <label class="col-form-label"
-                          for="employeeName">Employee Name &nbsp;<span
+                          for="employeeName">{{globalServ.getGlobalNames('employeeName')}}
+                          &nbsp;<span
                             class="text-danger">*</span></label>
                         <input
                           class="form-control"
                           type="text"
-                          placeholder="Enter Employee Name"
+                          placeholder="{{globalServ.showPlaceholder('enterEmpName')}}"
                           id="employeeName"
                           [class.invalid]="
                         addEmployeeForm.get('employeeName').invalid &&
                         addEmployeeForm.get('employeeName').touched
                       "
                           formControlName="employeeName" />
-                        <div
+                        <div class="mt-2"
                           *ngIf="
                         addEmployeeForm.get('employeeName').invalid &&
                         addEmployeeForm.get('employeeName').touched
@@ -74,28 +78,26 @@
                           addEmployeeForm.get('employeeName').invalid &&
                           addEmployeeForm.get('employeeName').touched
                         "
-                            class="text-danger">Employee Name is
-                            required</small>
+                            class="text-danger">{{globalServ.getGlobalNames('employeeName')}}
+                            {{globalServ.showGlobalErrors('required')}}</small>
                         </div>
                         <div
                           *ngIf="addEmployeeForm.get('employeeName').hasError('invalidFormat')"
-                          style="color: #dc3545">field should not contain
-                          special characters</div>
+                          style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
                       </div>
                     </div>
 
                     <div class="col-md-6">
                       <div class="form-group">
-                        <label class="col-form-label" for="lastName">Last
-                          Name</label>
+                        <label class="col-form-label"
+                          for="lastName">{{globalServ.showLabel('lastName')}}</label>
                         <input
                           class="form-control"
                           type="text"
-                          placeholder="Enter last name"
-                          
+                          placeholder="{{globalServ.showPlaceholder('emplastName')}}"
                           id="lastName"
                           formControlName="lastName" />
-                        <div
+                        <div class="mt-2"
                           *ngIf="
                         addEmployeeForm.get('lastName').invalid &&
                         addEmployeeForm.get('lastName').touched
@@ -105,41 +107,41 @@
                           addEmployeeForm.get('lastName').invalid &&
                           addEmployeeForm.get('lastName').touched
                         "
-                            class="text-danger">Last Name is
-                            required</small>
+                            class="text-danger">{{globalServ.showLabel('lastName')}}
+                            {{globalServ.showGlobalErrors('required')}}</small>
                         </div>
                         <div
                           *ngIf="addEmployeeForm.get('lastName').hasError('invalidFormat')"
-                          style="color: #dc3545">field should not contain
-                          special characters</div>
+                          style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
-                        <label class="col-form-label" for="aliasName">Alias
-                          Name</label>
+                        <label class="col-form-label"
+                          for="aliasName">{{globalServ.getGlobalNames('aliasName')}}</label>
                         <input
                           class="form-control"
                           type="text"
-                          placeholder="Enter nick name"
+                          placeholder="{{globalServ.showGlobalplaceholders('enterAliasName')}}"
                           id="aliasName"
                           formControlName="aliasName" />
                         <div
                           *ngIf="addEmployeeForm.get('aliasName').hasError('invalidFormat')"
-                          style="color: #dc3545">field should not contain
-                          special characters</div>
+                          style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
-                        <label class="col-form-label">Gender &nbsp;<span
+                        <label
+                          class="col-form-label">{{globalServ.showLabel('Gender')}}
+                          &nbsp;<span
                             class="text-danger">*</span></label>
                         <select class="form-select" formControlName="gender">
                           <option [value]="gn.code" *ngFor="let gn of genders">
                             {{ gn.name }}
                           </option>
                         </select>
-                        <div
+                        <div class="mt-2"
                           *ngIf="
                         addEmployeeForm.get('gender').invalid &&
                         addEmployeeForm.get('gender').touched
@@ -149,25 +151,26 @@
                           addEmployeeForm.get('gender').invalid &&
                           addEmployeeForm.get('gender').touched
                         "
-                            class="text-danger">Gender is
-                            required</small>
+                            class="text-danger">{{globalServ.showLabel('Gender')}}
+                            {{globalServ.showGlobalErrors('required')}}</small>
                         </div>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
-                        <label class="col-form-label">Contact Number &nbsp;<span
+                        <label
+                          class="col-form-label">{{globalServ.showLabel('ContactNumber')}}&nbsp;<span
                             class="text-danger">*</span></label>
                         <input
                           class="form-control"
                           type="number"
-                          placeholder="Enter contact number"
+                          placeholder="{{globalServ.showPlaceholder('contactNo')}}"
                           [class.invalid]="
                         addEmployeeForm.get('contactNo').invalid &&
                         addEmployeeForm.get('contactNo').touched
                       "
                           formControlName="contactNo" />
-                        <div
+                        <div class="mt-2"
                           *ngIf="
                         addEmployeeForm.get('contactNo').invalid &&
                         addEmployeeForm.get('contactNo').touched
@@ -177,19 +180,22 @@
                           addEmployeeForm.get('contactNo').invalid &&
                           addEmployeeForm.get('contactNo').touched
                         "
-                            class="text-danger">Contact Number required</small>
+                            class="text-danger">{{globalServ.showLabel('ContactNumber')}}
+                            {{globalServ.showGlobalErrors('required')}}</small>
                         </div>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
-                        <label class="col-form-label">Email &nbsp;<span
+                        <label
+                          class="col-form-label">{{globalServ.showLabel('Email')}}
+                          &nbsp;<span
                             class="text-danger">*</span></label>
                         <div class="input-group">
                           <input
                             class="form-control"
                             type="email"
-                            placeholder="Enter email"
+                            placeholder="{{globalServ.showPlaceholder('enteremail')}}"
                             [email]="true"
                             (keyup)="
                           onEmailChange(addEmployeeForm.controls.email.value)
@@ -228,21 +234,22 @@
                         <small
                           *ngIf="
                         addEmployeeForm.get('email').invalid &&
-                        addEmployeeForm.get('email').touched
-                      "
-                          class="text-danger">Enter Valid Email</small>
+                        addEmployeeForm.get('email').touched"
+                          class="text-danger">{{globalServ.showGlobalErrors('validEmail')}}
+                        </small>
                       </div>
                     </div>
 
                     <div class="col-md-6">
                       <div class="form-group">
-                        <label class="col-form-label">Alternate Email</label>
+                        <label
+                          class="col-form-label">{{globalServ.showLabel('AlternateEmail')}}</label>
                         <div class="input-group">
                           <input
                             class="form-control"
                             type="email"
                             (change)="checkEmailsAreSameOrNot()"
-                            placeholder="Enter alternate email"
+                            placeholder="{{globalServ.showPlaceholder('empatlEmail')}}"
                             formControlName="alternateEmail" />
                         </div>
 
@@ -251,7 +258,8 @@
                         addEmployeeForm.get('alternateEmail').invalid &&
                         addEmployeeForm.get('alternateEmail').touched
                       "
-                          class="text-danger">Enter Valid Email </small>
+                          class="text-danger">
+                          {{globalServ.showGlobalErrors('validEmail')}} </small>
                         <!-- <small
                           *ngIf="bothAreSame"
                           class="text-danger">email and alternate email  should be different.</small> -->
@@ -259,7 +267,8 @@
                     </div>
                     <div class="col-md-6 ">
                       <div class="form-group">
-                        <label class="col-form-label">Designation</label>
+                        <label
+                          class="col-form-label">{{globalServ.getGlobalNames('designation')}}</label>
                         <div class="input-group">
                           <select class="form-select"
                             formControlName="designation">
@@ -288,7 +297,8 @@
 
                     <div class="col-md-6">
                       <div class="form-group">
-                        <label class="col-form-label">Join Date </label>
+                        <label class="col-form-label">
+                          {{globalServ.showLabel('JoinDate')}} </label>
                         <!-- <div class="cal-icon"> -->
                         <input
                           class="form-control datetimepicker"
@@ -300,7 +310,9 @@
 
                     <div class="col-md-6 ">
                       <div class="form-group">
-                        <label class="col-form-label">Department &nbsp;<span
+                        <label
+                          class="col-form-label">{{globalServ.getGlobalNames('department')}}
+                          &nbsp;<span
                             class="text-danger">*</span></label>
                         <div class="input-group">
                           <select class="form-select"
@@ -325,7 +337,7 @@
                               id="deptCode"></i>
                           </span>
                         </div>
-                        <div
+                        <div class="mt-2"
                           *ngIf="
                     addEmployeeForm.controls['deptCode'].invalid &&
                     (addEmployeeForm.controls['deptCode'].dirty ||
@@ -335,7 +347,8 @@
                           <div
                             *ngIf="addEmployeeForm.controls['deptCode'].errors.required"
                             style="color: #dc3545">
-                            Department is required.
+                            {{globalServ.showLabel('deptCode')}}
+                            {{globalServ.showGlobalErrors('required')}}
                           </div>
                         </div>
                       </div>
@@ -343,7 +356,8 @@
 
                     <div class="col-md-6 ">
                       <div class="form-group">
-                        <label class="col-form-label">Project </label>
+                        <label
+                          class="col-form-label">{{globalServ.getGlobalNames('project')}}</label>
                         <div class="input-group">
                           <select
                             class="form-select"
@@ -373,7 +387,8 @@
 
                     <div class="col-md-6 ">
                       <div class="form-group">
-                        <label class="col-form-label">Location </label>
+                        <label
+                          class="col-form-label">{{globalServ.getGlobalNames('location')}}</label>
                         <div class="input-group">
                           <select class="form-select"
                             formControlName="locationCode">
@@ -408,13 +423,14 @@
                         id="isactive"
                         formControlName="isActive" />
                       <label class="form-check-label" for="isactive">
-                        Is Active
+                        {{globalServ.getGlobalNames('active')}}
                       </label>
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="row">
-                      <label for class="col-form-label">Employee Image</label>
+                      <label for class="col-form-label">
+                        {{globalServ.showLabel('EmpImage')}}</label>
                       <div class="row ">
 
                         <div class="col-md-5 col-sm-5">
@@ -439,16 +455,18 @@
                             <span>
                               <span
                                 class="drop-your-images-here-or-browse-span">
-                                Click to upload image or
+                                {{globalServ.showLabel('Clickupload')}}
                               </span>
                               <span
                                 class="drop-your-images-here-or-browse-span2"
                                 *ngIf="!view"
-                                (click)="open()">browse</span>
+                                (click)="open()">
+                                {{globalServ.getGlobalNames('browse')}}</span>
                             </span>
                           </div>
                           <div class="supports-jpg-png-of-300-x-300-size">
-                            Supports .jpg &amp; .png
+                            {{globalServ.getGlobalNames('Supports')}} .jpg &amp;
+                            .png
                           </div>
                         </div>
                       </div>
@@ -458,25 +476,27 @@
               </div>
               <section *ngIf="!view">
                 <button class="btn delete-btn  me-3"
-                  (click)="back()">Cancel</button>
+                  (click)="back()">{{globalServ.getGlobalNames('cancel')}}
+                </button>
                 <button
                   class="btn add-btn"
                   type="submit"
                   [disabled]="addEmployeeForm.invalid || showSuccessEmailToolTip === 'EMAIL ALREADY EXIST'"
                   cdkStepperNext>
-                  Next
+                  {{globalServ.getGlobalNames('next')}}
                 </button>
 
               </section>
               <section *ngIf="view">
                 <button class="btn delete-btn  me-3"
-                  (click)="back()">Close</button>
+                  (click)="back()">{{globalServ.getGlobalNames('close')}}
+                </button>
 
                 <button
                   class="btn add-btn"
                   type="submit"
                   cdkStepperNext>
-                  Next
+                  {{globalServ.getGlobalNames('next')}}
                 </button>
               </section>
             </div>
@@ -489,7 +509,8 @@
               style="width: 40px; height: 40px;z-index:106">
               <img src="assets/img/icon/Compass.svg" height="20" width="20" />
             </div>
-            <div class="step-title">2. Additional Info</div>
+            <div class="step-title">2.
+              {{globalServ.showLabel('AdditionalInfo')}}</div>
           </ng-template>
           <div #stepTwo>
             <form [formGroup]="othersForm">
@@ -511,7 +532,7 @@
                         ">
                       <label for="{{ field.columnName }}">{{ field.label }}
                         <span
-                          *ngIf="field.mandatory === true"
+                          *ngIf="field.isMandatory === true"
                           class="text-danger">
                           *</span>
                       </label>
@@ -538,7 +559,7 @@
                         ">
                       <label for="{{ field.columnName }}">{{ field.label }}
                         <span
-                          *ngIf="field.mandatory === true"
+                          *ngIf="field.isMandatory === true"
                           class="text-danger">
                           *</span>
                       </label>
@@ -566,9 +587,10 @@
                             ? 'col-md-' + field.pctSize
                             : 'col-md'
                         ">
-                      <label for="{{ field.columnName }}">{{
-                        field.label
-                        }}</label>
+                      <label for="{{ field.columnName }}">{{field.label}} <span
+                          *ngIf="field.isMandatory === true"
+                          class="text-danger">
+                          *</span></label>
                       <select
                         class="form-select"
                         [placeholder]="
@@ -598,9 +620,12 @@
                             ? 'col-md-' + field.pctSize
                             : 'col-md'
                         ">
-                      <label for="{{ field.columnName }}">{{
-                        field.label
-                        }}</label>
+                      <label for="{{ field.columnName }}">{{field.label}}
+                        <span
+                          *ngIf="field.isMandatory === true"
+                          class="text-danger">
+                          *</span>
+                      </label>
                       <select
                         class="form-select"
                         [placeholder]="
@@ -627,9 +652,12 @@
                             ? 'col-md-' + field.pctSize
                             : 'col-md'
                         ">
-                      <label for="{{ field.columnName }}">{{
-                        field.label
-                        }}</label>
+                      <label for="{{ field.columnName }}">{{field.label}}
+                        <span
+                          *ngIf="field.isMandatory === true"
+                          class="text-danger">
+                          *</span>
+                      </label>
                       <input
                         type="date"
                         class="form-control"
@@ -651,9 +679,11 @@
                             ? 'col-md-' + field.pctSize
                             : 'col-md'
                         ">
-                      <label for="{{ field.columnName }}">{{
-                        field.label
-                        }}</label>
+                      <label
+                        for="{{ field.columnName }}">{{field.label}} <span
+                          *ngIf="field.isMandatory === true"
+                          class="text-danger">
+                          *</span></label>
                       <input
                         type="number"
                         class="form-control"
@@ -686,7 +716,7 @@
                         [formControlName]="field.columnName" />
                       <label for="{{ field.columnName }}">{{ field.label }}
                         <span
-                          *ngIf="field.mandatory === true"
+                          *ngIf="field.isMandatory === true"
                           class="form-check-label text-danger">
                           *</span>
                       </label>
@@ -695,7 +725,32 @@
                   </ng-container>
                 </div>
               </div>
+              <!-- <div *ngFor="let field of formFields">
+                <div *ngIf="field.dataType === 'dropdown' && field.dataSource === 'api'">
+                  <label>{{ field.label }}</label>
+                  <select class="form-select" >
+                    <option
+                      *ngFor="let option of dropdownOptions[field.columnName]"
+                      [value]="option[field.columnCode]">
+                      {{ option[field.columnName] }}
+                    </option>
+                  </select>
+                </div>
+                       <div *ngIf="field.dataType === 'dropdown' && field.dataSource === 'static'">
+                  <label>{{ field.label }}</label>
+                  <select class="form-select" >
+                    <option
+                      *ngFor="let option of dropdownOptions[field.columnName]"
+                      [value]="option">
+                      {{ option }}
+                    </option>
+                  </select>
+                </div>
+
+
+              </div> -->
             </form>
+
             <div class="form-check col-md-10 mt-2 ms-3 mb-3">
               <input
                 class="form-check-input"
@@ -703,7 +758,7 @@
                 id="submitPayrollQuestion"
                 [formControl]="addEmployeeForm.controls.submitPayrollQuestion" />
               <label class="form-check-label" for="submitPayrollQuestion">
-                Do you want to submit payroll for this employee ?
+                {{globalServ.showLabel('submitpayroll')}}
               </label>
             </div>
 
@@ -722,7 +777,7 @@
                 class="btn btn-secondary secondary-btn"
                 type="submit"
                 cdkStepperPrevious>
-                Previous
+                {{globalServ.getGlobalNames('previous')}}
               </button>
               <!-- if user want to submit only employee -->
               <!-- <span
@@ -750,14 +805,14 @@
                   type="submit"
                   [disabled]="addEmployeeForm.invalid || othersForm.invalid"
                   cdkStepperNext>
-                  Next
+                  {{globalServ.getGlobalNames('next')}}
                 </button>
                 <button *ngIf="update"
                   class="btn add-btn"
                   type="submit"
                   [disabled]="addEmployeeForm.invalid || othersForm.invalid"
                   cdkStepperNext>
-                  Next
+                  {{globalServ.getGlobalNames('next')}}
                 </button>
               </span>
             </section>
@@ -766,7 +821,7 @@
                 class="btn btn-secondary secondary-btn"
                 type="submit"
                 cdkStepperPrevious>
-                Previous
+                {{globalServ.getGlobalNames('previous')}}
               </button>
 
               <button
@@ -774,11 +829,11 @@
                 class="btn add-btn"
                 type="submit"
                 cdkStepperNext>
-                Next
+                {{globalServ.getGlobalNames('next')}}
               </button>
               <button class="btn delete-btn  me-3" style="float: right;"
                 *ngIf="addEmployeeForm.controls.showDoc.value === false"
-                (click)="back()">Cancel</button>
+                (click)="back()">{{globalServ.getGlobalNames('cancel')}}</button>
             </section>
           </div>
         </cdk-step>
@@ -790,73 +845,19 @@
               style="width: 40px; height: 40px;z-index: 100;">
               <i class="fa-regular fa-image"></i>
             </div>
-            <div class="step-title">3. Employee Documents</div>
+            <div class="step-title">3.
+              {{globalServ.showLabel('employeeDoc')}}</div>
           </ng-template>
           <div #stepThree>
 
-            <div class="columnName">Upload Employee Documents (accepts only
-              .png, .jpg, .jpeg, .pdf files)</div>
-            <!-- <div class="row ">
-                <div class="startDiv col-xl-3 col-sm-6 col-12"
-                  *ngFor="let fileInput  of empDoc ;let i = index">
-                  <p class="w-100"
-                    [ngClass]="{'mt-1' :!fileInput.imageByteCode}"
-                    style="color: #6990f2;"><span>{{
-                      fileInput.documentName }}</span>
-                    <span class="float-end" data-bs-toggle="modal"
-                      *ngIf="fileInput.imageByteCode"
-                      data-bs-target="#previewFile"
-                      data-placement="right" (click)="previewRow(fileInput) "><i
-                        class='fa fa-eye'></i></span>
-                  </p>
-                  <div *ngIf="!fileInput.imageByteCode">
-                    <div class="uploaddiv"
-                      (click)="openFileInput(fileInput.documentId)">
-                      <input
-                        type="file"
-                        class="file-input"
-                        name="file"
-                        [disabled]="view"
-                        [id]="fileInput.documentId"
-                        accept=".pdf, .png, .jpg, .jpeg"
-                        (change)="getBase64($event, fileInput)"
-                        style="display: none" />
-                      <i
-                        class="fas fa-cloud-upload-alt d-flex justify-content-center"
-                        style="color: #6990f2; font-size: 50px;"></i>
-                      <p value="Upload Images" class="ms-2"
-                        style="color: #6990f2; font-size: 16px;">&nbsp;Browse
-                        File to Upload</p>
-                    </div>
-                  </div>
-                  <div class="text-center" *ngIf="fileInput.imageByteCode"
-                    (click)="openFileInput(fileInput.documentId)">
-                    <input
-                      type="file"
-                      class="file-input"
-                      name="file"
-                      [id]="fileInput.documentId"
-                      accept=".pdf, .png, .jpg, .jpeg"
-                      [disabled]="view"
-                      (change)="getBase64($event, fileInput)"
-                      style="display: none" />
-                    <i class=" text-success fa-solid fa-circle-check"
-                      style="font-size: x-large;"></i>
-                    <p *ngIf="fileInput.fileName">{{fileInput.documentName}}.{{fileInput.fileType}} uploaded</p>
-                  </div>
-                  <span class="text-end w-100" *ngIf="fileInput.imageByteCode && !view"
-                    (click)="removeImg(i)"> <i class="fa-solid fa-trash"
-                      style="color: #dc3545"></i></span>
-                </div>
-              </div> -->
-
+            <div class="columnName">{{globalServ.showLabel('onlyDoc')}}</div>
             <div class="row">
               <div class="col-12 col-sm-12 col-md-12 col-lg-12 m-1"
                 *ngFor="let item of groupedDocuments">
                 <div class="d-flex align-items-baseline">
                   <span class="d-flex align-items-center"><img
                       src="../../../../assets/img/icon/attendance-summary.svg"
-                      height="70px">
+                      height="25px">
                     <h4 class="ms-2"> {{item.docType}}</h4>
                   </span>
                 </div>
@@ -890,8 +891,8 @@
                           class="fas fa-cloud-upload-alt d-flex justify-content-center"
                           style="color: #6990f2; font-size: 50px;"></i>
                         <p value="Upload Images" class="ms-2"
-                          style="color: #6990f2; font-size: 16px;">&nbsp;Browse
-                          File to Upload</p>
+                          style="color: #6990f2; font-size: 16px;"
+                          [id]="fileInput.documentId">&nbsp;{{globalServ.showLabel('Clickupload')}}</p>
                       </div>
                     </div>
                     <div class="text-center" *ngIf="fileInput.imageByteCode"
@@ -906,14 +907,16 @@
                         (change)="getBase64($event, fileInput)"
                         style="display: none" />
                       <i class=" text-success fa-solid fa-circle-check"
-                        style="font-size: x-large;"></i>
-                      <p
+                        style="font-size: x-large;"
+                        [id]="fileInput.documentId"></i>
+                      <p [id]="fileInput.documentId"
                         *ngIf="fileInput.fileName">{{fileInput.documentName}}.{{fileInput.fileType}}
-                        uploaded</p>
+                        {{globalServ.getGlobalNames('uploaded')}} </p>
                     </div>
-                    <span class="text-end w-100"
+                    <span class="text-end w-100" [id]="fileInput.documentId"
                       *ngIf="fileInput.imageByteCode && !view"
-                      (click)="removeImg(i)"> <i class="fa-solid fa-trash"
+                      (click)="removeImg(fileInput.documentId,fileInput)"> <i
+                        class="fa-solid fa-trash"
                         style="color: #dc3545"></i></span>
                   </div>
                   <!-- </div> -->
@@ -926,7 +929,7 @@
                 class="btn btn-secondary secondary-btn"
                 type="submit"
                 cdkStepperPrevious>
-                Previous
+                {{globalServ.getGlobalNames('previous')}}
               </button>
               <!-- if user want to submit only employee -->
               <span
@@ -936,13 +939,13 @@
                   class="btn add-btn"
                   (click)="saveEmployee('onlyEmp')"
                   type="submit">
-                  Save
+                  {{globalServ.getGlobalNames('save')}}
                 </button>
                 <button *ngIf="update"
                   class="btn add-btn"
                   (click)="updateEmployeeandPayroll('onlyEmp')"
                   type="submit">
-                  Update
+                  {{globalServ.getGlobalNames('update')}}
                 </button>
               </span>
 
@@ -954,14 +957,14 @@
                   type="submit"
                   [disabled]="addEmployeeForm.invalid || othersForm.invalid"
                   cdkStepperNext>
-                  Save & Next
+                  {{globalServ.getGlobalNames('next')}}
                 </button>
                 <button *ngIf="update"
                   class="btn add-btn"
                   type="submit"
                   [disabled]="addEmployeeForm.invalid || othersForm.invalid"
                   cdkStepperNext>
-                  Update & Next
+                  {{globalServ.getGlobalNames('next')}}
                 </button>
               </span>
             </section>
@@ -970,7 +973,7 @@
                 class="btn btn-secondary secondary-btn"
                 type="submit"
                 cdkStepperPrevious>
-                Previous
+                {{globalServ.getGlobalNames('previous')}}
               </button>
 
               <button
@@ -978,13 +981,13 @@
                 class="btn add-btn"
                 type="submit"
                 cdkStepperNext>
-                Next
+                {{globalServ.getGlobalNames('next')}}
               </button>
               <button class="btn delete-btn  me-3" style="float: right;"
                 *ngIf="addEmployeeForm.controls.submitPayrollQuestion.value === false && payrollEmp"
-                (click)="back()">Cancel</button>
+                (click)="back()"> {{globalServ.getGlobalNames('cancel')}}
+              </button>
             </section>
-
           </div>
         </cdk-step>
 
@@ -999,7 +1002,8 @@
                 height="20"
                 width="20" />
             </div>
-            <div class="step-title">4. Employee Payroll</div>
+            <div class="step-title">4.
+              {{globalServ.showLabel('employeePayroll')}}</div>
           </ng-template>
           <div #stepFour>
             <!-- <div class="row mt-3 mb-3">
@@ -1020,18 +1024,21 @@
                 <div class="row col-md-8">
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label class="col-form-label">Employee Ref Code</label>
+                      <label
+                        class="col-form-label">{{globalServ.getGlobalNames('EmployeeRefCode')}}</label>
                       <input
                         class="form-control"
                         type="text"
-                        placeholder="Enter employee ref code"
+                        placeholder="{{globalServ.showPlaceholder('empRefCode')}}"
                         formControlName="employeeRefCode" />
                     </div>
                   </div>
 
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label class="col-form-label">Payroll Type &nbsp;<span
+                      <label
+                        class="col-form-label">{{globalServ.getGlobalNames('payrollType')}}
+                        &nbsp;<span
                           class="text-danger">*</span></label>
                       <select
                         class="form-select"
@@ -1046,7 +1053,7 @@
                           {{ ptype.code }}
                         </option>
                       </select>
-                      <div
+                      <div class="mt-2"
                         *ngIf="
                         payrollForm.get('payrollType').invalid &&
                         payrollForm.get('payrollType').touched
@@ -1057,13 +1064,15 @@
                           payrollForm.get('payrollType').touched
                         "
                           class="text-danger">
-                          Payroll Type required</small>
+                          {{globalServ.getGlobalNames('payrollType')}}
+                          {{globalServ.showGlobalErrors('required')}}</small>
                       </div>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label class="col-form-label">Payroll &nbsp;<span
+                      <label
+                        class="col-form-label">{{globalServ.getGlobalNames('payroll')}}&nbsp;<span
                           class="text-danger">*</span></label>
                       <select
                         class="form-select"
@@ -1082,7 +1091,7 @@
                           {{ pc.payrollCode }}
                         </option>
                       </select>
-                      <div
+                      <div class="mt-2"
                         *ngIf="
                         payrollForm.get('payrollCode').invalid &&
                         payrollForm.get('payrollCode').touched
@@ -1092,13 +1101,16 @@
                           payrollForm.get('payrollCode').invalid &&
                           payrollForm.get('payrollCode').touched
                         "
-                          class="text-danger">Payroll required</small>
+                          class="text-danger">
+                          {{globalServ.getGlobalNames('payroll')}}
+                          {{globalServ.showGlobalErrors('required')}}</small>
                       </div>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label class="col-form-label">Capture Type </label>
+                      <label class="col-form-label">
+                        {{globalServ.showLabel('CaptureType')}} </label>
                       <select class="form-select"
                         formControlName="capturePolicy">
                         <option
@@ -1112,7 +1124,7 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label class="col-form-label"
-                        for="policyCode">Tracking Policy</label>
+                        for="policyCode">{{globalServ.showLabel('TrackingPolicy')}}</label>
                       <select
                         class="form-select"
                         id="policyCode"
@@ -1128,7 +1140,8 @@
 
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label class="col-form-label">Employee Type </label>
+                      <label class="col-form-label">
+                        {{globalServ.showLabel('EmployeeType')}} </label>
                       <select class="form-select"
                         formControlName="employeeType">
                         <option
@@ -1141,7 +1154,8 @@
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label class="col-form-label">Supervisor </label>
+                      <label
+                        class="col-form-label">{{globalServ.showLabel('Supervisor')}}</label>
                       <select class="form-select" formControlName="supervisorId"
                         (change)="onSupervisorChange(payrollForm.controls.supervisorId.value)">
                         <option
@@ -1154,59 +1168,65 @@
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label class="col-form-label">Bank Account Number</label>
+                      <label
+                        class="col-form-label">{{globalServ.getGlobalNames('bankAccountNumber')}}</label>
                       <input
                         class="form-control"
                         type="number"
-                        placeholder="Enter account number"
+                        placeholder="{{globalServ.showPlaceholder('empaccNo')}}"
                         formControlName="bankAccountNo" />
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label class="col-form-label">Bank Name</label>
+                      <label
+                        class="col-form-label">{{globalServ.getGlobalNames('bankName')}}</label>
                       <input
                         class="form-control"
                         type="text"
-                        placeholder="Enter bank name"
+                        placeholder="{{globalServ.showPlaceholder('empaccbank')}}"
                         formControlName="bankName" />
                     </div>
                   </div>
 
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label class="col-form-label">Bank Code</label>
+                      <label
+                        class="col-form-label">{{globalServ.getGlobalNames('bankCode')}}</label>
                       <input
                         class="form-control"
                         type="text"
-                        placeholder="Enter bank code/IFSC code"
+                        placeholder="{{globalServ.showPlaceholder('empifsc')}}"
                         formControlName="bankCode" />
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label class="col-form-label">Bank Branch</label>
+                      <label
+                        class="col-form-label">{{globalServ.getGlobalNames('bankBranch')}}</label>
                       <input
                         class="form-control"
                         type="text"
-                        placeholder="Enter branch name of the bank"
+                        placeholder="{{globalServ.showPlaceholder('empbankName')}}"
                         formControlName="bankBranch" />
                     </div>
                   </div>
 
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label class="col-form-label">Bank Address</label>
+                      <label
+                        class="col-form-label">{{globalServ.getGlobalNames('bankAddress')}}</label>
                       <input
                         class="form-control"
                         type="text"
-                        placeholder="Enter address of bank"
+                        placeholder="{{globalServ.showPlaceholder('bankAddress')}}"
                         formControlName="bankAddress" />
                     </div>
                   </div>
                   <div class="col-md-6" *ngIf="update || view">
                     <div class="form-group">
-                      <label class="col-form-label">Last Working Date</label>
+                      <label
+                        class="col-form-label">{{globalServ.getGlobalNames('lastWorkingDate')}}</label>
                       <!-- <div class="cal-icon"> -->
                       <input
                         class="form-control datetimepicker"
@@ -1217,7 +1237,8 @@
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label class="col-form-label">Total Salary &nbsp;<span
+                      <label class="col-form-label">
+                        {{globalServ.showLabel('totalSalary')}}&nbsp;<span
                           class="text-danger">*</span></label>
                       <input
                         class="form-control"
@@ -1233,13 +1254,14 @@
                         payrollForm.get('salary').invalid &&
                         payrollForm.get('salary').touched
                       "
-                        class="text-danger">
-                        Salary is required</small>
+                        class="text-danger mt-2">
+                        {{globalServ.showLabel('totalSalary')}}
+                        {{globalServ.showGlobalErrors('required')}}</small>
                     </div>
                     <!-- <div
                       *ngIf="payrollForm.controls.rulesQuestion.value === true">
                       <button class="btn btn-primary"
-                        (click)="getsalaryComp()">Calculate</button>
+                        (click)="getsalaryComp()">{{globalServ.showLabel('Calculate')}}</button>
                     </div> -->
                   </div>
                 </div>
@@ -1252,7 +1274,7 @@
                   id="rulesQuestion"
                   formControlName="rulesQuestion" (change)="getsalaryComp()" />
                 <label class="form-check-label" for="rulesQuestion">
-                  Do you want to calculate salary by pay rules
+                  {{globalServ.showLabel('calSalry')}}
                 </label>
               </div>
             </form>
@@ -1260,7 +1282,7 @@
 
             <div class="row mt-5"
               *ngIf="showComponentCode && salaryComponents.length > 0">
-              <h4>Salary Breakup</h4>
+              <h4> {{globalServ.getGlobalNames('SalaryBreakup')}}</h4>
               <div class="col-md-8 d-flex">
                 <div class="table-leftblock col-md-6">
                   <table
@@ -1269,10 +1291,11 @@
                       class="thead-all">
                       <tr
                         class="tr-th-all">
-                        <th class="text-left">Earnings</th>
+                        <th class="text-left">
+                          {{globalServ.getGlobalNames('earnings')}}</th>
                         <th class="text-center">%</th>
                         <th
-                          class="text-end">Amount</th>
+                          class="text-end">{{globalServ.getGlobalNames('amount')}}</th>
                       </tr>
                     </thead>
                     <tbody
@@ -1330,9 +1353,10 @@
                       <tr
                         class="tr-th-all">
                         <th
-                          class="text-left">Deductions</th>
+                          class="text-left">{{globalServ.getGlobalNames('deductions')}}</th>
                         <th class="text-center">%</th>
-                        <th class="text-end">Amount</th>
+                        <th
+                          class="text-end">{{globalServ.getGlobalNames('amount')}}</th>
                       </tr>
                     </thead>
                     <tbody
@@ -1390,8 +1414,8 @@
                   <div
                     class="d-flex justify-content-between">
                     <span
-                      style="padding-left: 15px; ">Gross
-                      Earnings</span>
+                      style="padding-left: 15px; ">{{globalServ.getGlobalNames('GrossEarnings')}}
+                    </span>
                     <span
                       style="padding-right: 15px;">
                       {{totalearningAmt
@@ -1405,8 +1429,8 @@
                   <div
                     class="d-flex justify-content-between">
                     <span
-                      style="padding-left: 15px;">Total
-                      Deductions</span>
+                      style="padding-left: 15px;">
+                      {{globalServ.getGlobalNames('TotalDeductions')}}</span>
                     <span
                       style="padding-right: 15px;">
                       {{totalDeduction
@@ -1422,18 +1446,13 @@
                 style="font: 600 12px/150% CircularStd, sans-serif; padding: 5px;">
                 <span
                   style="padding-left: 15px;">
+                  {{globalServ.getGlobalNames('TotalNetPayable')}}
 
-                  Total
-                  Net
-                  Payable
                   <span
                     class="block text-muted">
-
-                    Gross
-                    Earnings
+                    {{globalServ.getGlobalNames('GrossEarnings')}}
                     -
-                    Total
-                    Deductions
+                    {{globalServ.getGlobalNames('TotalDeductions')}}
                   </span>
                 </span>
                 <span
@@ -1448,19 +1467,19 @@
                 class="btn btn-secondary secondary-btn mb-3"
                 type="submit"
                 cdkStepperPrevious>
-                Previous
+                {{globalServ.getGlobalNames('previous')}}
               </button>
 
               <button class="btn add-btn mb-3" type="submit" *ngIf="!update"
                 [disabled]="addEmployeeForm.invalid || payrollForm.invalid ||  showSuccessEmailToolTip === 'EMAIL ALREADY EXIST'"
                 (click)="saveEmployee()">
                 <!-- addEmployeeAndPayroll -->
-                Submit
+                {{globalServ.getGlobalNames('submit')}}
               </button>
               <button class="btn add-btn mb-3" type="submit"
                 *ngIf="update" (click)="updateEmployeeandPayroll()">
                 <!-- UpdateEmpAndPayroll -->
-                Update
+                {{globalServ.getGlobalNames('update')}}
               </button>
             </section>
 
@@ -1469,10 +1488,11 @@
                 class="btn btn-secondary secondary-btn mb-3"
                 type="submit"
                 cdkStepperPrevious>
-                Previous
+                {{globalServ.getGlobalNames('previous')}}
               </button>
               <button class="btn delete-btn  me-3" style="float: right;"
-                (click)="back()">Cancel</button>
+                (click)="back()">
+                {{globalServ.getGlobalNames('cancel')}}</button>
             </section>
           </div>
 
@@ -1484,11 +1504,13 @@
 <!-- create employee ends -->
 
 <!-- create department model starts -->
-<div id="addDepartment" class="modal custom-modal fade" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+<div id="addDepartment" class="modal custom-modal fade" role="dialog"
+  data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Department</h5>
+        <h5
+          class="modal-title">{{globalServ.showLabel('Departmentheader')}}</h5>
         <button
           id="leave_setup_close"
           type="button"
@@ -1501,17 +1523,16 @@
           <form [formGroup]="departmentForm" novalidate>
             <div class="form-group input">
               <label class="mb-1 text-sm">
-                Department&nbsp;<span
+                {{globalServ.showLabel('deptCode')}}&nbsp;<span
                   class="text-danger" style=" margin-left: 1px">*</span>
               </label>
               <input
                 class="form-control"
                 id="deptCode"
                 maxlength="{{ charLimit }}"
-                placeholder="Enter Department Code"
+                placeholder="{{globalServ.showPlaceholder('deptCode')}}"
                 [formControl]="departmentForm.controls.deptCode"
                 [class.is-invalid]="departmentForm.controls.deptCode.invalid && (departmentForm.controls.deptCode.dirty || departmentForm.controls.deptCode.touched)" />
-
               <div
                 *ngIf="
                     departmentForm.controls['deptCode'].invalid &&
@@ -1522,7 +1543,8 @@
                 <div
                   *ngIf="departmentForm.controls['deptCode'].errors.required"
                   style="color: #dc3545">
-                  Department Code is required.
+                  {{globalServ.showLabel('deptCode')}}
+                  {{globalServ.showGlobalErrors('required')}}
                 </div>
               </div>
 
@@ -1532,26 +1554,25 @@
                     charLimit - 1
                   "
                 style="color: #dc3545">
-                Max {{ charLimit }} Characters
+                {{globalServ.showGlobalErrors('max')}} {{ charLimit }}
+                {{globalServ.showGlobalErrors('char')}}
               </div>
               <div
                 *ngIf="departmentForm.get('deptCode').hasError('invalidFormat')"
-                style="color: #dc3545">field should not contain special
-                characters</div>
+                style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
             </div>
 
             <div class="form-group input">
               <label class="mb-1 text-sm">
-               Department Name &nbsp;<span
+                {{globalServ.showLabel('deptName')}}&nbsp;<span
                   style="color: red; margin-left: 1px">*</span>
               </label>
               <input
-                
                 class="form-control"
                 id="deptName"
                 required
                 maxlength="{{ charLimit }}"
-                placeholder="Enter Department Name"
+                placeholder="{{globalServ.showPlaceholder('deptName')}}"
                 [formControl]="departmentForm.controls.deptName"
                 [class.is-invalid]="departmentForm.controls.deptName.invalid && (departmentForm.controls.deptName.dirty || departmentForm.controls.deptName.touched)" />
 
@@ -1565,13 +1586,13 @@
                 <div
                   *ngIf="departmentForm.controls['deptName'].errors.required"
                   style="color: #dc3545">
-                  Department Name is required.
+                  {{globalServ.showLabel('deptName')}}
+                  {{globalServ.showGlobalErrors('required')}}
                 </div>
               </div>
               <div
                 *ngIf="departmentForm.get('deptName').hasError('invalidFormat')"
-                style="color: #dc3545">field should not contain special
-                characters</div>
+                style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
             </div>
             <!-- (keydown.space)="$event.preventDefault()" -->
             <div class="mb-3 form-check">
@@ -1582,7 +1603,7 @@
                 type="checkbox"
                 [formControl]="departmentForm.controls.isactive" />
               <label class="form-check-label">
-               Active </label>
+                {{globalServ.getGlobalNames('active')}} </label>
             </div>
           </form>
         </div>
@@ -1592,12 +1613,14 @@
             <div class="item-row head w-100">
               <div class="col-12 item-h">
                 <div class="titlediv">
-                  <h5 class="mb-0" *ngIf="!view">Add Department Access</h5>
                   <h5 class="mb-0"
-                    *ngIf="view && roleAccessArray.length > 0">View Department
-                    Access Users</h5>
+                    *ngIf="!view">{{globalServ.getGlobalNames('add')}}
+                    {{globalServ.showLabel('deptAccess')}}</h5>
+                  <h5 class="mb-0"
+                    *ngIf="view && roleAccessArray.length > 0">{{globalServ.getGlobalNames('view')}}
+                    {{globalServ.showLabel('deptAccess')}}</h5>
                   <h5 class="mb-0" *ngIf="view && roleAccessArray.length === 0">
-                    No Department Access Fond for this Department.
+                    {{globalServ.getGlobalErrors('noDeptAccess')}}
                   </h5>
                 </div>
                 <div style="float: right">
@@ -1605,7 +1628,8 @@
                     type="button"
                     (click)="addUser()"
                     class="btn btn-primary btn-sm mt-1 me-2 align-items-end d-flex">
-                    <i class="material-icons me-2">add</i> Add More
+                    <i class="material-icons me-2">add</i>
+                    {{globalServ.getGlobalNames('addMore')}}
                   </button>
                 </div>
               </div>
@@ -1617,7 +1641,8 @@
           <div class="row mt-2 w-100" *ngIf="c.status !== 'delete'">
             <div class="col-md-5 item-h">
               <div class="form-group input">
-                <label class="mb-1 text-sm">Role Code&nbsp;<span
+                <label
+                  class="mb-1 text-sm">{{globalServ.getGlobalNames('roleCode')}}&nbsp;<span
                     style="color: red; margin-left: 1px">*</span>
                 </label>
                 <select
@@ -1634,13 +1659,15 @@
                 </select>
                 <div *ngIf="!c.deptRoleCode"
                   style="color: #dc3545">
-                  Role is required.
+                  {{globalServ.getGlobalNames('roleCode')}}
+                  {{globalServ.showGlobalErrors('required')}}
                 </div>
               </div>
             </div>
             <div class="col-md-5 item-h">
               <div class="form-group input">
-                <label class="mb-1 text-sm">User Name&nbsp;<span
+                <label
+                  class="mb-1 text-sm">{{globalServ.getGlobalNames('userName')}}&nbsp;<span
                     style="color: red; margin-left: 1px">*</span>
                 </label>
                 <select
@@ -1658,7 +1685,8 @@
                 </select>
                 <div *ngIf="!c.userName"
                   style="color: #dc3545">
-                  Username is required.
+                  {{globalServ.getGlobalNames('userName')}}
+                  {{globalServ.showGlobalErrors('required')}}
                 </div>
 
               </div>
@@ -1676,10 +1704,11 @@
             type="button"
             class="btn delete-btn closeDept"
             data-bs-dismiss="modal"
-            aria-label="Close">Cancel</button>
+            aria-label="Close">{{globalServ.getGlobalNames('cancel')}}</button>
           <button id="submit_Dept" class="btn add-btn"
             [disabled]="departmentForm.invalid || departmentForm.pristine ||roleAccessArray.length ===0 "
-            (click)="submit()" type="submit">Create</button>
+            (click)="submit()"
+            type="submit">{{globalServ.getGlobalNames('create')}}</button>
         </div>
       </div>
     </div>
@@ -1688,11 +1717,12 @@
 <!-- create department model ends -->
 
 <!-- create project model starts -->
-<div id="addProject" class="modal custom-modal fade" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+<div id="addProject" class="modal custom-modal fade" role="dialog"
+  data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Project</h5>
+        <h5 class="modal-title">{{globalServ.getGlobalNames('project')}}</h5>
         <button
           id="leave_setup_close"
           type="button"
@@ -1705,17 +1735,15 @@
           <form [formGroup]="projectForm" novalidate>
             <div class="form-group input">
               <label class="text-sm mb-1">
-                Project&nbsp;<span
+                {{globalServ.showLabel('projectName')}}&nbsp;<span
                   style="color: red; margin-left: 1px">*</span>
               </label>
               <input
-                
                 class="form-control"
                 id="categoryCode"
                 maxlength="{{ charLimit }}"
-                placeholder="Enter Project Code"
+                placeholder="{{globalServ.showPlaceholder('Project')}}"
                 [formControl]="projectForm.controls.categoryCode" />
-
               <div
                 *ngIf="
                     projectForm.controls['categoryCode'].invalid &&
@@ -1726,7 +1754,8 @@
                 <div
                   *ngIf="projectForm.controls['categoryCode'].errors.required"
                   style="color: #dc3545">
-                  Project is required.
+                  {{globalServ.showLabel('projectName')}}
+                  {{globalServ.showGlobalErrors('required')}}
                 </div>
               </div>
 
@@ -1736,30 +1765,29 @@
                     charLimit - 1
                   "
                 style="color: #dc3545">
-                Max
-                {{ charLimit }}
-                Characters
+                {{globalServ.showGlobalErrors('max')}} {{ charLimit }}
+                {{globalServ.showGlobalErrors('char')}}
               </div>
-               <div
+              <div
                 *ngIf="projectForm.get('categoryCode').hasError('invalidFormat')"
-                style="color: #dc3545">field should not contain special
-                characters</div>
+                style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
 
             </div>
 
             <div class="mt-2 form-group input">
-              <label class="text-sm mb-1">Project Short Name </label>
+              <label
+                class="text-sm mb-1">{{globalServ.showLabel('ProjectShortName')}}</label>
               <input
                 class="form-control"
                 id="shortName"
                 maxlength="3"
-                placeholder="Project Short Name"
+                placeholder="{{globalServ.showPlaceholder('ProjectShortName')}}"
                 [formControl]="projectForm.controls.shortName" />
             </div>
 
             <div class="mt-2 form-group">
               <label
-                class="text-sm mb-1">{{getProjectLabelDescription('projectType')}}</label>
+                class="text-sm mb-1">{{globalServ.showLabel('projectType')}}</label>
               <select
                 class="form-select"
                 id="projectTypes"
@@ -1772,11 +1800,11 @@
 
             <div class="mt-2 form-group">
               <label class="text-sm mb-1">
-                {{getProjectLabelDescription('description')}} </label>
+                {{globalServ.showLabel('description')}} </label>
               <input
                 class="form-control"
                 id="description"
-                placeholder="{{getPlaceholdersDescription('description')}}"
+                placeholder="{{globalServ.showPlaceholder('description')}}"
                 [formControl]="projectForm.controls.description" />
             </div>
           </form>
@@ -1787,14 +1815,15 @@
             <div class="item-row head w-100">
               <div class="col-12 item-h">
                 <div class="titlediv">
-                  <h5 class="mb-0" *ngIf="!view">Add Project Access</h5>
                   <h5 class="mb-0"
-                    *ngIf="view && roleAccessArrayProject.length > 0">View
-                    Project
-                    Access</h5>
+                    *ngIf="!view">{{globalServ.getGlobalNames('add')}}
+                    {{globalServ.showLabel('projAcc')}}</h5>
+                  <h5 class="mb-0"
+                    *ngIf="view && roleAccessArrayProject.length > 0">{{globalServ.getGlobalNames('view')}}
+                    {{globalServ.showLabel('projAcc')}}</h5>
                   <h5 class="mb-0"
                     *ngIf="view && roleAccessArrayProject.length === 0 ">
-                    No Project Access found for this Project.
+                    {{globalServ.getGlobalErrors('noProjectAccess')}}
                   </h5>
                 </div>
                 <div style="float: right">
@@ -1802,7 +1831,8 @@
                     type="button"
                     (click)="addUserInProject()"
                     class="btn btn-primary btn-sm mt-1 me-2 align-items-end d-flex">
-                    <i class="material-icons me-2">add</i> Add More
+                    <i class="material-icons me-2">add</i>
+                    {{globalServ.getGlobalNames('addMore')}}
                   </button>
                 </div>
               </div>
@@ -1813,8 +1843,13 @@
 
         <div *ngFor="let c of roleAccessArrayProject; let i = index">
           <div class="row mt-4 w-100" *ngIf="c.status !== 'delete'">
+
             <div class="col-md-5 item-h">
-              <div class="form-floating">
+              <div class="form-group input">
+                <label
+                  class="mb-1 text-sm">{{globalServ.getGlobalNames('roleCode')}}&nbsp;<span
+                    style="color: red; margin-left: 1px">*</span>
+                </label>
                 <select
                   id="projectRoleCode"
                   class="form-select br-rm"
@@ -1827,15 +1862,20 @@
                     {{ e.name }}
                   </option>
                 </select>
-                <label>
-                  Role Code&nbsp;<span
-                    style="color: red; margin-left: 1px">*</span>
-                </label>
+                <div *ngIf="!c.projectRoleCode"
+                  style="color: #dc3545">
+                  {{globalServ.getGlobalNames('roleCode')}}
+                  {{globalServ.showGlobalErrors('required')}}
+                </div>
               </div>
             </div>
-            <div class="col-md-5 item-h">
-              <div class="form-floating">
 
+            <div class="col-md-5 item-h">
+              <div class="form-group input">
+                <label
+                  class="mb-1 text-sm">{{globalServ.getGlobalNames('userName')}}&nbsp;<span
+                    style="color: red; margin-left: 1px">*</span>
+                </label>
                 <select
                   id="userName"
                   class="form-select br-rm"
@@ -1848,8 +1888,11 @@
                     {{ e }}
                   </option>
                 </select>
-                <label>User Name&nbsp;<span
-                    style="color: red; margin-left: 1px">*</span></label>
+                <div *ngIf="!c.userName"
+                  style="color: #dc3545">
+                  {{globalServ.getGlobalNames('userName')}}
+                  {{globalServ.showGlobalErrors('required')}}
+                </div>
               </div>
             </div>
             <div class="item-h col-md-2" [hidden]="view">
@@ -1866,14 +1909,14 @@
             type="button"
             class="btn delete-btn closePrj"
             data-bs-dismiss="modal"
-            aria-label="Close">Cancel</button>
+            aria-label="Close">{{globalServ.getGlobalNames('cancel')}}</button>
           <button
             id="create_project"
             [disabled]="projectForm.pristine || projectForm.invalid  ||roleAccessArrayProject.length ===0"
             [hidden]="view || update"
             (click)="createApi()"
             class="btn add-btn ">
-            Create
+            {{globalServ.getGlobalNames('create')}}
           </button>
         </div>
       </div>
@@ -1883,11 +1926,13 @@
 <!-- create projet model ends -->
 
 <!-- create designation model starts -->
-<div id="addDesignation" class="modal custom-modal fade" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+<div id="addDesignation" class="modal custom-modal fade" role="dialog"
+  data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Designation</h5>
+        <h5
+          class="modal-title">{{globalServ.getGlobalNames('designation')}}</h5>
         <button
           id="leave_setup_close"
           type="button"
@@ -1899,14 +1944,14 @@
         <div class="row">
           <form [formGroup]="designationForm" novalidate>
             <div class="form-group input">
-              <label class="mb-1 text-sm"> Designation&nbsp;<span
+              <label class="mb-1 text-sm">
+                {{globalServ.getGlobalNames('designation')}}&nbsp;<span
                   style="color: red; margin-left: 1px">*</span>
               </label>
-              <input  class="form-control" id="designation"
+              <input class="form-control" id="designation"
                 maxlength={{charLimit}}
                 [formControl]="designationForm.controls.designation"
-                placeholder="Enter Designation" />
-
+                placeholder="{{globalServ.showPlaceholder('enterDesig')}}" />
               <div
                 *ngIf="designationForm.controls['designation'].invalid && (designationForm.controls['designation'].dirty ||
                           designationForm.controls['designation'].touched)"
@@ -1914,19 +1959,18 @@
                 <div
                   *ngIf="designationForm.controls['designation'].errors.required"
                   style="color: #dc3545">
-                  Designation is required.
+                  {{globalServ.getGlobalNames('designation')}}
+                  {{globalServ.showGlobalErrors('required')}}
                 </div>
               </div>
               <div [hidden]="view"
                 *ngIf="designationForm.controls['designation'].value?.length > charLimit - 1"
-                style="color: #dc3545">Max
-                {{charLimit}}
-                Characters
+                style="color: #dc3545"> {{globalServ.showGlobalErrors('max')}}
+                {{ charLimit }} {{globalServ.showGlobalErrors('char')}}
               </div>
-                <div
+              <div
                 *ngIf="designationForm.get('designation').hasError('invalidFormat')"
-                style="color: #dc3545">field should not contain special
-                characters</div>
+                style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
             </div>
             <div class="mt-2">
               <div class="mb-3 form-check">
@@ -1934,7 +1978,7 @@
                   type="checkbox"
                   [formControl]="designationForm.controls.isManager">
                 <label class="form-check-label">
-                  Is Manager
+                  {{globalServ.showLabel('IsManager')}}
                 </label>
               </div>
               <div class="mb-3 form-check">
@@ -1942,7 +1986,7 @@
                   type="checkbox"
                   [formControl]="designationForm.controls.isactive">
                 <label class="form-check-label">
-                  Is Active
+                  {{globalServ.getGlobalNames('active')}}
                 </label>
               </div>
             </div>
@@ -1954,10 +1998,11 @@
             type="button"
             class="btn delete-btn closeDesig"
             data-bs-dismiss="modal"
-            aria-label="Close"> Cancel</button>
+            aria-label="Close">{{globalServ.getGlobalNames('cancel')}}</button>
           <button id="submit_Desi" class="btn add-btn"
-            [disabled]="designationForm.invalid || designationForm.pristine "
-            (click)="submitDesignation()" type="submit">Create</button>
+            [disabled]="designationForm.invalid || designationForm.pristine"
+            (click)="submitDesignation()"
+            type="submit">{{globalServ.getGlobalNames('create')}}</button>
         </div>
       </div>
     </div>
@@ -1965,8 +2010,9 @@
 </div>
 <!-- create designation model ends -->
 <!-- preview image/documents -->
-<div id="previewFile" class="modal custom-modal fade" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+<div id="previewFile" class="modal custom-modal fade" role="dialog"
+  data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="dialog">
     <div class="modal-content">
       <ng-container *ngIf="PreviewObject?.fileType === 'pdf'">
         <embed [src]="PreviewObject?.fileContent" type="application/pdf"
@@ -1985,8 +2031,7 @@
           type="button"
           class="btn delete-btn closeDesig"
           data-bs-dismiss="modal"
-          aria-label="Close"> Cancel</button>
-
+          aria-label="Close">{{globalServ.getGlobalNames('cancel')}}</button>
       </div>
     </div>
   </div>

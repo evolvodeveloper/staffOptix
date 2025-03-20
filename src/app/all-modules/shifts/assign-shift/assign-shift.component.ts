@@ -44,7 +44,7 @@ export class AssignShiftComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private spinner: NgxSpinnerService,
     private router: Router,
-    private global: GlobalvariablesService,
+    public global: GlobalvariablesService,
     private utilServ: UtilService,
     private httpPut: HttpPutService,
     private httpPost: HttpPostService
@@ -73,13 +73,15 @@ export class AssignShiftComponent implements OnInit, OnDestroy {
     }
     // return window.confirm('Oops! you have unsaved changes on this page')
   }
+
   updateFilter(event) {
     const val = event.target.value.toLowerCase();
     if (val == '') {
       this.modifiedRecord = [...this.emplist];
     } else {
       const temp = this.emplist.filter(function (d) {
-        return (d.employeeName && d.employeeName.toLowerCase().indexOf(val) !== -1) || (d.employeeCode && d.employeeCode.toLowerCase().indexOf(val) !== -1) || !val;
+        return (d.employeeName && d.employeeName.toLowerCase().indexOf(val) !== -1) || (d.employeeCode && d.employeeCode.toLowerCase().indexOf(val) !== -1)
+          || (d.lastName && d.lastName.toLowerCase().indexOf(val) !== -1) || !val;
       });
       this.modifiedRecord = temp;
     }
@@ -254,6 +256,7 @@ export class AssignShiftComponent implements OnInit, OnDestroy {
   getByShiftCodeAndProjectCode() {
     this.modifiedRecord = [];
     this.records = [];
+    this.checkedAll =false;
     this.shiftAssignmentForm.controls.employeeCode.value.length = 0;
     if (this.shiftAssignmentForm.controls.shiftCode.value) {
       this.spinner.show();
@@ -268,6 +271,8 @@ export class AssignShiftComponent implements OnInit, OnDestroy {
                   row.checked = false,
                   row.startDate = record.startDate,
                   row.endDate = record.endDate
+              } else {
+                row.checked = false
               }
             }
           }
@@ -342,15 +347,19 @@ export class AssignShiftComponent implements OnInit, OnDestroy {
           startDate: this.shiftAssignmentForm.value.startDate,
         });
       });
-
-
       this.httpPost.shiftAssignment(obj).subscribe(
         (res: any) => {
           this.spinner.hide();
           if (res.status.message == 'SUCCESS') {
-            this.sweetAlert_topEnd('success', 'Shift Assigned!');
-            this.shiftAssignmentForm.reset();
-            this.router.navigateByUrl('/assignshifts');
+            Swal.fire({
+              title: 'Success',
+              text: 'Shift Assigned',
+              icon: 'success',
+              showConfirmButton: true,
+            }).then(() => {
+              this.shiftAssignmentForm.reset();
+              this.router.navigateByUrl('/assignshifts');
+            })
           }
 
           else {
@@ -365,13 +374,24 @@ export class AssignShiftComponent implements OnInit, OnDestroy {
         },
         (err) => {
           this.spinner.hide();
-          this.sweetAlert_topEnd('error', err.error.status.message);
+          Swal.fire({
+            icon: 'error',
+            title: err.error.status.message,
+            showConfirmButton: false,
+            timer: 5000,
+          })
         }
       );
     }
     else {
       this.spinner.hide();
-      this.sweetAlert_topEnd('warning', 'Please Select Employees')
+      Swal.fire({
+        icon: 'warning',
+        title: 'Please Select Employees',
+        showConfirmButton: false,
+        timer: 5000,
+      })
+
     }
   }
 
@@ -394,9 +414,15 @@ export class AssignShiftComponent implements OnInit, OnDestroy {
       (res: any) => {
         this.spinner.hide();
         if (res.status.message == 'SUCCESS') {
-          this.sweetAlert_topEnd('success', 'Shift Assigned!');
-          this.shiftAssignmentForm.reset();
-          this.router.navigateByUrl('/assignshifts');
+          Swal.fire({
+            icon: 'success',
+            title: 'Shift Assigned!',
+            showConfirmButton: false,
+            timer: 5000,
+          }).then(() => {
+            this.shiftAssignmentForm.reset();
+            this.router.navigateByUrl('/assignshifts');
+          })
         }
         else {
           Swal.fire({
@@ -409,19 +435,17 @@ export class AssignShiftComponent implements OnInit, OnDestroy {
       },
       (err) => {
         this.spinner.hide();
-        this.sweetAlert_topEnd('error', err.error.status.message);
+        Swal.fire({
+          icon: 'error',
+          title: err.error.status.message,
+          showConfirmButton: false,
+          timer: 5000,
+        })
       })
   }
 
 
-  sweetAlert_topEnd(icon, title) {
-    Swal.fire({
-      icon: icon,
-      title: title,
-      showConfirmButton: false,
-      timer: 5000,
-    });
-  }
+
   ngOnDestroy() {
     this.utilServ.editData = null;
     this.utilServ.viewData = null;

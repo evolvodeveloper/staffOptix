@@ -1,7 +1,12 @@
 <div class="modal-header fw-bold">
-    <h4 class="modal-title" *ngIf="!update &&  !view">Add Shift</h4>
-    <h4 class="modal-title" *ngIf="update">Update Shift</h4>
-    <h4 class="modal-title" *ngIf="view">View Shift</h4>
+    <h4 class="modal-title"
+        *ngIf="!update &&  !view">{{globalServ.getGlobalNames('add')}}
+        {{globalServ.getGlobalNames('shift')}}</h4>
+    <h4 class="modal-title"
+        *ngIf="update">{{globalServ.getGlobalNames('update')}}
+        {{globalServ.getGlobalNames('shift')}}</h4>
+    <h4 class="modal-title" *ngIf="view">{{globalServ.getGlobalNames('view')}}
+        {{globalServ.getGlobalNames('shift')}} </h4>
 
     <i class="fa-solid fa-xmark float-end fs-4" id="close_model"
         data-bs-dismiss="modal"
@@ -9,83 +14,82 @@
 </div>
 <div class="modal-body">
     <form [formGroup]="shiftForm">
-
         <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-
                 <div class="mb-3">
-                    <label class="form-label text-sm" for="shiftCode">Name <span
+                    <label class="form-label text-sm" for="shiftCode">
+                        {{globalServ.showLabel('shiftName')}} <span
                             class="text-danger">*</span></label>
                     <input type="text" class="form-control" name="shiftCode"
                         formControlName="shiftCode" id="shiftCode"
                         maxlength="{{ charLimit }}"
-                        placeholder="e.g. morning shift">
-                    <div
+                        placeholder="{{globalServ.showPlaceholder('shiftCode')}}">
+                    <div class="mt-2"
                         *ngIf="
                     shiftForm.controls['shiftCode'].invalid &&
                     (shiftForm.controls['shiftCode'].dirty ||
                       shiftForm.controls['shiftCode'].touched)
                   "
                         style="padding: 0px">
-                        <div
+                        <div 
                             *ngIf="shiftForm.controls['shiftCode'].errors.required"
                             style="color: #dc3545">
-                            Shift is required.
+                            {{globalServ.getGlobalNames('shift')}}
+                            {{globalServ.showGlobalErrors('required')}}
                         </div>
                     </div>
 
                     <div
                         *ngIf="shiftForm.controls['shiftCode'].value?.length > charLimit - 1"
-                        style="color: #dc3545">Max
-                        {{charLimit}}
-                        Characters
+                        style="color: #dc3545">{{globalServ.showGlobalErrors('max')}}
+                        {{ charLimit }} {{globalServ.showGlobalErrors('char')}}
                     </div>
                     <div
                         *ngIf="shiftForm.get('shiftCode').hasError('invalidFormat')"
-                        style="color: #dc3545">field should not contain special
-                        characters</div>
+                        style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
                 </div>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                 <div class="mb-3">
                     <label class="form-label text-sm" for="shortName">
-                       Enter Short name for the Shift <span
+                        {{globalServ.showLabel('shiftshortName')}} <span
                             class="text-danger">*</span></label>
                     <input type="text" class="form-control"
                         name="shortName" formControlName="shortName"
                         id="shortName"
                         maxlength="3"
-                        placeholder="Enter Shortname max 3 Characters">
-                    <div
+                        placeholder="{{globalServ.showPlaceholder('shiftshortName')}}">
+                    <div class="mt-2"
                         *ngIf="shiftForm.controls['shortName'].invalid &&
                     (shiftForm.controls['shortName'].dirty ||
                       shiftForm.controls['shortName'].touched)"
                         style="padding: 0px">
-                        <div
+                        <div 
                             *ngIf="shiftForm.controls['shortName'].errors.required"
                             style="color: #dc3545">
-                            Short Name is required.
+                            {{globalServ.showLabel('shiftshortName')}}
+                            {{globalServ.showGlobalErrors('required')}}
                         </div>
                     </div>
                     <div
                         *ngIf="shiftForm.get('shortName').hasError('invalidFormat')"
-                        style="color: #dc3545">field should not contain special
-                        characters</div>
+                        style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
                 </div>
             </div>
 
             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                 <div class="mb-3">
                     <label for="timezone" class="form-label text-sm">
-                        Time Zone&nbsp;<span
+                        {{globalServ.showLabel('timezone')}}&nbsp;<span
                             style="color: red; margin-left: 1px">*</span></label>
                     <ng-select [items]="timeZones" bindLabel="t" bindValue="t"
                         [multiple]="false"
                         id="timezone"
-                        placeholder="Select" class="ngSelectform"
+                        placeholder="{{globalServ.showPlaceholder('timezone')}}"
+                        class="ngSelectform"
                         formControlName="timezone">
                     </ng-select>
-                    <div
+                    <div class="mt-2"
                         *ngIf="
                     shiftForm.controls['timezone'].invalid &&
                     (shiftForm.controls['timezone'].dirty ||
@@ -95,7 +99,8 @@
                         <div
                             *ngIf="shiftForm.controls['timezone'].errors.required"
                             style="color: #dc3545">
-                            Timezone is required.
+                            {{globalServ.showLabel('timezone')}}
+                            {{globalServ.showGlobalErrors('required')}}
                         </div>
                     </div>
                 </div>
@@ -103,14 +108,14 @@
             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                 <div class="mb-3">
                     <label for="calendarCode" class="form-label text-sm">
-                        Select the Holiday Calendar&nbsp;<span
+                        {{globalServ.showLabel('calendarCode')}}&nbsp;<span
                             style="color: red; margin-left: 1px">*</span></label>
                     <select class="form-select" formControlName="calendarCode"
                         id="calendarCode">
                         <option *ngFor="let c of calenderCodes"
                             [value]="c.calendarCode">{{c.calendarCode}}</option>
                     </select>
-                    <div
+                    <div class="mt-2"
                         *ngIf="
                     shiftForm.controls['calendarCode'].invalid &&
                     (shiftForm.controls['calendarCode'].dirty ||
@@ -120,7 +125,8 @@
                         <div
                             *ngIf="shiftForm.controls['calendarCode'].errors.required"
                             style="color: #dc3545">
-                            Calendar is required.
+                            {{globalServ.showLabel('calendarCode')}}
+                            {{globalServ.showGlobalErrors('required')}}
                         </div>
                     </div>
                 </div>
@@ -131,7 +137,8 @@
             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                 <div class="mb-3">
                     <label class="form-label text-sm" for="graceTimeInHrs">
-                       Enter the grace time (in minutes) <span
+                        {{globalServ.showLabel('graceTime')}}
+                        ({{globalServ.showLabel('InMin')}}) <span
                             class="text-muted"> (Eg: 1 hour = 60
                             minutes)</span></label>
                     <input type="number" class="form-control"
@@ -140,18 +147,18 @@
                         (change)="TimeConverter($event.target.value)">
                 </div>
             </div>
-   
+
             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                 <div class="mb-3">
                     <label class="form-label text-sm"
-                        for="minHrsInTimeframe">Minimum hours in a Day</label>
+                        for="minHrsInTimeframe">{{globalServ.showLabel('dayHours')}}</label>
                     <input type="number" id="minHrsInTimeframe"
                         class="form-control" (change)="minHrsPerDay()"
                         formControlName="minHrsInTimeframe">
                     <div
                         *ngIf="shiftForm.controls.minHrsInTimeframe.invalid && shiftForm.controls.minHrsInTimeframe.dirty"
-                        class="text-danger">Minimum hours should be between 0
-                        and 23.</div>
+                        class="text-danger">
+                        {{globalServ.showerror('minHrs')}}</div>
                 </div>
             </div>
             <div class="row">
@@ -161,7 +168,7 @@
                             type="checkbox"
                             formControlName="allowHalfDays">
                         <label class="form-check-label" for="allowHalfDays">
-                            Allow Half-days
+                            {{globalServ.showLabel('halfDay')}}
                         </label>
                     </div>
                 </div>
@@ -169,52 +176,52 @@
                     <div class="mb-3"
                         *ngIf="shiftForm.controls.allowHalfDays.value === true">
                         <label class="form-label text-sm"
-                            for="minHrsToMarkHalfDay">Minimum hours needed to be
-                            counted
-                            as Half-day</label>
+                            for="minHrsToMarkHalfDay">{{globalServ.showLabel('hday')}}</label>
                         <input type="number" class="form-control"
                             id="minHrsToMarkHalfDay"
                             (change)="minHrsToMarkHalfDay()"
                             formControlName="minHrsToMarkHalfDay">
                         <div
                             *ngIf="shiftForm.controls.minHrsToMarkHalfDay.invalid && shiftForm.controls.minHrsToMarkHalfDay.dirty"
-                            class="text-danger">Minimum hours should be between
-                            0
-                            and 23.</div>
+                            class="text-danger">{{globalServ.showerror('minHrs')}}</div>
                     </div>
                 </div>
             </div>
 
             <p>
-                Does the shift have flexible weekends ? <span class="ms-4"
+                {{globalServ.showLabel('flexWeekend')}}<span class="ms-4"
                     id="hasFlexibleWeekends">
                     <span id="hasFlexibleWeekends" class="me-4"><input
                             type="radio" id="hasFlexibleWeekends"
                             name="question"
                             [value]="true"
                             [formControl]="shiftForm.controls.hasFlexibleWeekends"
-                            (change)="weekendquestion()"> Yes</span>
+                            (change)="weekendquestion()">
+                        {{globalServ.getGlobalNames('yes')}}</span>
                     <span id="hasFlexibleWeekends"><input type="radio"
                             name="question" id="hasFlexibleWeekends"
                             [value]="false"
                             [formControl]="shiftForm.controls.hasFlexibleWeekends"
-                            (change)="weekendquestion()"> No</span> </span>
+                            (change)="weekendquestion()">
+                        {{globalServ.getGlobalNames('no')}}</span> </span>
 
             </p>
             <p>
-                Does the shift have flexible work hours ? <span class="ms-4"
+                {{globalServ.showLabel('flexHours')}} <span class="ms-4"
                     id="hasFlexibleWorkhours">
                     <span id="hasFlexibleWorkhours" class="me-4"><input
                             type="radio" id="hasFlexibleWorkhours"
                             name="hrsquestion"
                             [value]="true"
                             [formControl]="shiftForm.controls.hasFlexibleWorkhours"
-                            (change)="workhoursquestion()"> Yes</span>
+                            (change)="workhoursquestion()">
+                        {{globalServ.getGlobalNames('yes')}}</span>
                     <span id="hasFlexibleWorkhours"><input type="radio"
                             name="hrsquestion" id="hasFlexibleWorkhours"
                             [value]="false"
                             [formControl]="shiftForm.controls.hasFlexibleWorkhours"
-                            (change)="workhoursquestion()"> No</span> </span>
+                            (change)="workhoursquestion()">
+                        {{globalServ.getGlobalNames('no')}}</span> </span>
 
             </p>
 
@@ -222,7 +229,7 @@
                 *ngIf="shiftForm.controls.hasFlexibleWeekends.value">
                 <div class="mb-3">
                     <label class="form-label text-sm"
-                        for="weekends">Weekends</label>
+                        for="weekends">{{globalServ.getGlobalNames('weekend')}}</label>
                     <ng-select
                         [items]="days"
                         [readonly]="true"
@@ -231,7 +238,7 @@
                         bindValue="dayName"
                         [multiple]="true"
                         (change)="changeWeekends(shiftForm.controls.weekends.value)"
-                        placeholder="Select Weekends"
+                        placeholder="{{globalServ.showPlaceholder('SelectWeekends')}}"
                         formControlName="weekends">
                     </ng-select>
                 </div>
@@ -241,7 +248,7 @@
                 *ngIf="!shiftForm.controls.hasFlexibleWeekends.value">
                 <div class="mb-3">
                     <label class="form-label text-sm"
-                        for="weekends">Weekends</label>
+                        for="weekends">{{globalServ.getGlobalNames('weekend')}}</label>
                     <ng-select
                         [items]="days"
                         bindLabel="dayName"
@@ -249,7 +256,7 @@
                         [multiple]="true"
                         id="weekends"
                         (change)="changeWeekends(shiftForm.controls.weekends.value)"
-                        placeholder="Select Weekends"
+                        placeholder="{{globalServ.showPlaceholder('SelectWeekends')}}"
                         formControlName="weekends">
                     </ng-select>
                 </div>
@@ -259,7 +266,7 @@
             <div class="col-sm-6 col-md-6 col-lg-2">
                 <div class="mb-3">
                     <label class="form-label text-sm"
-                        for="noOfWorkdaysInWeek">Work days/Week</label>
+                        for="noOfWorkdaysInWeek">{{globalServ.showLabel('wkday')}}</label>
                     <input type="number" class="form-control" max="7"
                         (change)="putOnly7()"
                         (change)="multiplyWorkdaysHrsPDayWeek()"
@@ -270,8 +277,8 @@
             </div>
             <div class="col-sm-6 col-md-6 col-lg-2">
                 <div class="mb-3">
-                    <label class="form-label text-sm" for="workHoursPerDay">Work
-                        hours/day</label>
+                    <label class="form-label text-sm"
+                        for="workHoursPerDay">{{globalServ.showLabel('wkHrsDay')}}</label>
                     <input type="number" class="form-control"
                         id="workHoursPerDay"
                         (keyup)="multiplyWorkdaysHrsPDayWeek()"
@@ -283,7 +290,7 @@
             <div class="col-sm-6 col-md-6 col-lg-2">
                 <div class="mb-3">
                     <label class="form-label text-sm"
-                        for="workhoursPerWeek">Work hours/Week</label>
+                        for="workhoursPerWeek">{{globalServ.showLabel('wkHrsWeek')}}</label>
                     <input type="number" class="form-control"
                         id="workhoursPerWeek"
                         formControlName="workhoursPerWeek">
@@ -296,7 +303,7 @@
                         id="isDefault"
                         formControlName="isDefault" (change)="checkDefault()">
                     <label class="form-check-label" for="isDefault">
-                        Is default
+                        {{globalServ.getGlobalNames('isDefault')}}
                     </label>
                 </div>
             </div>
@@ -306,7 +313,8 @@
                         id="isStrict"
                         formControlName="isStrict">
                     <label class="form-check-label" for="isStrict">
-                        Is strict
+                        {{globalServ.getGlobalNames('isStrict')}}
+
                     </label>
                 </div>
             </div>
@@ -316,14 +324,15 @@
                         id="isactive"
                         formControlName="isactive">
                     <label class="form-check-label" for="isactive">
-                        Is Active
+                        {{globalServ.getGlobalNames('active')}}
                     </label>
                 </div>
             </div>
         </div>
 
         <div class="my-3">
-            <label class="form-label text-sm">Selected working days&nbsp;
+            <label class="form-label text-sm">
+                {{globalServ.getGlobalNames('selectedWorkingDays')}}&nbsp;
                 <span *ngIf="totalSelectedDays>0"
                     class="badge text-bg-secondary">
                     {{totalSelectedDays}}
@@ -341,16 +350,18 @@
         </div>
     </form>
     <p>
-        Do you have break shifts ? <span class="ms-4">
+        {{globalServ.showLabel('breakShiftQues')}} <span class="ms-4">
             <!-- formControlName="shiftHasBreaks" -->
             <span class="me-4"><input type="radio" name="shiftHasBreaks"
                     id="shiftHasBreaks"
                     [formControl]="shiftForm.controls.shiftHasBreaks"
-                    (change)="breaKShift()" [value]="true">Yes</span>
+                    (change)="breaKShift()"
+                    [value]="true">{{globalServ.getGlobalNames('yes')}}</span>
             <span><input type="radio" name="shiftHasBreaks" [value]="false"
                     id="shiftHasBreaks"
                     [formControl]="shiftForm.controls.shiftHasBreaks"
-                    (change)="breaKShift()">No</span> </span>
+                    (change)="breaKShift()">{{globalServ.getGlobalNames('no')}}</span>
+        </span>
 
     </p>
     <!-- 
@@ -389,14 +400,17 @@
 
         <tbody *ngIf="shiftForm.controls.shiftHasBreaks.value">
             <tr>
-                <th class="form-label text-sm"> Enter start and end time</th>
+                <th class="form-label text-sm">
+                    {{globalServ.showLabel('startTimendEndtime')}}
+                 </th>
 
                 <td> <input class="form-control time-input" type="time"
                         id="startTime"
                         [(ngModel)]="breakShift.startTime" [disabled]="view"
                         (change)="changedTime()"
                         (change)="breakShiftYes(breakShift)"></td>
-                <td colspan="2" class="text-center" style="width: 40px;">To</td>
+                <td colspan="2" class="text-center" style="width: 40px;">
+                    {{globalServ.getGlobalNames('to')}}</td>
                 <td class="mr-2"> <input class="form-control time-input"
                         type="time" id="endTime" (change)="changedTime()"
                         [ngClass]="{'warnthem' : breakShift.previous1TimeWrng}"
@@ -411,7 +425,8 @@
                         [(ngModel)]="breakShift.startTime2" [disabled]="view"
                         (change)="changedTime()"
                         (change)="breakShiftYes(breakShift)"></td>
-                <td colspan="2" class="text-center" style="width: 40px;">To</td>
+                <td colspan="2" class="text-center" style="width: 40px;">
+                    {{globalServ.getGlobalNames('to')}}</td>
                 <td><input class="form-control time-input" type="time"
                         id="endTime2"
                         [(ngModel)]="breakShift.endTime2" [disabled]="view"
@@ -422,7 +437,11 @@
     </table>
 
     <div class="mb-3" *ngIf="!shiftForm.controls.shiftHasBreaks.value">
-        <label class="form-label text-sm">Enter start and end time </label>
+        <label class="form-label text-sm">
+            {{globalServ.getGlobalNames('enter')}}
+            {{globalServ.showLabel('startTime')}}
+            {{globalServ.getGlobalNames('and')}}
+            {{globalServ.showLabel('endTime')}} </label>
         <ng-container *ngFor="let day of days;let i = index">
             <div *ngIf="day.isactive" class="row mx-4">
                 <div class="col-md-10 col-sm-12">
@@ -438,7 +457,7 @@
                                 (change)="timechage(day)">
                         </div>
                         <div class="col-sm-2 col-md-1">
-                            to
+                            {{globalServ.getGlobalNames('to')}}
                         </div>
                         <div class="col-sm-4 col-md-3">
                             <input class="form-control time-input" type="time"
@@ -468,8 +487,8 @@
                     class="col-md-2 col-sm-12 border-start copyAll"
                     [hidden]="view">
                     <span id="copyAll" (click)="copyToAll(day)">
-                        <i class="fa-solid fa-copy" id="copyAll"></i>&nbsp;Copy
-                        to all
+                        <i class="fa-solid fa-copy"
+                            id="copyAll"></i>&nbsp;{{globalServ.showLabel('copyToAll')}}
                     </span>
                 </div>
             </div>
@@ -480,17 +499,21 @@
 <div class="modal-footer">
     <button type="button" id="cancel_btn" class="btn delete-btn "
         data-dismiss="modal"
-        (click)="closeModal('close')">Cancel</button>
+        (click)="closeModal('close')">{{globalServ.getGlobalNames('cancel')}}
+    </button>
     <button type="button" id="save_shift" class="btn add-btn add-btn "
         [hidden]="view || update"
-        [disabled]="shiftForm.invalid" (click)="saveShift()">Save Shift</button>
+        [disabled]="shiftForm.invalid"
+        (click)="saveShift()">{{globalServ.getGlobalNames('save')}}
+        {{globalServ.getGlobalNames('shift')}}</button>
     <button type="button" id="update_shift" class="btn add-btn add-btn "
         *ngIf="update && !modified"
-        [disabled]="shiftForm.pristine" (click)="Update()">Update
-        Shift</button>
+        [disabled]="shiftForm.pristine"
+        (click)="Update()">{{globalServ.getGlobalNames('update')}}
+        {{globalServ.getGlobalNames('shift')}}</button>
     <button type="button" id="update_shift" class="btn add-btn add-btn "
         *ngIf="update && modified"
-        (click)="Update()">Update
-        Shift</button>
+        (click)="Update()">{{globalServ.getGlobalNames('update')}}
+        {{globalServ.getGlobalNames('shift')}}</button>
 
 </div>

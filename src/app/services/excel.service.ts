@@ -178,7 +178,7 @@ export class ExcelService {
         const wb: XLSX.WorkBook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
         XLSX.writeFile(wb, excelFileName + new Date().getTime() + EXCEL_EXTENSION);
-        this.globalServ.showSuccessPopUp('Excel', 'success');
+        this.globalServ.showSuccessPopUp('Excel', 'success', excelFileName);
     }
 
     public exportAsExcelFileNoColor(json: any[], excelFileName: string): void {
@@ -250,7 +250,7 @@ export class ExcelService {
         const wb: XLSX.WorkBook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
         XLSX.writeFile(wb, excelFileName + new Date().getTime() + EXCEL_EXTENSION);
-        this.globalServ.showSuccessPopUp('Excel', 'success');
+        this.globalServ.showSuccessPopUp('Excel', 'success', excelFileName);
     }
 
     getDatesByMonth(startDateStr: string, endDateStr: string): string[] {

@@ -1,3 +1,4 @@
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import * as FileSaver from 'file-saver';
@@ -43,12 +44,14 @@ export class PresentReportComponent implements OnInit, AfterViewInit {
 
   shifts = [];
   departments = [];
-
+  currentTable = 'presentRpt'
+  activeColumns = [];
+  colKeys = [];
   constructor(
     private httpPostService: HttpPostService,
     private spinner: NgxSpinnerService,
+    public globalServ: GlobalvariablesService,
     private utilServ: UtilService,
-    private global: GlobalvariablesService,
     private httpGetService: HttpGetService,
     private router: Router,
     private httpGet: HttpGetService,
@@ -60,10 +63,99 @@ export class PresentReportComponent implements OnInit, AfterViewInit {
       totalItems: this.rows.length,
     };
   }
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.activeColumns, event.previousIndex, event.currentIndex);
+    this.activeColumns.forEach((x, i) => x.SortId = i + 1);
+    this.updateColumnOrder();
+    this.apply();
+  }
+  close() {
+    this.colKeys.forEach(x => {
+      if (x.checked == true) {
+        x.view = true
+      } else {
+        x.view = false
+      }
+    })
+  }
+  apply() {
+    this.colKeys.forEach(x => {
+      if (x.view == true) {
+        x.checked = true
+      } else {
+        x.checked = false
+      }
+    })
+    const savedConfig = localStorage.getItem('tableConfigs');
+    const configs = savedConfig ? JSON.parse(savedConfig) : {};
+    if (!configs[this.currentTable]) {
+      configs[this.currentTable] = this.colKeys;
+    } else {
+      configs[this.currentTable] = this.colKeys;
+    }
+    this.activeColumns = this.colKeys.filter(x => x.checked == true)
+    this.activeColumns.sort((a, b) => a.SortId - b.SortId);
+    localStorage.setItem('tableConfigs', JSON.stringify(configs));
+  }
+  updateColumnOrder() {
+    const orderedKeys = this.activeColumns.map(col => col.key);
+    this.colKeys.forEach(col => {
+      const index = orderedKeys.indexOf(col.key);
+      if (index !== -1) {
+        col.SortId = index + 1;
+      }
+    });
+  }
+  toggleColumnVisibility(colKey: string, event: Event) {
+    const checkbox = (event.target as HTMLInputElement);
+    const column = this.colKeys.find(col => col.key === colKey);
+    if (column) {
+      column.view = checkbox.checked;
+    }
+  }
+
+  loadColumnsConfig() {
+    const savedConfig = localStorage.getItem('tableConfigs');
+    const keysToRemove = ['regularHours', 'lastName', 'BreakShift', 'totalHours', ''];
+    if (savedConfig) {
+      const configs = JSON.parse(savedConfig);
+      this.colKeys = configs[this.currentTable] || [];
+      if (!configs[this.currentTable]) {
+        const keys = Object.keys(this.rows[0] || {});
+        const filteredList = keys.filter((item: any) => !keysToRemove.includes(item));
+        this.colKeys = filteredList.map(key => ({ key, view: true, checked: true }));
+        // this.colKeys = keys.map(key => ({ key, view: true, checked: true }));
+        this.activeColumns = this.colKeys.filter(x => x.view == true)
+        this.activeColumns.sort((a, b) => a.SortId - b.SortId);
+        this.saveColumnsConfig();
+      } else {
+        this.activeColumns = this.colKeys.filter(x => x.view == true)
+        this.activeColumns.sort((a, b) => a.SortId - b.SortId);
+      }
+    } else {
+      const keys = Object.keys(this.rows[0] || {});
+      const filteredList = keys.filter((item: any) => !keysToRemove.includes(item));
+      this.colKeys = filteredList.map(key => ({ key, view: true, checked: true }));
+      this.activeColumns = this.colKeys.filter(x => x.view == true)
+      this.activeColumns.sort((a, b) => a.SortId - b.SortId);
+      this.saveColumnsConfig();
+    }
+  }
+  isNumber(value: any): boolean {
+    return !isNaN(value) && typeof value === 'number';
+  }
+  saveColumnsConfig() {
+    const savedConfig = localStorage.getItem('tableConfigs');
+    const configs = savedConfig ? JSON.parse(savedConfig) : {};
+    configs[this.currentTable] = this.colKeys;
+    localStorage.setItem('tableConfigs', JSON.stringify(configs));
+  }
 
 
 
   ngOnInit(): void {
+    this.globalServ.getMyCompLabels('presentReport');
+    this.globalServ.getMyCompPlaceHolders('presentReport');
     this.getShifts();
     this.getDepartments();
   }
@@ -162,42 +254,14 @@ export class PresentReportComponent implements OnInit, AfterViewInit {
         (res: any) => {
           this.spinner.hide();
           this.message = 'modified';
-          this.dateFormat = this.global.dateFormat;
+          this.dateFormat = this.globalServ.dateFormat;
           const timesheetRes = res.response.map(element => {
             element.dayName = this.utilServ.dayNames[new Date(element.dateCode).getDay()];
             element.totalHours = this.convertDecimalToHours(element.totalHours);
             element.effectiveHours = this.convertDecimalToHours(element.effectiveHours)
             element.lateBy = this.convertDecimalToHours(element.lateBy)
             element.leftEarlyBy = this.convertDecimalToHours(element.leftEarlyBy)
-            element.otHrs = this.convertDecimalToHours(element.otHrs)
-
-            // const resultInMinutes = element.totalHours * 60;
-            // const h = Math.floor(resultInMinutes / 60);
-            // const hours = h < 10 ? '0' + h : h
-            // const m = Math.floor(resultInMinutes % 60);
-            // const minutes = m < 10 ? '0' + m : m
-            // element.totalHours = hours + ':' + minutes
-
-            // const lb = element.lateBy * 60;
-            // const lbh = Math.floor(lb / 60);
-            // const lbhours = lbh < 10 ? '0' + lbh : lbh
-            // const lbm = Math.floor(lb % 60);
-            // const lbminutes = lbm < 10 ? '0' + lbm : lbm
-            // element.lateBy = lbhours + ':' + lbminutes
-
-            // const leb = element.leftEarlyBy * 60;
-            // const lebh = Math.floor(leb / 60);
-            // const lebhours = lebh < 10 ? '0' + lebh : lebh
-            // const lebm = Math.floor(leb % 60);
-            // const lebminutes = lebm < 10 ? '0' + lebm : lebm
-            // element.leftEarlyBy = lebhours + ':' + lebminutes
-
-            // const ot = element.otHrs * 60;
-            // const oth = Math.floor(ot / 60);
-            // const otHrs = oth < 10 ? '0' + oth : oth
-            // const otm = Math.floor(ot % 60);
-            // const otMins = otm < 10 ? '0' + otm : otm
-            // element.otHrs = otHrs + ':' + otMins;
+            element.otHrs = this.convertDecimalToHours(element.otHrs)        
             return element
           });
           if (res.response.length == 0) {
@@ -240,13 +304,19 @@ export class PresentReportComponent implements OnInit, AfterViewInit {
               r.totalHours1 = r.totalHours;
               r.mixedInTime = r.inTime ? `${moment(r.inTime, 'HH:mm:ss').format('HH:mm')}` : '-';
               r.mixedOutTime = r.outTime ? `${moment(r.outTime, 'HH:mm:ss').format('HH:mm')}` : '-';
+              r.mixedLateBy = r.lateBy !== '00:00' ? r.lateBy : '--:--';
+              r.mixedLeftEarlyBy = r.leftEarlyBy !== '00:00' ? r.leftEarlyBy : '--:--';
             }
-
           });
 
           this.rows = records;
           this.temp = [...this.rows];
+          this.config.totalItems = this.rows.length;
+
           // this.getTotal()
+          if (this.rows.length > 0) {
+            this.loadColumnsConfig();
+          }
         },
         (err) => {
           this.spinner.hide();
@@ -306,8 +376,8 @@ export class PresentReportComponent implements OnInit, AfterViewInit {
     return result;
   }
 
-
   saveExcel() {
+    const keys = this.activeColumns.map(item => item.key).join(',');
     this.spinner.show();
     const obj = {
       employee_id: this.reportObj.employeeCode,
@@ -332,41 +402,41 @@ export class PresentReportComponent implements OnInit, AfterViewInit {
       .subscribe((res: any) => {
         this.spinner.hide();
         const data: Blob = new Blob([res], { type: EXCEL_TYPE });
-        FileSaver.saveAs(
-          data,
-          'Present_Report' + new Date().getTime() + EXCEL_EXTENSION
-        );
-        this.global.showSuccessPopUp('Excel', 'success');
+        const fileName = 'Present_Report_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_');
+        FileSaver.saveAs(data, fileName + EXCEL_EXTENSION);
+        this.globalServ.showSuccessPopUp('Excel', 'success', fileName);
       },
         err => {
           this.spinner.hide();
+          const error = err.error.status ? err.error.status.message : 'UNKNOWN ERROR OCCURRED'
           Swal.fire({
             title: 'Error!',
-            text: err.error.status.message,
-            icon: 'error',
-          })
+              text: error,
+              icon: 'error',
+            })
         });
   }
 
   savePDF(): void {
+    const keys = this.activeColumns.map(item => item.key).join(',');
     this.spinner.show();
     this.httpGetService.getPdf('reports/present/pdf?empCode=' + this.reportObj.employeeCode + '&from=' + this.reportObj.from + '&to=' + this.reportObj.to
       + '&shiftCode=' + this.reportObj.shiftCode + '&deptCode=' + this.reportObj.department
     ).subscribe((res: any) => {
       this.spinner.hide();
       const file = new Blob([res], { type: 'application/pdf' });
-      FileSaver.saveAs(file, 'Present-report' + new Date().getTime() + '.pdf');
-      // const fileURL = URL.createObjectURL(file);
-      // window.open(fileURL);
-      this.global.showSuccessPopUp('Pdf', 'success');
+      const fileName = 'Present_Report_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_');
+      FileSaver.saveAs(file, fileName + '.pdf');
+      this.globalServ.showSuccessPopUp('Pdf', 'success', fileName);
     },
       err => {
         this.spinner.hide();
+        const error = err.error.status ? err.error.status.message : 'UNKNOWN ERROR OCCURRED'
         Swal.fire({
           title: 'Error!',
-          text: err.error.status.message,
-          icon: 'error',
-        });
+            text: error,
+            icon: 'error',
+          })
       })
   }
   back() {

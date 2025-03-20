@@ -10,9 +10,7 @@ import { TimesheetLogComponent } from './timesheet-log/timesheet-log.component';
 const routes: Routes = [
   {
     path: '',
-    component: AllPayrollEmployeesComponent, resolve: {
-      condition: CheckPermissionResolver
-    }
+    component: AllPayrollEmployeesComponent
 
   },
   {

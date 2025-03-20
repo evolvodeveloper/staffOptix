@@ -3,7 +3,7 @@
         <div class="col-sm-12 col-lg-8 d-flex align-items-baseline">
             <i style="font-size:20px" class="fa fa-arrow-left me-4"
                 routerLink="/dashboard" aria-label="back"></i>
-            <h3 class="page-title">Users</h3>
+            <h3 class="page-title">{{globalServ.showLabel('userHeader')}}</h3>
         </div>
     </div>
 </div>
@@ -15,7 +15,7 @@
             <div class="col-sm-12 col-lg-3">
                 <div class="input-group">
                     <input type="text" class="form-control"
-                        placeholder="search by user name"
+                        placeholder="{{globalServ.showPlaceholder('searchUser')}}"
                                  [(ngModel)]="searchedFor"
                         (keyup)="updateFilter($event)"
                         style="border-radius: 8px 0px 0px 8px;height: calc(2.5rem + calc(var(--mo-border-width) * 2));">
@@ -39,11 +39,13 @@
             <div class="col-lg-2">
                 <button id="add_user" type="button" class="btn add-btn float-end d-flex"
                     *ngIf="hasPermissionToUpdate" (click)="create()"><i
-                        class="material-icons me-2">add</i> Add User</button>
+                        class="material-icons me-2">add</i>{{globalServ.getGlobalNames('addNew')}}</button>
             </div>
 
             <div class="col-sm-6 col-lg-2 mt-30px">
-                <label class="form-label ms-2">Show entries</label>
+                <label class="form-label ms-2">
+                    {{globalServ.getGlobalNames('ShowEntries')}}
+                </label>
                 <select class="form-select" (change)="resultsPerPage($event)">
                     <!-- <option value="10">10</option> -->
                     <option value="25">25</option>
@@ -59,21 +61,37 @@
                 class="table table-hover table-nowrap custom-table mb-0 datatable">
                 <thead class="thead-all">
                     <tr class="tr-th-all">
-                        <th scope="col">User Name</th>
-                        <th scope="col">Employee Code</th>
-                        <th scope="col" class="text-center">First Login</th>
-                        <th scope="col" class="text-center">Account Locked</th>
-                        <th scope="col" class="text-center">Password Expired</th>
+                        <th scope="col">
+                            {{globalServ.getGlobalNames('userName')}}
+                        </th>
+                        <th scope="col">
+                            {{globalServ.getGlobalNames('empCode')}}
+                        </th>
+                        <th scope="col" class="text-center">
+                            {{globalServ.showLabel('firstLogin')}}
+                        </th>
+                        <th scope="col" class="text-center">
+                            {{globalServ.showLabel('accountLocked')}}
+                        </th>
+                        <th scope="col" class="text-center">
+                            {{globalServ.showLabel('passwordExpired')}}
+                        </th>
                         <!-- <th scope="col" class="text-center">Multi Branch</th> -->
-                        <th scope="col" class="text-center">Last Working Date</th>
-                        <th scope="col" class="text-center">Active</th>
-                        <th scope="col" class="text-center">Action</th>
+                        <th scope="col" class="text-center">
+                            {{globalServ.getGlobalNames('lastWorkingDate')}}
+                        </th>
+                        <th scope="col" class="text-center">
+                            {{globalServ.getGlobalNames('active')}}
+                        </th>
+                        <th scope="col" class="text-center">
+                            {{globalServ.getGlobalNames('action')}}
+                        </th>
                     </tr>
                 </thead>
                  <tbody *ngIf="rows.length === 0" >
                 <tr  style=" text-align: center; height: 150px;">
                   <td colspan="8">
-                     "No records were found with the selected filter criteria."
+                    {{globalServ.showGlobalErrors('notFound')}}
                   </td>
                 </tr>
                 </tbody>

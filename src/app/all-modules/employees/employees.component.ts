@@ -20,7 +20,7 @@ export class EmployeesComponent implements OnInit {
     private router: Router,
     private httpGetService: HttpGetService,
     private UtilServ: UtilService,
-    private global: GlobalvariablesService,
+    public global: GlobalvariablesService,
     private spinner: NgxSpinnerService
 
   ) {

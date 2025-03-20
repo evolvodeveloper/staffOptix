@@ -28,19 +28,18 @@ export class RunpayrollComponent implements OnInit {
   salaryFrequency: string;
   runpayroll = false;
   payrollsetups = [];
+  searchedData: string;
   approvedRowsPost = [];
   allShifts = [];
   dateFormat: string;
   checked = false;
   checkedLeaves = false;
   leavesNeedToApprove = [];
+  leavesNeedToApproveTemp = [];
   sortOrder = 'desc';
   sortColumn = 'employeeName';
   config: any;
-  approveLeavesconfig: any;
-  needvalidationRecordsConfig: any;
-  approveTimesheetconfig: any;
-  leavesNeedToApproveConfig: any;
+
   unapprovedRecords = [];
   approvedTimesheetRecords = [];
   approvedTimesheetRecordsTemp = [];
@@ -61,43 +60,24 @@ export class RunpayrollComponent implements OnInit {
     private httpGetService: HttpGetService,
     private spinner: NgxSpinnerService,
     private httpPutService: HttpPutService,
-    private global: GlobalvariablesService,
     private httpPostService: HttpPostService,
     private router: Router,
     private acRoute: ActivatedRoute,
     private modalService: NgbModal,
-    private utilServ: UtilService
+    private utilServ: UtilService,
+    public globalServ: GlobalvariablesService,
 
   ) {
     this.config = {
       itemsPerPage: 25,
       currentPage: 1,
-      totalItems: this.unapprovedRecords.length
-    };
-    this.needvalidationRecordsConfig = {
-      itemsPerPage: 25,
-      currentPage: 1,
       totalItems: this.needvalidationRecords.length
-    };
-
-    this.leavesNeedToApproveConfig = {
-      itemsPerPage: 25,
-      currentPage: 1,
-      totalItems: this.leavesNeedToApprove.length
-    };
-    this.approveLeavesconfig = {
-      itemsPerPage: 25,
-      currentPage: 1,
-      totalItems: this.approvedLeavesRecords.length
-    };
-    this.approveTimesheetconfig = {
-      itemsPerPage: 25,
-      currentPage: 1,
-      totalItems: this.approvedTimesheetRecords.length
     };
   }
 
   ngOnInit(): void {
+    this.globalServ.getMyCompLabels('runPayroll');
+    this.globalServ.getMyCompPlaceHolders('runPayroll');
     this.acRoute.data.subscribe(data => {
       const permission = data.condition
       this.hasPermissionToUpdate = permission.hasPermissionToUpdate
@@ -117,10 +97,10 @@ export class RunpayrollComponent implements OnInit {
       }
     );
   }
-  resultsPerPage(event) {
-    this.config.itemsPerPage = event.target.value == 'all' ? this.unApprovedtemp.length : event.target.value;
-    this.config.currentPage = 1;
-  }
+  // resultsPerPage(event) {
+  //   this.config.itemsPerPage = event.target.value == 'all' ? this.unApprovedtemp.length : event.target.value;
+  //   this.config.currentPage = 1;
+  // }
 
   getPayrollCodes() {
     this.httpGetService.getMasterList('payrollsetups').subscribe(
@@ -161,18 +141,18 @@ export class RunpayrollComponent implements OnInit {
   pageChanged(event) {
     this.config.currentPage = event;
   }
-  pageChangedeedvalidation(event) {
-    this.needvalidationRecordsConfig.currentPage = event;
-  }
-  pageChangedForapproveTimesheetconfig(event) {
-    this.approveTimesheetconfig.currentPage = event;
-  }
-  pageChangedForapproveLeavesconfig(event) {
-    this.approveLeavesconfig.currentPage = event;
-  }
-  pageChangedForleavesNeedToApproveConfig(event) {
-    this.leavesNeedToApproveConfig.currentPage = event;
-  }
+  // pageChangedeedvalidation(event) {
+  //   this.needvalidationRecordsConfig.currentPage = event;
+  // }
+  // pageChangedForapproveTimesheetconfig(event) {
+  //   this.approveTimesheetconfig.currentPage = event;
+  // }
+  // pageChangedForapproveLeavesconfig(event) {
+  //   this.approveLeavesconfig.currentPage = event;
+  // }
+  // pageChangedForleavesNeedToApproveConfig(event) {
+  //   this.leavesNeedToApproveConfig.currentPage = event;
+  // }
 
 
   sortData(col: string): void {
@@ -250,14 +230,52 @@ export class RunpayrollComponent implements OnInit {
   updateFilter(event) {
     const val = event.target.value.toLowerCase();
     if (val == '') {
-      this.unapprovedRecords = [...this.unApprovedtemp];
+      this.approvedTimesheetRecords = [...this.approvedTimesheetRecordsTemp];
+      this.approvedLeavesRecords = [...this.approvedLeavesRecordsTemp];
+      this.leavesNeedToApprove = [...this.leavesNeedToApproveTemp];
+      this.needvalidationRecords = [...this.needvalidationRecordsTemp];
+      this.unapprovedRecords = [this.unApprovedtemp]
     } else {
       const temp = this.unApprovedtemp.filter(function (d) {
         return (d.employeeName && d.employeeName.toLowerCase().indexOf(val) !== -1) || (d.employeeCode && d.employeeCode.toLowerCase().indexOf(val) !== -1) || !val;
       });
       this.unapprovedRecords = temp;
+
+      const approvedTimesheetTemp = this.approvedTimesheetRecordsTemp.filter(function (d) {
+        return (d.employeeName && d.employeeName.toLowerCase().indexOf(val) !== -1) || (d.employeeCode && d.employeeCode.toLowerCase().indexOf(val) !== -1) || !val;
+      });
+      this.approvedTimesheetRecords = approvedTimesheetTemp;
+
+      const approvedLeavetemp = this.approvedLeavesRecordsTemp.filter(function (d) {
+        return (d.employeeName && d.employeeName.toLowerCase().indexOf(val) !== -1) || (d.employeeCode && d.employeeCode.toLowerCase().indexOf(val) !== -1) || !val;
+      });
+      this.approvedLeavesRecords = approvedLeavetemp;
+
+      const leavesNeedToApprove = this.leavesNeedToApproveTemp.filter(function (d) {
+        return (d.employeeName && d.employeeName.toLowerCase().indexOf(val) !== -1) || (d.employeeCode && d.employeeCode.toLowerCase().indexOf(val) !== -1) || !val;
+      });
+      this.leavesNeedToApprove = leavesNeedToApprove;
+
+      const needvalidationRecords = this.needvalidationRecordsTemp.filter(function (d) {
+        return (d.employeeName && d.employeeName.toLowerCase().indexOf(val) !== -1) || (d.employeeCode && d.employeeCode.toLowerCase().indexOf(val) !== -1) || !val;
+      });
+      this.needvalidationRecords = needvalidationRecords;
     }
-    this.config.totalItems = this.unapprovedRecords.length;
+    if (this.firstTab) {
+      this.config.totalItems = this.unapprovedRecords.length;
+    }
+    if (this.secondTab) {
+      this.config.totalItems = this.leavesNeedToApprove.length;
+    }
+    if (this.thirdTab) {
+      this.config.totalItems = this.approvedTimesheetRecords.length;
+    }
+    if (this.fourthTab) {
+      this.config.totalItems = this.approvedLeavesRecords.length;
+    }
+    if (this.fifthTab) {
+      this.config.totalItems = this.needvalidationRecords.length;
+    }
     this.config.currentPage = 1;
   }
   timeDifference(row, index, type, source) {
@@ -319,7 +337,7 @@ export class RunpayrollComponent implements OnInit {
     this.clickedOnSubmit = true;
     this.httpGetService.getMasterList('timesheet/needValidation?month=' + this.month + '&year=' + this.year + '&date=' + this.date + '&payrollCode=' + this.payrollCode).subscribe((res: any) => {
       this.spinner.hide();
-      this.dateFormat = this.global.dateFormat;
+      this.dateFormat = this.globalServ.dateFormat;
       const data = [];
       res.response.forEach(r => {
         r.expand = false;
@@ -353,6 +371,9 @@ export class RunpayrollComponent implements OnInit {
       this.runpayroll = true;
       this.needvalidationRecords = data;
       this.needvalidationRecordsTemp = data;
+      this.config.totalItems = this.needvalidationRecords.length;
+      this.config.currentPage = 1;
+
       this.sortData('employeeName')
     }
       , (err) => {
@@ -371,7 +392,7 @@ export class RunpayrollComponent implements OnInit {
     this.spinner.show();
     this.httpGetService.getMasterList('timesheet/payrollCode?month=' + this.month + '&year=' + this.year + '&date=' + this.date + '&payrollCode=' + this.payrollCode).subscribe((res: any) => {
       this.spinner.hide();
-      this.dateFormat = this.global.dateFormat;
+      this.dateFormat = this.globalServ.dateFormat;
       res.response.forEach(r => {
         r.expand = false;
         r.OrginalInTime = r.inTime;
@@ -415,45 +436,54 @@ export class RunpayrollComponent implements OnInit {
       })
   }
 
-  // timesheet/payrollCode/approved?month=11&year=2023&date=01&payrollCode=OFFICE_WAGES
   getApprovedTimesheetRecords() {
     if (this.approvedTimesheetRecords.length == 0) {
     this.clickedOnSubmit = true;
     this.spinner.show();
-    this.httpGetService.getMasterList('timesheet/payrollCode/approved?month=' + this.month + '&year=' + this.year + '&date=' + this.date + '&payrollCode=' + this.payrollCode).subscribe((res: any) => {
-      this.spinner.hide();
-      this.dateFormat = this.global.dateFormat;
-      res.response.forEach(r => {
-        r.expand = false;
-        r.OrginalInTime = r.inTime;
-        r.OrginalInDate = r.inDate;
-        r.OrginalOutDate = r.outDate;
-        r.OrginalOutTime = r.outTime;
+      this.httpGetService.getMasterList('timesheet/payrollCode/approved?month=' + this.month + '&year=' + this.year + '&date=' + this.date + '&payrollCode=' + this.payrollCode).subscribe((res: any) => {
+        this.spinner.hide();
+        this.dateFormat = this.globalServ.dateFormat;
+        res.response.forEach(r => {
+          r.expand = false;
+          r.OrginalInTime = r.inTime;
+          r.OrginalInDate = r.inDate;
+          r.OrginalOutDate = r.outDate;
+          r.OrginalOutTime = r.outTime;
 
-        r.inDateEdit = false;
-        r.outDateEdit = false;
-        r.inDateEditMode = false;
-        r.outDateEditMode = false;
-        // r.approved = r.isApproved === undefined ? null : r.isApproved;
-        r.totalHours1 = null;
-        // totalHours
-        const resultInMinutes = r.totalHours ? r.totalHours * 60 : 0;
-        const h = Math.floor(resultInMinutes / 60);
-        const hours = h < 10 ? '0' + h : h
-        const m = Math.floor(resultInMinutes % 60);
-        const minutes = m < 10 ? '0' + m : m
-        r.totalHours1 = hours + ':' + minutes
-        // effectiveHrs
-        const resultInMinuteseffectiveHrs = r.effectiveHrs ? r.effectiveHrs * 60 : 0;
-        const heffectiveHrs = Math.floor(resultInMinuteseffectiveHrs / 60);
-        const hourseffectiveHrs = heffectiveHrs < 10 ? '0' + heffectiveHrs : heffectiveHrs
-        const meffectiveHrs = Math.floor(resultInMinuteseffectiveHrs % 60);
-        const minuteseffectiveHrs = meffectiveHrs < 10 ? '0' + meffectiveHrs : meffectiveHrs
-        r.effectiveHrs1 = hourseffectiveHrs + ':' + minuteseffectiveHrs
-      });
-      // this.runpayroll = true;
-      this.approvedTimesheetRecords = res.response;
-      this.approvedTimesheetRecordsTemp = res.response;
+          r.inDateEdit = false;
+          r.outDateEdit = false;
+          r.inDateEditMode = false;
+          r.outDateEditMode = false;
+          // r.approved = r.isApproved === undefined ? null : r.isApproved;
+          r.totalHours1 = null;
+          // totalHours
+          const resultInMinutes = r.totalHours ? r.totalHours * 60 : 0;
+          const h = Math.floor(resultInMinutes / 60);
+          const hours = h < 10 ? '0' + h : h
+          const m = Math.floor(resultInMinutes % 60);
+          const minutes = m < 10 ? '0' + m : m
+          r.totalHours1 = hours + ':' + minutes
+          // effectiveHrs
+          const resultInMinuteseffectiveHrs = r.effectiveHrs ? r.effectiveHrs * 60 : 0;
+          const heffectiveHrs = Math.floor(resultInMinuteseffectiveHrs / 60);
+          const hourseffectiveHrs = heffectiveHrs < 10 ? '0' + heffectiveHrs : heffectiveHrs
+          const meffectiveHrs = Math.floor(resultInMinuteseffectiveHrs % 60);
+          const minuteseffectiveHrs = meffectiveHrs < 10 ? '0' + meffectiveHrs : meffectiveHrs
+          r.effectiveHrs1 = hourseffectiveHrs + ':' + minuteseffectiveHrs
+        });
+        this.approvedTimesheetRecordsTemp = res.response;
+        const val = this.searchedData ? this.searchedData.toLowerCase() : '';
+        if (val !== '') {
+          const approvedTimesheettemp = this.approvedTimesheetRecordsTemp.filter(function (d) {
+            return (d.employeeName && d.employeeName.toLowerCase().indexOf(val) !== -1) || (d.employeeCode && d.employeeCode.toLowerCase().indexOf(val) !== -1) || !val;
+          });
+          this.approvedTimesheetRecords = approvedTimesheettemp;
+          this.config.totalItems = this.approvedTimesheetRecords.length;
+        } else {
+          this.approvedTimesheetRecords = res.response;
+          this.config.totalItems = this.approvedTimesheetRecords.length;
+        }
+
       this.sortData('employeeName')
     }
       , (err) => {
@@ -715,6 +745,8 @@ export class RunpayrollComponent implements OnInit {
           x.modifyStatus = null
       })
       this.leavesNeedToApprove = leavesNeedToApprove
+      this.leavesNeedToApproveTemp = leavesNeedToApprove
+
       this.runpayroll = true;
     })
   }
@@ -729,7 +761,18 @@ export class RunpayrollComponent implements OnInit {
           x.removeRecords = false,
           x.modifyStatus = null
       })
-      this.approvedLeavesRecords = leavesNeedToApprove
+      this.approvedLeavesRecordsTemp = leavesNeedToApprove;
+      const val = this.searchedData ? this.searchedData.toLowerCase() : '';
+      if (val !== '') {
+        const approvedLeavetemp = this.approvedLeavesRecordsTemp.filter(function (d) {
+          return (d.employeeName && d.employeeName.toLowerCase().indexOf(val) !== -1) || (d.employeeCode && d.employeeCode.toLowerCase().indexOf(val) !== -1) || !val;
+        });
+        this.approvedLeavesRecords = approvedLeavetemp;
+        this.config.totalItems = this.approvedLeavesRecords.length;
+      } else {
+        this.approvedLeavesRecords = leavesNeedToApprove;
+        this.config.totalItems = this.approvedLeavesRecords.length;
+      }
     })
   }
   approveLeaveItem(ev, item): void {
@@ -799,6 +842,8 @@ export class RunpayrollComponent implements OnInit {
   }
 
   tab1() {
+    this.config.totalItems = this.unapprovedRecords.length;
+    this.config.currentPage = 1;
     this.firstTab = true;
     this.secondTab = false;
     this.thirdTab = false;
@@ -807,6 +852,8 @@ export class RunpayrollComponent implements OnInit {
 
   }
   tab5() {
+    this.config.totalItems = this.needvalidationRecords.length;
+    this.config.currentPage = 1;
     this.firstTab = false;
     this.secondTab = false;
     this.thirdTab = false;
@@ -815,6 +862,8 @@ export class RunpayrollComponent implements OnInit {
 
   }
   tab2() {
+    this.config.totalItems = this.leavesNeedToApprove.length;
+    this.config.currentPage = 1;
     this.firstTab = false;
     this.secondTab = true;
     this.thirdTab = false;
@@ -826,6 +875,8 @@ export class RunpayrollComponent implements OnInit {
     this.secondTab = false;
     this.thirdTab = true;
     this.fourthTab = false; this.fifthTab = false;
+    this.config.totalItems = this.approvedTimesheetRecords.length;
+    this.config.currentPage = 1;
     if (this.approvedTimesheetRecords.length === 0 && this.fulldate) {
       const dateSplit = this.fulldate.split('-');
       if (dateSplit.length > 2) {
@@ -861,22 +912,17 @@ export class RunpayrollComponent implements OnInit {
   }
   runPayrolltest() {
     Swal.fire({
-      // title: 'info!',
-      // text: 'There are ' + remaiming.length + ' records needing approval',
-      html: `Would you like to submit any ad-hoc allowances in CSV format?`,
-      icon: 'info',
-      allowOutsideClick: false,
+      html: `Would you like to submit any ad-hoc allowances in CSV format ?`,
+      showDenyButton: true,
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      allowOutsideClick: false,
       confirmButtonText: "Yes",
-      cancelButtonText: "No"
+      denyButtonText: `No, Continue`
     }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-        this.openAdhoc()
-        // this.sendRunPayrollReq();
-      }
-      else {
+        this.openAdhoc();
+      } else if (result.isDenied) {
         this.sendRunPayrollReq();
       }
     });
@@ -905,8 +951,10 @@ export class RunpayrollComponent implements OnInit {
     });
     modalRef.componentInstance.fromParent = data;
     modalRef.result.then(
-      () => {
-        this.sendRunPayrollReq();
+    (msg) => {
+        if (msg = 'submit') {
+          this.sendRunPayrollReq();
+        }
       },
     );
   }
@@ -940,11 +988,18 @@ export class RunpayrollComponent implements OnInit {
         cancelButtonText: "No, Stop"
       }).then((result) => {
         if (result.isConfirmed) {
+          console.log('if', result);
+
           this.runPayrolltest();
+        } else {
+          console.log('else', result);
+          
         }
       });
     }
     else {
+      console.log('master else');
+
       this.runPayrolltest();
     }
   }

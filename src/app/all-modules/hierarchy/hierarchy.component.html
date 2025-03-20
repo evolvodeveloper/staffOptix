@@ -1,24 +1,73 @@
 <div class="row">
-    <div class="col-md-12 text-center">
-     <h3>   Managers Hierarchy</h3>
-    </div>
+  <div class="col-md-12 text-center">
+    <h3> {{global.getGlobalNames('ManagersHierarchy')}}</h3>
+  </div>
 </div>
 
-<div class="row">
-  <div class="col-md-12 col-lg-12 col-xl-12 d-flex">
-    <div
-      class="card flex-fill dash-statistics"
-      style="
-        background: #fcfcfc;
-        border-radius: 12px;
-        border-style: solid;
-        border-color: #c7ddff;
-        border-width: 1px;
-      ">
-      <div class="card-body">
-        <div echarts [options]="option" class="demo-chart-600"></div>
-      </div>
-    </div>
-  </div>
+ <section class="m-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div
+                        class="card p-2 zoom-card"
+                        (wheel)="onScrollZoom($event)"
+                        (mousedown)="onMouseDown($event)"
+                        (mousemove)="onMouseMove($event)"
+                        (mouseup)="onMouseUp()"
+                    >
+                        <div #chartContainer class="zoom-container">
+                            <div #orgChartWrapper class="org-chart-content">
+<p-organizationChart [value]="nodes" [collapsible]="true">
+    <ng-template let-node pTemplate="person">
+        <div class="p-2 text-center">
+            <img 
+                [src]="node.data.image" 
+                class="mb-3 w-3rem h-3rem" />
+            <div class="font-bold">
+                {{ node.data.name }}
+            </div>
+            <div>
+                {{ node.data.title }}
+            </div>
+        </div>
+    </ng-template>
+</p-organizationChart>
+</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  </div>
+  <!-- <section class="m-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div
+                        class="card p-2 zoom-card"
+                        (wheel)="onScrollZoom($event)"
+                        (mousedown)="onMouseDown($event)"
+                        (mousemove)="onMouseMove($event)"
+                        (mouseup)="onMouseUp()"
+                    >
+                        <div #chartContainer class="zoom-container">
+                            <div #orgChartWrapper class="org-chart-content">
+                                <p-organization-chart [value]="nodes" [collapsible]="true" orientation="vertical">
+                                    <ng-template let-node pTemplate="person">
+                                        <div class="flex flex-col">
+                                            <div class="flex flex-col items-center">
+                                                <p class="font-bold mb-1">{{ node.data.name }}</p>
+                                                <p class="mb-0" *ngIf="node.data.title">({{ node.data.title }})</p>
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                </p-organization-chart>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+  -->

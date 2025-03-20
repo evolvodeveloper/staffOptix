@@ -1,3 +1,4 @@
+
 .RE-card {
     border-radius: 0px 12px 12px 0px !important;
     border-style: solid;
@@ -27,19 +28,21 @@
 
 .bg-inverse-Early {
     border-radius: 4px;
-    background: rgba(239, 230, 254, 1);
-    color: #864be9 !important;
+    // font-size: 14px;
+    font-weight: 100;
+    // background: rgba(239, 230, 254, 1);
+    color: #00B03D !important;
 }
 
 .card-tittle {
     color: #001234;
-    font: 500 16px/150% "CircularStd", sans-serif;
+        font: 500 16px/150% "CircularStd", sans-serif;
 }
 
 #present-card {
     background: #ffffff;
     border-radius: 0px 12px 12px 0px !important;
-    border-style: solid;
+        border-style: solid;
     // border-color: #25bb00;
     border-width: 0px 0px 0px 2px !important;
 }
@@ -47,7 +50,7 @@
 #late-comers-card {
     background: #ffffff;
     border-radius: 0px 12px 12px 0px !important;
-    border-style: solid;
+        border-style: solid;
     // border-color: #7fbb00;
     border-width: 0px 0px 0px 2px !important;
 }
@@ -59,7 +62,7 @@
 #absent-card {
     background: #ffffff;
     border-radius: 0px 12px 12px 0px !important;
-    border-style: solid;
+        border-style: solid;
     // border-color: #df4616;
     border-width: 0px 0px 0px 2px !important;
 }
@@ -67,7 +70,7 @@
 #onLeave-card {
     background: #ffffff;
     border-radius: 0px 12px 12px 0px !important;
-    border-style: solid;
+        border-style: solid;
     // border-color: #bb0043;
     border-width: 0px 0px 0px 2px !important;
 }
@@ -91,3 +94,119 @@
     color: #747171;
     font: 400 10px/150% "CircularStd", sans-serif;
 }
+
+// .RE-card {
+//     border-radius: 8px 8px 8px 8px !important;
+//     border-style: solid;
+//     // border-color: #0040bb;
+//     background: #ffffff;
+//     // border-width: 0px 0px 0px 2px;
+// }
+
+// .TE {
+//     color: #4079ED;
+//     font: 400 11px/150% "CircularStd", sans-serif;
+//     // font-size: 11px;
+//     // font-weight: 400;
+// }
+
+// .bg-inverse-WeekOff {
+//     border-radius: 4px;
+//     // background: rgba(204, 235, 255, 1);
+//     color: #2B94DB !important;
+// }
+
+// .bg-inverse-OD {
+//     border-radius: 4px;
+//     // background: #f6d7f1;
+//     color: #db2bbb !important;
+// }
+
+// .bg-inverse-Early {
+//     border-radius: 4px;
+//     font-size: 14px;
+//     font-weight: 100;
+//     // background: rgba(239, 230, 254, 1);
+//     color: #00B03D !important;
+// }
+
+// .card-tittle {
+//     color: #737791;
+//     // font: 500 16px/150% "CircularStd", sans-serif;
+// }
+
+// #present-card {
+//     background: #ffffff;
+//      border-radius: 8px 8px 8px 8px !important;
+//     // border-style: solid;
+//     // border-color: #25bb00;
+//     // border-width: 0px 0px 0px 2px !important;
+// }
+
+// #late-comers-card {
+//     background: #ffffff;
+//      border-radius: 8px 8px 8px 8px !important;
+//     // border-style: solid;
+//     // border-color: #7fbb00;
+//     // border-width: 0px 0px 0px 2px !important;
+// }
+
+// .text-white {
+//     font: 400 11px/120% "CircularStd", sans-serif;
+// }
+
+// #absent-card {
+//     background: #ffffff;
+//      border-radius: 8px 8px 8px 8px !important;
+//     // border-style: solid;
+//     // border-color: #df4616;
+//     // border-width: 0px 0px 0px 2px !important;
+// }
+
+// #onLeave-card {
+//     background: #ffffff;
+//      border-radius: 8px 8px 8px 8px !important;
+//     // border-style: solid;
+//     // border-color: #bb0043;
+//     // border-width: 0px 0px 0px 2px !important;
+// }
+
+// .tr-th-all {
+//     font: 400 11px/150% "CircularStd", sans-serif;
+//     color: #0a0e1a;
+// }
+
+// .dasboard-td {
+//     color: #0a0e1a;
+//     font: 300 12px/150% "CircularStd", sans-serif;
+// }
+
+// .employeeTittle {
+//     font: 500 16px/150% "CircularStd", sans-serif;
+//     color: #001234;
+// }
+
+// .spanTittle {
+//     color: #747171;
+//     font: 400 10px/150% "CircularStd", sans-serif;
+// }
+
+// .dcard-title{
+//     font-size: 16px; color: #737791; font-weight: 400;
+// }
+
+// a{
+//     color: #213343;
+// }
+
+
+//             .newth{
+//                 color: #213343ad  !important;
+//                 font-size: 14px !important;
+//                 font-weight: 400;
+//             }
+//             @media (max-width: 1200px) {
+//                 .cardImg {
+//                     display: none !important;
+//                 }
+//             }

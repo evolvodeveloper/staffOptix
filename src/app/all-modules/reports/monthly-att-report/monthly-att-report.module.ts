@@ -8,6 +8,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { MonthlyAttReportRoutingModule } from './monthly-att-report-routing.module';
 import { MonthlyAttReportComponent } from './monthly-att-report.component';
+import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { MonthlyAttReportComponent } from './monthly-att-report.component';
     NgSelectModule,
     MonthlyAttReportRoutingModule,
     NgxPaginationModule,
+    NgxDaterangepickerMd.forRoot(),
     SharedModule,
     FormsModule, ReactiveFormsModule,
   ],

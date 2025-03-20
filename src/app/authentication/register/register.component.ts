@@ -208,7 +208,7 @@ export class RegisterComponent implements OnInit {
 
 
   onEmailChange(args: string) {
-    this.showSuccessEmailToolTip = 'nothing';
+    this.showSuccessEmailToolTip = 'EMAIL ALREADY EXIST';
       if (
         this.logInForm.get('email').valid &&
         this.logInForm.get('email').value !== ''
@@ -236,7 +236,7 @@ export class RegisterComponent implements OnInit {
     }
   }
   onUserNameChange(args: string) {
-    this.showSuccessuserNameToolTip = 'nothing';
+    this.showSuccessuserNameToolTip = 'USERNAME ALREADY EXISTS';
     if (
       this.logInForm.get('userName').valid &&
       this.logInForm.get('userName').value !== ''
@@ -349,6 +349,9 @@ export class RegisterComponent implements OnInit {
       element.branchName = element.branchName.trim();
       if (!element.shortName) { 
         this.getShortNamefromBranchName(i, element, element.branchName);
+      }
+      if (this.branchObj.length == 1) {
+        element.headoffice = true
       }
       if (element.headoffice == true) {
         noOfHeadOffices.push(element);

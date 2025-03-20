@@ -6,8 +6,10 @@
             <div class="col-sm-12">
                 <div class="d-flex align-items-baseline">
                     <i style="font-size:20px" class="fa fa-arrow-left"
-                         routerLink="/dashboard" aria-label="back"></i>
-                    <h3 class="ms-4 page-title">Payslips</h3>
+                        routerLink="/dashboard" aria-label="back"></i>
+                    <h3 class="ms-4 page-title">
+                        {{globalServ.showLabel('downloadPayslipsHeader')}}
+                    </h3>
                 </div>
             </div>
         </div>
@@ -17,9 +19,11 @@
     <!-- Search Filter -->
     <div class="row filter-row">
 
-         <div class="col-md-3">
+        <div class="col-md-3">
             <div class="form-group">
-                <label class="col-form-label" for="Payroll">Payroll </label>
+                <label class="col-form-label" for="Payroll">
+                    {{globalServ.getGlobalNames('payroll')}}
+                </label>
                 <select id="Payroll" class="form-select"
                     [(ngModel)]="reportObj.payrollCode"
                     (change)="empByPayrollCode()">
@@ -29,9 +33,12 @@
             </div>
         </div>
 
-        <div class="col-md-3" [ngClass]="{'d-flex align-items-center':!stopSpinner}">
+        <div class="col-md-3"
+            [ngClass]="{'d-flex align-items-center':!stopSpinner}">
             <div class="form-group" *ngIf="stopSpinner">
-                <label class="col-form-label" for="Employee">Employee </label>
+                <label class="col-form-label" for="Employee">
+                    {{globalServ.getGlobalNames('employee')}}
+                </label>
                 <select class="form-select" id="employee"
                     [(ngModel)]="reportObj.empCode">
                     <option [value]="emp.employeeCode"
@@ -44,44 +51,52 @@
 
         <div class="col-md-3">
             <div class="form-group">
-                <label class="col-form-label" for="Date">Date </label>
-             
-                     <input
-                                class="form-control"
-                                type="month"
-                                [max]="maxDt"
-                                *ngIf="salaryFrequency === 'Month' || reportObj.payrollCode === 'ALL'"
-                                placeholder="Month/YYYY"
-                                [(ngModel)]="fulldate"
-                                />
-                               <input
-                                class="form-control"
-                                type="date"
-                                [max]="maxDt"
-                                *ngIf="salaryFrequency !== 'Month' && reportObj.payrollCode !== 'ALL'"
-                                placeholder="dd/MM/YYYY"
-                                [(ngModel)]="fulldate"
-                               />
+                <label class="col-form-label" for="Date">
+                    {{globalServ.getGlobalNames('date')}}
+                </label>
+
+                <input
+                    class="form-control"
+                    type="month"
+                    [max]="maxDt"
+                    *ngIf="salaryFrequency === 'Month' || reportObj.payrollCode === 'ALL'"
+                    placeholder="{{globalServ.showGlobalplaceholders('Month/YYYY')}}"
+                    [(ngModel)]="fulldate" />
+                <input
+                    class="form-control"
+                    type="date"
+                    [max]="maxDt"
+                    *ngIf="salaryFrequency !== 'Month' && reportObj.payrollCode !== 'ALL'"
+                    placeholder="dd/MM/YYYY"
+                    [(ngModel)]="fulldate" />
 
             </div>
         </div>
 
     </div>
     <div class="row g-2 mb-2 mt-2">
-             <div class="col-md  d-flex justify-content-end align-items-end">
+        <div class="col-md  d-flex justify-content-end align-items-end">
             <button id="save_pdf" class="btn add-btn float-end mx-2"
-               (click)="savePdf()"  [disabled]="!pdfSrc" >Save as PDF</button>
-                <!-- [disabled]="rows.length === 0"   -->
-            <button id="submit_payslips_report" class="btn add-btn float-end mx-2"
-              [disabled]="!fulldate || !reportObj.payrollCode || !reportObj.empCode" (click)="submit()">Submit</button>
+                (click)="savePdf()"
+                [disabled]="!pdfSrc">{{globalServ.getGlobalNames('saveAsPDF')}}</button>
+            <!-- [disabled]="rows.length === 0"   -->
+            <button id="submit_payslips_report"
+                class="btn add-btn float-end mx-2"
+                [disabled]="!fulldate || !reportObj.payrollCode || !reportObj.empCode"
+                (click)="submit()">{{globalServ.getGlobalNames('submit')}}</button>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-12 pdfBlock">
-  <pdf-viewer [src]="pdfSrc" [render-text]="true" [external-link-target]="'blank'" [autoresize]="true" [stick-to-page]="false" [fit-to-page]='false' [zoom]="0.5" [original-size]="false" [show-all]="true" [zoom-scale]="'page-width'" style="position: unset;     scrollbar-width: none;
+            <pdf-viewer [src]="pdfSrc" [render-text]="true"
+                [external-link-target]="'blank'" [autoresize]="true"
+                [stick-to-page]="false" [fit-to-page]='false' [zoom]="0.5"
+                [original-size]="false" [show-all]="true"
+                [zoom-scale]="'page-width'"
+                style="position: unset;scrollbar-width: none;
 "></pdf-viewer>
-  <!-- <pdf-viewer [src]="pdfSrc"
+            <!-- <pdf-viewer [src]="pdfSrc"
               [render-text]="true"
               [original-size]="false"
               style="width: 400px; height: 500px"

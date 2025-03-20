@@ -4,8 +4,12 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title">{{view ? 'View' : update ? 'Update' :
-                    'Apply'}} Loan </h1>
+                <h1 class="modal-title">
+                    {{ view ? globalServ.getGlobalNames('view') : (update ?
+                    globalServ.getGlobalNames('update')
+                    :globalServ.getGlobalNames('apply')) }}
+                    {{globalServ.showLabel('loan')}}
+                </h1>
                 <button type="button" class="btn-close" (click)="closeModal()"
                     aria-label="Close"></button>
             </div>
@@ -16,7 +20,7 @@
 
                             <div class="row g-2 mb-3">
                                 <div class="col-md" *ngIf="iamAdmin">
-                                    <label>Employee</label>
+                                    <label>{{globalServ.getGlobalNames('employee')}}</label>
                                     <ng-select
                                         [items]="employees_list"
                                         (change)="checkMaxLoanAmt()"
@@ -35,7 +39,8 @@
                                         <div class="ms-2"
                                             *ngIf="loanApplicationForm.controls['employeeCode'].errors.required"
                                             style="color: #dc3545">
-                                            employee name is required.
+                                            {{globalServ.showLabel('employee')}}
+                                            {{globalServ.showGlobalErrors('required')}}
                                         </div>
                                     </div>
                                 </div>
@@ -43,7 +48,8 @@
 
                             <div class="row g-2 mb-3">
                                 <div class="col-md">
-                                    <label>Loan Name&nbsp;<span
+                                    <label>
+                                        {{globalServ.showLabel("LoanName")}}&nbsp;<span
                                             style="color: red; margin-left: 1px">*</span></label>
                                     <div class="input-group">
                                         <select for="loanCode"
@@ -69,7 +75,8 @@
                                         <div class="ms-2"
                                             *ngIf="loanApplicationForm.controls['loanCode'].errors.required"
                                             style="color: #dc3545">
-                                            loan name is required.
+                                            {{globalServ.showLabel('LoanName')}}
+                                            {{globalServ.showGlobalErrors('required')}}
                                         </div>
                                     </div>
                                 </div>
@@ -77,7 +84,8 @@
 
                             <div class="row g-2 mb-3">
                                 <div class="col-md">
-                                    <label>Loan Amount&nbsp;<span
+                                    <label>
+                                        {{globalServ.showLabel("LoanAmount")}}&nbsp;<span
                                             style="color: red; margin-left: 1px">*</span></label>
                                     <div class="input-group">
                                         <input type="number"
@@ -94,13 +102,14 @@
                                         <div class="ms-2"
                                             *ngIf="loanApplicationForm.controls['loanAmount'].errors.required"
                                             style="color: #dc3545">
-                                            Amount is required.
+                                            {{globalServ.showLabel('LoanAmount')}}
+                                            {{globalServ.showGlobalErrors('required')}}
                                         </div>
                                         <div class="ms-2"
                                             *ngIf="loanApplicationForm.controls['loanAmount'].value > maxLoanAmt"
                                             style="color: #dc3545">
-                                            The maximum applicable amount for
-                                            this loan is {{maxLoanAmt}}.
+                                            {{globalServ.showLabel('LoanAmountMax')}}
+                                            {{maxLoanAmt}}.
                                         </div>
                                     </div>
                                 </div>
@@ -112,18 +121,18 @@
             <div class="modal-footer">
                 <button id="cancel_loanMaster" type="button"
                     class="btn delete-btn"
-                    (click)="closeModal()">Cancel</button>
+                    (click)="closeModal()">{{globalServ.getGlobalNames('cancel')}}</button>
                 <button id="create_loanMaster"
                     [disabled]="loanApplicationForm.pristine || loanApplicationForm.invalid"
                     [hidden]="view || update"
                     (click)="create()" class="btn add-btn">
-                    Create
+                    {{globalServ.getGlobalNames('create')}}
                 </button>
                 <button id="update_loanMaster" *ngIf="update"
                     [disabled]="loanApplicationForm.pristine || loanApplicationForm.invalid"
                     (click)="Update()"
                     class="btn add-btn">
-                    Update
+                    {{globalServ.getGlobalNames('update')}}
                 </button>
             </div>
         </div>

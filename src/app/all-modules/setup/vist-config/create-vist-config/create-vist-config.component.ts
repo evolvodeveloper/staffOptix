@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -119,8 +119,6 @@ selectedEmployees: any[] = [];
       if(this.UtilServ.allVisitConfigs.length > 0){
         this.selectedEmployees = this.UtilServ.allVisitConfigs;
      }
-    console.log('selectedEmployees',this.selectedEmployees);
-
       this.update = true;
       this.view = false;
       this.visitConfig.enable();
@@ -154,9 +152,7 @@ selectedEmployees: any[] = [];
       // this.employees_list = this.UtilServ.editData?.empVisitList?.map(empCode => ({
       //   mergeName: empCode, // This will be displayed in the select
       //   employeeCode: empCode // This will be the value of the select
-      // }));
-      console.log(this.employees_list);
-      
+      // }));     
       // this.mappingForm.controls.empCode.setValue(this.UtilServ.editData?.empVisitList);
 
 
@@ -188,12 +184,9 @@ selectedEmployees: any[] = [];
           !this.selectedEmployees.some(selectedEmp => selectedEmp.empCode === emp.employeeCode)
         );
         this.employees_list = filterEmps;
-        console.log(this.employees_list);
-
       },
       err => {
         this.spinner.hide();
-        console.error(err.error.status.message);
       })
   }
 
@@ -204,10 +197,7 @@ selectedEmployees: any[] = [];
         x.mergeName = `${x.deptCode}`;
         return x
       })
-
-      this.departments = depval;
-        console.log(this.departments);
-        
+      this.departments = depval;        
       // this.spinner.hide();
     }, err => {
       // this.spinner.hide();
@@ -257,16 +247,10 @@ selectOption(option: string) {
         visitImages: this.visitConfig.value.visitImages,
         visitConfigId: this.visitConfig.value.purpose,
         empVisitList: empCodeList,
-
-      };
-      console.log(data);
-      
+      };    
       
       this.httpPost.create('hr/visit', data).subscribe((res: any) => {
-        console.log(res.status.message);
-        console.log(res);
         this.spinner.hide();
-
         if(res.status.code === 1019){
           Swal.fire({
             title: 'Error!',
@@ -304,17 +288,12 @@ selectOption(option: string) {
   }
 
   createEmpMapping(visitConfigId) {
-    this.spinner.show();
-    console.log(visitConfigId);
-    
-
+    this.spinner.show();   
     const data = {
       empCode: this.visitConfig.value.empCode,
       deptCode: this.visitConfig.value.depCode,
       visitConfigId: visitConfigId,
-    };
-    console.log(data);
-    
+    };    
     this.httpPost.create('emp/visit/mapping', data).subscribe((res: any) => {
       this.spinner.hide();
       if (res.status.message == 'SUCCESS') {
@@ -342,9 +321,6 @@ selectOption(option: string) {
 
   Update(){
     this.spinner.show();
-console.log(this.visitConfig.value);
-console.log(this.UtilServ.editData);
-
 const oldEmpVisitList = this.UtilServ.editData.empVisitList || [];
 
   // New list of employee codes from the form
@@ -359,11 +335,7 @@ const oldEmpVisitList = this.UtilServ.editData.empVisitList || [];
       return { ...emp, isActive: true };   // Mark as active and keep other fields
     }
   });
-
-  console.log(updatedEmpVisitList);
-  
-
-  newEmpVisitList.forEach(empCode => {
+   newEmpVisitList.forEach(empCode => {
     // Check if this empCode already exists in updatedEmpVisitList
     const existingEmp = updatedEmpVisitList.find(emp => emp.empCode === empCode);
 
@@ -392,10 +364,7 @@ const oldEmpVisitList = this.UtilServ.editData.empVisitList || [];
       companyCode: this.UtilServ.editData.companyCode,
       branchCode: this.UtilServ.editData.branchCode,
       empVisitList: updatedEmpVisitList,
-
-    };
-    console.log(data);
-    
+    };    
     this.httpPut.doPut('hr/visit', data).subscribe((res: any) => {
       this.spinner.hide();
       if (res.status.message == 'SUCCESS') {

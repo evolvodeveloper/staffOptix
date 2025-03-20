@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { UtilService } from 'src/app/services/util.service';
 import Swal from 'sweetalert2';
@@ -27,8 +28,8 @@ export class CalendarListComponent implements OnInit {
     private httpGetService: HttpGetService,
     private utilServ: UtilService,
     private spinner: NgxSpinnerService,
-    private modalService: NgbModal
-
+    private modalService: NgbModal,
+    public globalServ: GlobalvariablesService
 
   ) {
     this.config = {
@@ -38,6 +39,8 @@ export class CalendarListComponent implements OnInit {
     };
   }
   ngOnInit(): void {
+    this.globalServ.getMyCompLabels('calendarSetup');
+    this.globalServ.getMyCompPlaceHolders('calendarSetup');
     this.acRoute.data.subscribe(data => {
       const permission = data.condition
       this.hasPermissionToUpdate = permission.hasPermissionToUpdate
@@ -59,6 +62,8 @@ export class CalendarListComponent implements OnInit {
     } else {
       this.getCalenders();
     }
+    this.globalServ.getMyCompLabels('calendarSetup');
+    this.globalServ.getMyCompPlaceHolders('calendarSetup');
   }
   getCalenders() {
     this.spinner.show();

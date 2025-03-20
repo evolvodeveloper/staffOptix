@@ -8,7 +8,14 @@ const routes: Routes = [
     path: '',
     component: ReportsComponent,
   },
-
+  
+   {
+    path: 'empinfo',
+    loadChildren: () =>
+      import('./employee-information/employee-information.module').then(
+        (m) => m.EmployeeInformationModule
+      ),
+  },
   {
     path: 'leaveRpt',
     loadChildren: () =>
@@ -105,6 +112,16 @@ const routes: Routes = [
     loadChildren: () =>
       import('./monthly-att-report/monthly-att-report.module').then(
         (m) => m.MonthlyAttReportModule
+      ),
+    resolve: {
+      condition: CheckPermissionResolver
+    }
+  },
+  {
+    path: 'missingRpt',
+    loadChildren: () =>
+      import('./missing-swipes/missing-swipes.module').then(
+        (m) => m.MissingSwipesModule
       ),
     resolve: {
       condition: CheckPermissionResolver

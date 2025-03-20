@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } 
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { HttpPostService } from 'src/app/services/http-post.service';
 import { HttpPutService } from 'src/app/services/http-put.service';
@@ -29,7 +30,8 @@ export class CreateLoanMasterComponent implements OnInit, OnChanges, OnDestroy {
     private httpPut: HttpPutService,
     private fb: FormBuilder,
     private spinner: NgxSpinnerService,
-    private UtilServ: UtilService
+    private UtilServ: UtilService,
+    public globalServ: GlobalvariablesService,
   ) { }
   back() {
     this.router.navigateByUrl('dashboard')

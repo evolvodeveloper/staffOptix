@@ -28,7 +28,7 @@ export class DeviceLocationComponent implements OnInit {
     private httpGet: HttpGetService,
     private router: Router,
     private utilServ: UtilService,
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private spinner: NgxSpinnerService,
   ) {
     this.config = {
@@ -38,6 +38,8 @@ export class DeviceLocationComponent implements OnInit {
     };
   }
   ngOnInit() {
+    this.globalServ.getMyCompLabels('deviceLocation');
+      this.globalServ.getMyCompPlaceHolders('deviceLocation');
     if (this.className == this.utilServ.universalSerchedData?.componentName) {
       this.searchedFor = this.utilServ.universalSerchedData?.searchedText
     }
@@ -58,6 +60,7 @@ export class DeviceLocationComponent implements OnInit {
       }
     } else {
       this.getDeviceLocations();
+      
     }
   }
   back() {

@@ -64,11 +64,13 @@ export class ShowRunPayrollComponent implements OnInit, OnDestroy {
     private utilServ: UtilService,
     private httpPut: HttpPutService,
     private spinner: NgxSpinnerService,
-    private global: GlobalvariablesService
+    public globalServ: GlobalvariablesService,
   ) { }
 
 
   ngOnInit() {
+    this.globalServ.getMyCompLabels('payrollSummary');
+    this.globalServ.getMyCompPlaceHolders('payrollSummary');
     if (this.utilServ.viewData) {
       this.fromRunPayroll = true;
       this.isFinilized = false;
@@ -281,11 +283,7 @@ export class ShowRunPayrollComponent implements OnInit, OnDestroy {
     }
     // this.config.totalItems = this.payrollMasterData.length;
     // this.config.currentPage = 1;
-
   }
-
-
-
   getNetAmt() {
     this.utilServ.viewData?.forEach(x => {
       x.deductionAmt = null,
@@ -307,7 +305,7 @@ export class ShowRunPayrollComponent implements OnInit, OnDestroy {
     })
     this.runs = this.utilServ.viewData;
     this.temp = this.utilServ.viewData;
-    this.Period = this.utilServ.viewData[0].salaryComponents ? this.utilServ.viewData[0].salaryComponents[0]?.periodCode : null;
+    this.Period = this.utilServ.viewData[0]?.salaryComponents ? this.utilServ.viewData[0]?.salaryComponents[0]?.periodCode : null;
     this.getCompSpends();
 
   }
@@ -443,33 +441,34 @@ export class ShowRunPayrollComponent implements OnInit, OnDestroy {
   }
 
   saveExcel() {
-    if(this.reportObj.runId == '-' || this.reportObj.runId == '' || this.reportObj.runId == null){
+    if (this.reportObj.runId == '-' || this.reportObj.runId == '' || this.reportObj.runId == null) {
       Swal.fire({
         title: 'Info!',
         text: 'Please select a run Id to download the report',
         icon: 'info',
       });
     } else {
-    this.spinner.show();
-    this.httpGet.getExcel('reports/payrollSummary/xls/' + this.reportObj.runId).subscribe((res: any) => {
-      this.spinner.hide();
-      const data: Blob = new Blob([res], { type: EXCEL_TYPE });
-      FileSaver.saveAs(
-        data,
-        'Payroll-summary-report' + new Date().getTime() + EXCEL_EXTENSION
-      );
-      this.global.showSuccessPopUp('Excel', 'success');
-    },
-      err => {
+      this.spinner.show();
+      this.httpGet.getExcel('reports/payrollSummary/xls/' + this.reportObj.runId).subscribe((res: any) => {
         this.spinner.hide();
-        Swal.fire({
-          title: 'Error!',
-          text: err.error.status.message,
-          icon: 'error',
-        })
-      });
+        const data: Blob = new Blob([res], { type: EXCEL_TYPE });
+        const fileName = 'Payroll_summary_report_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_')
+        FileSaver.saveAs(
+          data,
+          fileName + EXCEL_EXTENSION
+        );
+        this.globalServ.showSuccessPopUp('Excel', 'success', fileName);
+      },
+        err => {
+          this.spinner.hide();
+          Swal.fire({
+            title: 'Error!',
+            text: err.error.status.message,
+            icon: 'error',
+          })
+        });
+    }
   }
-}
 
   saveExcel2() {
     let runId = this.runs[0].runId;
@@ -485,11 +484,12 @@ export class ShowRunPayrollComponent implements OnInit, OnDestroy {
     this.httpGet.getExcel('reports/payrollSummary/xls/' + runId).subscribe((res: any) => {
       this.spinner.hide();
       const data: Blob = new Blob([res], { type: EXCEL_TYPE });
+      const fileName = 'Payroll_summary_report_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_')
       FileSaver.saveAs(
         data,
-        'Payroll-summary-report' + new Date().getTime() + EXCEL_EXTENSION
+        fileName + EXCEL_EXTENSION
       );
-      this.global.showSuccessPopUp('Excel', 'success');
+      this.globalServ.showSuccessPopUp('Excel', 'success', fileName);
     },
       err => {
         this.spinner.hide();

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { UtilService } from 'src/app/services/util.service';
 @Component({
@@ -21,6 +22,7 @@ export class PayrollTypesComponent implements OnInit {
     private httpGetService: HttpGetService,
     private utilServ: UtilService,
     private spinner: NgxSpinnerService,
+    public globalServ: GlobalvariablesService,
     private acRoute: ActivatedRoute
   ) {
     this.config = {
@@ -48,6 +50,8 @@ export class PayrollTypesComponent implements OnInit {
     }
   }
   ngOnInit(): void {
+    this.globalServ.getMyCompLabels('payrollSetup');
+    this.globalServ.getMyCompPlaceHolders('payrollSetup');
     if (this.className == this.utilServ.universalSerchedData?.componentName) {
       this.searchedFor = this.utilServ.universalSerchedData?.searchedText
     }

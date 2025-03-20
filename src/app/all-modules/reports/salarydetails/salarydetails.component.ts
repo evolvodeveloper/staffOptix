@@ -52,7 +52,7 @@ export class SalarydetailsComponent implements OnInit, AfterViewInit {
   constructor(
     private httpPostService: HttpPostService,
     private spinner: NgxSpinnerService,
-    private global: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private httpGetService: HttpGetService,
     private router: Router
   ) {
@@ -64,6 +64,8 @@ export class SalarydetailsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.globalServ.getMyCompLabels('salaryDetails');
+    this.globalServ.getMyCompPlaceHolders('salaryDetails');
     this.getProjectList();
     this.getDepartments();
     this.getPayrollCodes();
@@ -189,9 +191,7 @@ export class SalarydetailsComponent implements OnInit, AfterViewInit {
       this.year = dateSplit[0];
     }
     this.config.currentPage = 1;
-    // https://localhost:555/api/reports/salcomponents?empCode=ALL&deptCode=ALL&payrollCode=OFFICE_WAGES&runId=64&year=2024&date=01&month=03
-    this.httpGetService.
-      getMasterList('reports/salcomponents?payrollCode=' +
+    this.httpGetService.getMasterList('reports/salcomponents?payrollCode=' +
         this.reportObj.payrollCode +
         '&empCode=' +
         this.reportObj.employeeCode +
@@ -275,17 +275,19 @@ export class SalarydetailsComponent implements OnInit, AfterViewInit {
       .subscribe((res: any) => {
         this.spinner.hide();
         const data: Blob = new Blob([res], { type: EXCEL_TYPE });
+        const fileName = 'salary_Details_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_');
         FileSaver.saveAs(
           data,
-          'salary_Details' + new Date().getTime() + EXCEL_EXTENSION
+          fileName + EXCEL_EXTENSION
         );
-        this.global.showSuccessPopUp('Excel', 'success');
+        this.globalServ.showSuccessPopUp('Excel', 'success', fileName);
       },
         err => {
           this.spinner.hide();
+          const error = err.error.status ? err.error.status.message : 'UNKNOWN ERROR OCCURRED'
           Swal.fire({
             title: 'Error!',
-            text: err.error.status.message,
+            text: error,
             icon: 'error',
           })
         });
@@ -310,11 +312,21 @@ export class SalarydetailsComponent implements OnInit, AfterViewInit {
       .subscribe((res: any) => {
         this.spinner.hide();
         const file = new Blob([res], { type: 'application/pdf' });
-        FileSaver.saveAs(file, 'Salary-Components-report' + new Date().getTime() + '.pdf');
-        this.global.showSuccessPopUp('Pdf', 'success');
+        const fileName = 'salary_Master_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_');
+        FileSaver.saveAs(file, fileName + '.pdf');
+        this.globalServ.showSuccessPopUp('Pdf', 'success', fileName);
         // const fileURL = URL.createObjectURL(file);
         // window.open(fileURL);
-      });
+      },
+        err => {
+          this.spinner.hide();
+          const error = err.error.status ? err.error.status.message : 'UNKNOWN ERROR OCCURRED'
+          Swal.fire({
+            title: 'Error!',
+            text: error,
+            icon: 'error',
+          })
+        });
   }
   expandRow(row: any): void {
     row.expand = true;

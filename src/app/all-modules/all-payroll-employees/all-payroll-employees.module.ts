@@ -29,7 +29,7 @@ import { EmployeeListViewComponent } from './employee-list-view/employee-list-vi
 import { EmployeeTimesheetComponent } from './employee-timesheet/employee-timesheet.component';
 import { ProfilePicComponent } from './profile-pic/profile-pic.component';
 import { TimesheetLogComponent } from './timesheet-log/timesheet-log.component';
-
+import { MatSelectModule } from '@angular/material/select';
 
 
 
@@ -46,6 +46,7 @@ import { TimesheetLogComponent } from './timesheet-log/timesheet-log.component';
     MatNativeDateModule,
     SharedModule,
     MatProgressBarModule,
+    MatSelectModule,
     MatInputModule,
     MatMomentDateModule,
     MatFormFieldModule,

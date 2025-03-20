@@ -1,275 +1,280 @@
 <div class="page-header">
-        <div class="row align-items-center">
-                <div class="col-sm-12 col-lg-12">
-                        <div class="d-flex align-items-baseline">
-                                <i
-                                        style="font-size: 20px"
-                                        class="fa fa-arrow-left"
-                                        routerLink="/payroll-master/Runpayroll"
-                                        aria-label="back"></i>
-                                <h3 class="ms-4 page-title">Payroll Summary</h3>
-                        </div>
-                </div>
-
-        </div>
+  <div class="row align-items-center">
+    <div class="col-sm-12 col-lg-12">
+      <div class="d-flex align-items-baseline">
+        <i
+          style="font-size: 20px"
+          class="fa fa-arrow-left"
+          routerLink="/payroll-master/Runpayroll"
+          aria-label="back"></i>
+        <h3 class="ms-4 page-title">
+          {{ globalServ.showLabel('payrollSummaryHeader') }}
+        </h3>
+      </div>
+    </div>
+  </div>
 </div>
 <!-- navigate from sidemenu code starts -->
 
 <div class="row" *ngIf="!fromRunPayroll">
-        <div class="col-md-3">
-                <div class="form-group">
-                        <label class="col-form-label" for="Payroll">Payroll
-                        </label>
-                        <select id="Payroll" class="form-select"
-                                [(ngModel)]="reportObj.payrollCode"
-                                (change)="getRunIdsByDatePicker()">
-                                <option [value]="pSet.payrollCode"
-                                        *ngFor="let pSet of payrollsetups">{{pSet.payrollCode}}</option>
-                        </select>
-                </div>
-        </div>
-        <div class="col-md-3">
+  <div class="col-md-3">
+    <div class="form-group">
+      <label class="col-form-label" for="Payroll">
+        {{ globalServ.getGlobalNames("payroll") }}
+      </label>
+      <select
+        id="Payroll"
+        class="form-select"
+        [(ngModel)]="reportObj.payrollCode"
+        (change)="getRunIdsByDatePicker()">
+        <option [value]="pSet.payrollCode" *ngFor="let pSet of payrollsetups">
+          {{ pSet.payrollCode }}
+        </option>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="form-group">
+      <label class="col-form-label" for="Date">
+        {{ globalServ.getGlobalNames("date") }}
+      </label>
+      <input
+        class="form-control"
+        type="month"
+        [max]="maxDt"
+        *ngIf="salaryFrequency === 'Month' || reportObj.payrollCode === 'ALL'"
+        [placeholder]="placeHolder"
+        [(ngModel)]="fulldate"
+        (change)="getRunIdsByDatePicker()" />
 
-                <div class="form-group">
-                        <label class="col-form-label" for="Date">Date </label>
-                        <input
-                                class="form-control"
-                                type="month"
-                                [max]="maxDt"
-                                *ngIf="salaryFrequency === 'Month' || reportObj.payrollCode === 'ALL'"
-                                [placeholder]='placeHolder'
-                                [(ngModel)]="fulldate"
-                                (change)="getRunIdsByDatePicker()" />
+      <input
+        class="form-control"
+        type="date"
+        [max]="maxDt"
+        *ngIf="salaryFrequency !== 'Month' && reportObj.payrollCode !== 'ALL'"
+        placeholder="dd/MM/YYYY"
+        [(ngModel)]="fulldate"
+        (change)="getRunIdsByDatePicker()" />
+    </div>
+  </div>
 
-                        <input
-                                class="form-control"
-                                type="date"
-                                [max]="maxDt"
-                                *ngIf="salaryFrequency !== 'Month' && reportObj.payrollCode !== 'ALL'"
-                                placeholder="dd/MM/YYYY"
-                                [(ngModel)]="fulldate"
-                                (change)="getRunIdsByDatePicker()" />
-                </div>
-        </div>
-
-        <div class="col-md-3">
-                <div class="form-group">
-                        <label class="col-form-label" for="RunId">Run Id
-                        </label>
-                        <select id="RunId" class="form-select"
-                                [(ngModel)]="reportObj.runId"
-                                (change)="getSalaryCompByIds()">
-                                <option value="-">-</option>
-                                <option [value]="run.Id"
-                                        *ngFor="let run of runIdsList">{{run.Id}}</option>
-                        </select>
-                </div>
-        </div>
-
+  <div class="col-md-3">
+    <div class="form-group">
+      <label class="col-form-label" for="RunId">
+        {{ globalServ.showLabel("runId") }}
+      </label>
+      <select
+        id="RunId"
+        class="form-select"
+        [(ngModel)]="reportObj.runId"
+        (change)="getSalaryCompByIds()">
+        <option value="-">-</option>
+        <option [value]="run.Id" *ngFor="let run of runIdsList">
+          {{ run.Id }}
+        </option>
+      </select>
+    </div>
+  </div>
 </div>
 
 <div class="row my-2">
-        <div class="col-sm-12 col-lg-3">
-                <div class="input-group">
-                        <input type="text" class="form-control"
-                                placeholder="search by employee name"
-                                (keyup)="updateFilter($event)"
-                                style="border-radius: 8px 0px 0px 8px;">
-                        <span class="input-group-text" id="basic-addon1">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                        </span>
-                </div>
-        </div>
-        <div class="col-sm-12 col-lg-3"></div>
-        <div class="col-sm-12 col-lg-3"></div>
+  <div class="col-sm-12 col-lg-3">
+    <div class="input-group">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="{{ globalServ.showPlaceholder('searchPayroll') }}"
+        (keyup)="updateFilter($event)"
+        style="border-radius: 8px 0px 0px 8px" />
+      <span class="input-group-text" id="basic-addon1">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </span>
+    </div>
+  </div>
+  <div class="col-sm-12 col-lg-3"></div>
+  <div class="col-sm-12 col-lg-3"></div>
 
-        <div class="col-md-3 d-flex align-items-center justify-content-end">
+  <div class="col-md-3 d-flex align-items-center justify-content-end">
 
-                <button
-                        *ngIf="runs.length  > 0 && !isFinilized && fromRunPayroll"
-                        (click)="saveExcel2()" id="saveExcel"
-                        class="btn add-btn float-end mx-2">Save as
-                        Excel</button>
-                <button *ngIf="!fromRunPayroll && runs.length  > 0"
-                        id="save_excel" (click)="saveExcel()"
-                        class="btn add-btn float-end mx-2">Save as
-                        Excel</button>
-                <button *ngIf="runs.length  > 0 && !isFinilized"
-                        class="btn success-btn"
-                        (click)="approveAllItem()"
-                        type="submit">
-                        Approve All
-                </button>
-        </div>
+    <button
+      *ngIf="runs.length  > 0 && !isFinilized && fromRunPayroll"
+      (click)="saveExcel2()" id="saveExcel"
+      class="btn add-btn float-end mx-2"> {{ globalServ.getGlobalNames('saveAsExcel') }} </button>
+    <button *ngIf="!fromRunPayroll && runs.length  > 0"
+      id="save_excel" (click)="saveExcel()"
+      class="btn add-btn float-end mx-2"> {{ globalServ.getGlobalNames('saveAsExcel') }}</button>
+    <button *ngIf="runs.length  > 0 && !isFinilized"
+      class="btn success-btn"
+      (click)="approveAllItem()"
+      type="submit">
+      {{ globalServ.showLabel("approveAll") }}
+    </button>
+  </div>
 </div>
 
 <!-- navigate from side menu code ends....... -->
 
 <div class="row">
-        <div class="col-xl-3 col-sm-6 col-12">
-                <div class="card" style="background-color: #ecf2ff">
-                        <div class="card-content">
-                                <div class="card-body  mb-1"
-                                        style="height: 150px;">
-                                        <div class="media-body text-right">
-                                                <h5
-                                                        class=" d-flex justify-content-between m-auto"><span
-                                                                class="block">Net
-                                                                Salary
-                                                                Payable</span>
-                                                        <span
-                                                                class="card-title mb-0">{{Netsum}}</span></h5>
-                                        </div>
-                                </div>
-                        </div>
-                </div>
+  <div class="col-xl-3 col-sm-6 col-12">
+    <div class="card" style="background-color: #ecf2ff">
+      <div class="card-content">
+        <div class="card-body mb-1" style="height: 150px">
+          <div class="media-body text-right">
+            <h5 class="d-flex justify-content-between m-auto">
+              <span class="block">
+                {{ globalServ.showLabel("netSalary") }}
+              </span>
+              <span class="card-title mb-0">{{ Netsum }}</span>
+            </h5>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
 
-        <div class="col-xl-3 col-sm-6 col-12">
-                <div class="card" style="background-color: #ecf2ff">
-                        <div class="card-content">
-                                <div class="card-body  mb-1"
-                                        style="height: 150px; overflow: auto; scrollbar-width: none; scroll-behavior: smooth;">
-                                        <div class="media-body text-right">
-                                                <h5
-                                                        class="d-flex justify-content-between m-auto mb-2">Gross
-                                                        Salary Payable
-                                                        <span
-                                                                class="card-title mb-0">{{earSum
-                                                                }}</span></h5>
-                                                <div>
-
-                                                        <ng-container
-                                                                *ngFor="let ls of companySpendsTotal">
-                                                                <h6
-                                                                        class="d-flex justify-content-between"
-                                                                        *ngIf="!ls.isDeduction">
-                                                                        {{ls.componentCode}}
-                                                                        <span
-                                                                                class>{{ls.amount
-                                                                                }}</span>
-                                                                </h6>
-                                                        </ng-container>
-                                                </div>
-                                        </div>
-                                </div>
-                        </div>
-                </div>
+  <div class="col-xl-3 col-sm-6 col-12">
+    <div class="card" style="background-color: #ecf2ff">
+      <div class="card-content">
+        <div
+          class="card-body mb-1"
+          style="
+            height: 150px;
+            overflow: auto;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+          ">
+          <div class="media-body text-right">
+            <h5 class="d-flex justify-content-between m-auto mb-2">
+              {{ globalServ.showLabel("grossSalary") }}
+              <span class="card-title mb-0">{{ earSum }}</span>
+            </h5>
+            <div>
+              <ng-container *ngFor="let ls of companySpendsTotal">
+                <h6
+                  class="d-flex justify-content-between"
+                  *ngIf="!ls.isDeduction">
+                  {{ ls.componentCode }}
+                  <span class>{{ ls.amount }}</span>
+                </h6>
+              </ng-container>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
 
-        <div class="col-xl-3 col-sm-6 col-12">
-                <div class="card" style="background-color: #ecf2ff">
-                        <div class="card-content">
-                                <div class="card-body mb-1"
-                                        style="height: 150px; overflow: auto; scrollbar-width: none; scroll-behavior: smooth;">
-                                        <div class="media-body text-right">
-                                                <h5
-                                                        class="d-flex justify-content-between m-auto mb-2">Total
-                                                        Deductions
-                                                        <span
-                                                                class="card-title mb-0">{{DedSum
-                                                                }}</span></h5>
-                                                <div>
-
-                                                        <ng-container
-                                                                *ngFor="let ls of companySpendsTotal">
-                                                                <h6
-                                                                        class="d-flex justify-content-between"
-                                                                        *ngIf="ls.isDeduction">
-                                                                        {{ls.componentCode}}
-                                                                        <span
-                                                                                class>{{ls.amount}}</span>
-                                                                </h6>
-                                                        </ng-container>
-                                                </div>
-                                        </div>
-                                </div>
-                        </div>
-                </div>
+  <div class="col-xl-3 col-sm-6 col-12">
+    <div class="card" style="background-color: #ecf2ff">
+      <div class="card-content">
+        <div
+          class="card-body mb-1"
+          style="
+            height: 150px;
+            overflow: auto;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+          ">
+          <div class="media-body text-right">
+            <h5 class="d-flex justify-content-between m-auto mb-2">
+              {{ globalServ.getGlobalNames('TotalDeductions') }}
+              <span class="card-title mb-0">{{ DedSum }}</span>
+            </h5>
+            <div>
+              <ng-container *ngFor="let ls of companySpendsTotal">
+                <h6
+                  class="d-flex justify-content-between"
+                  *ngIf="ls.isDeduction">
+                  {{ ls.componentCode }}
+                  <span class>{{ ls.amount }}</span>
+                </h6>
+              </ng-container>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
 
-        <div class="col-xl-3 col-sm-6 col-12">
-                <div class="card" style="background-color: #ecf2ff">
-                        <div class="card-content">
-                                <div class="card-body  mb-1"
-                                        style="height: 150px;">
-                                        <div class="media-body text-right">
-                                                <h5
-                                                        class="card-title m-auto  mb-3">Days</h5>
-                                                <div>
-                                                        <div>
-
-                                                                <ng-container>
-                                                                        <h6
-                                                                                class=" d-flex justify-content-between">Total
-                                                                                Working
-                                                                                Days
-                                                                                <span
-                                                                                        class>{{totalWorkingDays
-                                                                                        }}</span></h6>
-                                                                        <h6
-                                                                                class=" d-flex justify-content-between ">Total
-                                                                                Worked
-                                                                                Days
-                                                                                <span
-                                                                                        class>{{totalWorkedDays
-                                                                                        }}</span></h6>
-                                                                        <h6
-                                                                                class=" d-flex justify-content-between">Total
-                                                                                Payable
-                                                                                Days
-                                                                                <span
-                                                                                        class>{{totalPayableDays
-                                                                                        }}</span></h6>
-                                                                </ng-container>
-                                                        </div>
-                                                </div>
-                                        </div>
-                                </div>
-                        </div>
-                </div>
+  <div class="col-xl-3 col-sm-6 col-12">
+    <div class="card" style="background-color: #ecf2ff">
+      <div class="card-content">
+        <div class="card-body mb-1" style="height: 150px">
+          <div class="media-body text-right">
+            <h5 class="card-title m-auto mb-3">
+              {{ globalServ.showLabel("Days") }}
+            </h5>
+            <div>
+              <div>
+                <ng-container>
+                  <h6 class="d-flex justify-content-between">
+                    {{ globalServ.showLabel("totalWorkingDays") }} <span
+                      class>{{ totalWorkingDays }}</span>
+                  </h6>
+                  <h6 class="d-flex justify-content-between">
+                    {{ globalServ.showLabel("totalWorked Days") }} <span
+                      class>{{ totalWorkedDays }}</span>
+                  </h6>
+                  <h6 class="d-flex justify-content-between">
+                    {{ globalServ.showLabel("totalPayableDays") }} <span
+                      class>{{ totalPayableDays }}</span>
+                  </h6>
+                </ng-container>
+              </div>
+            </div>
+          </div>
         </div>
-
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- navifgate from runpayroll starts -->
+<!-- navigate from runpayroll starts -->
 <div class="row" *ngIf="runs">
-        <div class="col-md-12">
-                <div class="table-responsive card p-3">
-                        <table id="datatable"
-                                class="table table-hover custom-table mb-0 datatable">
-                                <thead class="thead-all">
-                                        <tr class="tr-th-all">
-                                                <th>Emp Code</th>
-                                                <th>Emp Name </th>
+  <div class="col-md-12">
+    <div class="table-responsive card p-3">
+      <table
+        id="datatable"
+        class="table table-hover custom-table mb-0 datatable">
+        <thead class="thead-all">
+          <tr class="tr-th-all">
+            <th>
+              {{ globalServ.getGlobalNames("empCode") }}
+            </th>
+            <th>
+              {{ globalServ.getGlobalNames("empName") }}
+            </th>
 
-                                                <th class="text-end">Net
-                                                        Amount</th>
-                                                <th
-                                                        class="text-end">Earnings</th>
-                                                <th
-                                                        class="text-end">Deductions</th>
-                                                <!-- <th class="text-center">Calendar
-                                                        Days </th> -->
-                                                <th class="text-center">Working
-                                                        Days</th>
-                                                <th class="text-center">Worked
-                                                        Days</th>
-                                                <th class="text-center">Payable
-                                                        Days</th>
-                                                <th class="text-center">LOP
-                                                        Days</th>
-                                                <!-- <th
-                                                        class="text-center">Holidays</th> -->
-                                                <th
-                                                        class="text-center">Leaves</th>
-                                                <!-- <th
-                                                        class="text-center">Run Id</th> -->
+            <th class="text-end">
+              {{ globalServ.showLabel("netAmount") }}
+            </th>
+            <th class="text-end">
+              {{ globalServ.getGlobalNames("earnings") }}
+            </th>
+            <th class="text-end">
+              {{ globalServ.getGlobalNames("deductions") }}
+            </th>
+            <th class="text-center">
+              {{ globalServ.getGlobalNames("workingDays") }}
+            </th>
+            <th class="text-center">
+              {{ globalServ.showLabel("workedDays") }}
+            </th>
+            <th class="text-center">
+              {{ globalServ.showLabel("payableDays") }}
+            </th>
+            <th class="text-center">
+              {{ globalServ.showLabel("lopDays") }}
+            </th>
+            <th class="text-center">
+              {{ globalServ.getGlobalNames("Leave") }}
+            </th>
 
-                                                <th
-                                                        class="text-center">Action</th>
-                                                <!-- <th class="text-center">Finalize</th> -->
-                                                <!-- <th
+            <th class="text-center">
+              {{ globalServ.getGlobalNames("action") }}
+            </th>
+            <!-- <th class="text-center">Finalize</th> -->
+            <!-- <th
                                                         class="text-center d-flex justify-content-center align-items-center">
                                                         <input
                                                                 type="checkbox"
@@ -277,70 +282,71 @@
                                                                 [ngModel]="appoveAll"
                                                                 (click)="approveAllItem($event)"
                                                                 style="zoom: 1.4" />Approve</th> -->
-                                        </tr>
-                                </thead>
-                                <tbody *ngIf="runs.length > 0">
-                                        <tr class="dasboard-td"
-                                                *ngFor="let run of runs;let i = index"
-                                                [ngStyle]="{ 'background':run.salaryComponents === null ? ' #f8d7da' : ''  }">
-                                                <td>{{run.employeeCode}}</td>
-                                                <td>
-                                                        <h2
-                                                                class="table-avatar blue-link"
-                                                                data-bs-target="#showRuns"
-                                                                data-bs-toggle="modal"
-                                                                (click)="goto(run)">
-                                                                <a
-                                                                        data-bs-target="#showRuns"
-                                                                        data-bs-toggle="modal">{{run.employeeName}}</a>
-                                                        </h2>
-                                                </td>
-                                                <td
-                                                        class="text-end">{{run.netAmt
-                                                        |number :"1.2-2"
-                                                        }}</td>
-                                                <td
-                                                        class="text-end">{{run.earningsAmt
-                                                        |number :"1.2-2"
-                                                        }}</td>
-                                                <td
-                                                        class="text-end">{{run.deductionAmt
-                                                        |number :
-                                                        "1.2-2"}}</td>
-                                                <!-- <td
+          </tr>
+        </thead>
+        <tbody *ngIf="runs.length > 0">
+
+          <tr class="dasboard-td"
+            *ngFor="let run of runs;let i = index"
+            [ngStyle]="{ 'background':run.salaryComponents === null ? ' #f8d7da' : ''  }">
+            <td>{{run.employeeCode}}</td>
+            <td>
+              <h2
+                class="table-avatar blue-link"
+                data-bs-target="#showRuns"
+                data-bs-toggle="modal"
+                (click)="goto(run)">
+                <a
+                  data-bs-target="#showRuns"
+                  data-bs-toggle="modal">{{run.employeeName}}</a>
+              </h2>
+            </td>
+            <td
+              class="text-end">{{run.netAmt
+              |number :"1.2-2"
+              }}</td>
+            <td
+              class="text-end">{{run.earningsAmt
+              |number :"1.2-2"
+              }}</td>
+            <td
+              class="text-end">{{run.deductionAmt
+              |number :
+              "1.2-2"}}</td>
+            <!-- <td
                                                                 class="text-center">{{run.calendarDays}}</td> -->
-                                                <td
-                                                        class="text-center">{{run.workingDays}}</td>
-                                                <td
-                                                        class="text-center">{{run.workedDays}}</td>
-                                                <td
-                                                        class="text-center">{{run.payableDays}}</td>
-                                                <td
-                                                        class="text-center">{{run.lopDays}}</td>
-                                                <!-- <td
+            <td
+              class="text-center">{{run.workingDays}}</td>
+            <td
+              class="text-center">{{run.workedDays}}</td>
+            <td
+              class="text-center">{{run.payableDays}}</td>
+            <td
+              class="text-center">{{run.lopDays}}</td>
+            <!-- <td
                                                                 class="text-center">{{run.holidays}}</td> -->
-                                                <td
-                                                        class="text-center">{{run.leaves
-                                                        }}</td>
-                                                <!-- <td
+            <td
+              class="text-center">{{run.leaves
+              }}</td>
+            <!-- <td
                                                                 class="text-center">{{run.runId
                                                                 }}</td> -->
 
-                                                <td class="text-center">
-                                                        <button
-                                                                type="button"
-                                                                class="btn btn-light me-1 text-info"
-                                                                placement="top"
-                                                                ngbTooltip="View"
-                                                                data-bs-target="#showRuns"
-                                                                data-bs-toggle="modal"
-                                                                (click)="goto(run)">
-                                                                <i
-                                                                        class="fa-regular fa-file"></i>
-                                                        </button>
-                                                </td>
+            <td class="text-center">
+              <button
+                type="button"
+                class="btn btn-light me-1 text-info"
+                placement="top"
+                ngbTooltip="View"
+                data-bs-target="#showRuns"
+                data-bs-toggle="modal"
+                (click)="goto(run)">
+                <i
+                  class="fa-regular fa-file"></i>
+              </button>
+            </td>
 
-                                                <!-- <td
+            <!-- <td
                               scope="col"> <span
                                 class="d-flex align-items-center justify-content-center">
                                 <input
@@ -352,7 +358,7 @@
                                   style="zoom: 1.4" />
                               </span>
                             </td> -->
-                                                <!-- 
+            <!-- 
                                                         <td
                                                                 scope="col">
                                                                 <span
@@ -373,7 +379,7 @@
                                         <tr
                                                 style=" text-align: center; height: 150px;">
                                                 <td colspan="14">
-                                                        "Please select the payroll, date, and RunId to retrieve the records."
+                                                  {{ globalServ.showLabel("alert") }}
                                                 </td>
                                         </tr>
                                 </tbody>
@@ -382,7 +388,7 @@
                                         <tr
                                                 style=" text-align: center; height: 150px;">
                                                 <td colspan="14">
-                                                         "No records were found"
+                                                  {{globalServ.showGlobalErrors('notFound')}}
                                                 </td>
                                         </tr>
                                 </tbody>
@@ -393,299 +399,393 @@
 <!-- navigate from run payroll ends......... -->
 
 <!-- model to show data like payslips -->
-<div id="showRuns" class="modal custom-modal fade" role="dialog">
-        <div class="modal-dialog modal-dialog-centered modal-lg"
-                role="document">
-                <div class="modal-content">
-                        <div class="modal-header">
-                                <h5 class="modal-title">Salary Information</h5>
-                                <i class="fa-solid fa-xmark fs-4"
-                                        id="close_model" data-bs-dismiss="modal"
-                                        (click)="closeModel('dismiss')"></i></div>
-                        <div class="modal-body">
-                                <div class="row">
-                                        <table
-                                                class="table table-nowrap custom-table mb-0">
-                                                <thead class="thead-all">
-                                                        <tr class="tr-th-all">
-                                                                <th
-                                                                        class="text-center"
-                                                                        colspan="4">Payslip
-                                                                        for
-                                                                        {{
-                                                                        Period ?
-                                                                        (
-                                                                        Period|
-                                                                        date:
-                                                                        'MMM-yyyy')
-                                                                        :
-                                                                        ''}}</th>
+<div id="showRuns" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-lg"
+    role="dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"> {{ globalServ.showLabel("salaryInformation")
+          }}</h5>
+        <i class="fa-solid fa-xmark fs-4"
+          id="close_model" data-bs-dismiss="modal"
+          (click)="closeModel('dismiss')"></i></div>
+      <div class="modal-body">
+        <div class="row">
+          <table
+            class="table table-nowrap custom-table mb-0">
+            <thead class="thead-all">
+              <tr class="tr-th-all">
+                <th
+                  class="text-center"
+                  colspan="4"> {{ globalServ.showLabel("payslipFor") }}
+                  {{
+                  Period ?
+                  (
+                  Period|
+                  date:
+                  'MMM-yyyy')
+                  :
+                  ''}}</th>
 
-                                                        </tr>
-                                                </thead>
-                                                <tbody>
-                                                        <tr class="dasboard-td">
-                                                                <td scope="col">
-                                                                        Employee
-                                                                        Code :
-                                                                </td>
-                                                                <td
-                                                                        class
-                                                                        scope="col">{{setData?.employeeCode}}
-                                                                </td>
-                                                                <td scope="col">
-                                                                        Calendar
-                                                                        Days :
-                                                                </td>
-                                                                <td
-                                                                        class="text-end"
-                                                                        scope="col">{{setData?.calendarDays}}
-                                                                </td>
-                                                        </tr>
-                                                        <tr class="dasboard-td">
-                                                                <td scope="col">
-                                                                        Employee
-                                                                        Name :
-                                                                </td>
-                                                                <td
-                                                                        class
-                                                                        scope="col">{{setData?.employeeName}}
-                                                                </td>
-                                                                <td scope="col">
-                                                                        Working
-                                                                        Days :
-                                                                </td>
-                                                                <td
-                                                                        class="text-end"
-                                                                        scope="col">{{setData?.workingDays}}
-                                                                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="dasboard-td">
+                <td scope="col">
+                  {{ globalServ.getGlobalNames("employeeCode") }} :
+                </td>
+                <td
+                  class
+                  scope="col">{{setData?.employeeCode}}
+                </td>
+                <td scope="col">
+                  {{ globalServ.showLabel("calendarDays") }} :
+                </td>
+                <td
+                  class="text-end"
+                  scope="col">{{setData?.calendarDays}}
+                </td>
+              </tr>
+              <tr class="dasboard-td">
+                <td scope="col">
+                  {{ globalServ.getGlobalNames("employeeName") }} :
+                </td>
+                <td
+                  class
+                  scope="col">{{setData?.employeeName}}
+                </td>
+                <td scope="col">
+                  {{ globalServ.getGlobalNames("workingDays") }} :
+                </td>
+                <td
+                  class="text-end"
+                  scope="col">{{setData?.workingDays}}
+                </td>
 
-                                                        </tr>
-                                                        <tr class="dasboard-td">
-                                                                <td scope="col">
-                                                                        Worked
-                                                                        Days :
-                                                                </td>
-                                                                <td
-                                                                        class
-                                                                        scope="col">{{setData?.workedDays}}
-                                                                </td>
-                                                                <td scope="col">
-                                                                        Leaves :
-                                                                </td>
-                                                                <td
-                                                                        class="text-end"
-                                                                        scope="col">{{setData?.leaves}}
-                                                                </td>
-                                                        </tr>
+              </tr>
+              <tr class="dasboard-td">
+                <td scope="col">
+                  {{ globalServ.showLabel("workedDays") }} :
+                </td>
+                <td
+                  class
+                  scope="col">{{setData?.workedDays}}
+                </td>
+                <td scope="col">
+                  {{ globalServ.getGlobalNames("Leave") }} :
+                </td>
+                <td
+                  class="text-end"
+                  scope="col">{{setData?.leaves}}
+                </td>
+              </tr>
 
-                                                        <tr class="dasboard-td">
+              <tr class="dasboard-td">
 
-                                                                <td scope="col">
-                                                                        Payable
-                                                                        Days :
-                                                                </td>
-                                                                <td
-                                                                        scope="col">{{setData?.payableDays}}
-                                                                </td>
+                <td scope="col">
+                  {{ globalServ.showLabel("payableDays") }} :
+                </td>
+                <td
+                  scope="col">{{setData?.payableDays}}
+                </td>
 
-                                                                <td scope="col">
-                                                                        Holidays
-                                                                        :
-                                                                </td>
-                                                                <td
-                                                                        class="text-end"
-                                                                        scope="col">{{setData?.holidays}}
-                                                                </td>
-                                                        </tr>
-                                                        <tr class="dasboard-td">
-                                                                <td scope="col">
-                                                                        LOP
-                                                                        Days:
-                                                                </td>
-                                                                <td
-                                                                        class
-                                                                        scope="col">{{setData?.lopDays}}
-                                                                </td>
-                                                                <td scope="col">
+                <td scope="col">
+                  {{ globalServ.showLabel("holidays") }}
+                  :
+                </td>
+                <td
+                  class="text-end"
+                  scope="col">{{setData?.holidays}}
+                </td>
+              </tr>
+              <tr class="dasboard-td">
+                <td scope="col">
+                  {{ globalServ.showLabel("lopDays") }} :
+                </td>
+                <td
+                  class
+                  scope="col">{{setData?.lopDays}}
+                </td>
+                <td scope="col">
 
-                                                                </td>
-                                                                <td
-                                                                        class="text-end"
-                                                                        scope="col">
-                                                                </td>
-                                                        </tr>
+                </td>
+                <td
+                  class="text-end"
+                  scope="col">
+                </td>
+              </tr>
 
-                                                </tbody>
-                                        </table>
-                                </div>
-                                <div class="row mt-5">
-                                        <div class="col-md-12 d-flex">
-                                                <div
-                                                        class="table-leftblock col-md-6">
-                                                        <table
-                                                                class="table table-nowrap mb-0">
-                                                                <thead
-                                                                        class="thead-all">
-                                                                        <tr
-                                                                                class="tr-th-all">
-                                                                                <th
-                                                                                        class="text-left">Earnings</th>
-                                                                                <th
-                                                                                        class="text-end">Amount</th>
-                                                                        </tr>
-                                                                </thead>
-                                                                <tbody
-                                                                        style="font: 300 12px/150% CircularStd, sans-serif; border: #fbffff;">
-                                                                        <ng-container
-                                                                                *ngFor="let row of setData?.modifiedList">
-                                                                                <ng-container
-                                                                                        *ngIf="row?.isDeduction === false">
-                                                                                        <tr
-                                                                                                class>
-                                                                                                <td
-                                                                                                        scope="col">{{
-                                                                                                        row.componentCode
-                                                                                                        }}
-                                                                                                </td>
-                                                                                                <td
-                                                                                                        class="text-end"
-                                                                                                        scope="col">{{row.amount|
-                                                                                                        number:"1.2-2"}}
-                                                                                                </td>
-                                                                                        </tr>
-                                                                                </ng-container>
-                                                                        </ng-container>
-                                                                </tbody>
-                                                        </table>
-                                                </div>
-                                                <div
-                                                        class="table-right block col-md-6">
-                                                        <table
-                                                                class="table table-nowrap  mb-0">
-                                                                <thead
-                                                                        class="thead-all">
-                                                                        <tr
-                                                                                class="tr-th-all">
-                                                                                <th
-                                                                                        class="text-left">Deductions</th>
-                                                                                <th
-                                                                                        class="text-end">Amount</th>
-                                                                        </tr>
-                                                                </thead>
-                                                                <tbody
-                                                                        style="font: 300 12px/150% CircularStd, sans-serif; border: #fbffff;">
-                                                                        <ng-container
-                                                                                *ngFor="let row of setData?.modifiedList">
-                                                                                <ng-container
-                                                                                        *ngIf="row.isDeduction === true && row.isPenalty !== true">
-                                                                                        <tr
-                                                                                                class>
-                                                                                                <td
-                                                                                                        scope="col">{{row.componentCode}}
-                                                                                                </td>
-                                                                                                <td
-                                                                                                        scope="col"
-                                                                                                        class="text-end">{{row.amount
-                                                                                                        |number
-                                                                                                        :
-                                                                                                        "1.2-2"}}
-                                                                                                </td>
-                                                                                        </tr>
-                                                                                </ng-container>
-
-                                                                        </ng-container>
-                                                                        <ng-container
-                                                                                *ngIf="isPenalityExist(setData)">
-                                                                                <tr>
-                                                                                        <th
-                                                                                                colspan="2"><b>Penalty</b></th>
-                                                                                </tr>
-                                                                        </ng-container>
-                                                                        <ng-container
-                                                                                *ngFor="let row of setData?.modifiedList">
-                                                                                <ng-container
-                                                                                        *ngIf="row.isDeduction === true && row.isPenalty === true">
-
-                                                                                        <tr>
-                                                                                                <td
-                                                                                                        scope="col">{{row.componentCode}}
-                                                                                                </td>
-                                                                                                <td
-                                                                                                        scope="col"
-                                                                                                        class="text-end">{{row.amount
-                                                                                                        |number
-                                                                                                        :
-                                                                                                        "1.2-2"}}
-                                                                                                </td>
-                                                                                        </tr>
-                                                                                </ng-container>
-                                                                        </ng-container>
-                                                                </tbody>
-                                                        </table>
-                                                </div>
-                                        </div>
-                                        <div class="col-md-12 d-flex"
-                                                style="font: 600 12px/150% CircularStd, sans-serif; padding: 5px;">
-                                                <div
-                                                        class="col-md-6 border-bottom border-top py-1">
-                                                        <div
-                                                                class="d-flex justify-content-between">
-                                                                <span
-                                                                        style="padding-left: 15px; ">Gross
-                                                                        Earnings</span>
-                                                                <span
-                                                                        style="padding-right: 15px;">
-                                                                        {{earAmt
-                                                                        | number
-                                                                        :
-                                                                        "1.2-2"}}</span>
-                                                        </div>
-                                                </div>
-                                                <div
-                                                        class="col-md-6 border-bottom border-top py-1">
-                                                        <div
-                                                                class="d-flex justify-content-between">
-                                                                <span
-                                                                        style="padding-left: 15px;">Total
-                                                                        Deductions</span>
-                                                                <span
-                                                                        style="padding-right: 15px;">
-                                                                        {{dedAmt
-                                                                        | number
-                                                                        :
-                                                                        "1.2-2"}}</span>
-                                                        </div>
-                                                </div>
-                                        </div>
-                                        <div
-                                                class="col-md-12  d-flex justify-content-between"
-                                                style="font: 600 12px/150% CircularStd, sans-serif; padding: 5px;">
-                                                <span
-                                                        style="padding-left: 15px;">
-
-                                                        Total
-                                                        Net
-                                                        Payable
-                                                        <span
-                                                                class="block text-muted">
-
-                                                                Gross
-                                                                Earnings
-                                                                -
-                                                                Total
-                                                                Deductions
-                                                        </span>
-                                                </span>
-                                                <span
-                                                        style="padding-right: 15px;">
-                                                        {{netAmt | number :
-                                                        "1.2-2"}}
-                                                </span>
-                                        </div>
-                                </div>
-                        </div>
-                </div>
+            </tbody>
+          </table>
         </div>
+        <div class="row mt-5">
+          <div class="col-md-12 d-flex">
+            <div
+              class="table-leftblock col-md-6">
+              <table
+                class="table table-nowrap mb-0">
+                <thead
+                  class="thead-all">
+                  <tr
+                    class="tr-th-all">
+                    <th
+                      class="text-left">{{ globalServ.getGlobalNames("earnings")
+                      }}</th>
+                    <th
+                      class="text-end">{{ globalServ.getGlobalNames("amount")
+                      }}</th>
+                  </tr>
+                </thead>
+                <tbody
+                  style="font: 300 12px/150% CircularStd, sans-serif; border: #fbffff;">
+                  <ng-container
+                    *ngFor="let row of setData?.modifiedList">
+                    <ng-container
+                      *ngIf="row?.isDeduction === false">
+                      <tr
+                        class>
+                        <td
+                          scope="col">{{
+                          row.componentCode
+                          }}
+                        </td>
+                        <td
+                          class="text-end"
+                          scope="col">{{row.amount|
+                          number:"1.2-2"}}
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+            <div
+              class="table-right block col-md-6">
+              <table
+                class="table table-nowrap  mb-0">
+                <thead
+                  class="thead-all">
+                  <tr
+                    class="tr-th-all">
+                    <th
+                      class="text-left">{{
+                      globalServ.getGlobalNames("deductions") }}</th>
+                    <th
+                      class="text-end">{{ globalServ.getGlobalNames("amount")
+                      }}</th>
+                  </tr>
+                </thead>
+                <tbody
+                  style="font: 300 12px/150% CircularStd, sans-serif; border: #fbffff;">
+                  <ng-container
+                    *ngFor="let row of setData?.modifiedList">
+                    <ng-container
+                      *ngIf="row.isDeduction === true && row.isPenalty !== true">
+                      <tr
+                        class>
+                        <td
+                          scope="col">{{row.componentCode}}
+                        </td>
+                        <td
+                          scope="col"
+                          class="text-end">{{row.amount
+                          |number
+                          :
+                          "1.2-2"}}
+                        </td>
+                      </tr>
+                    </ng-container>
+
+                  </ng-container>
+                  <ng-container
+                    *ngIf="isPenalityExist(setData)">
+                    <tr>
+                      <th
+                        colspan="2"><b>{{ globalServ.showLabel("Penalty") }}
+                        </b></th>
+                    </tr>
+                  </ng-container>
+                  <ng-container
+                    *ngFor="let row of setData?.modifiedList">
+                    <ng-container
+                      *ngIf="row.isDeduction === true && row.isPenalty === true">
+
+                      <tr>
+                        <td
+                          scope="col">{{row.componentCode}}
+                        </td>
+                        <td
+                          scope="col"
+                          class="text-end">{{row.amount
+                          |number
+                          :
+                          "1.2-2"}}
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-md-12 d-flex"
+            style="font: 600 12px/150% CircularStd, sans-serif; padding: 5px;">
+            <div
+              class="col-md-6 border-bottom border-top py-1">
+              <div
+                class="d-flex justify-content-between">
+                <span
+                  style="padding-left: 15px; ">{{
+                  globalServ.getGlobalNames("GrossEarnings") }} </span>
+                <span
+                  style="padding-right: 15px;">
+                  {{earAmt
+                  | number
+                  :
+                  "1.2-2"}}</span>
+              </div>
+            </div>
+            <div
+              class="col-md-6 border-bottom border-top py-1">
+              <div
+                class="d-flex justify-content-between">
+                <span
+                  style="padding-left: 15px;">{{
+                  globalServ.getGlobalNames("TotalDeductions") }} </span>
+                <span
+                  style="padding-right: 15px;">
+                  {{dedAmt
+                  | number
+                  :
+                  "1.2-2"}}</span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="col-md-12  d-flex justify-content-between"
+            style="font: 600 12px/150% CircularStd, sans-serif; padding: 5px;">
+            <span
+              style="padding-left: 15px;">
+
+              {{globalServ.showLabel("totalNetPayable")}}
+              <span
+                class="block text-muted">
+
+                {{ globalServ.getGlobalNames("GrossEarnings") }}
+                -
+                {{ globalServ.getGlobalNames("TotalDeductions") }}
+              </span>
+            </span>
+            <span
+              style="padding-right: 15px;">
+              {{netAmt | number :
+              "1.2-2"}}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="row mt-5">
+    <div class="col-md-12 d-flex">
+      <div class="table-leftblock col-md-6">
+        <table class="table table-nowrap mb-0">
+          <thead class="thead-all">
+            <tr class="tr-th-all">
+              <th class="text-left">
+                {{ globalServ.showLabel('earnings') }}
+              </th>
+              <th class="text-end">
+                {{ globalServ.showLabel('amount') }}
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            style="
+                    font: 300 12px/150% CircularStd, sans-serif;
+                    border: #fbffff;
+                  ">
+            <ng-container *ngFor="let row of setData?.modifiedList">
+              <ng-container *ngIf="row?.isDeduction === false">
+                <tr class>
+                  <td scope="col">{{ row.componentCode }}</td>
+                  <td class="text-end" scope="col">
+                    {{ row.amount | number : "1.2-2" }}
+                  </td>
+                </tr>
+              </ng-container>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-right block col-md-6">
+        <table class="table table-nowrap mb-0">
+          <thead class="thead-all">
+            <tr class="tr-th-all">
+              <th class="text-left">
+                {{ globalServ.getGlobalNames('deductions') }}
+              </th>
+              <th class="text-end">
+                {{ globalServ.showLabel('amount') }}
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            style="
+                    font: 300 12px/150% CircularStd, sans-serif;
+                    border: #fbffff;
+                  ">
+            <ng-container *ngFor="let row of setData?.modifiedList">
+              <ng-container *ngIf="row.isDeduction === true">
+                <tr class>
+                  <td scope="col">{{ row.componentCode }}</td>
+                  <td scope="col" class="text-end">
+                    {{ row.amount | number : "1.2-2" }}
+                  </td>
+                </tr>
+              </ng-container>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div
+      class="col-md-12 d-flex"
+      style="font: 600 12px/150% CircularStd, sans-serif; padding: 5px">
+      <div class="col-md-6 border-bottom border-top py-1">
+        <div class="d-flex justify-content-between">
+          <span style="padding-left: 15px">
+            {{ globalServ.getGlobalNames("GrossEarnings") }}
+          </span>
+          <span style="padding-right: 15px">
+            {{ earAmt | number : "1.2-2" }}</span>
+        </div>
+      </div>
+      <div class="col-md-6 border-bottom border-top py-1">
+        <div class="d-flex justify-content-between">
+          <span style="padding-left: 15px">
+            {{ globalServ.getGlobalNames('TotalDeductions') }}
+          </span>
+          <span style="padding-right: 15px">
+            {{ dedAmt | number : "1.2-2" }}</span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="col-md-12 d-flex justify-content-between"
+      style="font: 600 12px/150% CircularStd, sans-serif; padding: 5px">
+      <span style="padding-left: 15px">
+        {{ globalServ.showLabel("totalNetPayable") }}
+        <span class="block text-muted">
+          {{ globalServ.getGlobalNames("GrossEarnings") }} - {{
+          globalServ.getGlobalNames('totalDeductions') }}
+        </span>
+      </span>
+      <span style="padding-right: 15px">
+        {{ netAmt | number : "1.2-2" }}
+      </span>
+    </div>
+  </div> -->
 </div>
 <!-- model to show payslips ends -->

@@ -1,4 +1,4 @@
-import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 
 import { MatDatepicker } from '@angular/material/datepicker';
 import moment, { Moment } from 'moment';
@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 export const MY_FORMATS = {
   parse: {
     dateInput: 'MM/YYYY',
@@ -37,8 +38,7 @@ interface LeaveData {
   ],
   encapsulation: ViewEncapsulation.None,
 })
-
-export class LeavecalendarComponent {
+export class LeavecalendarComponent implements OnInit {
   @ViewChild('picker') datePickerElement = MatDatepicker;
   date: any = moment();
   year: any = moment().format('YYYY');
@@ -62,6 +62,7 @@ export class LeavecalendarComponent {
   leaveRecords = [];
   message: string;
   constructor(private httpGet: HttpGetService,
+    public global: GlobalvariablesService,
     private spinner: NgxSpinnerService
   ) {
     this.getMonthlyDates();
@@ -72,6 +73,10 @@ export class LeavecalendarComponent {
     };
   }
 
+  ngOnInit() {
+    // this.getPayrollList();
+    this.global.getMyCompLabels('LeaveCalendarComp');
+  }
   setMonthAndYear(
     normalizedMonthAndYear: Moment,
     datepicker: MatDatepicker<Moment>

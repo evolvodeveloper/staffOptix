@@ -22,6 +22,7 @@ import { LoginGuard } from './authentication/guards/login.guard';
 import { RoutingGuardGuard } from './authentication/guards/routing-guard.guard';
 import { MyHttpInterceptor } from './services/http.interceptor';
 import { SharedModule } from './shared/shared.module';
+import { appConfig } from './app.config';
 @NgModule({
     declarations: [AppComponent],
     exports: [],
@@ -40,7 +41,9 @@ import { SharedModule } from './shared/shared.module';
         NgxDaterangepickerMd.forRoot(),
         NgbModule,
         BrowserAnimationsModule,
-        NgxSpinnerModule.forRoot({ type: 'ball-scale-multiple' })], providers: [AuthGuard, LoginGuard, MatDatepicker, CheckPermissionResolver, RoutingGuardGuard,
+        NgxSpinnerModule.forRoot({ type: 'ball-scale-multiple' })],
+    providers: [AuthGuard, LoginGuard, MatDatepicker, CheckPermissionResolver, RoutingGuardGuard, appConfig.providers,
+
             { provide: HTTP_INTERCEPTORS, useClass: MyHttpInterceptor, multi: true }, provideHttpClient(withInterceptorsFromDi())]
 })
 export class AppModule {}

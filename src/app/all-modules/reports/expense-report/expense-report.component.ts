@@ -1,3 +1,4 @@
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
 import * as FileSaver from 'file-saver';
 import moment from 'moment';
@@ -36,13 +37,15 @@ export class ExpenseReportComponent implements OnInit {
   employee = [];
   rows = [];
   config: any;
-
+  currentTable = 'expRpt'
+  activeColumns = [];
+  colKeys = [];
 
   constructor(
     private httpGet: HttpGetService,
     private spinner: NgxSpinnerService,
     private utilServ: UtilService,
-    public global: GlobalvariablesService
+    public globalServ: GlobalvariablesService
   ) {
     this.config = {
       itemsPerPage: 25,
@@ -50,8 +53,108 @@ export class ExpenseReportComponent implements OnInit {
       totalItems: this.rows.length,
     };
   }
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.activeColumns, event.previousIndex, event.currentIndex);
+    this.activeColumns.forEach((x, i) => x.SortId = i + 1);
+    this.updateColumnOrder();
+    this.apply();
+  }
+  apply() {
+    this.colKeys.forEach(x => {
+      if (x.view == true) {
+        x.checked = true
+      } else {
+        x.checked = false
+      }
+    })
+
+    const savedConfig = localStorage.getItem('tableConfigs');
+    const configs = savedConfig ? JSON.parse(savedConfig) : {};
+    if (!configs[this.currentTable]) {
+      configs[this.currentTable] = this.colKeys;
+    } else {
+      configs[this.currentTable] = this.colKeys;
+    }
+    this.activeColumns = this.colKeys.filter(x => x.checked == true)
+    this.activeColumns.sort((a, b) => a.SortId - b.SortId);
+    localStorage.setItem('tableConfigs', JSON.stringify(configs));
+  }
+  updateColumnOrder() {
+    const orderedKeys = this.activeColumns.map(col => col.key);
+    this.colKeys.forEach(col => {
+      const index = orderedKeys.indexOf(col.key);
+      if (index !== -1) {
+        col.SortId = index + 1;
+      }
+    });
+  }
+  toggleColumnVisibility(colKey: string, event: Event) {
+    const checkbox = (event.target as HTMLInputElement);
+    const column = this.colKeys.find(col => col.key === colKey);
+    if (column) {
+      column.view = checkbox.checked;
+    }
+  }
+  close() {
+    this.colKeys.forEach(x => {
+      if (x.checked == true) {
+        x.view = true
+      } else {
+        x.view = false
+      }
+    })
+  }
+
+
+  loadColumnsConfig() {
+    const savedConfig = localStorage.getItem('tableConfigs');
+    const keysToRemove = ['tenantCode', 'buCode', 'divisionCode', 'billDate', 'costCenterCode', 'totalQty', 'subcategoryCode', 'paidAmt', 'paymentStatus',
+      'notes', 'approved', 'createdby', 'createddate', 'lastmodifiedby', 'lastmodifieddate', 'approvedby', "approveddate", "modifiedStatus",
+      "employeeExpenseLines", "empExpenseDocuments"];
+    if (savedConfig) {
+      const configs = JSON.parse(savedConfig);
+      this.colKeys = configs[this.currentTable] || [];
+      // const keys = Object.keys(this.rows[0] || {});
+      // console.warn(keys);
+      // const filteredList = keys.filter((item: any) => !keysToRemove.includes(item));
+      // this.colKeys = filteredList.map(key => ({ key, view: true, checked: true }));
+      // this.activeColumns = this.colKeys.filter(x => x.view == true)
+      // this.activeColumns.sort((a, b) => a.SortId - b.SortId);
+      // this.saveColumnsConfig();
+      if (!configs[this.currentTable]) {
+        const keys = Object.keys(this.rows[0] || {});
+        const filteredList = keys.filter((item: any) => !keysToRemove.includes(item));
+        this.colKeys = filteredList.map(key => ({ key, view: true, checked: true }));
+        this.activeColumns = this.colKeys.filter(x => x.view == true)
+        this.activeColumns.sort((a, b) => a.SortId - b.SortId);
+        this.saveColumnsConfig();
+      } else {
+        this.activeColumns = this.colKeys.filter(x => x.view == true)
+        this.activeColumns.sort((a, b) => a.SortId - b.SortId);
+      }
+
+    } else {
+      const keys = Object.keys(this.rows[0] || {});
+      const filteredList = keys.filter((item: any) => !keysToRemove.includes(item));
+      this.colKeys = filteredList.map(key => ({ key, view: true, checked: true }));
+      this.activeColumns = this.colKeys.filter(x => x.view == true)
+      this.activeColumns.sort((a, b) => a.SortId - b.SortId);
+      this.saveColumnsConfig();
+    }
+  }
+  isNumber(value: any): boolean {
+    return !isNaN(value) && typeof value === 'number';
+  }
+  saveColumnsConfig() {
+    const savedConfig = localStorage.getItem('tableConfigs');
+    const configs = savedConfig ? JSON.parse(savedConfig) : {};
+    configs[this.currentTable] = this.colKeys;
+    localStorage.setItem('tableConfigs', JSON.stringify(configs));
+  }
 
   ngOnInit() {
+    this.globalServ.getMyCompLabels('expensesComp');
+    this.globalServ.getMyCompPlaceHolders('expensesComp');
     this.getDepartments();
     this.getProjects();
     this.employeesByDepartmentAndProject();
@@ -134,10 +237,15 @@ export class ExpenseReportComponent implements OnInit {
         this.spinner.hide();
         const rows = res.response.map(element => ({
           ...element,
+          billDt: moment(element.billDate).format('YYYY-MM-DD'),
           dayName: this.utilServ.dayNames[new Date(element.billDate).getDay()],
         }))
         this.rows = rows;
+        if (this.rows.length > 0) {
+          this.loadColumnsConfig();
+        }
         this.temp = rows;
+        this.message = 'modified';
       },
         err => {
           this.spinner.hide();
@@ -151,46 +259,52 @@ export class ExpenseReportComponent implements OnInit {
   }
 
   savePDF(): void {
+    const keys = this.activeColumns.map(item => item.key).join(',');
     this.spinner.show();
     this.httpGet.getPdf('reports/expenses/pdf?month=' + this.reportObj.month + '&year='
-      + this.reportObj.year + '&empCode=' + this.reportObj.empCode + '&status=' + this.reportObj.status
+      + this.reportObj.year + '&empCode=' + this.reportObj.empCode + '&status=' + this.reportObj.status + '&reqColumns=' + keys
     ).subscribe((res: any) => {
       this.spinner.hide();
       const file = new Blob([res], { type: 'application/pdf' });
       // const fileURL = URL.createObjectURL(file);
       // window.open(fileURL);
-      FileSaver.saveAs(file, 'Expense-report' + new Date().getTime() + PDF_EXTENSION);
-      this.global.showSuccessPopUp('Pdf', 'success');
+      const fileName = 'Expense_report_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_')
+      FileSaver.saveAs(file, fileName + PDF_EXTENSION);
+      this.globalServ.showSuccessPopUp('Pdf', 'success', fileName);
     },
       err => {
         this.spinner.hide();
+        const error = err.error.status ? err.error.status.message : 'UNKNOWN ERROR OCCURRED'
         Swal.fire({
           title: 'Error!',
-          text: err.error.status.message,
-          icon: 'error',
-        });
+            text: error,
+            icon: 'error',
+          })
       })
   }
   saveExcel() {
+    const keys = this.activeColumns.map(item => item.key).join(',');
     this.spinner.show();
     this.httpGet.getExcel('reports/expense/xls?month=' + this.reportObj.month + '&year=' + this.reportObj.year + '&empCode=' +
-      this.reportObj.empCode + '&status=' + this.reportObj.status
+      this.reportObj.empCode + '&status=' + this.reportObj.status + '&reqColumns=' + keys
     ).subscribe((res: any) => {
       this.spinner.hide();
       const data: Blob = new Blob([res], { type: EXCEL_TYPE });
+      const fileName = 'Expense_report_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_')
       FileSaver.saveAs(
         data,
-        'Expense-report' + new Date().getTime() + EXCEL_EXTENSION
+        fileName + EXCEL_EXTENSION
       );
-      this.global.showSuccessPopUp('Excel', 'success');
+      this.globalServ.showSuccessPopUp('Excel', 'success', fileName);
     },
       err => {
         this.spinner.hide();
+        const error = err.error.status ? err.error.status.message : 'UNKNOWN ERROR OCCURRED'
         Swal.fire({
           title: 'Error!',
-          text: err.error.status.message,
-          icon: 'error',
-        })
+            text: error,
+            icon: 'error',
+          })
       });
   }
 }

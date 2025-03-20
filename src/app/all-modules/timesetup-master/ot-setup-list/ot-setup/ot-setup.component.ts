@@ -16,7 +16,6 @@ import Swal from 'sweetalert2';
 })
 export class OtSetupComponent implements OnInit, OnDestroy {
   overtimesetup: FormGroup;
-  labels = [];
   charLimit: number;
   salaryCompCodes = [];
   view = false;
@@ -40,29 +39,19 @@ export class OtSetupComponent implements OnInit, OnDestroy {
     private render: Renderer2,
     private el: ElementRef,
     private spinner: NgxSpinnerService,
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private httpPut: HttpPutService,
     private fb: FormBuilder) {
   }
-  getOtSetupLabels() {
-    this.spinner.show();
-    this.globalServ.getLabels('overtimesetup').subscribe((res: any) => {
-      this.labels = res.response;
-      this.spinner.hide();
-    }, (err) => {
-      this.spinner.hide();
-      console.error(err.error.status.message);
-    });
-  }
+
   ngOnInit() {
-    // this.getOtSetupLabels();
     this.overtimesetup = this.fb.group({
       overtimeCode: [null, [Validators.required, this.httpPost.customValidator()]],
-      allowOtOnWorkdays: [false],
+      allowOtOnWorkdays: [true],
       allowOtOnHoliday: [false],
       allowOtOnWeekend: [false],
       allowFullAttendanceBonus: [true],
-      addEmpManually: true,
+      addEmpManually: false,
       otRatePct: [100, [Validators.required]],
       salaryComponentCode: [null],
       allowFullOt: [false],
@@ -94,18 +83,18 @@ export class OtSetupComponent implements OnInit, OnDestroy {
     this.init();
   }
   allowMax(value) {
-    if (value == 'otRatePct' && this.overtimesetup.controls.otRatePct.value > 100) {
-      this.overtimesetup.controls.otRatePct.setValue(100);
-    }
+    // if (value == 'otRatePct' && this.overtimesetup.controls.otRatePct.value > 200) {
+    //   // this.overtimesetup.controls.otRatePct.setValue(100);
+    // }
     if (value == 'allowOtAfter' && this.overtimesetup.controls.allowOtAfter.value > 12) {
       this.overtimesetup.controls.allowOtAfter.setValue(2);
     }
-    if (value == 'weOtRatePct' && this.overtimesetup.controls.weOtRatePct.value > 100) {
-      this.overtimesetup.controls.weOtRatePct.setValue(100);
-    }
-    if (value == 'holOtRatePct' && this.overtimesetup.controls.holOtRatePct.value > 100) {
-      this.overtimesetup.controls.holOtRatePct.setValue(100);
-    }
+    // if (value == 'weOtRatePct' && this.overtimesetup.controls.weOtRatePct.value > 200) {
+    //   this.overtimesetup.controls.weOtRatePct.setValue(100);
+    // }
+    // if (value == 'holOtRatePct' && this.overtimesetup.controls.holOtRatePct.value > 100) {
+    //   this.overtimesetup.controls.holOtRatePct.setValue(100);
+    // }
     if (value == 'holAllowOtAfter' && this.overtimesetup.controls.holAllowOtAfter.value > 12) {
       this.overtimesetup.controls.holAllowOtAfter.setValue(12);
     }
@@ -118,9 +107,19 @@ export class OtSetupComponent implements OnInit, OnDestroy {
   }
   checkInital() {
     if (this.overtimesetup.controls.allowOtOnWorkdays.value == false) {
-      this.overtimesetup.controls.otRatePct.disable();
       this.overtimesetup.controls.otRatePct.setValue(null);
+      this.overtimesetup.controls.otRatePct.disable();
+      this.overtimesetup.controls.otRatePct.clearValidators();
+      this.overtimesetup.controls.otRatePct.updateValueAndValidity();
+
+      this.overtimesetup.controls.salaryComponentCode.setValue(null);
       this.overtimesetup.controls.salaryComponentCode.disable();
+      this.overtimesetup.controls.salaryComponentCode.clearValidators();
+      this.overtimesetup.controls.salaryComponentCode.updateValueAndValidity();
+
+
+      this.overtimesetup.controls.otBasis.clearValidators();
+      this.overtimesetup.controls.otBasis.updateValueAndValidity();
       const otBH = document.getElementById("otBasis-Hours") as HTMLInputElement;
       otBH.disabled = true;
       otBH.checked = null;
@@ -131,7 +130,10 @@ export class OtSetupComponent implements OnInit, OnDestroy {
       }
       this.overtimesetup.controls.allowOtAfter.disable();
       this.overtimesetup.controls.allowOtAfter.setValue(null);
-
+      this.overtimesetup.controls.allowOtAfter.clearValidators();
+      this.overtimesetup.controls.allowOtAfter.updateValueAndValidity();
+      this.overtimesetup.controls.allowFullOt.clearValidators();
+      this.overtimesetup.controls.allowFullOt.updateValueAndValidity();
       const aft = document.getElementById("allowFullOt-True") as HTMLInputElement;
       if (aft) {
         aft.disabled = true;
@@ -144,7 +146,16 @@ export class OtSetupComponent implements OnInit, OnDestroy {
     }
     if (this.overtimesetup.controls.allowOtOnWorkdays.value == true) {
       this.overtimesetup.controls.otRatePct.enable();
+      this.overtimesetup.controls.otRatePct.setValidators([Validators.required]);
+      this.overtimesetup.controls.otRatePct.updateValueAndValidity();
+
       this.overtimesetup.controls.salaryComponentCode.enable();
+      this.overtimesetup.controls.salaryComponentCode.setValidators([Validators.required]);
+      this.overtimesetup.controls.salaryComponentCode.updateValueAndValidity();
+
+      this.overtimesetup.controls.otBasis.setValidators([Validators.required]);
+      this.overtimesetup.controls.otBasis.updateValueAndValidity();
+
       const otBH = document.getElementById("otBasis-Hours") as HTMLInputElement;
       otBH.disabled = false;
       const otBS = document.getElementById("otBasis-ShiftEnd") as HTMLInputElement;
@@ -154,34 +165,71 @@ export class OtSetupComponent implements OnInit, OnDestroy {
       aft.disabled = false;
       const aff = document.getElementById("allowFullOt-False") as HTMLInputElement;
       aff.disabled = false;
+      this.overtimesetup.controls.allowOtAfter.setValidators([Validators.required]);
+      this.overtimesetup.controls.allowOtAfter.updateValueAndValidity();
+      this.overtimesetup.controls.allowFullOt.setValidators([Validators.required]);
+      this.overtimesetup.controls.allowFullOt.updateValueAndValidity();
     }
 
     if (this.overtimesetup.controls.allowOtOnWeekend.value == false) {
       this.overtimesetup.controls.weOtRatePct.disable();
       this.overtimesetup.controls.weOtRatePct.setValue(null);
+      this.overtimesetup.controls.weOtRatePct.clearValidators();
+      this.overtimesetup.controls.weOtRatePct.updateValueAndValidity();
+
       this.overtimesetup.controls.weAllowOtAfter.disable();
       this.overtimesetup.controls.weAllowOtAfter.setValue(null);
+      this.overtimesetup.controls.weAllowOtAfter.clearValidators();
+      this.overtimesetup.controls.weAllowOtAfter.updateValueAndValidity();
+
       this.overtimesetup.controls.weSalaryComponentCode.disable();
       this.overtimesetup.controls.weSalaryComponentCode.setValue(null);
+      this.overtimesetup.controls.weSalaryComponentCode.clearValidators();
+      this.overtimesetup.controls.weSalaryComponentCode.updateValueAndValidity();
     }
     if (this.overtimesetup.controls.allowOtOnWeekend.value == true) {
       this.overtimesetup.controls.weOtRatePct.enable();
+      this.overtimesetup.controls.weOtRatePct.setValidators([Validators.required]);
+      this.overtimesetup.controls.weOtRatePct.updateValueAndValidity();
+
       this.overtimesetup.controls.weAllowOtAfter.enable();
+      this.overtimesetup.controls.weAllowOtAfter.setValidators([Validators.required]);
+      this.overtimesetup.controls.weAllowOtAfter.updateValueAndValidity();
+
       this.overtimesetup.controls.weSalaryComponentCode.enable();
+      this.overtimesetup.controls.weSalaryComponentCode.setValidators([Validators.required]);
+      this.overtimesetup.controls.weSalaryComponentCode.updateValueAndValidity();
     }
 
     if (this.overtimesetup.controls.allowOtOnHoliday.value == false) {
       this.overtimesetup.controls.holOtRatePct.disable();
       this.overtimesetup.controls.holOtRatePct.setValue(null);
+      this.overtimesetup.controls.holOtRatePct.clearValidators();
+      this.overtimesetup.controls.holOtRatePct.updateValueAndValidity();
+
       this.overtimesetup.controls.holAllowOtAfter.disable();
       this.overtimesetup.controls.holAllowOtAfter.setValue(null);
+      this.overtimesetup.controls.holAllowOtAfter.clearValidators();
+      this.overtimesetup.controls.holAllowOtAfter.updateValueAndValidity();
+
       this.overtimesetup.controls.holSalaryComponentCode.disable();
       this.overtimesetup.controls.holSalaryComponentCode.setValue(null);
+      this.overtimesetup.controls.holSalaryComponentCode.clearValidators();
+      this.overtimesetup.controls.holSalaryComponentCode.updateValueAndValidity();
+
     }
     if (this.overtimesetup.controls.allowOtOnHoliday.value == true) {
       this.overtimesetup.controls.holOtRatePct.enable();
+      this.overtimesetup.controls.holOtRatePct.setValidators([Validators.required]);
+      this.overtimesetup.controls.holOtRatePct.updateValueAndValidity();
+
       this.overtimesetup.controls.holAllowOtAfter.enable();
+      this.overtimesetup.controls.holAllowOtAfter.setValidators([Validators.required]);
+      this.overtimesetup.controls.holAllowOtAfter.updateValueAndValidity();
+
       this.overtimesetup.controls.holSalaryComponentCode.enable();
+      this.overtimesetup.controls.holSalaryComponentCode.setValidators([Validators.required]);
+      this.overtimesetup.controls.holSalaryComponentCode.updateValueAndValidity();
 
     }
 
@@ -194,18 +242,34 @@ export class OtSetupComponent implements OnInit, OnDestroy {
       this.overtimesetup.controls.faBonusValueDays.setValue(null);
       this.overtimesetup.controls.faBonusValueFixed.disable();
       this.overtimesetup.controls.faBonusValueDays.disable();
+      this.overtimesetup.controls.faBonusType.clearValidators();
+      this.overtimesetup.controls.faBonusType.updateValueAndValidity();
     }
     if (this.overtimesetup.controls.allowFullAttendanceBonus.value == true) {
       this.overtimesetup.controls.faBonusType.enable();
+      this.overtimesetup.controls.faBonusValueFixed.enable();
+      this.overtimesetup.controls.faBonusValueDays.enable();
+      this.overtimesetup.controls.faBonusType.setValidators([Validators.required]);
+      this.overtimesetup.controls.faBonusType.updateValueAndValidity();
     }
   }
 
   faBonus() {
     if (this.overtimesetup.controls.faBonusType.value == 'Days') {
       this.overtimesetup.controls.faBonusValueFixed.setValue(null);
+      this.overtimesetup.controls.faBonusValueDays.setValidators([Validators.required]);
+      this.overtimesetup.controls.faBonusValueDays.updateValueAndValidity();
+      this.overtimesetup.controls.faBonusValueFixed.clearValidators();
+      this.overtimesetup.controls.faBonusValueFixed.updateValueAndValidity();
+
     }
     if (this.overtimesetup.controls.faBonusType.value == 'Fixed') {
       this.overtimesetup.controls.faBonusValueDays.setValue(null);
+      this.overtimesetup.controls.faBonusValueDays.clearValidators();
+      this.overtimesetup.controls.faBonusValueDays.updateValueAndValidity();
+
+      this.overtimesetup.controls.faBonusValueFixed.setValidators([Validators.required]);
+      this.overtimesetup.controls.faBonusValueFixed.updateValueAndValidity();
     }
   }
 
@@ -289,23 +353,38 @@ export class OtSetupComponent implements OnInit, OnDestroy {
     }
 
   }
-  getLabelDescription(divId: string): string {
-    const label = this.labels.find(item => item.colCode === divId);
-    return label ? label.labelDescription : '';
-  }
+  // getlabels() {
+  //   this.spinner.show();
+  //   this.httpGet.getLabelsForForm(1, 'overtimesetup').subscribe((res: any) => {
+  //     this.spinner.hide();
+  //     this.labels = res.response;
+  //     this.init();
+  //   },
+  //     (err) => {
+  //       this.spinner.hide();
+  //       Swal.fire({
+  //         icon: 'error',
+  //         title: 'Error!',
+  //         text: err.error?.status?.message,
+  //         showConfirmButton: true,
+  //       }).then(() => {
+  //         this.router.navigateByUrl('otSetup');
+  //       });
+  //     })
+  // }
 
-  hasInteger(colCode: string): boolean {
-    const label = this.labels.find(item => item.colCode === colCode);
-    return label?.labelDescription.includes('{integer}');
-  }
-  splitLabelDescription(colCode: string): { before: string, after: string } {
-    const label = this.labels.find(item => item.colCode === colCode);
-    const parts = label.labelDescription.split('{integer}');
-    return {
-      before: parts[0] || '',
-      after: parts[1] || ''
-    };
-  }
+  // hasInteger(colCode: string): boolean {
+  //   const label = this.labels.find(item => item.colCode === colCode);
+  //   return label?.labelDescription.includes('{integer}');
+  // }
+  // splitLabelDescription(colCode: string): { before: string, after: string } {
+  //   const label = this.labels.find(item => item.colCode === colCode);
+  //   const parts = label.labelDescription.split('{integer}');
+  //   return {
+  //     before: parts[0] || '',
+  //     after: parts[1] || ''
+  //   };
+  // }
   getsalaryCmpMaster() {
     this.httpGet.getMasterList('salarycomponents/active').subscribe((res: any) => {
       const salaryMasterList = res.response;

@@ -24,7 +24,6 @@ export class CreateSalarycmpComponent implements OnInit, OnDestroy {
   view = false;
   active = false;
   charLimit: number;
-  labels = [];
   rulesList: any;
   salaryComponentisDeduction = false;
 
@@ -40,7 +39,7 @@ export class CreateSalarycmpComponent implements OnInit, OnDestroy {
     private router: Router,
     private modalService: NgbModal,
 
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private utilServ: UtilService,
     private httpPut: HttpPutService,
     private spinner: NgxSpinnerService
@@ -113,19 +112,8 @@ export class CreateSalarycmpComponent implements OnInit, OnDestroy {
       });
     }
   }
-  salaryLabels() {
-    this.spinner.show();
-    this.globalServ.getLabels('salaryComponent').subscribe((res: any) => {
-      this.labels = res.response;
-      this.spinner.hide();
-    }, (err) => {
-      this.spinner.hide();
-      console.error(err.error.status.message);
-    });
-  }
 
   ngOnInit() {
-    // this.salaryLabels();
     this.salaryStructureForm = this.fb.group({
       componentCode: [null, [Validators.required, this.httpPost.customValidator()]],
       componentType: [null, Validators.required],
@@ -223,34 +211,34 @@ export class CreateSalarycmpComponent implements OnInit, OnDestroy {
           this.rulesList = {
             array: [],
             form: {
-            calcType: this.utilServ.editData.payRules[0]?.calcType,
-            fixedAmount: this.utilServ.editData.payRules[0]?.fixedAmount,
-            isConditional: this.utilServ.editData.payRules[0]?.isConditional,
-            payruleSetupFormArray: this.utilServ.editData.payRules,
-            percentage: this.utilServ.editData.payRules[0]?.percentage,
-            "ruleId": this.utilServ.editData.payRules[0]?.ruleId,
-            "ruleCode": this.utilServ.editData.payRules[0]?.ruleCode,
-            "payrollCode": this.utilServ.editData.payRules[0]?.payrollCode,
-            "componentCode": this.utilServ.editData.payRules[0]?.componentCode,
-            "parentComponentCode": this.utilServ.editData.payRules[0]?.parentComponentCode,
-            "comparator": this.utilServ.editData.payRules[0]?.comparator,
-            "comparatorComponent": this.utilServ.editData.payRules[0]?.comparatorComponent,
-            "param1Value": this.utilServ.editData.payRules[0]?.param1Value,
-            "param2Value": this.utilServ.editData.payRules[0]?.param2Value,
-            "isactive": this.utilServ.editData.payRules[0]?.isactive,
-            "isApproved": this.utilServ.editData.payRules[0]?.isApproved,
-            "buCode": this.utilServ.editData.payRules[0]?.buCode,
-            "tenantCode": this.utilServ.editData.payRules[0]?.tenantCode,
-            "createdby": this.utilServ.editData.payRules[0]?.createdby,
-            "createddate": this.utilServ.editData.payRules[0]?.createddate,
-            "lastmodifiedby": this.utilServ.editData.payRules[0]?.lastmodifiedby,
-            "lastmodifieddate": this.utilServ.editData.payRules[0]?.lastmodifieddate,
-            "approvedby": this.utilServ.editData.payRules[0]?.approvedby,
-            "approveddate": this.utilServ.editData.payRules[0]?.approveddate,
-            "isDeleted": this.utilServ.editData.payRules[0]?.isDeleted,
+              calcType: this.utilServ.editData.payRules[0]?.calcType,
+              fixedAmount: this.utilServ.editData.payRules[0]?.fixedAmount,
+              isConditional: this.utilServ.editData.payRules[0]?.isConditional,
+              payruleSetupFormArray: this.utilServ.editData.payRules,
+              percentage: this.utilServ.editData.payRules[0]?.percentage,
+              "ruleId": this.utilServ.editData.payRules[0]?.ruleId,
+              "ruleCode": this.utilServ.editData.payRules[0]?.ruleCode,
+              "payrollCode": this.utilServ.editData.payRules[0]?.payrollCode,
+              "componentCode": this.utilServ.editData.payRules[0]?.componentCode,
+              "parentComponentCode": this.utilServ.editData.payRules[0]?.parentComponentCode,
+              "comparator": this.utilServ.editData.payRules[0]?.comparator,
+              "comparatorComponent": this.utilServ.editData.payRules[0]?.comparatorComponent,
+              "param1Value": this.utilServ.editData.payRules[0]?.param1Value,
+              "param2Value": this.utilServ.editData.payRules[0]?.param2Value,
+              "isactive": this.utilServ.editData.payRules[0]?.isactive,
+              "isApproved": this.utilServ.editData.payRules[0]?.isApproved,
+              "buCode": this.utilServ.editData.payRules[0]?.buCode,
+              "tenantCode": this.utilServ.editData.payRules[0]?.tenantCode,
+              "createdby": this.utilServ.editData.payRules[0]?.createdby,
+              "createddate": this.utilServ.editData.payRules[0]?.createddate,
+              "lastmodifiedby": this.utilServ.editData.payRules[0]?.lastmodifiedby,
+              "lastmodifieddate": this.utilServ.editData.payRules[0]?.lastmodifieddate,
+              "approvedby": this.utilServ.editData.payRules[0]?.approvedby,
+              "approveddate": this.utilServ.editData.payRules[0]?.approveddate,
+              "isDeleted": this.utilServ.editData.payRules[0]?.isDeleted,
+            }
           }
         }
-      }
       }
       // this.utilServ.editData.payRules.forEach(element => {
       //   this.rulesList.push(element)
@@ -361,24 +349,6 @@ export class CreateSalarycmpComponent implements OnInit, OnDestroy {
   //     }
   //   );
   // }
-
-  getLabelDescription(divId: string): string {
-    const label = this.labels.find(item => item.colCode === divId);
-    return label ? label.labelDescription : '';
-  }
-
-  hasInteger(colCode: string): boolean {
-    const label = this.labels.find(item => item.colCode === colCode);
-    return label?.labelDescription.includes('{integer}');
-  }
-  splitLabelDescription(colCode: string): { before: string, after: string } {
-    const label = this.labels.find(item => item.colCode === colCode);
-    const parts = label.labelDescription.split('{integer}');
-    return {
-      before: parts[0] || '',
-      after: parts[1] || ''
-    };
-  }
 
   cancel() {
     this.router.navigateByUrl('payrollsetup/salaryStructure')

@@ -68,7 +68,7 @@ export class EmployeeProfileComponent implements OnInit {
     private fb: FormBuilder,
     private httpPost: HttpPostService,
     private acRoute: ActivatedRoute,
-    private global: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private httpPutServ: HttpPutService
   ) {
     this.config = {
@@ -113,9 +113,14 @@ export class EmployeeProfileComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.globalServ.getMyCompLabels('empProfile');
+    this.globalServ.getMyCompPlaceHolders('empProfile');
+    this.globalServ.getMyCompLabels('expensesComp');
+    this.globalServ.getMyCompPlaceHolders('expensesComp');
+
     this.getEmpALLreports();
     this.getUserProfile.call(this);
-    this.dateFormat = this.global.dateFormat;
+    this.dateFormat = this.globalServ.dateFormat;
     this.getEmployees();
     this.getEmpDocs();
     this.dateChange();
@@ -365,7 +370,7 @@ export class EmployeeProfileComponent implements OnInit {
     }
     this.httpPutServ.doPut('employee/image', JSON.stringify(obj))
       .subscribe((res: any) => {
-        this.spinner.hide();
+        this.spinner.hide();  
         if (res.status.message == 'SUCCESS') {
           Swal.fire({
             title: 'Success!',

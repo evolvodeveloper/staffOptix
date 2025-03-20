@@ -7,7 +7,10 @@
         (click)="back()"
         aria-label="back"></i>
       <h3 class="ms-4 page-title">
-        {{ view ? "View" : update ? "Update" : "Create" }} Payroll Master
+        {{ view ? globalServ.getGlobalNames('view') : (update ?
+        globalServ.getGlobalNames('update')
+        :globalServ.getGlobalNames('create')) }}
+        {{globalServ.showLabel('payrollMasterHeader')}}
       </h3>
     </div>
   </div>
@@ -24,7 +27,8 @@
               style="width: 40px; height: 40px; z-index: 105">
               <img src="assets/img/icon/User_Add.svg" height="20" width="20" />
             </div>
-            <div class="step-title">1. Payroll User</div>
+            <div class="step-title">1.{{globalServ.showLabel('payrollUser')}}
+            </div>
           </ng-template>
 
           <!-- <form [formGroup]="addPayrollForm" > -->
@@ -33,43 +37,46 @@
               <div class="col-md-6"
                 *ngIf="view || update || allowAutoGenerateEmpCode">
                 <div class="form-group">
-                  <label class="col-form-label" for="empCode">Employee
-                    Code&nbsp;<span
+                  <label class="col-form-label"
+                    for="empCode">{{globalServ.getGlobalNames('employeeCode')}}&nbsp;<span
                       class="text-danger">*</span></label>
                   <input
                     class="form-control"
                     type="text"
-                    placeholder="Enter Employee Code"
+                    placeholder="{{globalServ.showPlaceholder('enterEmpCode')}}"
                     id="empCode"
                     formControlName="employeeCode" />
-                        <div *ngIf="addPayrollForm.get('employeeCode').hasError('invalidFormat')"
-                          style="color: #dc3545">field should not contain special characters</div>
+                  <div
+                    *ngIf="addPayrollForm.get('employeeCode').hasError('invalidFormat')"
+                    style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-form-label" for="employeeRefCode">Employee
-                    Ref Code</label>
+                  <label class="col-form-label" for="employeeRefCode">
+                    {{globalServ.getGlobalNames('EmployeeRefCode')}}</label>
                   <input
                     class="form-control"
                     type="text"
-                    placeholder="Enter Employee Ref Code"
+                    placeholder="{{globalServ.showPlaceholder('employeeRefCode')}}"
                     id="employeeRefCode"
                     formControlName="employeeRefCode" />
-                    <div *ngIf="addPayrollForm.get('employeeRefCode').hasError('invalidFormat')"
-                          style="color: #dc3545">field should not contain special characters</div>
+                  <div
+                    *ngIf="addPayrollForm.get('employeeRefCode').hasError('invalidFormat')"
+                    style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
                 </div>
               </div>
 
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-form-label" for="employeeName">Employee
-                    Name &nbsp;<span class="text-danger">*</span></label>
+                  <label class="col-form-label"
+                    for="employeeName">{{globalServ.getGlobalNames('employeeName')}}&nbsp;<span
+                      class="text-danger">*</span></label>
                   <input
                     class="form-control"
                     type="text"
                     aria-label="Employee"
-                    placeholder="Enter Employee Name"
+                    placeholder="{{globalServ.showPlaceholder('enterEmployeeName')}}"
                     matInput
                     formControlName="employeeName"
                     [matAutocomplete]="auto"
@@ -85,7 +92,7 @@
                       {{ option.employeeName }}
                     </mat-option>
                   </mat-autocomplete>
-                  <div
+                  <div class="mt-2"
                     *ngIf="
                     addPayrollForm.controls['employeeName'].invalid &&
                     (addPayrollForm.controls['employeeName'].dirty ||
@@ -95,48 +102,53 @@
                     <div
                       *ngIf="addPayrollForm.controls['employeeName'].errors.required"
                       style="color: #dc3545">
-                      Employee Name is required.
+                      {{globalServ.getGlobalNames('employeeName')}}
+                      {{globalServ.showGlobalErrors('required')}}
                     </div>
-                  </div> 
-                    <div *ngIf="addPayrollForm.get('employeeName').hasError('invalidFormat')"
-                          style="color: #dc3545">field should not contain special characters</div>
-                </div>
-              </div>
-
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label class="col-form-label" for="lastName">Last Name
-                  </label>
-                  <input
-                    class="form-control"
-                    type="text"
-                    placeholder="Enter Employee Last Name"
-                    id="lastName"
-                    formControlName="lastName" />
-                      <div *ngIf="addPayrollForm.get('lastName').hasError('invalidFormat')"
-                          style="color: #dc3545">field should not contain special characters</div>
+                  </div>
+                  <div
+                    *ngIf="addPayrollForm.get('employeeName').hasError('invalidFormat')"
+                    style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
                 </div>
               </div>
               
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-form-label" for="aliasName">Alias Name
+                  <label class="col-form-label" for="aliasName"> {{globalServ.getGlobalNames('aliasName')}}
                   </label>
                   <input
                     class="form-control"
                     type="text"
-                    placeholder="Enter Alias Name"
+                     placeholder="{{globalServ.showGlobalplaceholders('enterAliasName')}}"
                     id="aliasName"
                     formControlName="aliasName" />
                       <div *ngIf="addPayrollForm.get('aliasName').hasError('invalidFormat')"
-                          style="color: #dc3545">field should not contain special characters</div>
+                          style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
                 </div>
               </div>
 
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="col-form-label"
-                    for="designation">Designation</label>
+                    for="lastName">{{globalServ.showLabel('lastName')}}
+                  </label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="{{globalServ.showPlaceholder('enterLastName')}}"
+                    id="lastName"
+                    formControlName="lastName" />
+                  <div
+                    *ngIf="addPayrollForm.get('lastName').hasError('invalidFormat')"
+                    style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-form-label"
+                    for="designation">{{globalServ.getGlobalNames('designation')}}
+                  </label>
                   <select class="form-select" id="designation"
                     formControlName="designation">
                     <option selected value>-</option>
@@ -151,7 +163,7 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="col-form-label"
-                    for="deptCode">Department&nbsp;<span
+                    for="deptCode">{{globalServ.getGlobalNames('department')}}&nbsp;<span
                       class="text-danger">*</span></label>
                   <select class="form-select" id="deptCode"
                     formControlName="deptCode">
@@ -162,7 +174,7 @@
                       {{ dep.deptName }}
                     </option>
                   </select>
-                  <div
+                  <div class="mt-2"
                     *ngIf="
                     addPayrollForm.controls['deptCode'].invalid &&
                     (addPayrollForm.controls['deptCode'].dirty ||
@@ -172,14 +184,17 @@
                     <div
                       *ngIf="addPayrollForm.controls['deptCode'].errors.required"
                       style="color: #dc3545">
-                      Department is required.
+                      {{globalServ.getGlobalNames('department')}}
+                      {{globalServ.showGlobalErrors('required')}}
                     </div>
                   </div>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-form-label">Employee Type </label>
+                  <label
+                    class="col-form-label">{{globalServ.showLabel('employeeType')}}
+                  </label>
                   <select class="form-select" formControlName="employeeType">
                     <option selected value>-</option>
                     <option
@@ -192,8 +207,8 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-form-label" for="payrollType">Payroll
-                    Type&nbsp;<span
+                  <label class="col-form-label"
+                    for="payrollType">{{globalServ.showLabel('payrollType')}}&nbsp;<span
                       class="text-danger">*</span></label>
                   <select
                     class="form-select"
@@ -206,7 +221,7 @@
                     </option>
                   </select>
 
-                  <div
+                  <div class="mt-2"
                     *ngIf="
                     addPayrollForm.controls['payrollType'].invalid &&
                     (addPayrollForm.controls['payrollType'].dirty ||
@@ -216,7 +231,8 @@
                     <div
                       *ngIf="addPayrollForm.controls['payrollType'].errors.required"
                       style="color: #dc3545">
-                      Payroll Type is required.
+                      {{globalServ.showLabel('payrollType')}}
+                      {{globalServ.showGlobalErrors('required')}}
                     </div>
                   </div> </div>
               </div>
@@ -224,7 +240,7 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="col-form-label"
-                    for="payrollCode">Payroll&nbsp;<span
+                    for="payrollCode">{{globalServ.getGlobalNames('payroll')}}&nbsp;<span
                       class="text-danger">*</span></label>
                   <select
                     id="payrollCode"
@@ -238,7 +254,7 @@
                     </option>
                   </select>
 
-                  <div
+                  <div class="mt-2"
                     *ngIf="
                     addPayrollForm.controls['payrollCode'].invalid &&
                     (addPayrollForm.controls['payrollCode'].dirty ||
@@ -248,14 +264,17 @@
                     <div
                       *ngIf="addPayrollForm.controls['payrollCode'].errors.required"
                       style="color: #dc3545">
-                      Payroll is required.
+                      {{globalServ.getGlobalNames('payroll')}}
+                      {{globalServ.showGlobalErrors('required')}}
                     </div>
                   </div> </div>
               </div>
 
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-form-label">Capture Type </label>
+                  <label
+                    class="col-form-label">{{globalServ.showLabel('captureType')}}
+                  </label>
                   <select class="form-select" formControlName="capturePolicy">
                     <option selected value>-</option>
                     <option
@@ -269,7 +288,7 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="col-form-label"
-                    for="projectCode">Project</label>
+                    for="projectCode">{{globalServ.getGlobalNames('project')}}</label>
                   <select
                     class="form-select"
                     id="projectCode"
@@ -285,7 +304,7 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="col-form-label"
-                    for="policyCode">Tracking Policy</label>
+                    for="policyCode">{{globalServ.showLabel('trackingPolicy')}}</label>
                   <select
                     class="form-select"
                     id="policyCode"
@@ -313,63 +332,75 @@
 
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-form-label" for="bankAccountNo">Bank Account
-                    Number</label>
+                  <label class="col-form-label"
+                    for="bankAccountNo">{{globalServ.getGlobalNames('bankAccountNumber')}}</label>
                   <input
                     class="form-control"
                     id="bankAccountNo"
-                    type="number" placeholder="Enter Account number"
+                    type="number"
+                    placeholder="{{globalServ.showPlaceholder('enterBankAccountNumber')}}"
                     formControlName="bankAccountNo">
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-form-label" for="bankName">Bank Name</label>
+                  <label class="col-form-label" for="bankName">
+                    {{globalServ.getGlobalNames('bankName')}}
+                  </label>
                   <input
                     id="bankName"
                     class="form-control"
-                    type="text" placeholder="Enter Bank Name"
+                    type="text"
+                    placeholder="{{globalServ.showPlaceholder('enterBankName')}}"
                     formControlName="bankName">
                 </div>
               </div>
 
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-form-label" for="bankCode">Bank Code</label>
+                  <label class="col-form-label" for="bankCode">
+                    {{globalServ.getGlobalNames('bankCode')}}
+                  </label>
                   <input
                     id="bankCode"
                     class="form-control"
-                    type="text" placeholder="Enter Bank Code/IFSC Code"
+                    type="text"
+                    placeholder="{{globalServ.showPlaceholder('enterBankCode')}}"
                     formControlName="bankCode">
                 </div>
               </div>
 
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-form-label" for="bankBranch">Bank
-                    Branch</label>
+                  <label class="col-form-label" for="bankBranch">
+                    {{globalServ.getGlobalNames('bankBranch')}}
+                  </label>
                   <input
                     id="bankBranch"
                     class="form-control"
-                    type="text" placeholder="Enter Branch name of the bank"
+                    type="text"
+                    placeholder="{{globalServ.showPlaceholder('enterBankBranch')}}"
                     formControlName="bankBranch">
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-form-label" for="bankAddress">Bank
-                    Address</label>
+                  <label class="col-form-label" for="bankAddress">
+                    {{globalServ.getGlobalNames('bankAddress')}}
+                  </label>
                   <input
                     id="bankAddress"
                     class="form-control"
-                    type="text" placeholder="Enter Address of bank"
+                    type="text"
+                    placeholder="{{globalServ.showPlaceholder('enterBankAddress')}}"
                     formControlName="bankAddress">
                 </div>
               </div>
 
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-form-label" for="supervisor">Supervisor
+                  <label class="col-form-label"
+                    for="supervisor">{{globalServ.showLabel('supervisor')}}
                   </label>
                   <select class="form-select" formControlName="supervisorId"
                     id="supervisor"
@@ -385,8 +416,9 @@
 
               <div class="col-sm-6" *ngIf="update || view">
                 <div class="form-group">
-                  <label class="col-form-label" for="lastWorkingDate">Last
-                    Working Date</label>
+                  <label class="col-form-label" for="lastWorkingDate">
+                    {{globalServ.getGlobalNames('lastWorkingDate')}}
+                  </label>
                   <input
                     class="form-control datetimepicker"
                     type="date"
@@ -401,14 +433,16 @@
                   id="isactive"
                   formControlName="isActive" />
                 <label class="form-check-label" for="isactive">
-                  Is Active
+                  {{globalServ.getGlobalNames('active')}}
                 </label>
               </div>
 
               <!-- </div> -->
               <section class *ngIf="!view">
                 <button class="btn delete-btn  me-3" id="cancel"
-                  (click)="back()">Cancel</button>
+                  (click)="back()">
+                  {{globalServ.getGlobalNames('cancel')}}
+                </button>
 
                 <button
                   [disabled]="addPayrollForm.invalid"
@@ -416,7 +450,7 @@
                   type="submit"
                   id="Next"
                   cdkStepperNext>
-                  Next
+                  {{globalServ.getGlobalNames('next')}}
                 </button>
 
               </section>
@@ -424,13 +458,15 @@
                 <button type="button" id="close_btn"
                   class="btn delete-btn  me-3"
                   data-dismiss="modal"
-                  (click)="back()">Close</button>
+                  (click)="back()">
+                  {{globalServ.getGlobalNames('close')}}
+                </button>
                 <button
                   class="btn add-btn"
                   type="submit"
                   id="Next"
                   cdkStepperNext>
-                  Next
+                  {{globalServ.getGlobalNames('next')}}
                 </button>
               </section>
             </div>
@@ -445,13 +481,16 @@
               style="width: 40px; height: 40px; z-index: 106">
               <img src="assets/img/icon/Compass.svg" height="20" width="20" />
             </div>
-            <div class="step-title">2. Salary Info</div>
+            <div class="step-title">2.
+              {{globalServ.showLabel('salaryInfo')}}</div>
           </ng-template>
 
           <div #stepTwo>
             <div class="col-sm-6">
               <div class="form-group">
-                <label class="col-form-label">Total Salary &nbsp;<span
+                <label
+                  class="col-form-label">{{globalServ.showLabel('totalSalary')}}
+                  &nbsp;<span
                     class="text-danger">*</span></label>
                 <input
                   class="form-control"
@@ -463,12 +502,14 @@
                         addPayrollForm.get('salary').invalid &&
                         addPayrollForm.get('salary').touched
                       "
-                  class="text-danger">
-                  Salary is required</small>
+                  class="text-danger mt-2">
+                  {{globalServ.showLabel('totalSalary')}}
+                  {{globalServ.showGlobalErrors('required')}}
+                </small>
               </div>
               <!-- <div *ngIf="addPayrollForm.controls.rulesQuestion.value === true">
                 <button class="btn btn-primary"
-                  (click)="getsalaryComp()">Calculate</button>
+                  (click)="getsalaryComp()">{{globalServ.showLabel('calculate')}}</button>
               </div> -->
             </div>
             <div class="form-check col-md-10 mt-2" *ngIf="hasRules">
@@ -479,12 +520,14 @@
                 [formControl]="addPayrollForm.controls.rulesQuestion"
                 (change)="getsalaryComp()" />
               <label class="form-check-label" for="rulesQuestion">
-                Do you want to calculate salary by pay rules
+                {{globalServ.showLabel('rulesQuestion')}}
               </label>
             </div>
             <div class="row mt-5"
               *ngIf="showComponentCode && salaryComponents.length > 0">
-              <h4>Salary Breakup</h4>
+              <h4>
+                {{globalServ.getGlobalNames('salaryBreakup')}}
+              </h4>
               <div class="col-md-12 d-flex">
                 <div class="table-leftblock col-md-6">
                   <table
@@ -493,10 +536,14 @@
                       class="thead-all">
                       <tr
                         class="tr-th-all">
-                        <th class="text-left">Earnings</th>
+                        <th class="text-left">
+                          {{globalServ.getGlobalNames('earnings')}}
+                        </th>
                         <th class="text-center">%</th>
                         <th
-                          class="text-end">Amount</th>
+                          class="text-end">
+                          {{globalServ.getGlobalNames('amount')}}
+                        </th>
                       </tr>
                     </thead>
                     <tbody
@@ -554,9 +601,13 @@
                       <tr
                         class="tr-th-all">
                         <th
-                          class="text-left">Deductions</th>
+                          class="text-left">
+                          {{globalServ.getGlobalNames('deductions')}}
+                        </th>
                         <th class="text-center">%</th>
-                        <th class="text-end">Amount</th>
+                        <th class="text-end">
+                          {{globalServ.getGlobalNames('amount')}}
+                        </th>
                       </tr>
                     </thead>
                     <tbody
@@ -616,8 +667,7 @@
                   <div
                     class="d-flex justify-content-between">
                     <span
-                      style="padding-left: 15px; ">Gross
-                      Earnings</span>
+                      style="padding-left: 15px; ">{{globalServ.getGlobalNames('GrossEarnings')}}</span>
                     <span
                       style="padding-right: 15px;">
                       {{totalearningAmt
@@ -631,8 +681,9 @@
                   <div
                     class="d-flex justify-content-between">
                     <span
-                      style="padding-left: 15px;">Total
-                      Deductions</span>
+                      style="padding-left: 15px;">
+                      {{globalServ.getGlobalNames('TotalDeductions')}}
+                    </span>
                     <span
                       style="padding-right: 15px;">
                       {{totalDeduction
@@ -649,17 +700,12 @@
                 <span
                   style="padding-left: 15px;">
 
-                  Total
-                  Net
-                  Payable
+                  {{globalServ.showLabel('totalNetPayable')}}
                   <span
                     class="block text-muted">
-
-                    Gross
-                    Earnings
+                    {{globalServ.getGlobalNames('GrossEarnings')}}
                     -
-                    Total
-                    Deductions
+                    {{globalServ.getGlobalNames('TotalDeductions')}}
                   </span>
                 </span>
                 <span
@@ -688,7 +734,7 @@
                   class="btn btn-secondary secondary-btn"
                   type="submit"
                   cdkStepperPrevious>
-                  Previous
+                  {{globalServ.getGlobalNames('previous')}}
                 </button>
                 <!-- if user want to submit only employee -->
                 <span>
@@ -696,12 +742,12 @@
                     class="btn add-btn"
                     (click)="submit()"
                     type="submit">
-                    Save
+                    {{globalServ.getGlobalNames('save')}}
                   </button>
                   <button *ngIf="update"
                     class="btn add-btn"
                     type="submit" (click)="Update()">
-                    Update
+                    {{globalServ.getGlobalNames('update')}}
                   </button>
                 </span>
               </section>
@@ -710,14 +756,16 @@
                   class="btn btn-secondary secondary-btn"
                   type="submit"
                   cdkStepperPrevious>
-                  Previous
+                  {{globalServ.getGlobalNames('previous')}}
                 </button>
                 <!-- if user want to submit only employee -->
                 <span>
                   <button style="float: inline-end;" type="button"
                     id="close_btn" class="btn delete-btn  me-3"
                     data-dismiss="modal"
-                    (click)="back()">Close</button>
+                    (click)="back()">
+                    {{globalServ.getGlobalNames('close')}}
+                  </button>
                 </span>
               </section>
             </div>

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
@@ -63,9 +62,7 @@ export class VisitMappingComponent implements OnInit {
         });
       }
       else {
-        this.rows = rows;
-        console.log(this.rows);
-        
+        this.rows = rows;        
       }
       // const groupedByConfigId = rows.reduce((acc, visit) => {
       //   // if (visit.empCode ) { // Check if empCode is not null
@@ -166,14 +163,11 @@ export class VisitMappingComponent implements OnInit {
     this.config.currentPage = 1;
   }
 
-  viewData(row) {
-    console.log(row);
-    
+  viewData(row) {    
     this.UtilServ.viewData = row;
     this.router.navigateByUrl('setup/visit-mapping/create-mapping');
   }
   editData(row) {
-    console.log(row);
     this.UtilServ.editData = row;
     this.router.navigateByUrl('setup/visit-mapping/create-mapping');
   }

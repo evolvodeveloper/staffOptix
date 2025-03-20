@@ -6,7 +6,8 @@
                 <div class="d-flex align-items-baseline">
                     <i style="font-size:20px" class="fa fa-arrow-left"
                         routerLink="/rpt" aria-label="back"></i>
-                    <h3 class="ms-4 page-title">Absent Report</h3>
+                    <h3 class="ms-4 page-title">
+                        {{globalServ.showLabel('absentReportHeader')}}</h3>
                 </div>
 
             </div>
@@ -16,7 +17,7 @@
 
         <div class="col-md">
             <div class>
-                <label>Department</label>
+                <label> {{globalServ.getGlobalNames('department')}}</label>
                 <select id="departments" class="form-select"
                     [(ngModel)]="reportObj.department"
                     (change)="employeesByDepartmentAndProject()"
@@ -28,7 +29,7 @@
         </div>
         <div class="col-md">
             <div class>
-                <label>Project</label>
+                <label>{{globalServ.getGlobalNames('project')}}</label>
                 <select class="form-select" id="projects"
                     [(ngModel)]="reportObj.projectCode" (change)="modified()"
                     (change)="employeesByDepartmentAndProject()">
@@ -39,11 +40,11 @@
         </div>
         <div class="col-md d-flex" [ngClass]="{'d-flex':!stopSpinner}">
             <div class *ngIf="stopSpinner">
-                <label
-                    class>Employee</label>
+                <label class>{{globalServ.getGlobalNames('employee')}}</label>
                 <ng-select
                     [items]="employee"
                     bindLabel="mergeName"
+                    (change)="modified()"
                     bindValue="employeeCode"
                     [multiple]="false"
                     placeholder="Select an employee"
@@ -56,8 +57,9 @@
 
         <div class="col-md">
             <div class>
-                <label>Date From & To</label>
+                <label>{{globalServ.getGlobalNames('dateFromandTo')}}</label>
                 <input id="selectedDateRange" type="text" ngxDaterangepickerMd
+                    [locale]="{format: 'DD-MM-YYYY'}"
                     [(ngModel)]="selectedDateRange" (change)="modified()"
                     class="form-control" />
             </div>
@@ -66,7 +68,9 @@
     </div>
     <div class="row g-2 mb-2 mt-2">
         <div class="col-sm-6 col-lg-2 ">
-            <label class="form-label ms-2">Show entries</label>
+            <label class="form-label ms-2">
+                {{globalServ.getGlobalNames('ShowEntries')}}
+            </label>
             <select class="form-select" (change)="resultsPerPage($event)">
                 <option value="25">25</option>
                 <option value="50">50</option>
@@ -74,62 +78,57 @@
                 <option value="all">All</option>
             </select>
         </div>
+        <div class="col-md d-flex align-items-end mb-3 ms-2"
+            style=" font-size: 25px;">
+            <i class="fa-solid fa-gear" data-bs-toggle="modal"
+                data-bs-target="#absentRptModel" *ngIf="rows.length > 0"
+                data-placement="right"></i>
+        </div>
+
         <div class="col-md  d-flex justify-content-end align-items-end">
             <button id="save_pdf" class="btn add-btn float-end mx-2"
                 [disabled]="rows.length === 0"
-                (click)="savePDF()">Save as PDF</button>
+                (click)="savePDF()"> {{globalServ.getGlobalNames('saveAsPDF')}}
+            </button>
             <button id="save_excel" class="btn add-btn float-end mx-2"
                 [disabled]="rows.length === 0"
-                (click)="saveExcel()">Save as Excel</button>
+                (click)="saveExcel()">
+                {{globalServ.getGlobalNames('saveAsExcel')}}
+            </button>
             <button id="submit_absent_report" class="btn add-btn float-end mx-2"
-                (click)="submit()">Submit</button>
+                (click)="submit()">
+                {{globalServ.getGlobalNames('submit')}}
+            </button>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive card p-3">
-                <!-- <table datatable
+                <table datatable
                     class="table table-hover custom-table mb-0 datatable">
                     <thead class="thead-all">
                         <tr class="tr-th-all" cdkDropList
                             (cdkDropListDropped)="drop($event)"
                             cdkDropListOrientation="horizontal"
-                            [cdkDropListData]="colKeys">
-                            <th *ngFor="let colKey of colKeys" cdkDrag>{{colKey}}</th>
+                            [cdkDropListData]="activeColumns">
+                            <th *ngFor="let colKey of activeColumns"
+                                cdkDrag>{{globalServ.showLabel(colKey.key)}}</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr class="dasboard-td" *ngFor="let item of rows">
-                            <td *ngFor="let colKey of colKeys">{{ item[colKey] }}</td>
+                    <tbody *ngIf="rows.length > 0">
+                        <tr class="dasboard-td"
+                            *ngFor="let item of rows | paginate: config; let i=index;">
+                            <!--  [ngClass]="{'text-end': isNumber(item[colKey.key])}" -->
+                            <td
+                                *ngFor="let colKey of activeColumns">{{item[colKey.key]}}</td>
                         </tr>
                     </tbody>
-                </table> -->
-                <table datatable
-                    class="table table-hover custom-table mb-0 datatable">
-                    <thead class="thead-all">
-                        <tr class="tr-th-all">
-                            <!-- <th>#</th> -->
-                            <!-- <th>rw Number</th> -->
-                            <th> Date
-                                <span class="block text-muted">Day</span>
-                            </th>
-                            <th
-                                *ngIf="reportObj.department === 'ALL'">Department</th>
-                            <th *ngIf="reportObj.empCode === 'ALL'">Employee
-                                Code</th>
-                            <th *ngIf="reportObj.empCode === 'ALL'">Employee
-                                Name</th>
-                            <th>Leave Status</th>
-                            <th>Shift</th>
-                            <th
-                                *ngIf="reportObj.projectCode === 'ALL'">Project</th>
-                        </tr>
-                    </thead>
+
                     <tbody *ngIf="rows.length === 0 && message === 'modified'">
                         <tr
                             style=" text-align: center; height: 150px;">
                             <td colspan="7">
-                                "No records were found with the selected filter criteria."
+                                {{globalServ.showGlobalErrors('notFound')}}
                             </td>
                         </tr>
                     </tbody>
@@ -138,7 +137,7 @@
                         <tr
                             style=" text-align: center; height: 150px;">
                             <td colspan="7">
-                                "Great choices! Finalize your selection by clicking 'Submit' to generate a report with the filtered data you've chosen."
+                                {{globalServ.showGlobalErrors('greatChoices')}}
                             </td>
                         </tr>
                     </tbody>
@@ -146,28 +145,9 @@
                         <tr
                             style=" text-align: center; height: 150px;">
                             <td colspan="7">
-                                "Sorry for the Inconvenience!"
+                                {{globalServ.showGlobalErrors('sorry')}}
                             </td>
                         </tr>
-                    </tbody>
-                    <tbody *ngIf="rows.length > 0">
-                        <tr class="dasboard-td"
-                            *ngFor="let rw of rows| paginate: config; let i=index;">
-                            <td>{{rw.dateCode | date: dateFormat }}
-                                <span
-                                    class="block text-muted">{{rw.dayName}}</span></td>
-                            <td
-                                *ngIf="reportObj.department === 'ALL'">{{rw.departmentCode}}</td>
-                            <td
-                                *ngIf="reportObj.empCode === 'ALL'">{{rw.employeeCode}}</td>
-                            <td
-                                *ngIf="reportObj.empCode === 'ALL'">{{rw.employeeName}}</td>
-                            <td>{{rw.leaveStatus}}</td>
-                            <td>{{rw.shiftCode}}</td>
-                            <td
-                                *ngIf="reportObj.projectCode === 'ALL'">{{rw.projectCode}}</td>
-                        </tr>
-
                     </tbody>
                 </table>
                 <div *ngIf="rows.length > config.itemsPerPage"
@@ -175,6 +155,35 @@
                     <pagination-controls
                         (pageChange)="pageChanged($event)"></pagination-controls>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="absentRptModel" class="modal custom-modal fade" role="dialog"
+    data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                {{globalServ.getGlobalNames('Choosethefields')}}
+                <i class="fa-solid fa-xmark  fs-4" id="close_model"
+                    data-bs-dismiss="modal" (click)="close()"
+                    aria-label="Close"></i>
+            </div>
+            <div class="modal-body row">
+                <div class="col-md-4 col-sm-4 p-2"
+                    *ngFor="let colKey of colKeys">
+                    <input type="checkbox" class="form-check-input"
+                        [checked]="colKey.view"
+                        (change)="toggleColumnVisibility(colKey.key, $event)">
+                    <span class="ms-1"> {{globalServ.showLabel(colKey.key)}}
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-bs-dismiss="modal"
+                    aria-label="Close" (click)="apply()">
+                    {{globalServ.getGlobalNames('apply')}}</button>
             </div>
         </div>
     </div>

@@ -1,3 +1,74 @@
+// .custselect {
+//     border-radius: 5px;
+//     padding: 0px 15px;
+//     height: 35px;
+//     border: none;
+//     margin-top: 8px;
+//     background: #F0F4FC;
+//         color: #213343;
+// }
+// .select-option {
+//     background: #fff;
+//     color: black;
+
+// }
+// select:focus {
+//     border: 0px;
+//     outline: 0px;
+// }
+
+// .widthfit {
+// height: 40px;
+//     width: 80px;
+//     object-fit: contain;
+// }
+
+// .notification-badge {
+//     position: relative;
+
+
+//   }
+
+//   .notification {
+//     animation: pulse 1.8s infinite;
+//     position: absolute;
+//     top: 2px;
+//     right: 346px;
+//     background: red;
+//     color: white;
+//     border-radius: 50%;
+//     padding: 2px 6px;
+//     font-size: 10px;
+
+//   }
+
+//   @keyframes pulse {
+//     0% {
+//         box-shadow: 0 0 0 0 red;
+//         // transform: scale(1);
+//     }
+
+//     65% {
+//         box-shadow: 0 0 0 10px transparent;
+//         // transform: scale(1.1);
+//     }
+
+//     100% {
+//         box-shadow: 0 0 0 0 transparent;
+//         // transform: scale(1);
+//     }
+// }
+
+// .badge{
+//     top: 7px;
+//     animation: pulse 1.8s infinite;
+
+// }
+// .scollClass {
+//     max-height: 70vh;
+//     overflow-y: scroll;
+//     inset: 0px 0px auto auto !important;
+// }
 .custselect {
     border-radius: 5px;
     padding: 0px 15px;
@@ -7,29 +78,61 @@
     background: #667eea;
         color: #fff;
 }
+
 .select-option {
     background: #fff;
     color: black;
 
 }
+
 select:focus {
     border: 0px;
     outline: 0px;
 }
 
 .widthfit {
-height: 40px;
+    height: 40px;
     width: 80px;
     object-fit: contain;
 }
 
+.language-card {
+    position: absolute;
+    right: 10px;
+    /* Adjust as necessary */
+    top: 50px;
+    /* Adjust as necessary */
+    z-index: 1000;
+    width: 200px;
+    /* Adjust as necessary */
+}
+
+.language-card .card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    background: #fff;
+    overflow: hidden;
+}
+
+.language-card .card-header {
+    background-color: #007bff;
+    /* Adjust as necessary */
+    color: #fff;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.language-card .card-body {
+    padding: 10px;
+
+}
 .notification-badge {
     position: relative;
-   
 
-  }
 
-  .notification {
+}
+
+.notification {
     animation: pulse 1.8s infinite;
     position: absolute;
     top: 2px;
@@ -40,9 +143,9 @@ height: 40px;
     padding: 2px 6px;
     font-size: 10px;
 
-  }
+}
 
-  @keyframes pulse {
+@keyframes pulse {
     0% {
         box-shadow: 0 0 0 0 red;
         // transform: scale(1);
@@ -59,11 +162,12 @@ height: 40px;
     }
 }
 
-.badge{
+.badge {
     top: 7px;
     animation: pulse 1.8s infinite;
 
 }
+
 .scollClass {
     max-height: 70vh;
     overflow-y: scroll;

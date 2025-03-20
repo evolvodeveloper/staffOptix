@@ -25,7 +25,6 @@ export class TimesheetLogComponent implements OnInit, AfterViewInit {
   secondTab = false;
   failedRows = [];
   config: any;
-  config1: any;
   temp = [];
   stopSpinner = true;
   dateFormat: string;
@@ -51,17 +50,12 @@ export class TimesheetLogComponent implements OnInit, AfterViewInit {
   constructor(private httpGet: HttpGetService,
     private httpPut: HttpPutService,
     private acRoute: ActivatedRoute,
-    private spinner: NgxSpinnerService, private global: GlobalvariablesService,
+    private spinner: NgxSpinnerService, public global: GlobalvariablesService,
     private router: Router) {
     this.config = {
       itemsPerPage: 25,
       currentPage: 1,
       totalItems: this.rows.length,
-    };
-    this.config1 = {
-      itemsPerPage: 25,
-      currentPage: 1,
-      totalItems: this.failedRows.length,
     };
   }
   ngOnInit() {
@@ -72,6 +66,8 @@ export class TimesheetLogComponent implements OnInit, AfterViewInit {
     });
     this.getDepartments();
     this.dateFormat = this.global.dateFormat;
+    this.global.getMyCompLabels('biometricLog');
+
   }
   ngAfterViewInit() {
     const rightCalendar = document.getElementsByClassName('calendar right');
@@ -189,7 +185,7 @@ export class TimesheetLogComponent implements OnInit, AfterViewInit {
         });
         this.failedRows = res.response;
         this.failedTemp = res.response;
-        this.config1.totalItems = this.failedRows.length
+        this.config.totalItems = this.failedRows.length
       },
         err => {
           // this.spinner.hide();
@@ -209,11 +205,12 @@ export class TimesheetLogComponent implements OnInit, AfterViewInit {
       '&employeeCode=' + this.reportObj.employeeCode).subscribe((res: any) => {
         this.spinner.hide();
         const data: Blob = new Blob([res], { type: EXCEL_TYPE });
+        const fileName = 'Biometric_Logs_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_')
         FileSaver.saveAs(
           data,
-          'Biometric Logs' + new Date().getTime() + EXCEL_EXTENSION
+          fileName + EXCEL_EXTENSION
         );
-        this.global.showSuccessPopUp('Excel', 'success');
+        this.global.showSuccessPopUp('Excel', 'success', fileName);
       },
         err => {
           this.spinner.hide();
@@ -227,10 +224,7 @@ export class TimesheetLogComponent implements OnInit, AfterViewInit {
   pageChanged(event) {
     this.config.currentPage = event;
   }
-  pageChangedFailed(event) {
-    this.config1.currentPage = event;
 
-  }
   resultsPerPage(event) {
     this.config.itemsPerPage =
       event.target.value == 'all' ? this.temp.length : event.target.value;
@@ -238,9 +232,9 @@ export class TimesheetLogComponent implements OnInit, AfterViewInit {
 
   }
   resultsPerPagefailed(event) {
-    this.config1.itemsPerPage =
+    this.config.itemsPerPage =
       event.target.value == 'all' ? this.failedTemp.length : event.target.value;
-    this.config1.currentPage = 1;
+    this.config.currentPage = 1;
   }
   updateFilter(event) {
     const val = event.target.value.toLowerCase();
@@ -318,10 +312,14 @@ export class TimesheetLogComponent implements OnInit, AfterViewInit {
   tabOne() {
     this.firstTab = true;
     this.secondTab = false;
+    this.config.totalItems = this.rows.length;
+    this.config.currentPage = 1;
   }
   tabTwo() {
     this.firstTab = false;
     this.secondTab = true;
+    this.config.totalItems = this.failedRows.length;
+    this.config.currentPage = 1;
   }
 
   sortData(col: string): void {

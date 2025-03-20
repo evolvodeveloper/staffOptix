@@ -8,7 +8,9 @@ import { LeaveSetupComponent } from './leave-setup.component';
 const routes: Routes = [
   { path: '', component: LeaveSetupComponent },
 
-  { path: 'create-leave-setup', component: CreateLeaveSetupComponent }
+  {
+    path: 'create-leave-setup', component: CreateLeaveSetupComponent
+  }, 
 
 ];
 

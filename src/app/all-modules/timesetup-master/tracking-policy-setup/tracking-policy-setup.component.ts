@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { UtilService } from 'src/app/services/util.service';
 
@@ -20,6 +21,7 @@ export class TrackingPolicySetupComponent implements OnInit {
     private router: Router,
     private utilServ: UtilService,
     private acRoute: ActivatedRoute,
+    public globalServ: GlobalvariablesService,
     private spinner: NgxSpinnerService
   ) {
     this.config = {
@@ -36,6 +38,8 @@ export class TrackingPolicySetupComponent implements OnInit {
       this.hasPermissionToApprove = permission.hasPermissionToApprove
     });
     this.getTrakingPolicyList();
+    this.globalServ.getMyCompLabels('trackingPolicy');
+    this.globalServ.getMyCompPlaceHolders('trackingPolicy');
   }
   updateFilter(event) {
     const val = event.target.value.toLowerCase();

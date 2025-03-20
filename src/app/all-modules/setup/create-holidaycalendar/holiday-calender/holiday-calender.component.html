@@ -4,48 +4,52 @@
             <div class="d-flex align-items-baseline">
                 <i style="font-size:20px" class="fa fa-arrow-left"
                     (click)="back()" aria-label="back"></i>
-                <h3 class="ms-4 page-title">Holiday Calendar</h3>
+                <h3 class="ms-4 page-title">
+                    {{globalServ.showLabel('hcHeader')}}
+                </h3>
             </div>
         </div>
     </div>
 </div>
-<div class="row">
+<div class="row mb-3">
     <div class="col-md-12">
         <div class="row mb-3">
             <div class="col-sm-6 col-lg-3">
-                <label class="form-label ms-2">Calendar</label>
+                <label class="form-label ms-2">{{globalServ.showLabel('calendar')}}</label>
                 <select class="form-control form-select form-select-md"
                     [(ngModel)]="calCode" id="holidayCalendarCode"
                     (change)="onChangecalendarCode(calCode)">
-                    <option selected disabled value="">Select Calendar</option>
+                    <option selected disabled value="">{{globalServ.showLabel('selectCalendar')}}</option>
                     <option *ngFor="let hc of parentCalender"
                         [value]="hc.calendarCode">{{hc.calendarCode}}</option>
                 </select>
             </div>
             <div class="col-sm-6 col-lg-3">
-                <label class="form-label ms-2">Year</label>
+                <label class="form-label ms-2">{{globalServ.showLabel('year')}}</label>
                 <select class="form-control form-select form-select-md"
                     id="year" [(ngModel)]="selectedYear"
                     (change)="updateFilter(temp)">
-                    <option selected disabled>Select Year</option>
+                    <option selected disabled>{{globalServ.showLabel('selectYear')}}</option>
                     <option *ngFor="let hc of yearsArray" [value]="hc">{{hc}}</option>
                 </select>
             </div>
 
             <div class="col-lg-4 my-auto mb-0">
-
                 <button type="button" class="btn add-btn m-1 float-end d-flex"
                     id="add_roles_holiday" *ngIf="hasPermissionToUpdate"
                     (click)="create()"><i id="add_roles_holiday"
-                        class="material-icons me-2">add</i> Add Holiday</button>
+                        class="material-icons me-2">add</i> {{globalServ.showLabel('addHoliday')}}</button>
                 <button type="button" class="btn add-btn m-1  float-end d-flex"
                     id="add_roles_calender" *ngIf="hasPermissionToUpdate"
                     (click)="open()"><i id="add_roles_calender"
-                        class="material-icons me-2">add</i> Add Calendar</button>
+                        class="material-icons me-2">add</i> {{globalServ.showLabel('addCalendar')}}
+                    </button>
             </div>
 
             <div class="col-sm-6 col-lg-2">
-                <label class="form-label ms-2">Show entries</label>
+                <label class="form-label ms-2">
+                    {{globalServ.getGlobalNames('ShowEntries')}}
+                </label>
                 <select class="form-select" (change)="resultsPerPage($event)">
                     <!-- <option value="10">10</option> -->
                     <option value="25">25</option>
@@ -61,18 +65,28 @@
                 <thead class="thead-all">
                     <tr class="tr-th-all">
                         <!-- <th scope="col">Holiday Calendar Code</th> -->
-                        <th scope="col">Date </th>
-                        <th scope="col">Day </th>
-                        <th scope="col">Description</th>
-                        <th scope="col" class="text-center">Is Optional</th>
-                        <th scope="col" class="text-center">Action</th>
+                        <th scope="col">
+                            {{globalServ.getGlobalNames('date')}}
+                             </th>
+                        <th scope="col">
+                            {{globalServ.getGlobalNames('day')}}
+                             </th>
+                        <th scope="col">
+                            {{globalServ.showLabel('hcDescription')}}
+                        </th>
+                        <th scope="col" class="text-center">
+                            {{globalServ.getGlobalNames('isOptional')}}
+                        </th>
+                        <th scope="col" class="text-center">
+                            {{globalServ.getGlobalNames('action')}}
+                        </th>
                     </tr>
                 </thead>
                 <tbody *ngIf="rows.length === 0">
                     <tr
                         style=" text-align: center; height: 150px;">
                         <td colspan="6">
-                            "No records were found with the selected filter criteria."
+                                {{globalServ.showGlobalErrors('notFound')}}
                         </td>
                     </tr>
                 </tbody>

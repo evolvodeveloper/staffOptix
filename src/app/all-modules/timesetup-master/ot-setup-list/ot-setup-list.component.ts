@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { UtilService } from '../../../services/util.service';
@@ -18,6 +19,7 @@ export class OtSetupListComponent implements OnInit {
   hasPermissionToApprove = false;
   constructor(private httpGet: HttpGetService,
     private acRoute: ActivatedRoute,
+    public globalServ: GlobalvariablesService,
     private spinner: NgxSpinnerService,
     private router: Router,
     private utilServ: UtilService) {
@@ -29,6 +31,10 @@ export class OtSetupListComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.globalServ.getMyCompLabels('overtimesetup');
+    this.globalServ.getMyCompPlaceHolders('overtimesetup');
+    this.globalServ.getMyCompErrors('overtimesetup');
+
     this.acRoute.data.subscribe(async data => {
       const permission = data.condition
       this.hasPermissionToUpdate = permission.hasPermissionToUpdate

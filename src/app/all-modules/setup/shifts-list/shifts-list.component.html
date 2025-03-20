@@ -4,7 +4,7 @@
       <div class="d-flex align-items-baseline">
         <i style="font-size:20px" class="fa fa-arrow-left" (click)="back()"
           aria-label="back"></i>
-        <h3 class="ms-4 page-title">Shift</h3>
+        <h3 class="ms-4 page-title"> {{globalServ.showLabel('shiftHeader')}}</h3>
       </div>
     </div>
   </div>
@@ -17,7 +17,7 @@
         type="text"
         id="filter"
         class="form-control"
-        placeholder="Search"
+       placeholder="{{globalServ.showGlobalplaceholders('search')}}"
         [(ngModel)]="searchedFor"
         (keyup)="updateFilter($event)"
         style="border-radius: 8px 0px 0px 8px" />
@@ -32,11 +32,11 @@
   <div class="col-lg-2">
     <a class="btn add-btn" id="add_shifts" *ngIf="hasPermissionToUpdate"
       (click)="openModal('', '')"><i id="add_shifts" class="fa fa-plus"></i>
-      Add Shifts
+       {{globalServ.getGlobalNames('add')}}{{globalServ.showLabel('s')}}
     </a>
   </div>
   <div class="col-sm-6 col-lg-2 mt-30px">
-    <label class="form-label ms-2" for="showEntry">Show entries</label>
+    <label class="form-label ms-2" for="showEntry">{{globalServ.getGlobalNames('ShowEntries')}}</label>
     <select class="form-select" id="showEntry"
       (change)="resultsPerPage($event)">
       <!-- <option value="10">10</option> -->
@@ -56,23 +56,23 @@
         <thead class="thead-all">
           <tr class="tr-th-all">
             <th></th>
-            <th scope="col">Shift</th>
-            <th scope="col">Calendar</th>
-            <th scope="col" class="text-center">Allow Half Days</th>
-            <th scope="col">Grace Time In Minutes </th>
-            <th scope="col">Timezone</th>
-            <th scope="col">Weekends</th>
-            <th scope="col">Start Time</th>
-            <th scope="col">End Time</th>
-            <th scope="col" class="text-center">Default</th>
-            <th scope="col" class="text-center">Active</th>
-            <th scope="col" class="text-center">Action</th>
+            <th scope="col">{{globalServ.getGlobalNames('shift')}}</th>
+            <th scope="col">{{globalServ.showLabel('calendat')}}</th>
+            <th scope="col" class="text-center">{{globalServ.showLabel('hd')}}</th>
+            <th scope="col">{{globalServ.showLabel('gt')}} </th>
+            <th scope="col">{{globalServ.showLabel('timezone')}}</th>
+            <th scope="col">{{globalServ.showLabel('wkday')}}</th>
+            <th scope="col">{{globalServ.showLabel('startTime')}}</th>
+            <th scope="col">{{globalServ.showLabel('endTime')}}</th>
+            <th scope="col" class="text-center">{{globalServ.getGlobalNames('isDefault')}}</th>
+            <th scope="col" class="text-center">{{globalServ.getGlobalNames('active')}}</th>
+            <th scope="col" class="text-center">{{globalServ.getGlobalNames('action')}}</th>
           </tr>
         </thead>
         <tbody *ngIf="shifts.length === 0">
           <tr style=" text-align: center; height: 150px;">
             <td colspan="12">
-              "No records were found with the selected filter criteria."
+              {{globalServ.showGlobalErrors('notFound')}}
             </td>
           </tr>
         </tbody>
@@ -149,15 +149,13 @@
                 <table class="table table-bordered table-responsive-sm">
                   <thead class="thead-all">
                     <tr class="tr-th-all">
-                      <th scope="col" class="text-center">Workhours/Day</th>
-                      <th scope="col" class="text-center">Workhours/Week</th>
-                      <th scope="col" class="text-center">Workdays In Week</th>
-                      <th scope="col" class="text-center">Min Hrs In
+                      <th scope="col" class="text-center">{{globalServ.showLabel('wkHrsDay')}}</th>
+                      <th scope="col" class="text-center">{{globalServ.showLabel('wkHrsWeek')}}</th>
+                      <th scope="col" class="text-center">{{globalServ.showLabel('wkday')}}</th>
+                      <th scope="col" class="text-center"> {{globalServ.showLabel('minHrs')}}
                         {{row.minHrsTimeframe | titlecase }}</th>
-                      <th scope="col" class="text-center">Min Hrs To Mark
-                        HalfDay</th>
-                      <th scope="col" class="text-center"> Report Late After In
-                        Minutes </th>
+                        <th scope="col" class="text-center">{{globalServ.showLabel('hday')}}</th>
+                      <th scope="col" class="text-center">  {{globalServ.showLabel('reportLateTimeHr')}}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -167,7 +165,6 @@
                       <td class="text-center">{{ row.workhoursPerWeek }}</td>
                       <td class="text-center">{{ row.noOfWorkdaysInWeek }}</td>
                       <td class="text-center">{{ row.minHrsInTimeframe }}</td>
-
                       <td class="text-center">{{ row.minHrsToMarkHalfDay }}</td>
                       <td class="text-center">{{ row.reportLateAfterInHrsDecimal }}</td>
                     </tr>

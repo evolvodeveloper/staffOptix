@@ -7,7 +7,8 @@
           class="fa fa-arrow-left"
           routerLink="/timesetup"
           aria-label="back"></i>
-        <h3 class="ms-4 page-title">Leave Setup</h3>
+        <h3
+          class="ms-4 page-title">{{globalServ.showLabel('leaveSetupHeader')}}</h3>
       </div>
     </div>
   </div>
@@ -20,14 +21,14 @@
         type="text"
         class="form-control"
         [(ngModel)]="searchLeavePlan"
-        placeholder="search by leave plan"
+        placeholder="{{globalServ.showPlaceholder('searchleavePlan')}}"
         (keyup)="updateFilterForPlan($event)" *ngIf="secondTab"
         style="border-radius: 8px 0px 0px 8px" />
 
       <input
         type="text"
         class="form-control"
-        placeholder="search by leave type"
+        placeholder="{{globalServ.showPlaceholder('searchleaveType')}}"
         [(ngModel)]="searchLeaveType"
         (keyup)="updateFilterFortype($event)" *ngIf="thirdTab"
         style="border-radius: 8px 0px 0px 8px" />
@@ -35,12 +36,12 @@
       <input
         type="text"
         class="form-control"
-        placeholder="search by leave plan/type"
+        placeholder="{{globalServ.showPlaceholder('searchleavePlan/type')}}"
         (keyup)="updateFilter($event)" *ngIf="firstTab"
         [(ngModel)]="searchedInSetUp"
         style="border-radius: 8px 0px 0px 8px" />
 
-      <span class="input-group-text" id="basic-addon1">
+      <span class="input-group-text" id="b asic-addon1">
         <i class="fa-solid fa-magnifying-glass"></i>
       </span>
     </div>
@@ -54,7 +55,8 @@
       *ngIf="hasPermissionToUpdate && firstTab"
       (click)="createLeaveSetup()">
       <i id="add_leave_setup" class="fa fa-plus"></i>
-      Add Setup
+      {{globalServ.getGlobalNames('addSetup')}}
+
     </button>
 
     <button
@@ -67,7 +69,7 @@
       data-bs-target="#addleavePlan"
       *ngIf="hasPermissionToUpdate && secondTab">
       <i id="add_leave_Plan" class="fa fa-plus"></i>
-      Add Plan
+      {{globalServ.getGlobalNames('addPlan')}}
     </button>
 
     <button
@@ -80,11 +82,13 @@
       data-bs-target="#createLeaveType"
       *ngIf="hasPermissionToUpdate && thirdTab">
       <i id="add_leave_Plan" class="fa fa-plus"></i>
-      Add Leave Type
+      {{globalServ.getGlobalNames('addLType')}}
+
     </button>
   </div>
   <div class="col-sm-6 col-lg-2 mt-30px">
-    <label class="form-label ms-2">Records/Page</label>
+    <label class="form-label ms-2">
+      {{globalServ.getGlobalNames('records')}}</label>
     <select class="form-select"
       (change)="resultsPerPage($event)">
       <option value="25">25</option>
@@ -98,7 +102,8 @@
   <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
     <li class="nav-item" role="presentation">
       <button
-        class="nav-link active"
+        class="nav-link "
+        [ngClass]="{'active':secondTab}"
         id="pills-leavePlan-tab"
         data-bs-toggle="pill"
         data-bs-target="#pills-leavePlan"
@@ -107,7 +112,7 @@
         (click)="tab2()"
         aria-controls="pills-leavePlan"
         aria-selected="false">
-        Leave Plan
+        {{globalServ.showLabel('lplanHeader')}}
       </button>
     </li>
 
@@ -116,19 +121,21 @@
         class="nav-link"
         id="pills-leaveType-tab"
         data-bs-toggle="pill"
+        [ngClass]="{'active':thirdTab}"
         data-bs-target="#pills-leaveType"
         type="button"
         role="tab"
         (click)="tab3()"
         aria-controls="pills-leaveType"
         aria-selected="true">
-        Leave Type
+        {{globalServ.showLabel('ltypeHeader')}}
       </button>
     </li>
     <li class="nav-item ms-2" role="presentation">
       <button
         class="nav-link"
         id="pills-leaveSetup-tab"
+        [ngClass]="{'active':firstTab}"
         data-bs-toggle="pill"
         data-bs-target="#pills-leaveSetup"
         type="button"
@@ -136,14 +143,14 @@
         (click)="tab1()"
         aria-controls="pills-leaveSetup"
         aria-selected="true">
-        Leave Setup
+        {{globalServ.showLabel('leaveSetupHeader')}}
       </button>
     </li>
   </ul>
   <div class="tab-content" id="pills-tabContent">
     <!-- leaveSetup starts -->
     <div
-      class="tab-pane fade"
+      class="tab-pane fade" [ngClass]="{'show active':firstTab}"
       id="pills-leaveSetup"
       role="tabpanel"
       aria-labelledby="pills-leaveSetup-tab"
@@ -157,16 +164,21 @@
               class="table table-hover small table-nowrap custom-table mb-0 datatable">
               <thead class="thead-all">
                 <tr class="tr-th-all">
-                  <th scope="col">Leave Plan</th>
-                  <th scope="col">Leave Type</th>
-                  <th scope="col" class="text-center">Number of Leaves</th>
-                  <th scope="col" class="text-center">Accrual Policy</th>
+                  <th scope="col">{{globalServ.showLabel('lplanHeader')}}</th>
+                  <th scope="col">{{globalServ.showLabel('ltypeHeader')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('sleave')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('accrualPolicy')}}</th>
 
-                  <th scope="col" class="text-center">Lapse After</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('lapse')}}</th>
                   <!-- <th scope="col" class="text-center">Max Carry Forward</th> -->
                   <!-- <th scope="col" class="text-center">Max Take At A Time</th> -->
-                  <th scope="col" class="text-center">Carry Forward?</th>
-                  <th scope="col" class="text-center">Action</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('cforward')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.getGlobalNames('action')}}</th>
                 </tr>
               </thead>
               <tbody
@@ -174,7 +186,7 @@
                 <tr
                   style=" text-align: center; height: 150px;">
                   <td colspan="9">
-                    "No records were found with the selected filter criteria."
+                    {{globalServ.showGlobalErrors('notFound')}}
                   </td>
                 </tr>
               </tbody>
@@ -184,7 +196,8 @@
                 <tr
                   style=" text-align: center; height: 150px;">
                   <td colspan="9">
-                    "Sorry for the Inconvenience!"
+                    {{globalServ.showGlobalErrors('sorry')}}
+
                   </td>
                 </tr>
               </tbody>
@@ -263,7 +276,7 @@
 
     <!-- leavePlan starts -->
     <div
-      class="tab-pane fade show active"
+      class="tab-pane fade " [ngClass]="{'show active':secondTab}"
       id="pills-leavePlan"
       role="tabpanel"
       aria-labelledby="pills-leavePlan-tab"
@@ -276,12 +289,17 @@
               class="table table-hover small table-nowrap custom-table mb-0 datatable">
               <thead class="thead-all">
                 <tr class="tr-th-all">
-                  <th scope="col">Leave Plan</th>
-                  <th scope="col" class="text-left">Description</th>
-                  <th scope="col" class="text-center">Calendar Start Date</th>
-                  <th scope="col" class="text-center">Next Run Date</th>
-                  <th scope="col" class="text-center">Last Run Date</th>
-                  <th scope="col" class="text-center">Action</th>
+                  <th scope="col">{{globalServ.showLabel('lplanHeader')}}</th>
+                  <th scope="col"
+                    class="text-left">{{globalServ.showLabel('ldesc')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('cstartdate')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('nrundate')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('lastrun')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.getGlobalNames('action')}}</th>
                 </tr>
               </thead>
 
@@ -290,7 +308,7 @@
                 <tr
                   style=" text-align: center; height: 150px;">
                   <td colspan="6">
-                    "No records were found with the selected filter criteria."
+                    {{globalServ.showGlobalErrors('notFound')}}
                   </td>
                 </tr>
               </tbody>
@@ -299,7 +317,7 @@
                 <tr
                   style=" text-align: center; height: 150px;">
                   <td colspan="6">
-                    "Sorry for the Inconvenience!"
+                    {{globalServ.showGlobalErrors('sorry')}}
                   </td>
                 </tr>
               </tbody>
@@ -307,7 +325,7 @@
               <tbody *ngIf="leavePlansList.length > 0">
                 <ng-container
                   *ngFor="
-                    let row of leavePlansList | paginate : config1;
+                    let row of leavePlansList | paginate : config;
                     let i = index
                   ">
                   <tr class="dasboard-td">
@@ -356,10 +374,10 @@
               </tbody>
             </table>
             <div
-              *ngIf="leavePlansList.length > config1.itemsPerPage"
+              *ngIf="leavePlansList.length > config.itemsPerPage"
               class="text-center mt-3">
               <pagination-controls
-                (pageChange)="pageChanged1($event)"></pagination-controls>
+                (pageChange)="pageChanged($event)"></pagination-controls>
             </div>
           </div>
         </div>
@@ -369,7 +387,7 @@
     <!-- leavetype starts -->
     <div
       class="tab-pane fade "
-      id="pills-leaveType"
+      id="pills-leaveType" [ngClass]="{'show active':thirdTab}"
       role="tabpanel"
       aria-labelledby="pills-leaveType-tab"
       tabindex="0">
@@ -381,14 +399,23 @@
               class="table table-hover small table-nowrap custom-table mb-0 datatable">
               <thead class="thead-all">
                 <tr class="tr-th-all">
-                  <th scope="col">Leave Type</th>
-                  <th scope="col" class="text-left">Description</th>
-                  <th scope="col" class="text-center">Gender Based</th>
-                  <th scope="col" class="text-center">For Gender</th>
-                  <th scope="col" class="text-center">Marital Status Based</th>
-                  <th scope="col" class="text-left">For Marital Status</th>
-                  <th scope="col" class="text-center">Active</th>
-                  <th scope="col" class="text-center">Action</th>
+                  <th scope="col">{{globalServ.showLabel('ltypeHeader')}}</th>
+                  <th scope="col"
+                    class="text-left">{{globalServ.showLabel('leaveTypeDescription')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('gender')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('forGender')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.showLabel('maritalStatusLeave')}}</th>
+                  <th scope="col"
+                    class="text-left">{{globalServ.showLabel('maritalStat')}}</th>
+                  <th scope="col" class="text-center">
+                    {{globalServ.showLabel('isVisible')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.getGlobalNames('active')}}</th>
+                  <th scope="col"
+                    class="text-center">{{globalServ.getGlobalNames('action')}}</th>
                 </tr>
               </thead>
 
@@ -396,8 +423,8 @@
                 *ngIf="leaveTypesList.length === 0">
                 <tr
                   style=" text-align: center; height: 150px;">
-                  <td colspan="7">
-                    "No records were found."
+                  <td colspan="9">
+                    {{globalServ.showGlobalErrors('notFound')}}
                   </td>
                 </tr>
               </tbody>
@@ -406,8 +433,8 @@
                 *ngIf="leaveTypesList.length === 0 && leaveTypeMessage === 'error'">
                 <tr
                   style=" text-align: center; height: 150px;">
-                  <td colspan="7">
-                    "Sorry for the Inconvenience!"
+                  <td colspan="9">
+                    {{globalServ.showGlobalErrors('sorry')}}
                   </td>
                 </tr>
               </tbody>
@@ -415,7 +442,7 @@
               <tbody *ngIf="leaveTypesList.length > 0">
                 <ng-container
                   *ngFor="
-                    let row of leaveTypesList | paginate : config2Type;
+                    let row of leaveTypesList | paginate : config;
                     let i = index
                   ">
                   <tr class="dasboard-td">
@@ -445,7 +472,16 @@
                         style="color: #f62d51"></i>
                     </td>
                     <td class="text-left">{{ row.forMaritalStatus}}</td>
-
+                    <td class="text-center">
+                      <i
+                        *ngIf="row.isVisible"
+                        class="fa-solid fa-circle"
+                        style="color: #55ce63"></i>
+                      <i
+                        *ngIf="!row.isVisible"
+                        class="fa-solid fa-circle"
+                        style="color: #f62d51"></i>
+                    </td>
                     <td class="text-center">
                       <i
                         *ngIf="row.isactive"
@@ -488,10 +524,10 @@
               </tbody>
             </table>
             <div
-              *ngIf="leaveTypesList.length > config2Type.itemsPerPage"
+              *ngIf="leaveTypesList.length > config.itemsPerPage"
               class="text-center mt-3">
               <pagination-controls
-                (pageChange)="pageChangedType($event)"></pagination-controls>
+                (pageChange)="pageChanged($event)"></pagination-controls>
             </div>
           </div>
         </div>
@@ -502,11 +538,12 @@
 </div>
 
 <!-- leavePlan model starts -->
-<div id="addleavePlan" class="modal custom-modal fade" role="dialog">
+<div id="addleavePlan" class="modal custom-modal fade" role="dialog"
+  data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Leave Plan</h5>
+        <h5 class="modal-title">{{globalServ.showLabel('lplanHeader')}}</h5>
         <button
           id="leave_setup_close"
           type="button"
@@ -520,39 +557,40 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label
-                  class="text-sm mb-1">Leave Plan &nbsp;<span
+                  class="text-sm mb-1">{{globalServ.showLabel('leavePlanCode')}}&nbsp;<span
                     style="color: #f62d51">*</span></label>
                 <input
                   type="text"
                   maxlength="{{ charLimit }}"
-                  placeholder="enter leave plan"
+                  placeholder="{{globalServ.showPlaceholder('leavePlan')}}"
                   id="leavePlanCode"
                   class="form-control"
                   [formControl]="leavePlanForm.controls.leavePlanCode" />
-                <div *ngIf="
+                <div class="mt-2" *ngIf="
                     leavePlanForm.controls['leavePlanCode'].invalid &&
                     (leavePlanForm.controls['leavePlanCode'].dirty ||
                       leavePlanForm.controls['leavePlanCode'].touched)
                   "
                   style="padding: 0px">
-                  <div
+                  <div 
                     *ngIf="leavePlanForm.controls['leavePlanCode'].errors.required"
                     style="color: #dc3545">
-                    Leave Plan is required.
+                    {{globalServ.showLabel('leavePlanCode')}}
+                    {{globalServ.showGlobalErrors('required')}}
                   </div>
                 </div>
                 <div
                   *ngIf="leavePlanForm.get('leavePlanCode').hasError('invalidFormat')"
-                  style="color: #dc3545">field should not contain special
-                  characters</div>
+                  style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
               </div></div>
 
             <div class="col-md-6">
               <div class="form-group input">
-                <label class="text-sm mb-1">Description</label>
+                <label
+                  class="text-sm mb-1">{{globalServ.showLabel('ldesc')}}</label>
                 <textarea
                   type="text"
-                  placeholder="enter description"
+                  placeholder="{{globalServ.showGlobalplaceholders('enterDesc')}}"
                   id="description"
                   class="form-control"
                   [formControl]="leavePlanForm.controls.description"></textarea>
@@ -562,12 +600,13 @@
             <div class="col-md-6">
               <div class="form-group input">
                 <label class="text-sm mb-1"
-                  for="leaveCalSrtDate">Start date</label>
+                  for="leaveCalSrtDate">{{globalServ.showLabel('leaveStartDt')}}&nbsp;<span
+                    style="color: #f62d51">*</span></label>
                 <select
                   class="form-select"
                   [formControl]="leavePlanForm.controls.leaveCalendarStartDate">
                   <option value selected
-                    disabled>Select month</option>
+                    disabled>{{globalServ.showPlaceholder('leaveStartDt')}}</option>
                   <option
                     *ngFor="let lp of firstDatesOfMonths"
                     [value]="lp.value">
@@ -579,20 +618,20 @@
             <div class="col-md-6">
               <div class="form-group input">
                 <label class="text-sm mb-1" for="leaveCalSrtDate">
-                 Leave policy run date (day of month) <span
+                  {{globalServ.showLabel('leavePolicyRunDt')}} <span
                     class="text-danger">*</span></label>
                 <select
                   class="form-select"
                   [formControl]="leavePlanForm.controls.runLeavepolicyOnDt">
                   <option value selected
-                    disabled>Select date</option>
+                    disabled>{{globalServ.showPlaceholder('leaveRunDt')}}</option>
                   <option
                     *ngFor="let lp of dates"
                     [value]="lp">
                     {{ lp }}
                   </option>
                 </select>
-                <div *ngIf="
+                <div class="mt-2" *ngIf="
                     leavePlanForm.controls['runLeavepolicyOnDt'].invalid &&
                     (leavePlanForm.controls['runLeavepolicyOnDt'].dirty ||
                       leavePlanForm.controls['runLeavepolicyOnDt'].touched)
@@ -601,7 +640,8 @@
                   <div
                     *ngIf="leavePlanForm.controls['runLeavepolicyOnDt'].errors.required"
                     style="color: #dc3545">
-                    Leave policy on date is required.
+                    {{globalServ.showLabel('leavePolicyRunDt')}}
+                    {{globalServ.showGlobalErrors('required')}}
                   </div>
                 </div>
               </div>
@@ -612,17 +652,19 @@
           <button
             id="leave_setup_close"
             type="button"
-            class="btn delete-btn"
+            class="btn delete-btn closeModelPlan"
             data-bs-dismiss="modal"
-            aria-label="Close">Cancel</button>
+            aria-label="Close">{{globalServ.getGlobalNames('cancel')}}</button>
           <button id="submit_leavePlanForm" *ngIf="!update"
             class="btn add-btn"
             [disabled]="leavePlanForm.invalid || leavePlanForm.pristine"
-            (click)="submit()" type="submit">Submit</button>
+            (click)="submit()"
+            type="submit">{{globalServ.getGlobalNames('submit')}}</button>
           <button id="submit_leavePlanForm" *ngIf="update"
             class="btn add-btn"
             [disabled]="leavePlanForm.invalid || leavePlanForm.pristine"
-            (click)="UpdatePlan()" type="submit">Update</button>
+            (click)="UpdatePlan()"
+            type="submit">{{globalServ.getGlobalNames('update')}}</button>
         </div>
         <div class="text-center" *ngIf="view">
           <button
@@ -630,7 +672,7 @@
             type="button"
             class=" btn delete-btn"
             data-bs-dismiss="modal"
-            aria-label="Close">Close</button>
+            aria-label="Close">{{globalServ.getGlobalNames('close')}}</button>
         </div>
       </div>
     </div>
@@ -639,11 +681,12 @@
 <!-- leavePlan model  ends-->
 
 <!-- leaveType model starts -->
-<div id="createLeaveType" class="modal custom-modal fade" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+<div id="createLeaveType" class="modal custom-modal fade" role="dialog"
+  data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Leave Type</h5>
+        <h5 class="modal-title">{{globalServ.showLabel('ltypeHeader')}}</h5>
         <button
           id="leave_type_close"
           type="button"
@@ -657,17 +700,17 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label
-                  class="text-sm mb-1">Leave Type
+                  class="text-sm mb-1">{{globalServ.showLabel('leaveTypeCode')}}
                   &nbsp;<span
                     class="text-danger">*</span></label>
                 <input
                   type="text"
                   maxlength="{{ charLimit }}"
-                  placeholder="Enter leave plan"
+                  placeholder="{{globalServ.showPlaceholder('leaveType')}}"
                   id="leaveTypeCode"
                   class="form-control"
                   [formControl]="leaveTypeForm.controls.leaveTypeCode" />
-                <div *ngIf="
+                <div class="mt-2" *ngIf="
                     leaveTypeForm.controls['leaveTypeCode'].invalid &&
                     (leaveTypeForm.controls['leaveTypeCode'].dirty ||
                       leaveTypeForm.controls['leaveTypeCode'].touched)
@@ -676,22 +719,23 @@
                   <div
                     *ngIf="leaveTypeForm.controls['leaveTypeCode'].errors.required"
                     style="color: #dc3545">
-                    Leave Type is required.
+                    {{globalServ.showLabel('leaveTypeCode')}}
+                    {{globalServ.showGlobalErrors('required')}}
                   </div>
                 </div>
                 <div
                   *ngIf="leaveTypeForm.get('leaveTypeCode').hasError('invalidFormat')"
-                  style="color: #dc3545">field should not contain special
-                  characters</div>
+                  style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
               </div></div>
 
             <div class="col-md-6">
               <div class="form-group input">
                 <label
-                  class="text-sm mb-1">Description</label>
+                  class="text-sm mb-1">
+                  {{globalServ.showLabel('ldesc')}}</label>
                 <input
                   type="text"
-                  placeholder="Enter Description"
+                  placeholder="{{globalServ.showGlobalplaceholders('enterDesc')}}"
                   id="description"
                   class="form-control"
                   [formControl]="leaveTypeForm.controls.description" />
@@ -706,19 +750,20 @@
                   (change)="genderBased()"
                   [formControl]="leaveTypeForm.controls.isGenderBased" />
                 <label class="form-check-label" for="isGenderBased">
-                Is this leave based on gender</label>
+                  {{globalServ.showLabel('genderBasis')}}</label>
               </div>
             </div>
             <div class="col-md-6 mt-2"
               *ngIf="leaveTypeForm.controls.isGenderBased.value === true">
               <div class="form-group input">
                 <label class="text-sm mb-1" for="forGender">
-                 Is this leave based on gender </label>
+                  {{globalServ.showLabel('gender')}} </label>
 
                 <select
                   class="form-select"
                   [formControl]="leaveTypeForm.controls.forGender">
-                  <option value selected disabled>Select Gender</option>
+                  <option value selected disabled>
+                    {{globalServ.showPlaceholder('selectGender')}}</option>
                   <option value="Male"> Male</option>
                   <option value="Female"> Female</option>
                   <option value="Others"> Others </option>
@@ -734,19 +779,19 @@
                   (change)="maritalStatusBased()"
                   [formControl]="leaveTypeForm.controls.isMaritalStatusBased" />
                 <label class="form-check-label" for="isMaritalStatusBased">
-                Is this leave based on marital status</label>
+                  {{globalServ.showLabel('maritalStatusLeave')}}</label>
               </div>
             </div>
             <div class="col-md-6  mt-2"
               *ngIf="leaveTypeForm.controls.isMaritalStatusBased.value === true">
               <div class="form-group input">
                 <label class="text-sm mb-1" for="forMaritalStatus">
-                 Marital status</label>
+                  {{globalServ.showLabel('maritalStatus')}} </label>
                 <select
                   class="form-select"
                   [formControl]="leaveTypeForm.controls.forMaritalStatus">
                   <option value selected
-                    disabled>Select marital status</option>
+                    disabled>{{showPlaceholder('maritalStatus')}}</option>
                   <option value="Married"> Married</option>
                   <option value="unMarried">Unmarried</option>
                 </select>
@@ -761,7 +806,7 @@
                     id="isactive"
                     [formControl]="leaveTypeForm.controls.isactive" />
                   <label class="form-check-label" for="isactive">
-                  Active</label>
+                    {{globalServ.getGlobalNames('active')}}</label>
                 </div>
               </div>
               <div class="col-md-3">
@@ -772,7 +817,7 @@
                     id="isVisible"
                     [formControl]="leaveTypeForm.controls.isVisible" />
                   <label class="form-check-label" for="isVisible">
-                   Is Visible</label>
+                    {{globalServ.showLabel('isVisible')}}</label>
                 </div>
               </div>
             </div>
@@ -782,17 +827,19 @@
           <button
             id="leave_setup_close"
             type="button"
-            class="btn delete-btn"
+            class="btn delete-btn closeModelType"
             data-bs-dismiss="modal"
-            aria-label="Close">Cancel</button>
+            aria-label="Close">{{globalServ.getGlobalNames('cancel')}}</button>
           <button id="submit_leaveType" *ngIf="!leaveTypeUpdate"
             class="btn  add-btn"
             [disabled]="leaveTypeForm.invalid || leaveTypeForm.pristine"
-            (click)="createLeaveType()" type="submit">Create</button>
+            (click)="createLeaveType()" type="submit">
+            {{globalServ.getGlobalNames('create')}}</button>
           <button id="submit_leaveType" *ngIf="leaveTypeUpdate"
             class="btn  add-btn"
             [disabled]="leaveTypeForm.invalid || leaveTypeForm.pristine"
-            (click)="UpdateType()" type="submit">Update</button>
+            (click)="UpdateType()" type="submit">
+            {{globalServ.getGlobalNames('update')}}</button>
         </div>
         <div class="text-center" *ngIf="leaveTypeview">
           <button
@@ -800,7 +847,7 @@
             type="button"
             class="btn delete-btn"
             data-bs-dismiss="modal"
-            aria-label="Close">Close</button>
+            aria-label="Close">{{globalServ.getGlobalNames('close')}}</button>
         </div>
       </div>
     </div>

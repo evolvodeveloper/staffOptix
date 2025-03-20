@@ -25,7 +25,7 @@ export class EmployeeListViewComponent implements OnInit, OnDestroy {
     public activeModal: NgbActiveModal,
     private utilServ: UtilService,
     private router: Router,
-    private globlServ: GlobalvariablesService
+    public globalServ: GlobalvariablesService
   ) {
   }
   ngOnInit() {
@@ -36,7 +36,7 @@ export class EmployeeListViewComponent implements OnInit, OnDestroy {
     }
 
     this.value = this.fromParent?.value;
-    this.dateFormat = this.globlServ.dateFormat;
+    this.dateFormat = this.globalServ.dateFormat
     const obj = this.value
     if (obj?.employeeMaster?.empImage !== null && obj?.employeeMaster?.fileType !== null && obj?.employeeMaster?.empImage !== undefined) {
       this.emp.image = (obj.employeeMaster?.empImage),

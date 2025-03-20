@@ -1,0 +1,600 @@
+<div class="page-header">
+  <div class="row align-items-center">
+    <div class="col-sm-12 col-lg-8">
+      <h3 class="page-title">Tax Settings</h3>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="row mb-3">
+      <div class="col-sm-12 col-lg-3">
+        <div class="input-group"  *ngIf="!firstTab">
+          <input
+            type="text"
+            *ngIf="secondTab"
+            class="form-control"
+            [(ngModel)]="proofSearch"
+            placeholder="Search "
+            (keyup)="updateFilterProofs($event)"
+            style="border-radius: 8px 0px 0px 8px" />
+              <input
+            type="text"
+            *ngIf="thirdTab"
+            class="form-control"
+              [(ngModel)]="componentSearch"
+            placeholder="Search "
+            (keyup)="updateFilterComponents($event)"
+            style="border-radius: 8px 0px 0px 8px" />
+          <span class="input-group-text" id="basic-addon1">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </span>
+        </div>
+      </div>
+      <div class="col-lg-7"></div>
+      <div class="col-sm-6 col-lg-2 mt-30px">
+        <!-- <label class="form-label ms-2">Show entries</label>
+        <select class="form-select" (change)="resultsPerPage($event)">
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="all">All</option>
+        </select> -->
+      </div>
+    </div>
+
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button (click)="tab1()" class="nav-link active"
+          id="pills-declarationDates-tab"
+          data-bs-toggle="pill"
+          data-bs-target="#pills-declarationDates"
+          type="button"
+          role="tab" aria-controls="pills-declarationDates"
+          aria-selected="true">
+          Declaration Dates</button>
+      </li>
+      <li class="nav-item ms-2" role="presentation">
+        <button (click)="tab2()" class="nav-link"
+          id="pills-Proofs-tab"
+          data-bs-toggle="pill"
+          data-bs-target="#pills-Proofs"
+          type="button"
+          role="tab" aria-controls="pills-Proofs"
+          aria-selected="false">
+          Tax Proofs</button>
+      </li>
+      <li class="nav-item ms-2" role="presentation">
+        <button (click)="tab3()" class="nav-link"
+          id="pills-Components-tab"
+          data-bs-toggle="pill"
+          data-bs-target="#pills-Components"
+          type="button"
+          role="tab" aria-controls="pills-Components"
+          aria-selected="false">
+          Tax Components</button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="pills-tabContent">
+      <div class="tab-pane fade  show active" id="pills-declarationDates"
+        role="tabpanel"
+        aria-labelledby="pills-declarationDates-tab" tabindex="0">
+        <div class="table-responsive">
+          <table
+            class="table table-hover table-nowrap custom-table mb-0 datatable">
+            <thead class="thead-all">
+              <tr class="tr-th-all">
+                <th scope="col">Param</th>
+                <th scope="col">Description</th>
+                <th scope="col" class="text-center">Param Value</th>
+                <th scope="col" class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- <ng-container *ngFor="let header of groupedData | keyvalue"> -->
+                <ng-container *ngFor="let item of declaration">
+                  <tr class="dasboard-td">
+                    <td>{{ item.param }}</td>
+                    <td>{{ item.description }}</td>
+                    <td style="text-align: center">
+                      <div *ngIf="item.dataType == 'Boolean'"
+                        class
+                        aria-label="{{item.dataType}}">
+                        <div class="mt-2">
+                          <mat-slide-toggle
+                            [disabled]="!item.editRecord"
+                            [checked]="getBooleanValue(item.currentParamValue)"
+                            (change)="setBooleanValue(item, $event.checked)"
+                            class="example-margin"
+                            color="primary"></mat-slide-toggle>
+                        </div>
+                      </div>
+
+                      <div
+                        *ngIf="item.dataType == 'String' && item.param !== 'SPECIFIED_CASE' && item.header !== 'hr_tax_components'"
+                        class="btn-group me-2"
+                        role="group"
+                        aria-label="Second group">
+                        <input
+                          class="form-control"
+                          type="text"
+                          [disabled]="!item.editRecord"
+                          [ngModelOptions]="{ standalone: true }"
+                          [(ngModel)]="item.currentParamValue"
+                          placeholder="Enter Text"
+                          aria-label="default input example" />
+                      </div>
+
+                      <div
+                        *ngIf="item.dataType == 'String' && item.param == 'SPECIFIED_CASE' && item.header  !== 'hr_tax_components'"
+                        class="btn-group me-2"
+                        role="group"
+                        aria-label="Second group">
+                        <select
+                          name
+                          class="form-select"
+                          id
+                          [disabled]="!item.editRecord"
+                          [(ngModel)]="item.currentParamValue">
+                          <option *ngFor="let spc of specifiedCase"
+                            [value]="spc.code">
+                            {{ spc.name }}
+                          </option>
+                        </select>
+                      </div>
+                      <div
+                        *ngIf="item.dataType == 'String' && item.header == 'hr_tax_components'"
+                        class="btn-group me-2"
+                        role="group"
+                        aria-label="Second group">
+                        <select
+                          name
+                          class="form-select"
+                          id
+                          [disabled]="!item.editRecord"
+                          [(ngModel)]="item.currentParamValue">
+                          <option value></option>
+                          <option *ngFor="let row of salaryComponents"
+                            [disabled]="row.payrollComponent.occupied"
+                            [value]="row.payrollComponent.componentCode">
+                            {{ row.payrollComponent.componentCode }}
+                          </option>
+                        </select>
+                      </div>
+
+                      <div *ngIf="item.dataType == 'Integer'"
+                        class="btn-group me-2"
+                        role="group"
+                        aria-label="Second group">
+                        <input
+                          [disabled]="!item.editRecord"
+                          class="form-control"
+                          type="number"
+                          [ngModelOptions]="{ standalone: true }"
+                          [(ngModel)]="item.currentParamValue"
+                          placeholder="Enter Number"
+                          aria-label="default input example" />
+                      </div>
+
+                      <div *ngIf="item.dataType == 'Date'"
+                        class="btn-group me-2"
+                        role="group"
+                        aria-label="Second group">
+                        <input
+                          [disabled]="!item.editRecord"
+                          class="form-control"
+                          type="date"
+                          (change)="changedateFormat($event,item)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [(ngModel)]="item.currentParamValue"
+                          aria-label="default input example" />
+
+                      </div>
+                    </td>
+
+                    <td class="text-center">
+                      <div
+                        class="btn-group me-2"
+                        role="group"
+                        aria-label="Second group">
+                        <button
+                          type="button"
+                          *ngIf="!item.editRecord"
+                          class="btn btn-light me-1 text-secondary"
+                          placement="top"
+                          ngbTooltip="Edit"
+                          (click)="editData(item)">
+                          <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button
+                          type="button"
+                          *ngIf="item.editRecord"
+                          class="btn btn-light me-1 text-secondary"
+                          placement="top"
+                          ngbTooltip="Save"
+                          (click)="saveData(item)">
+                          <i class="fa-solid fa-check-circle text-success"></i>
+                        </button>
+                           <button
+                          type="button"
+                          *ngIf="item.editRecord"
+                          class="btn btn-light me-1 text-secondary"
+                          placement="top"
+                          ngbTooltip="Cancel"
+                          (click)="cancel(item)">
+                          <i class="fa-solid text-danger fa-ban"></i>
+                        </button>
+                        <button
+                          type="button"
+                          *ngIf="!item.editRecord && item.currentParamValue !== ''"
+                          class="btn btn-light me-1 text-secondary"
+                          placement="top"
+                          ngbTooltip="Delete"
+                          (click)="deleteRow(item)">
+                          <i class="fa-solid text-danger fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              <!-- </ng-container> -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- declaration ends -->
+      <!-- proofs starts -->
+      <div class="tab-pane" id="pills-Proofs"
+        role="tabpanel"
+        aria-labelledby="pills-Proofs-tab" tabindex="0">
+        <div class="table-responsive">
+          <table
+            class="table table-hover table-nowrap custom-table mb-0 datatable">
+            <thead class="thead-all">
+              <tr class="tr-th-all">
+                <!-- <th scope="col">Catagory</th> -->
+                <!-- <th scope="col">Application</th> -->
+                <th scope="col">Param</th>
+                <th scope="col">Description</th>
+                <!-- <th scope="col" class="text-center">Param Value</th> -->
+                <th scope="col" class="text-center">Param Value</th>
+                <th scope="col" class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- <ng-container *ngFor="let header of groupedData | keyvalue"> -->
+                <!-- <tr class="dasboard-td">
+              <td colspan="5">{{ header.key }}</td>
+            </tr> -->
+                <ng-container *ngFor="let item of taxProofs">
+                  <tr class="dasboard-td">
+                    <td>{{ item.param }}</td>
+                    <td>{{ item.description }}</td>
+                    <td style="text-align: center">
+                      <div *ngIf="item.dataType == 'Boolean'"
+                        class
+                        aria-label="{{item.dataType}}">
+                        <div class="mt-2">
+                          <mat-slide-toggle
+                           
+                            [checked]="getBooleanValue(item.currentParamValue)"
+                            (change)="setBooleanValue(item, $event.checked)"
+                            class="example-margin"
+                            color="primary"></mat-slide-toggle>
+                        </div>
+                      </div>
+
+                      <div
+                        *ngIf="item.dataType == 'String' && item.param !== 'SPECIFIED_CASE' && item.header !== 'hr_tax_components'"
+                        class="btn-group me-2"
+                        role="group"
+                        aria-label="Second group">
+                        <input
+                          class="form-control"
+                          type="text"
+                          [disabled]="!item.editRecord"
+                          [ngModelOptions]="{ standalone: true }"
+                          [(ngModel)]="item.currentParamValue"
+                          placeholder="Enter Text"
+                          aria-label="default input example" />
+                      </div>
+
+                      <div
+                        *ngIf="item.dataType == 'String' && item.param == 'SPECIFIED_CASE' && item.header  !== 'hr_tax_components'"
+                        class="btn-group me-2"
+                        role="group"
+                        aria-label="Second group">
+                        <select
+                          name
+                          class="form-select"
+                          id
+                          [disabled]="!item.editRecord"
+                          [(ngModel)]="item.currentParamValue">
+                          <option *ngFor="let spc of specifiedCase"
+                            [value]="spc.code">
+                            {{ spc.name }}
+                          </option>
+                        </select>
+                      </div>
+                      <div
+                        *ngIf="item.dataType == 'String' && item.header  == 'hr_tax_components'"
+                        class="btn-group me-2"
+                        role="group"
+                        aria-label="Second group">
+                        <select
+                          name
+                          class="form-select"
+                          id
+                          [disabled]="!item.editRecord"
+                          [(ngModel)]="item.currentParamValue">
+                          <option value></option>
+                          <option *ngFor="let row of salaryComponents"
+                            [disabled]="row.payrollComponent.occupied"
+                            [value]="row.payrollComponent.componentCode">
+                            {{ row.payrollComponent.componentCode }}
+                          </option>
+                        </select>
+                      </div>
+
+                      <div *ngIf="item.dataType == 'Integer'"
+                        class="btn-group me-2"
+                        role="group"
+                        aria-label="Second group">
+                        <input
+                          [disabled]="!item.editRecord"
+                          class="form-control"
+                          type="number"
+                          [ngModelOptions]="{ standalone: true }"
+                          [(ngModel)]="item.currentParamValue"
+                          placeholder="Enter Number"
+                          aria-label="default input example" />
+                      </div>
+
+                      <div *ngIf="item.dataType == 'Date'"
+                        class="btn-group me-2"
+                        role="group"
+                        aria-label="Second group">
+                        <input
+                          [disabled]="!item.editRecord"
+                          class="form-control"
+                          type="date"
+                          (change)="changedateFormat($event,item)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [(ngModel)]="item.currentParamValue"
+                          aria-label="default input example" />
+
+                      </div>
+                    </td>
+
+                    <td class="text-center">
+                      <div
+                        class="btn-group me-2"
+                        role="group"
+                        aria-label="Second group">
+                        <button
+                          type="button"
+                          *ngIf="!item.editRecord"
+                          class="btn btn-light me-1 text-secondary"
+                          placement="top"
+                          ngbTooltip="Edit"
+                          (click)="editData(item)">
+                          <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button
+                          type="button"
+                          *ngIf="item.editRecord"
+                          class="btn btn-light me-1 text-secondary"
+                          placement="top"
+                          ngbTooltip="Save"
+                          (click)="saveData(item)">
+                          <i class="fa-solid fa-check-circle text-success"></i>
+                        </button>
+                        <button
+                          type="button"
+                          *ngIf="item.editRecord"
+                          class="btn btn-light me-1 text-secondary"
+                          placement="top"
+                          ngbTooltip="Cancel"
+                          (click)="cancel(item)">
+                          <i class="fa-solid text-danger fa-ban"></i>
+                        </button>
+                          <button
+                          type="button"
+                          *ngIf="!item.editRecord  && item.currentParamValue !== ''"
+                          class="btn btn-light me-1 text-secondary"
+                          placement="top"
+                          ngbTooltip="Delete"
+                          (click)="deleteRow(item)">
+                          <i class="fa-solid text-danger fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              <!-- </ng-container> -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- proofs ends -->
+      <!-- components  start-->
+
+      <div class="tab-pane" id="pills-Components"
+        role="tabpanel"
+        aria-labelledby="pills-Components-tab" tabindex="0">
+        <div class="table-responsive">
+          <table
+            class="table table-hover table-nowrap custom-table mb-0 datatable">
+            <thead class="thead-all">
+              <tr class="tr-th-all">
+                <!-- <th scope="col">Catagory</th> -->
+                <!-- <th scope="col">Application</th> -->
+                <th scope="col">Param</th>
+                <th scope="col">Description</th>
+                <!-- <th scope="col" class="text-center">Param Value</th> -->
+                <th scope="col" class="text-center">Param Value</th>
+                <th scope="col" class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- <ng-container *ngFor="let header of groupedData | keyvalue"> -->
+                <!-- <tr class="dasboard-td">
+              <td colspan="5">{{ header.key }}</td>
+            </tr> -->
+                <ng-container *ngFor="let item of taxComponents">
+                  <tr class="dasboard-td">
+                    <td>{{ item.param }}</td>
+                    <td>{{ item.description }}</td>
+                    <td style="text-align: center">
+                      <div *ngIf="item.dataType == 'Boolean'"
+                        class
+                        aria-label="{{item.dataType}}">
+                        <div class="mt-2">
+                          <mat-slide-toggle
+                            [disabled]="!item.editRecord"
+                            [checked]="getBooleanValue(item.currentParamValue)"
+                            (change)="setBooleanValue(item, $event.checked)"
+                            class="example-margin"
+                            color="primary"></mat-slide-toggle>
+                        </div>
+                      </div>
+
+                      <div
+                        *ngIf="item.dataType == 'String' && item.param !== 'SPECIFIED_CASE' && item.header  !== 'hr_tax_components'"
+                        class="btn-group me-2"
+                        role="group"
+                        aria-label="Second group">
+                        <input
+                          class="form-control"
+                          type="text"
+                          [disabled]="!item.editRecord"
+                          [ngModelOptions]="{ standalone: true }"
+                          [(ngModel)]="item.currentParamValue"
+                          placeholder="Enter Text"
+                          aria-label="default input example" />
+                      </div>
+
+                      <div
+                        *ngIf="item.dataType == 'String' && item.param == 'SPECIFIED_CASE' && item.header  !== 'hr_tax_components'"
+                        class="btn-group me-2"
+                        role="group"
+                        aria-label="Second group">
+                        <select
+                          name
+                          class="form-select"
+                          id
+                          [disabled]="!item.editRecord"
+                          [(ngModel)]="item.currentParamValue">
+                          <option *ngFor="let spc of specifiedCase"
+                            [value]="spc.code">
+                            {{ spc.name }}
+                          </option>
+                        </select>
+                      </div>
+                      <div
+                        *ngIf="item.dataType == 'String' && item.header  == 'hr_tax_components'"
+                        class="btn-group me-2"
+                        role="group"
+                        aria-label="Second group">
+                        <select
+                          name
+                          class="form-select"
+                          id
+                          [disabled]="!item.editRecord"
+                          [(ngModel)]="item.currentParamValue">
+                          <option value></option>
+                          <option *ngFor="let row of salaryComponents"
+                            [disabled]="row.payrollComponent.occupied"
+                            [value]="row.payrollComponent.componentCode">
+                            {{ row.payrollComponent.componentCode }}
+                          </option>
+                        </select>
+                      </div>
+
+                      <div *ngIf="item.dataType == 'Integer'"
+                        class="btn-group me-2"
+                        role="group"
+                        aria-label="Second group">
+                        <input
+                          [disabled]="!item.editRecord"
+                          class="form-control"
+                          type="number"
+                          [ngModelOptions]="{ standalone: true }"
+                          [(ngModel)]="item.currentParamValue"
+                          placeholder="Enter Number"
+                          aria-label="default input example" />
+                      </div>
+
+                      <div *ngIf="item.dataType == 'Date'"
+                        class="btn-group me-2"
+                        role="group"
+                        aria-label="Second group">
+                        <input
+                          [disabled]="!item.editRecord"
+                          class="form-control"
+                          type="date"
+                          (change)="changedateFormat($event,item)"
+                          [ngModelOptions]="{ standalone: true }"
+                          [(ngModel)]="item.currentParamValue"
+                          aria-label="default input example" />
+
+                      </div>
+                    </td>
+
+                    <td class="text-center">
+                      <div
+                        class="btn-group me-2"
+                        role="group"
+                        aria-label="Second group">
+                        <button
+                          type="button"
+                          *ngIf="!item.editRecord"
+                          class="btn btn-light me-1 text-secondary"
+                          placement="top"
+                          ngbTooltip="Edit"
+                          (click)="editData(item)">
+                          <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button
+                          type="button"
+                          *ngIf="item.editRecord"
+                          class="btn btn-light me-1 text-secondary"
+                          placement="top"
+                          ngbTooltip="Save"
+                          (click)="saveData(item)">
+                          <i class="fa-solid fa-check-circle text-success"></i>
+                        </button>
+                           <button
+                          type="button"
+                          *ngIf="item.editRecord"
+                          class="btn btn-light me-1 text-secondary"
+                          placement="top"
+                          ngbTooltip="Cancel"
+                          (click)="cancel(item)">
+                          <i class="fa-solid text-danger fa-ban"></i>
+                        </button>
+                        <button
+                          type="button"
+                          *ngIf="!item.editRecord  && item.currentParamValue !== ''"
+                          class="btn btn-light me-1 text-secondary"
+                          placement="top"
+                          ngbTooltip="Delete"
+                          (click)="deleteRow(item)">
+                          <i class="fa-solid text-danger fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              <!-- </ng-container> -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- components ends -->
+    </div>
+
+  </div>
+</div>

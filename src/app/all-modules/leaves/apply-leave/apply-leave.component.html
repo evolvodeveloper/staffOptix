@@ -1,5 +1,5 @@
 <div class="modal-header fw-bold">
-  <h4 class="modal-title">Apply Leave</h4>
+  <h4 class="modal-title">{{global.showLabel('ApplyLeave')}}</h4>
   <i
     class="fa-solid fa-xmark float-end fs-4"
     data-bs-dismiss="modal"
@@ -12,11 +12,11 @@
 
     <div class="row">
       <div class="col-sm-12 col-md-6">
-        <label for>From</label>
+        <label for>{{global.getGlobalNames('fromDate')}}</label>
         <mat-form-field class="w-100">
           <input id="start_date" matInput [matDatepicker]="picker"
             (dateChange)="setDates()"
-            placeholder="Choose a Start date" min="{{today}}"
+             min="{{today}}"
             max="{{threeMonths}}"
             formControlName="leaveFromdate" [matDatepickerFilter]="dateFilter">
           <mat-datepicker-toggle matSuffix
@@ -25,10 +25,9 @@
         </mat-form-field>
       </div>
       <div class="col-sm-12 col-md-6">
-        <label for>To</label>
+        <label for>{{global.getGlobalNames('toDate')}}</label>
         <mat-form-field class="w-100">
           <input id="end_date" matInput [matDatepicker]="picker1"
-            placeholder="Choose a End date"
             min="{{applyLeaveForm.controls?.leaveFromdate.value}}"
             max="{{threeMonths}}" (dateChange)="setDates()"
             formControlName="leaveTodate" [matDatepickerFilter]="dateFilter">
@@ -41,7 +40,7 @@
     <div class="row">
       <div class="col-sm-12 col-md-6">
         <div class="form-group">
-          <label>Leave Type&nbsp;<span
+          <label>{{global.getGlobalNames('LeaveType')}}&nbsp;<span
               style="color: red; margin-left: 1px">*</span></label>
           <select id="leaveTypeCode" class="form-select"
           (change)="checkRules()"
@@ -54,7 +53,7 @@
             </option>
           </select>
           <!-- </div>  [disabled]="LveType.disable"-->
-          <div
+          <div class="mt-2"
             *ngIf="
             applyLeaveForm.controls['leaveTypeCode'].invalid &&
             (applyLeaveForm.controls['leaveTypeCode'].dirty ||
@@ -65,7 +64,7 @@
               id="leaveTypeCode"
               *ngIf="applyLeaveForm.controls['leaveTypeCode'].errors.required"
               style="color: #dc3545">
-              leave Type is required.
+              {{globalServ.getGlobalNames('LeaveType')}} {{globalServ.showGlobalErrors('required')}}
             </div>
           </div>
         </div>
@@ -73,7 +72,7 @@
       <div class="col-sm-12 col-md-6">
         <div class="form-group"
           *ngIf="applyLeaveForm.controls.numLeaves.value <= 1 && canApplyHalfDay">
-          <label>Duration</label>
+          <label>{{global.showLabel('duration')}}</label>
           <select id="duration" class="form-select" formControlName="duration"
             (change)="checkDuration()">
             <option
@@ -87,7 +86,7 @@
 </div>
 <div class="row">
       <div class="col-sm-12 col-md-6">
-        <p>Number Of Leaves : {{this.applyLeaveForm.controls.numLeaves.value}}
+        <p>{{global.showLabel('NumberOfLeaves')}} : {{this.applyLeaveForm.controls.numLeaves.value}}
         </p>
 
         <!-- <div class="form-group">
@@ -114,11 +113,11 @@
 <div class="modal-footer" *ngIf="!view">
   <button id="cancel_apply_leave" type="button" class="btn delete-btn "
     data-dismiss="modal"
-    (click)="closeModal()">Cancel</button>
+    (click)="closeModal()">{{global.getGlobalNames('cancel')}}</button>
   <button id="submit_apply_leave" type="button" class="btn add-btn"
     *ngIf="!update"
     [disabled]="applyLeaveForm.invalid || applyLeaveForm.pristine || errorMsg.length > 0"
-    (click)="submit()">Submit</button>
+    (click)="submit()">{{global.getGlobalNames('submit')}}</button>
   <!-- <button id="update_apply_leave" type="button" class="btn add-btn " *ngIf="update"
     [disabled]="applyLeaveForm.invalid || applyLeaveForm.pristine" (click)="Update()">Submit</button> -->
 
@@ -126,5 +125,5 @@
 <div class="modal-footer  text-center " *ngIf="view">
   <button id="cancel_apply_leave" type="button" class="btn delete-btn "
     data-dismiss="modal"
-    (click)="closeModal()">Close</button>
+    (click)="closeModal()">{{global.getGlobalNames('close')}}</button>
 </div>

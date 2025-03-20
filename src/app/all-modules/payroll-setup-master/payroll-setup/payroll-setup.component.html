@@ -4,7 +4,7 @@
             <div class="d-flex align-items-baseline">
                 <i style="font-size:20px" class="fa fa-arrow-left"
                     (click)="back()" aria-label="back"></i>
-                <h3 class="ms-4 page-title">Payroll Setup</h3>
+                <h3 class="ms-4 page-title">{{globalServ.showLabel('payrollSetHeader')}}</h3>
             </div>
         </div>
     </div>
@@ -17,7 +17,7 @@
                 <div class="input-group">
                     <input type="text" class="form-control"
                     [(ngModel)]="searchedFor"
-                        placeholder="search by payroll"
+                        placeholder="{{globalServ.showGlobalplaceholders('search')}} {{globalServ.getGlobalNames('payroll')}} "
                         (keyup)="updateFilter($event)"
                         style="border-radius: 8px 0px 0px 8px;">
                     <span class="input-group-text" id="basic-addon1">
@@ -31,10 +31,10 @@
                 <button id="payroll_setup" type="button"
                     class="btn add-btn  float-end d-flex"
                     *ngIf="hasPermissionToUpdate" (click)="create()"><i
-                        class="material-icons me-2">add</i> Add New</button>
+                        class="material-icons me-2">add</i> {{globalServ.getGlobalNames('addNew')}}</button>
             </div>
             <div class="col-sm-6 col-lg-2 mt-30px">
-                <label class="form-label ms-2">Show entries</label>
+                <label class="form-label ms-2">{{globalServ.getGlobalNames('ShowEntries')}}</label>
                 <select class="form-select" (change)="resultsPerPage($event)">
                     <!-- <option value="10">10</option> -->
                     <option value="25">25</option>
@@ -51,24 +51,24 @@
                 <thead class="thead-all">
                     <tr class="tr-th-all">
                         <th></th>
-                        <th scope="col">Payroll</th>
-                        <th scope="col" class="text-center">Salary Type</th>
-                        <th scope="col" class="text-center">Salary For Period</th>
-                        <th scope="col" class="text-center">Salary Frequency</th>
-
-                        <th scope="col" class="text-center">Leave Plan</th>
-
-                        <th scope="col" class="text-center">Default</th>
+                        <th scope="col">{{globalServ.getGlobalNames('payroll')}}</th>
+                        <th scope="col" class="text-center">{{globalServ.showLabel('salaryType')}}</th>
+                        <th scope="col" class="text-center">{{globalServ.showLabel('salaryForperiod')}}</th>
+                        <th scope="col" class="text-center">{{globalServ.showLabel('salaryFrequency')}}</th>
+                        
+                        <th scope="col" class="text-center">{{globalServ.showLabel('leavePlan')}}</th>
+                        
+                        <th scope="col" class="text-center">{{globalServ.getGlobalNames('isDefault')}}</th>
 
                         <!-- <th scope="col" class="text-center">Approved</th> -->
-                        <th scope="col" class="text-center">Action</th>
+                        <th scope="col" class="text-center">{{globalServ.getGlobalNames('action')}}</th>
                     </tr>
                 </thead>
                 <tbody *ngIf="rows.length === 0">
                     <tr
                         style=" text-align: center; height: 150px;">
                         <td colspan="8">
-                             "No records were found with the selected filter criteria."
+                            {{globalServ.showGlobalErrors('notFound')}}
                         </td>
                     </tr>
                 </tbody>
@@ -136,15 +136,15 @@
                                 <div class="bg-white p-2 custdiv">
                                     <div class="row">
                                         <div class="col-md">
-                                            <small>Allow OT</small>
+                                            <small>{{globalServ.showLabel('allowOT')}}</small>
                                             <h5 class="mb-0">{{row.payrollSetup.allowOvertime }}</h5>
                                         </div>
                                         <div class="col-md">
-                                            <small>OT Code</small>
+                                            <small>{{globalServ.showLabel('otCode')}}</small>
                                             <h5 class="mb-0">{{row.payrollSetup.overtimeCode}}</h5>
                                         </div>
                                         <div class="col-md">
-                                            <small>Probation</small>
+                                            <small>{{globalServ.showLabel('probation')}}</small>
                                             <h5 class="mb-0">{{row.payrollSetup.hasProbation}}</h5>
                                         </div>
                                          <!-- <div class="col-md">

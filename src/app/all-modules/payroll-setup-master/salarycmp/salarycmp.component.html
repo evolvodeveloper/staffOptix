@@ -4,7 +4,9 @@
       <div class="d-flex align-items-baseline">
         <i style="font-size:20px" class="fa fa-arrow-left"
           (click)="back()" aria-label="back"></i>
-        <h3 class="ms-4 page-title">Salary Component</h3>
+        <h3 class="ms-4 page-title">
+          {{globalServ.showLabel('salaryComponent')}}
+        </h3>
       </div>
     </div>
   </div>
@@ -15,7 +17,7 @@
       <div class="col-sm-12 col-lg-3">
         <div class="input-group">
           <input type="text" class="form-control"
-            placeholder="search by component code"
+            placeholder="{{globalServ.showPlaceholder('searchBycomponentCode')}}"
             [(ngModel)]="searchedFor" (keyup)="updateFilter($event)"
             style="border-radius: 8px 0px 0px 8px;">
           <span class="input-group-text" id="basic-addon1">
@@ -33,11 +35,11 @@
           class="btn add-btn float-end d-flex"
           *ngIf="hasPermissionToUpdate" (click)="create()"><i
             id="add_designation" class="material-icons me-2">add</i>
-          Add New</button>
+            {{globalServ.getGlobalNames('addNew')}}</button>
       </div>
 
       <div class="col-sm-6 col-lg-2 mt-30px">
-        <label class="form-label ms-2">Show entries</label>
+        <label class="form-label ms-2">{{globalServ.getGlobalNames('ShowEntries')}}</label>
         <select class="form-select" (change)="resultsPerPage($event)">
           <!-- <option value="10">10</option> -->
           <option value="25">25</option>
@@ -53,22 +55,40 @@
         class="table table-hover table-nowrap custom-table mb-0 datatable">
         <thead class="thead-all">
           <tr class="tr-th-all">
-            <th scope="col">Component Code</th>
+            <th scope="col">
+              {{globalServ.showLabel('componentCode')}}
+            </th>
             <!-- <th scope="col">Payroll</th> -->
-            <th scope="col" class="text-center">is Commission</th>
-            <th scope="col" class="text-center">is Deduction</th>
-            <th scope="col" class="text-center">Deduction From Company Payable</th>
-            <th scope="col" class="text-center">is Derived</th>
-            <th scope="col" class="text-center">is Salary Prorated</th>
-            <th scope="col" class="text-center">is Taxable</th>
-            <th scope="col" class="text-center">is Active</th>
-            <th scope="col" class="text-center">Action</th>
+            <th scope="col" class="text-center">
+              {{globalServ.showLabel('isCommission-2')}}
+            </th>
+            <th scope="col" class="text-center">
+              {{globalServ.showLabel('isDeduction-2')}}
+            </th>
+            <th scope="col" class="text-center">
+              {{globalServ.showLabel('deductionFromcompanyPayable')}}
+            </th>
+            <th scope="col" class="text-center">
+              {{globalServ.showLabel('isDerived-2')}}
+            </th>
+            <th scope="col" class="text-center">
+              {{globalServ.showLabel('isSalaryProrated')}}
+            </th>
+            <th scope="col" class="text-center">
+              {{globalServ.showLabel('isTaxable-2')}}
+            </th>
+            <th scope="col" class="text-center">
+              {{globalServ.getGlobalNames('active')}}
+            </th>
+            <th scope="col" class="text-center">
+              {{globalServ.getGlobalNames('action')}}
+            </th>
           </tr>
         </thead>
           <tbody *ngIf="rows.length === 0">
           <tr style=" text-align: center; height: 150px;">
             <td colspan="10">
-              "No records were found."
+              {{globalServ.showGlobalErrors('notFound')}}
             </td>
           </tr>
         </tbody>

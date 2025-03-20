@@ -1,11 +1,10 @@
-<div class="container-xxl">
+<div class="">
   <div class="row">
     <div class="col-md-12">
       <h3 class="d-flex justify-content-between">
         <span><i style="font-size:20px" class="fa fa-arrow-left me-1"
-            (click)="back()" aria-label="back"></i> Company Info</span>
-        <a routerLink="/pricing-plans"><small>Want to upgrade your plan
-            ?</small></a>
+            (click)="back()" aria-label="back"></i> {{globalServ.showLabel('compInfo')}}</span>
+        <a routerLink="/pricing-plans"><small>{{globalServ.showLabel('upgradePlan')}}</small></a>
       </h3>
     </div>
   </div>
@@ -24,7 +23,7 @@
           alt="user" />
 
         <div class="fileupload btn" *ngIf="hasPermissionToUpdate">
-          <span class="btn-text">Edit</span>
+          <span class="btn-text">{{globalServ.getGlobalNames('edit')}}</span>
           <input
             class="upload"
             type="file" accept="image/*"
@@ -57,33 +56,32 @@
       <div class="col-md-5">
         <div class="profile-info-left">
           <div class="staff-id">
-            Company code :<span class="danger-color">
+            {{globalServ.showLabel('compCode')}}:<span class="danger-color">
               {{ company?.companyCode }}</span>
           </div>
 
           <div class="staff-id">
-            Short name :<span class="danger-color">
+            {{globalServ.getGlobalNames('shortName')}} :<span class="danger-color">
               {{company?.shortName}}</span>
           </div>
           <div class="staff-id">
-            Pricing plan :<span class="danger-color">
+            {{globalServ.showLabel('pricingPlan')}} :<span class="danger-color">
               {{company?.pricingCode}}</span>
           </div>
         </div>
       </div>
       <div class="col-md-5">
         <div class="personal-info">
-
           <div class="staff-id">
-            Industry :<span class="danger-color">
+            {{globalServ.showLabel('Industry')}} :<span class="danger-color">
               {{company?.industry}}</span>
           </div>
           <div class="staff-id">
-            License valid till :<span class="danger-color">
+            {{globalServ.showLabel('licValid')}} :<span class="danger-color">
               {{ company?.validTill | date:dateFormat}}</span>
           </div>
           <div class="staff-id">
-            Active :<span class="danger-color">
+           {{globalServ.getGlobalNames('active')}} :<span class="danger-color">
               {{company?.isactive }}</span>
           </div>
         </div>

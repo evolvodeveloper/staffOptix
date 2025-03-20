@@ -5,10 +5,12 @@
         class="fa fa-arrow-left"
         (click)="back()"
         aria-label="back"></i>
-      <h3 class="ms-4 page-title" *ngIf="tabData.length > 1"> {{ view ? "View" : update ? "Update" :
-        "Create" }} Employee</h3>
-        <h3 class="ms-4 page-title" *ngIf="tabData.length === 1"> {{ view ? "View" : update ? "Update" :
-        "Create" }} {{tabData[0].header}}</h3>
+      <h3 class="ms-4 page-title" *ngIf="tabData.length > 1"> {{ view ? globalServ.getGlobalNames('view') : (update ?
+          globalServ.getGlobalNames('update')
+          :globalServ.getGlobalNames('create')) }} Employee</h3>
+        <h3 class="ms-4 page-title" *ngIf="tabData.length === 1">{{ view ? globalServ.getGlobalNames('view') : (update ?
+          globalServ.getGlobalNames('update')
+          :globalServ.getGlobalNames('create')) }} {{tabData[0].header}}</h3>
     </div>
   </div>
 </div>

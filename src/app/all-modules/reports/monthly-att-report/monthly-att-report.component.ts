@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import * as FileSaver from 'file-saver';
@@ -16,7 +16,7 @@ const EXCEL_EXTENSION = '.xlsx';
 @Component({
   selector: 'app-monthly-att-report',
   templateUrl: './monthly-att-report.component.html',
-  styleUrls: ['./monthly-att-report.component.scss']
+  styleUrls: ['./monthly-att-report.component.scss'],
 })
 export class MonthlyAttReportComponent implements OnInit {
   reportObj = {
@@ -27,7 +27,10 @@ export class MonthlyAttReportComponent implements OnInit {
     year: '',
     date: '',
     month: '',
-    maxDt: ''
+    maxDte: moment().format('YYYY-MM-DD'),
+    maxDt: '',
+    startDate: '',
+    endDate: '',
   };
   dateFormat: string;
   stopSpinner = true;
@@ -39,12 +42,20 @@ export class MonthlyAttReportComponent implements OnInit {
   setData: any;
   departments = [];
   projects = [];
+  selectedDateRange = {
+    startDate: moment(),
+    endDate: moment(),
+  };
+  showToggle = false;
+  showDateRange: boolean = false; // Initial state
+  dateSelected: boolean = false;
   constructor(
     private httpPostService: HttpPostService,
     private spinner: NgxSpinnerService,
     public activeModal: NgbActiveModal,
-    private global: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private utilServ: UtilService,
+    private cdr: ChangeDetectorRef,
     private httpGetService: HttpGetService,
     private router: Router
   ) {
@@ -53,36 +64,60 @@ export class MonthlyAttReportComponent implements OnInit {
       currentPage: 1,
       totalItems: this.rows.length,
     };
+    if (window.location.pathname === '/rpt/montlyAttByEmpReport') {
+      this.showToggle = false;
+    } else {
+      this.showToggle = true;
+    }
   }
   ngOnInit(): void {
+    this.globalServ.getMyCompLabels('monthlyAttrept');
     this.getProjects();
     this.getDepartments();
     this.reportObj.maxDt = moment().format('YYYY-MM');
     this.employeesByDepartmentAndProject();
   }
+
+  ngDoCheck() {
+    this.removeRightCalendar();
+  }
+  removeRightCalendar() {
+    const rightCalendar = document.getElementsByClassName('calendar right');
+    if (rightCalendar.item(0)) {
+      rightCalendar.item(0).remove();
+    }
+  }
+
   employeesByDepartmentAndProject() {
     this.stopSpinner = false;
     this.httpGetService
-      .getMasterList('employeesByCatAndDept?department=' + this.reportObj.deptCode + '&category=' + this.reportObj.projectCode)
-      .subscribe((res: any) => {
-        const val = res.response.map(x => {
-          x.mergeName = `${x.employeeName} - ${x.employeeCode}`;
-          return x
-        })
-        if (res.response.length > 0) {
-          val.unshift({
-            employeeCode: 'ALL',
-            employeeName: 'ALL',
-            mergeName: 'ALL'
-          })
-        }
-        this.employee = val;
-        this.stopSpinner = true;
-      },
-        err => {
+      .getMasterList(
+        'employeesByCatAndDept?department=' +
+          this.reportObj.deptCode +
+          '&category=' +
+          this.reportObj.projectCode
+      )
+      .subscribe(
+        (res: any) => {
+          const val = res.response.map((x) => {
+            x.mergeName = `${x.employeeName} - ${x.employeeCode}`;
+            return x;
+          });
+          if (res.response.length > 0) {
+            val.unshift({
+              employeeCode: 'ALL',
+              employeeName: 'ALL',
+              mergeName: 'ALL',
+            });
+          }
+          this.employee = val;
+          this.stopSpinner = true;
+        },
+        (err) => {
           this.stopSpinner = true;
           console.error(err.error.status.message);
-        });
+        }
+      );
   }
   showEmpRecord(row) {
     const groupedRecords = row.presentReport.reduce((acc, record) => {
@@ -103,13 +138,18 @@ export class MonthlyAttReportComponent implements OnInit {
       } else {
         // Multiple records, merge them
         const [firstRecord, secondRecord] = group.sort((a, b) => {
-          return new Date(`${a.dateCode}T${a.inTime}`).getTime() - new Date(`${b.dateCode}T${b.inTime}`).getTime();
+          return (
+            new Date(`${a.dateCode}T${a.inTime}`).getTime() -
+            new Date(`${b.dateCode}T${b.inTime}`).getTime()
+          );
         });
 
         const mergedRecord = { ...firstRecord, BreakShift: true };
         for (const key in secondRecord) {
           if (Object.prototype.hasOwnProperty.call(secondRecord, key)) {
-            mergedRecord[`Second${key.charAt(0).toUpperCase() + key.slice(1)}`] = secondRecord[key];
+            mergedRecord[
+              `Second${key.charAt(0).toUpperCase() + key.slice(1)}`
+            ] = secondRecord[key];
           }
         }
         result.push(mergedRecord);
@@ -119,52 +159,79 @@ export class MonthlyAttReportComponent implements OnInit {
 
     row.presentRpt.forEach((r) => {
       if (r.BreakShift) {
-        r.totalHours = this.convertDecimalToHours(r.totalHours)
+        r.totalHours = this.convertDecimalToHours(r.totalHours);
         r.SecondTotalHours = this.convertDecimalToHours(r.SecondTotalHours);
         r.lateBy = this.convertDecimalToHours(r.lateBy);
         r.SecondLateBy = this.convertDecimalToHours(r.SecondLateBy);
         r.SecondLeftEarlyBy = this.convertDecimalToHours(r.SecondLeftEarlyBy);
         r.leftEarlyBy = this.convertDecimalToHours(r.leftEarlyBy);
 
-        r.regularHours = this.convertDecimalToHours(r.regularHours)
-        r.SecondRegularHours = this.convertDecimalToHours(r.SecondRegularHours)
+        r.regularHours = this.convertDecimalToHours(r.regularHours);
+        r.SecondRegularHours = this.convertDecimalToHours(r.SecondRegularHours);
 
-        r.effectiveHours = this.convertDecimalToHours(r.effectiveHours)
-        r.SecondEffectiveHours = this.convertDecimalToHours(r.SecondEffectiveHours)
+        r.effectiveHours = this.convertDecimalToHours(r.effectiveHours);
+        r.SecondEffectiveHours = this.convertDecimalToHours(
+          r.SecondEffectiveHours
+        );
         if (r.remarks !== null && r.SecondRemarks !== null) {
-          r.mixedRemark = r.remarks.concat('/').concat(r.SecondRemarks)
+          r.mixedRemark = r.remarks.concat('/').concat(r.SecondRemarks);
         } else {
-          r.mixedRemark = r.remarks || r.SecondRemarks
+          r.mixedRemark = r.remarks || r.SecondRemarks;
         }
         if (r.attStatus == 'P' && r.SecondAttStatus == 'P') {
-          r.mixedAttStatus = 'P'
-        } else if ((r.attStatus == 'P' && r.SecondAttStatus == 'P*') || (r.attStatus == 'P*' && r.SecondAttStatus == 'P')) {
-          r.mixedAttStatus = 'P*'
+          r.mixedAttStatus = 'P';
+        } else if (
+          (r.attStatus == 'P' && r.SecondAttStatus == 'P*') ||
+          (r.attStatus == 'P*' && r.SecondAttStatus == 'P')
+        ) {
+          r.mixedAttStatus = 'P*';
         } else {
-          r.mixedAttStatus = r.attStatus.concat('/').concat(r.SecondAttStatus)
+          r.mixedAttStatus = r.attStatus.concat('/').concat(r.SecondAttStatus);
         }
 
-        const totalEffectiveHrs1 = moment.duration(r.effectiveHours).add(moment.duration(r.SecondEffectiveHours)).asMinutes();
+        const totalEffectiveHrs1 = moment
+          .duration(r.effectiveHours)
+          .add(moment.duration(r.SecondEffectiveHours))
+          .asMinutes();
         const h2 = Math.floor(totalEffectiveHrs1 / 60);
         const hours2 = h2 < 10 ? '0' + h2 : h2;
         const m2 = Math.floor(totalEffectiveHrs1 % 60);
         const minutes2 = m2 < 10 ? '0' + m2 : m2;
         r.effectiveHrs1 = hours2 + ':' + minutes2;
 
-        const formattedInTime = r.inTime ? moment(r.inTime, 'HH:mm:ss').format('HH:mm') : '--:--';
-        const formattedSecondInTime = r.SecondInTime ? moment(r.SecondInTime, 'HH:mm:ss').format('HH:mm') : '--:--';
+        const formattedInTime = r.inTime
+          ? moment(r.inTime, 'HH:mm:ss').format('HH:mm')
+          : '--:--';
+        const formattedSecondInTime = r.SecondInTime
+          ? moment(r.SecondInTime, 'HH:mm:ss').format('HH:mm')
+          : '--:--';
         r.mixedInTime = `${formattedInTime} <br> ${formattedSecondInTime}`;
 
-        const formattedoutTime = r.outTime ? moment(r.outTime, 'HH:mm:ss').format('HH:mm') : '--:--';
-        const formattedSecondoutTime = r.SecondOutTime ? moment(r.SecondOutTime, 'HH:mm:ss').format('HH:mm') : '--:--';
+        const formattedoutTime = r.outTime
+          ? moment(r.outTime, 'HH:mm:ss').format('HH:mm')
+          : '--:--';
+        const formattedSecondoutTime = r.SecondOutTime
+          ? moment(r.SecondOutTime, 'HH:mm:ss').format('HH:mm')
+          : '--:--';
         r.mixedOutTime = `${formattedoutTime} <br> ${formattedSecondoutTime}`;
 
-        r.mixedLateBy = `${(r.lateBy !== '00:00') ? r.lateBy : '--:--'} <br> ${(r.SecondLateBy !== '00:00') ? r.SecondLateBy : '--:--'}`;
-        r.mixedLeftEarlyBy = `${(r.leftEarlyBy !== '00:00') ? r.leftEarlyBy : '--:--'} <br> ${(r.SecondLeftEarlyBy !== '00:00') ? r.SecondLeftEarlyBy : '--:--'}`;
+        r.mixedLateBy = `${r.lateBy !== '00:00' ? r.lateBy : '--:--'} <br> ${
+          r.SecondLateBy !== '00:00' ? r.SecondLateBy : '--:--'
+        }`;
+        r.mixedLeftEarlyBy = `${
+          r.leftEarlyBy !== '00:00' ? r.leftEarlyBy : '--:--'
+        } <br> ${
+          r.SecondLeftEarlyBy !== '00:00' ? r.SecondLeftEarlyBy : '--:--'
+        }`;
 
-
-        const totalReguHrs = moment.duration(r.regularHours).add(moment.duration(r.SecondRegularHours)).asMinutes();
-        const totalTotalHours1 = moment.duration(r.totalHours).add(moment.duration(r.SecondTotalHours)).asMinutes();
+        const totalReguHrs = moment
+          .duration(r.regularHours)
+          .add(moment.duration(r.SecondRegularHours))
+          .asMinutes();
+        const totalTotalHours1 = moment
+          .duration(r.totalHours)
+          .add(moment.duration(r.SecondTotalHours))
+          .asMinutes();
 
         const h3 = Math.floor(totalTotalHours1 / 60);
         const hours3 = h3 < 10 ? '0' + h3 : h3;
@@ -176,22 +243,17 @@ export class MonthlyAttReportComponent implements OnInit {
         r.mixedAttStatus = r.attStatus;
         r.lateBy = this.convertDecimalToHours(r.lateBy);
         r.leftEarlyBy = this.convertDecimalToHours(r.leftEarlyBy);
-        r.effectiveHrs1 = this.convertDecimalToHours(r.effectiveHours)
-        r.totalHours1 = this.convertDecimalToHours(r.totalHours)
-        r.mixedInTime = r.inTime ? `${moment(r.inTime, 'HH:mm:ss').format('HH:mm')}` : '--:--';
-        r.mixedOutTime = r.outTime ? `${moment(r.outTime, 'HH:mm:ss').format('HH:mm')}` : '--:--';
+        r.effectiveHrs1 = this.convertDecimalToHours(r.effectiveHours);
+        r.totalHours1 = this.convertDecimalToHours(r.totalHours);
+        r.mixedInTime = r.inTime
+          ? `${moment(r.inTime, 'HH:mm:ss').format('HH:mm')}`
+          : '--:--';
+        r.mixedOutTime = r.outTime
+          ? `${moment(r.outTime, 'HH:mm:ss').format('HH:mm')}`
+          : '--:--';
       }
     });
     this.setData = row;
-    // row.presentReport.forEach((element: { leftEarlyBy1: string; leftEarlyBy: any; lateBy1: string; lateBy: any; totalHours1: string; totalHours: any; otHrs1: string; otHrs: any; regularHours1: string; regularHours: any; }) => {
-    //   element.leftEarlyBy1 = this.modifyTime(element.leftEarlyBy);
-    //   element.lateBy1 = this.modifyTime(element.lateBy);
-    //   element.totalHours1 = this.modifyTime(element.totalHours);
-    //   element.otHrs1 = this.modifyTime(element.otHrs);
-    //   element.regularHours1 = this.modifyTime(element.regularHours);
-    // });
-    // this.setData = row;
-    // return result;
   }
   convertDecimalToHours(decimalHours) {
     const resultInMinutes = decimalHours * 60;
@@ -205,23 +267,26 @@ export class MonthlyAttReportComponent implements OnInit {
   modifyTime(time) {
     const resultInEXHMinutes = time ? time * 60 : 0;
     const exh = Math.floor(resultInEXHMinutes / 60);
-    const exhours = exh < 10 ? '0' + exh : exh
+    const exhours = exh < 10 ? '0' + exh : exh;
     const exm = Math.floor(resultInEXHMinutes % 60);
-    const exminutes = exm < 10 ? '0' + exm : exm
-    return exhours + ':' + exminutes
+    const exminutes = exm < 10 ? '0' + exm : exm;
+    return exhours + ':' + exminutes;
   }
   getDepartments() {
-    this.httpGetService.getMasterList('depts/active').subscribe((res: any) => {
-      if (res.response.length > 0) {
-        res.response.unshift({
-          deptCode: 'ALL',
-          deptName: 'ALL'
-        })
+    this.httpGetService.getMasterList('depts/active').subscribe(
+      (res: any) => {
+        if (res.response.length > 0) {
+          res.response.unshift({
+            deptCode: 'ALL',
+            deptName: 'ALL',
+          });
+        }
+        this.departments = res.response;
+      },
+      (err) => {
+        console.error(err.error.status.message);
       }
-      this.departments = res.response
-    }, (err) => {
-      console.error(err.error.status.message);
-    })
+    );
   }
   getProjects() {
     this.httpGetService.getMasterList('empcategorys').subscribe(
@@ -229,7 +294,7 @@ export class MonthlyAttReportComponent implements OnInit {
         if (res.response.length > 0) {
           res.response.unshift({
             categoryCode: 'ALL',
-          })
+          });
         }
         this.projects = res.response;
       },
@@ -250,46 +315,79 @@ export class MonthlyAttReportComponent implements OnInit {
     this.rows = [];
     this.message = 'clickOnsubmit';
   }
-  submit() {
-    if (this.reportObj.fulldate) {
-      const dateSplit = this.reportObj.fulldate.split('-');
-      if (dateSplit.length > 2) {
-        this.reportObj.date = dateSplit[2];
-        this.reportObj.month = dateSplit[1];
-        this.reportObj.year = dateSplit[0];
-      } else {
-        this.reportObj.date = '01';
-        this.reportObj.month = dateSplit[1];
-        this.reportObj.year = dateSplit[0];
-      }
+  async submit() {
+    if (this.showDateRange) {
       this.spinner.show();
       this.config.currentPage = 1;
-      this.httpGetService.getMasterList('reports/attSummaryForMonth?empCode=' + this.reportObj.empCode + '&year=' + this.reportObj.year + '&month=' + this.reportObj.month +
-        '&date=' + this.reportObj.date + '&deptCode=' + this.reportObj.deptCode
-      ).subscribe((res: any) => {
-        this.spinner.hide();
-        this.message = 'modified';
-        // const records = this.manageRecords(res.response);
 
-        this.rows = res.response;
-        this.temp = res.response
-        this.dateFormat = this.global.dateFormat;
-      },
-        err => {
-          this.spinner.hide();
-          this.message = 'error';
-          Swal.fire({
-            title: 'Error!',
-            text: err.error.status.message,
-            icon: 'error',
-          });
-        })
+      if (this.selectedDateRange.startDate && this.selectedDateRange.endDate) {
+        const startDate = this.selectedDateRange.startDate.format('YYYY-MM-DD');
+        const endDate = this.selectedDateRange.endDate.format('YYYY-MM-DD');
+
+        this.httpGetService
+          .getMasterList(
+            `reports/attsummaryforperiod?empCode=${this.reportObj.empCode}&from=${startDate}&to=${endDate}&deptCode=${this.reportObj.deptCode}`
+          )
+          .subscribe(
+            (res: any) => {
+              this.spinner.hide();
+              this.message = 'modified';
+              this.rows = res.response;
+              this.temp = res.response;
+              this.dateFormat = this.globalServ.dateFormat;
+            },
+            (err) => {
+              this.spinner.hide();
+              this.message = 'error';
+              Swal.fire({
+                title: 'Error!',
+                text: err.error.status.message,
+                icon: 'error',
+              });
+            }
+          );
+      }
+    } else if (this.reportObj.fulldate) {
+      this.spinner.show();
+      const dateSplit = this.reportObj.fulldate.split('-');
+      const year = dateSplit[0];
+      const month = dateSplit[1];
+      const date = dateSplit.length > 2 ? dateSplit[2] : '01';
+      this.config.currentPage = 1;
+      this.httpGetService
+        .getMasterList(
+          `reports/attSummaryForMonth?empCode=${this.reportObj.empCode}&year=${year}&month=${month}&date=${date}&deptCode=${this.reportObj.deptCode}`
+        )
+        .subscribe(
+          (res: any) => {
+            this.spinner.hide();
+            this.message = 'modified';
+            this.rows = res.response;
+            this.temp = res.response;
+            this.dateFormat = this.globalServ.dateFormat;
+          },
+          (err) => {
+            this.spinner.hide();
+            this.message = 'error';
+            Swal.fire({
+              title: 'Error!',
+              text: err.error.status.message,
+              icon: 'error',
+            });
+          }
+        );
     } else {
+      const labelText: string | undefined = await this.globalServ.showLabel(
+        'dateField'
+      );
+      const text: string = labelText || 'Please, Select the Date field';
       Swal.fire({
-        title: 'Info!',
-        text: 'Please, Select the Date field',
+        title: 'info!',
+        html: text,
         icon: 'info',
       });
+      this.spinner.hide();
+
     }
   }
 
@@ -313,13 +411,18 @@ export class MonthlyAttReportComponent implements OnInit {
       } else {
         // Multiple records, merge them
         const [firstRecord, secondRecord] = group.sort((a, b) => {
-          return new Date(`${a.inDate}T${a.inTime}`).getTime() - new Date(`${b.inDate}T${b.inTime}`).getTime();
+          return (
+            new Date(`${a.inDate}T${a.inTime}`).getTime() -
+            new Date(`${b.inDate}T${b.inTime}`).getTime()
+          );
         });
 
         const mergedRecord = { ...firstRecord, BreakShift: true };
         for (const key in secondRecord) {
           if (Object.prototype.hasOwnProperty.call(secondRecord, key)) {
-            mergedRecord[`Second${key.charAt(0).toUpperCase() + key.slice(1)}`] = secondRecord[key];
+            mergedRecord[
+              `Second${key.charAt(0).toUpperCase() + key.slice(1)}`
+            ] = secondRecord[key];
           }
         }
         result.push(mergedRecord);
@@ -329,14 +432,17 @@ export class MonthlyAttReportComponent implements OnInit {
     return result;
   }
 
-
   updateFilter(event) {
     const val = event.target.value.toLowerCase();
     if (val == '') {
       this.rows = [...this.temp];
     } else {
       const temp = this.temp.filter(function (d) {
-        return d.empName.toLowerCase().indexOf(val) !== -1 || d.empCode.toLowerCase().indexOf(val) !== -1 || !val;
+        return (
+          d.empName.toLowerCase().indexOf(val) !== -1 ||
+          d.empCode.toLowerCase().indexOf(val) !== -1 ||
+          !val
+        );
       });
       this.rows = temp;
     }
@@ -346,7 +452,7 @@ export class MonthlyAttReportComponent implements OnInit {
   closeModel(dismiss) {
     this.activeModal.dismiss(dismiss);
   }
-  saveExcel() {
+  async saveExcel() {
     const dateSplit = this.reportObj.fulldate.split('-');
     if (dateSplit.length > 2) {
       this.reportObj.date = dateSplit[2];
@@ -359,46 +465,128 @@ export class MonthlyAttReportComponent implements OnInit {
     }
     if (window.location.pathname === '/rpt/montlyAttByEmpReport') {
       this.spinner.show();
-      this.httpGetService.getExcel('reports/attSummaryForMonthByEmp/xls?empCode=' + this.reportObj.empCode + '&year=' + this.reportObj.year + '&month=' + this.reportObj.month +
-        '&date=' + this.reportObj.date + '&deptCode=' + this.reportObj.deptCode
-      ).subscribe((res: any) => {
-        this.spinner.hide();
-        const data: Blob = new Blob([res], { type: EXCEL_TYPE });
-        FileSaver.saveAs(
-          data,
-          'Monthly_attendance_report-' + this.reportObj.month + '-' + new Date().getTime() + EXCEL_EXTENSION
+      this.httpGetService
+        .getExcel(
+          'reports/attSummaryForMonthByEmp/xls?empCode=' +
+            this.reportObj.empCode +
+            '&year=' +
+            this.reportObj.year +
+            '&month=' +
+            this.reportObj.month +
+            '&date=' +
+            this.reportObj.date +
+            '&deptCode=' +
+            this.reportObj.deptCode
+        )
+        .subscribe(
+          (res: any) => {
+            this.spinner.hide();
+            const data: Blob = new Blob([res], { type: EXCEL_TYPE });
+            const fileName = 'Monthly_attendance_report_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_');
+            FileSaver.saveAs(
+              data,
+              fileName +
+                EXCEL_EXTENSION
+            );
+            this.globalServ.showSuccessPopUp('Excel', 'success', fileName);
+          },
+          (err) => {
+            this.spinner.hide();
+            const error = err.error.status ? err.error.status.message : 'UNKNOWN ERROR OCCURRED'
+            Swal.fire({
+              title: 'Error!',
+                text: error,
+                icon: 'error',
+              })
+          }
         );
-        this.global.showSuccessPopUp('Excel', 'success');
-      },
-        err => {
-          this.spinner.hide();
-          Swal.fire({
-            title: 'Error!',
-            text: err.error.status.message,
-            icon: 'error',
-          })
-        });
     } else {
-      this.spinner.show();
-      this.httpGetService.getExcel('reports/attSummaryForMonth/xls?empCode=' + this.reportObj.empCode + '&year=' + this.reportObj.year + '&month=' + this.reportObj.month +
-        '&date=' + this.reportObj.date + '&deptCode=' + this.reportObj.deptCode
-      ).subscribe((res: any) => {
-        this.spinner.hide();
-        const data: Blob = new Blob([res], { type: EXCEL_TYPE });
-        FileSaver.saveAs(
-          data,
-          'Monthly_attendance_report' + this.reportObj.month + '-' + new Date().getTime() + EXCEL_EXTENSION
+      if (this.showDateRange) {
+        this.config.currentPage = 1;
+        if (this.selectedDateRange.startDate && this.selectedDateRange.endDate) {
+          const startDate = this.selectedDateRange.startDate.format('YYYY-MM-DD');
+          const endDate = this.selectedDateRange.endDate.format('YYYY-MM-DD');
+          this.spinner.show();
+          this.httpGetService
+            .getExcel(
+              `reports/attsummaryforperiod/xls?empCode=${this.reportObj.empCode}&from=${startDate}&to=${endDate}&deptCode=${this.reportObj.deptCode}`
+            )
+            .subscribe(
+              (res: any) => {
+                this.spinner.hide();
+                const data: Blob = new Blob([res], { type: EXCEL_TYPE });
+                const fileName = 'Monthly_attendance_report_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_');
+                FileSaver.saveAs(
+                  data,
+                  fileName +
+                    EXCEL_EXTENSION
+                );
+                this.globalServ.showSuccessPopUp('Excel', 'success', fileName);
+              },
+              (err) => {
+                this.spinner.hide();
+                const error = err.error.status ? err.error.status.message : 'UNKNOWN ERROR OCCURRED'
+                Swal.fire({
+                  title: 'Error!',
+                    text: error,
+                    icon: 'error',
+                  })
+              }
+            );
+        }
+      } else if (this.reportObj.fulldate) {
+        const dateSplit = this.reportObj.fulldate.split('-');
+        const year = dateSplit[0];
+        const month = dateSplit[1];
+        const date = dateSplit.length > 2 ? dateSplit[2] : '01';
+        this.spinner.show();
+        this.httpGetService
+          .getExcel(
+            `reports/attSummaryForMonth/xls?empCode=${this.reportObj.empCode}&year=${year}&month=${month}&date=${date}&deptCode=${this.reportObj.deptCode}`
+          )
+          .subscribe(
+            (res: any) => {
+              this.spinner.hide();
+              const data: Blob = new Blob([res], { type: EXCEL_TYPE });
+              const fileName = 'Monthly_attendance_report_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_');
+              FileSaver.saveAs(data, fileName + EXCEL_EXTENSION);
+              this.globalServ.showSuccessPopUp('Excel', 'success', fileName);
+            },
+            (err) => {
+              this.spinner.hide();
+              const error = err.error.status ? err.error.status.message : 'UNKNOWN ERROR OCCURRED'
+              Swal.fire({
+                title: 'Error!',
+                  text: error,
+                  icon: 'error',
+                })
+            }
+          );
+      } else {
+        const labelText: string | undefined = await this.globalServ.showLabel(
+          'dateField'
         );
-        this.global.showSuccessPopUp('Excel', 'success');
-      },
-        err => {
-          this.spinner.hide();
-          Swal.fire({
-            title: 'Error!',
-            text: err.error.status.message,
-            icon: 'error',
-          })
+        const text: string = labelText || 'Please, Select the Date field';
+        Swal.fire({
+          title: 'info!',
+          html: text,
+          icon: 'info',
         });
+        this.spinner.hide();
+      }
     }
+  }
+
+  toggleDateInput() {
+    this.rows = [];
+    this.showDateRange = !this.showDateRange;
+    const rightCalendar = document.getElementsByClassName('calendar right');
+    if (rightCalendar.item(0)) {
+      rightCalendar.item(0).remove();
+    }
+  }
+
+  onDateRangeChange() {
+    this.dateSelected = !this.selectedDateRange.startDate && !this.selectedDateRange.endDate; // Set dateSelected based on date range
   }
 }

@@ -56,8 +56,8 @@ export class AbsentReportComponent implements OnInit, AfterViewInit {
   constructor(
     private httpPostService: HttpPostService,
     private spinner: NgxSpinnerService,
-    private global: GlobalvariablesService,
     private utilServ: UtilService,
+    public globalServ: GlobalvariablesService,
     private httpGetService: HttpGetService,
     private router: Router
   ) {
@@ -67,28 +67,103 @@ export class AbsentReportComponent implements OnInit, AfterViewInit {
       totalItems: this.rows.length,
     };
   }
+  currentTable = 'absentRpt'
+  activeColumns = [];
   colKeys = [];
-  // colKeys = [
-  //   'Bronzeage',
-  //   'Ironage',
-  //   'Middleages',
-  // ];
-  // dataSource = [{ Bronzeage: 'data1', Ironage: 'data2', Middleages: 'data3' },
-  // { Bronzeage: 'data11', Ironage: 'data21', Middleages: 'data31' },
-  // { Bronzeage: 'data12', Ironage: 'data22', Middleages: 'data32' },
-  // { Bronzeage: 'data13', Ironage: 'data23', Middleages: 'data33' },
-  // { Bronzeage: 'data14', Ironage: 'data24', Middleages: 'data34' }
-  // ]; // Replace with your data source
-
   drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.colKeys, event.previousIndex, event.currentIndex);
+    moveItemInArray(this.activeColumns, event.previousIndex, event.currentIndex);
+    this.activeColumns.forEach((x, i) => x.SortId = i + 1);
+    this.updateColumnOrder();
+    this.apply();
+  }
+
+  updateColumnOrder() {
+    const orderedKeys = this.activeColumns.map(col => col.key);
+    this.colKeys.forEach(col => {
+      const index = orderedKeys.indexOf(col.key);
+      if (index !== -1) {
+        col.SortId = index + 1;
+      }
+    });
   }
   ngOnInit(): void {
+    this.globalServ.getMyCompLabels('absentReport');
+    this.globalServ.getMyCompPlaceHolders('absentReport');
     this.getProjects();
     this.getDepartments();
     this.employeesByDepartmentAndProject();
   }
+  toggleColumnVisibility(colKey: string, event: Event) {
+    const checkbox = (event.target as HTMLInputElement);
+    const column = this.colKeys.find(col => col.key === colKey);
+    if (column) {
+      column.view = checkbox.checked;
+    }
+    // this.apply();
+  }
+  close() {
+    this.colKeys.forEach(x => {
+      if (x.checked == true) {
+        x.view = true
+      } else {
+        x.view = false
+      }
+    })
+  }
 
+  apply() {
+    this.colKeys.forEach(x => {
+      if (x.view == true) {
+        x.checked = true
+      } else {
+        x.checked = false
+      }
+    })
+    const savedConfig = localStorage.getItem('tableConfigs');
+    const configs = savedConfig ? JSON.parse(savedConfig) : {};
+    if (!configs[this.currentTable]) {
+      configs[this.currentTable] = this.colKeys;
+    } else {
+      configs[this.currentTable] = this.colKeys;
+    }
+    this.activeColumns = this.colKeys.filter(x => x.checked == true)
+    this.activeColumns.sort((a, b) => a.SortId - b.SortId);
+    localStorage.setItem('tableConfigs', JSON.stringify(configs));
+  }
+
+  loadColumnsConfig() {
+    const savedConfig = localStorage.getItem('tableConfigs');
+    const keysToRemove = ["fromDate", "toDate"]
+    if (savedConfig) {
+      const configs = JSON.parse(savedConfig);
+
+      this.colKeys = configs[this.currentTable] || [];
+      if (!configs[this.currentTable]) {
+        const keys = Object.keys(this.rows[0] || {});
+        const filteredList = keys.filter((item: any) => !keysToRemove.includes(item));
+        this.colKeys = filteredList.map(key => ({ key, view: true, checked: true }));
+        this.activeColumns = this.colKeys.filter(x => x.view == true)
+        this.activeColumns.sort((a, b) => a.SortId - b.SortId);
+        this.saveColumnsConfig();
+      } else {
+        this.activeColumns = this.colKeys.filter(x => x.view == true)
+        this.activeColumns.sort((a, b) => a.SortId - b.SortId);
+      }
+    } else {
+      const keys = Object.keys(this.rows[0] || {});
+      const filteredList = keys.filter((item: any) => !keysToRemove.includes(item));
+      this.colKeys = filteredList.map(key => ({ key, view: true, checked: true }));
+      this.activeColumns = this.colKeys.filter(x => x.view == true)
+      this.activeColumns.sort((a, b) => a.SortId - b.SortId);
+      this.saveColumnsConfig();
+    }
+  }
+  saveColumnsConfig() {
+    const savedConfig = localStorage.getItem('tableConfigs');
+    const configs = savedConfig ? JSON.parse(savedConfig) : {};
+    configs[this.currentTable] = this.colKeys;
+    localStorage.setItem('tableConfigs', JSON.stringify(configs));
+  }
   ngAfterViewInit() {
     const rightCalendar = document.getElementsByClassName('calendar right');
     if (rightCalendar.item(0)) {
@@ -173,6 +248,9 @@ export class AbsentReportComponent implements OnInit, AfterViewInit {
       }
     );
   }
+  isNumber(value: any): boolean {
+    return !isNaN(value) && typeof value === 'number';
+  }
   submit() {
     this.spinner.show();
     this.config.currentPage = 1;
@@ -185,14 +263,18 @@ export class AbsentReportComponent implements OnInit, AfterViewInit {
       this.spinner.hide();
       this.message = 'modified';
       const rows = res.response.map(element => ({
-        ...element,
         dayName: this.utilServ.dayNames[new Date(element.dateCode).getDay()],
+        ...element,
       }))
       this.rows = rows;
       this.temp = rows;
-      const keys = Object.keys(rows[0]);
-      this.colKeys = keys;
-      this.dateFormat = this.global.dateFormat;
+      if (this.rows.length > 0) {
+        this.loadColumnsConfig();
+      }
+
+      // localStorage.setItem('tableConfigs', JSON.stringify(this.colKeys));
+      // this.activeColumns = this.colKeys.filter(x => x.view == true)
+      this.dateFormat = this.globalServ.dateFormat;
     },
       err => {
         this.spinner.hide();
@@ -205,16 +287,16 @@ export class AbsentReportComponent implements OnInit, AfterViewInit {
       })
   }
   savePDF(): void {
+    const keys = this.activeColumns.map(item => item.key).join(',');
     this.spinner.show();
     this.httpGetService.getPdf('reports/absent/pdf?employeeCode=' + this.reportObj.empCode + '&from=' + this.reportObj.from + '&to=' + this.reportObj.to +
-      '&projectCode=' + this.reportObj.projectCode + '&deptCode=' + this.reportObj.department
+      '&projectCode=' + this.reportObj.projectCode + '&deptCode=' + this.reportObj.department + '&reqColumns=' + keys 
     ).subscribe((res: any) => {
       this.spinner.hide();
       const file = new Blob([res], { type: 'application/pdf' });
-      // const fileURL = URL.createObjectURL(file);
-      // window.open(fileURL);
-      FileSaver.saveAs(file, 'Absent-report' + new Date().getTime() + PDF_EXTENSION);
-      this.global.showSuccessPopUp('Pdf', 'success');
+      const fileName = 'Absent_report_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_')
+      FileSaver.saveAs(file, fileName + PDF_EXTENSION);
+      this.globalServ.showSuccessPopUp('Pdf', 'success', fileName);
     },
       err => {
         this.spinner.hide();
@@ -226,20 +308,19 @@ export class AbsentReportComponent implements OnInit, AfterViewInit {
       })
   }
   saveExcel() {
+    const keys = this.activeColumns.map(item => item.key).join(',');
     this.spinner.show();
     this.reportObj.from =
       this.selectedDateRange.startDate.format('YYYY-MM-DD');
     this.reportObj.to = this.selectedDateRange.endDate.format('YYYY-MM-DD');
     this.httpGetService.getExcel('reports/AbsentReportxls?employeeCode=' + this.reportObj.empCode + '&from=' + this.reportObj.from + '&to=' + this.reportObj.to +
-      '&projectCode=' + this.reportObj.projectCode + '&departmentCode=' + this.reportObj.department
+      '&projectCode=' + this.reportObj.projectCode + '&departmentCode=' + this.reportObj.department + '&reqColumns=' + keys
     ).subscribe((res: any) => {
       this.spinner.hide();
       const data: Blob = new Blob([res], { type: EXCEL_TYPE });
-      FileSaver.saveAs(
-        data,
-        'Absent-report' + new Date().getTime() + EXCEL_EXTENSION
-      );
-      this.global.showSuccessPopUp('Excel', 'success');
+      const fileName = 'Absent_report_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_')
+      FileSaver.saveAs(data, fileName + EXCEL_EXTENSION);
+      this.globalServ.showSuccessPopUp('Excel', 'success', fileName);
     },
       err => {
         this.spinner.hide();

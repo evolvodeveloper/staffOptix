@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
   providedIn: 'root'
 })
 export class UtilService {
+  previousSelectedTab: string
   dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   theseComponentsShouldBeHiden = ['Late Arrival Deduction', 'WorkHours Deduction', 'No Show Deduction', 'Total Salary', 'OT Allowance', 'Loan Recover']
   showGif: boolean = false;
@@ -13,9 +14,13 @@ export class UtilService {
   viewData;
   editData;
   approveData;
+  langCode = localStorage.getItem('lang-Code');
+  //get labels and placeholder
+  myCompPlaceholders = [];
+  myCompLabels = [];
   offerTemplates = [];
   dateInExp;
-  langCode: number;
+  empexpsubcategoryList = [];
   // using this for search bar
   universalSerchedData;
   allPayrollEmpDept;
@@ -76,28 +81,35 @@ export class UtilService {
   payrulesBackup = [];
   branchApiData: any;
   activeCapturesTypes = [];
+  globalNames: any;
   allVisitConfigs: any;
   visitConfigIds: any;
+  taxRates: any;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {
+  }
+
+  // tax rates
+
+
 
   isTokenExpired() {
     const JWT = localStorage.getItem('token');
     if (JWT) {
-    const jwtPayload = JSON.parse(window.atob(JWT.split('.')[1]));
-    const isExpired =
-      Math.floor(new Date().getTime() / 1000) >= jwtPayload.exp;
-    if (isExpired) {
-      // this.router.navigateByUrl('dashboard');
-      Swal.fire({
-        icon: 'warning',
-        title: 'Session Expired',
-        timer: 10000,
-        text: 'You were logged out of the website due to token expiration.',
-      }).then(() => {
-        this.logout();
-      });
-    }
+      const jwtPayload = JSON.parse(window.atob(JWT.split('.')[1]));
+      const isExpired =
+        Math.floor(new Date().getTime() / 1000) >= jwtPayload.exp;
+      if (isExpired) {
+        // this.router.navigateByUrl('dashboard');
+        Swal.fire({
+          icon: 'warning',
+          title: 'Session Expired',
+          timer: 10000,
+          text: 'You were logged out of the website due to token expiration.',
+        }).then(() => {
+          this.logout();
+        });
+      }
     } else {
       this.logout();
     }
@@ -110,6 +122,7 @@ export class UtilService {
     localStorage.removeItem('token');
     localStorage.removeItem('branch');
     localStorage.removeItem('branchCode');
+    localStorage.removeItem('selectedPlan');
     this.router.navigateByUrl('auth');
   }
 

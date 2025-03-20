@@ -55,7 +55,7 @@ export class LeaveReportComponent implements OnInit, AfterViewInit {
   constructor(
     private httpPostService: HttpPostService,
     private spinner: NgxSpinnerService,
-    private global: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private httpGetService: HttpGetService,
     private utilServ: UtilService,
     private router: Router,
@@ -68,6 +68,8 @@ export class LeaveReportComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.globalServ.getMyCompLabels('leavesReport');
+    this.globalServ.getMyCompPlaceHolders('leavesReport');
     this.getProjects();
     this.getDepartments();
     this.getleaveType();
@@ -121,9 +123,9 @@ export class LeaveReportComponent implements OnInit, AfterViewInit {
             text: err.error.status.message,
             icon: 'error',
             timer: 3000,
-        });
+          });
         }
-    );
+      );
   }
   getDepartments() {
     this.httpGetService.getMasterList('depts/active').subscribe((res: any) => {
@@ -163,7 +165,7 @@ export class LeaveReportComponent implements OnInit, AfterViewInit {
       this.selectedDateRange.startDate.format('YYYY-MM-DD');
     this.reportObj.to = this.selectedDateRange.endDate.format('YYYY-MM-DD');
     this.httpGetService.getMasterList('reports/LeaveReport?employeeCode=' + this.reportObj.empCode + '&from=' + this.reportObj.from + '&to=' + this.reportObj.to +
-      '&project=' + this.reportObj.project + '&department=' + this.reportObj.department + '&leaveTypeCode=' + this.reportObj.leaveCode 
+      '&project=' + this.reportObj.project + '&department=' + this.reportObj.department + '&leaveTypeCode=' + this.reportObj.leaveCode
     ).subscribe((res: any) => {
       this.spinner.hide();
       this.message = 'modified';
@@ -174,8 +176,7 @@ export class LeaveReportComponent implements OnInit, AfterViewInit {
       }))
 
       this.rows = rows;
-      this.temp = rows
-      this.dateFormat = this.global.dateFormat;
+      this.dateFormat = this.globalServ.dateFormat;
     },
       err => {
         this.spinner.hide();
@@ -192,22 +193,24 @@ export class LeaveReportComponent implements OnInit, AfterViewInit {
   savePDF(): void {
     this.spinner.show();
     this.httpGetService.getPdf('reports/leave/pdf?employeeCode=' + this.reportObj.empCode + '&from=' + this.reportObj.from + '&to=' + this.reportObj.to +
-      '&projectCode=' + this.reportObj.project + '&deptCode=' + this.reportObj.department + '&leaveTypeCode=' + this.reportObj.leaveCode 
+      '&projectCode=' + this.reportObj.project + '&deptCode=' + this.reportObj.department + '&leaveTypeCode=' + this.reportObj.leaveCode
     ).subscribe((res: any) => {
       this.spinner.hide();
       const file = new Blob([res], { type: 'application/pdf' });
-      FileSaver.saveAs(file, 'Leave-report' + new Date().getTime() + '.pdf');
+      const fileName = 'Leave_report_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_')
+      FileSaver.saveAs(file, fileName + '.pdf');
       // const fileURL = URL.createObjectURL(file);
       // window.open(fileURL);
-      this.global.showSuccessPopUp('Pdf', 'success');
+      this.globalServ.showSuccessPopUp('Pdf', 'success', fileName);
     },
       err => {
         this.spinner.hide();
+        const error = err.error.status ? err.error.status.message : 'UNKNOWN ERROR OCCURRED'
         Swal.fire({
           title: 'Error!',
-          text: err.error.status.message,
-          icon: 'error',
-        });
+            text: error,
+            icon: 'error',
+          })
       })
   }
   saveExcel() {
@@ -216,23 +219,25 @@ export class LeaveReportComponent implements OnInit, AfterViewInit {
       this.selectedDateRange.startDate.format('YYYY-MM-DD');
     this.reportObj.to = this.selectedDateRange.endDate.format('YYYY-MM-DD');
     this.httpGetService.getExcel('reports/LeaveReportxls?employeeCode=' + this.reportObj.empCode + '&from=' + this.reportObj.from + '&to=' + this.reportObj.to +
-      '&project=' + this.reportObj.project + '&department=' + this.reportObj.department + '&leaveTypeCode=' + this.reportObj.leaveCode 
+      '&project=' + this.reportObj.project + '&department=' + this.reportObj.department + '&leaveTypeCode=' + this.reportObj.leaveCode
     ).subscribe((res: any) => {
       this.spinner.hide();
       const data: Blob = new Blob([res], { type: EXCEL_TYPE });
+      const fileName = 'Leave_report_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_')
       FileSaver.saveAs(
         data,
-        'Leave-report' + new Date().getTime() + EXCEL_EXTENSION
+        fileName + EXCEL_EXTENSION
       );
-      this.global.showSuccessPopUp('Excel', 'success');
+      this.globalServ.showSuccessPopUp('Excel', 'success', fileName);
     },
       err => {
         this.spinner.hide();
+        const error = err.error.status ? err.error.status.message : 'UNKNOWN ERROR OCCURRED'
         Swal.fire({
           title: 'Error!',
-          text: err.error.status.message,
-          icon: 'error',
-        })
+            text: error,
+            icon: 'error',
+          })
       });
   }
 }

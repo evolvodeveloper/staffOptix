@@ -57,15 +57,12 @@
                         </div>
                         <div
                             *ngIf="employeeForm.controls['employeeName'].value?.length > charLimit - 1"
-                            style="color: #dc3545">Max
-                            {{charLimit}}
-                            Characters
+                            style="color: #dc3545">{{globalServ.showGlobalErrors('max')}} {{ charLimit }}  {{globalServ.showGlobalErrors('char')}}
                         </div>
 
                          <div
                 *ngIf="employeeForm.get('employeeName').hasError('invalidFormat')"
-                style="color: #dc3545">field should not contain special
-                characters</div>
+                style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
                     </div>
                 </div>
                 <!-- </div>
@@ -522,7 +519,7 @@
                             Roles&nbsp;<span style="color: red; margin-left: 1px">*</span>
                         </label>
                         <ng-select [items]="roleCodeList"  [multiple]="true"
-                            placeholder="Select Roles" [formControl]="employeeForm.controls.roles">
+                            [formControl]="employeeForm.controls.roles">
                         </ng-select>
                     </div>
                 </div>

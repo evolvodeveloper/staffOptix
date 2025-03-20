@@ -6,9 +6,9 @@
           style="font-size: 20px"
           class="fa fa-arrow-left"
           (click)="back()"
-          aria-label="back"
-        ></i>
-        <h3 class="ms-4 page-title">Project</h3>
+          aria-label="back"></i>
+        <h3
+          class="ms-4 page-title">{{globalServ.getGlobalNames('project')}}</h3>
       </div>
     </div>
   </div>
@@ -22,11 +22,10 @@
           <input
             type="text"
             class="form-control"
-            placeholder="Search by project"
+            placeholder=" {{globalServ.showPlaceholder('searchProj')}}"
             [(ngModel)]="searchedFor"
             (keyup)="updateFilter($event)"
-            style="border-radius: 8px 0px 0px 8px"
-          />
+            style="border-radius: 8px 0px 0px 8px" />
           <span class="input-group-text" id="basic-addon1">
             <i class="fa-solid fa-magnifying-glass"></i>
           </span>
@@ -41,14 +40,15 @@
           id="add_project"
           class="btn add-btn float-end d-flex"
           *ngIf="hasPermissionToUpdate"
-          (click)="create()"
-        >
-          <i id="add_project" class="material-icons me-2">add</i> Add New
+          (click)="create()">
+          <i id="add_project" class="material-icons me-2">add</i>
+          {{globalServ.getGlobalNames('addNew')}}
         </button>
       </div>
 
       <div class="col-sm-6 col-lg-2 mt-30px">
-        <label class="form-label ms-2">Show entries</label>
+        <label
+          class="form-label ms-2">{{globalServ.getGlobalNames('ShowEntries')}}</label>
         <select class="form-select" (change)="resultsPerPage($event)">
           <!-- <option value="10">10</option> -->
           <option value="25">25</option>
@@ -63,66 +63,61 @@
         <thead class="thead-all">
           <tr class="tr-th-all">
             <th></th>
-            <th scope="col">Project</th>
-            <th scope="col">Short Name</th>
+            <th scope="col">{{globalServ.getGlobalNames('project')}}</th>
+            <th scope="col">{{globalServ.showLabel('ProjectShortName')}}</th>
             <!-- <th scope="col">Project Owner</th> -->
-            <th scope="col">Project Type</th>
-            <th scope="col" class="text-center">Active</th>
-            <th scope="col" class="text-center" width="200">Action</th>
+            <th scope="col">{{globalServ.showLabel('projectType')}}</th>
+            <th scope="col"
+              class="text-center">{{globalServ.getGlobalNames('active')}}</th>
+            <th scope="col" class="text-center"
+              width="200">{{globalServ.getGlobalNames('action')}}</th>
           </tr>
         </thead>
         <tbody *ngIf="rows.length === 0">
           <tr style="text-align: center; height: 150px">
             <td colspan="6">
-              "No records were found with the selected filter criteria."
+              {{globalServ.showGlobalErrors('notFound')}}
             </td>
           </tr>
         </tbody>
         <tbody *ngIf="rows.length > 0">
           <ng-container
-            *ngFor="let row of rows | paginate : config; let i = index"
-          >
+            *ngFor="let row of rows | paginate : config; let i = index">
             <tr class="dasboard-td">
               <td>
-                <small *ngIf=" row.accessDTOs.length >0"
-                  ><i
+                <small *ngIf=" row.accessDTOs.length >0"><i
                     *ngIf="!row.expand"
                     class="fa fa-angle-up fs-5"
                     aria-hidden="true"
-                    (click)="expandRow(row)"
-                  ></i
-                ></small>
-                <small
-                  ><i
+                    (click)="expandRow(row)"></i></small>
+                <small><i
                     *ngIf="row.expand"
                     class="fa fa-angle-down fs-5"
                     aria-hidden="true"
-                    (click)="collapseRow(row)"
-                  ></i
-                ></small>
+                    (click)="collapseRow(row)"></i></small>
               </td>
               <td>{{ row.categoryCode }}</td>
               <td>{{ row.shortName }}</td>
               <!-- <td>{{ row.projectOwner }}</td> -->
               <td>{{ row.projectType }}</td>
               <td class="text-center">
-                            <i *ngIf="row.isactive" class="fa-solid fa-circle" style="color: #55CE63;"></i>
-                            <i *ngIf="!row.isactive" class="fa-solid fa-circle" style="color: #f62d51;"></i>
-                        </td>
+                <i *ngIf="row.isactive" class="fa-solid fa-circle"
+                  style="color: #55CE63;"></i>
+                <i *ngIf="!row.isactive" class="fa-solid fa-circle"
+                  style="color: #f62d51;"></i>
+              </td>
               <td style="text-align: center">
                 <div
                   class="btn-group me-2"
                   role="group"
-                  aria-label="Second group"
-                >
+                  aria-label="Second group">
                   <button
                     id="view_project"
                     type="button"
                     class="btn btn-light me-1 text-info"
                     placement="top"
                     ngbTooltip="View"
-                    (click)="viewData(row)"
-                  >
+                    (click)="viewData(row)">
                     <i id="view_project" class="fa-solid fa-eye"></i>
                   </button>
                   <button
@@ -132,8 +127,7 @@
                     class="btn btn-light me-1 text-secondary"
                     placement="top"
                     ngbTooltip="Edit"
-                    (click)="editData(row)"
-                  >
+                    (click)="editData(row)">
                     <i id="edit_project" class="fa-solid fa-pen"></i>
                   </button>
                   <!-- <button type="button" *ngIf="hasPermissionToUpdate"  class="btn btn-light me-1 text-danger" placement="top" ngbTooltip="Delete">
@@ -147,8 +141,10 @@
                 <table class="table table-bordered table-responsive-sm">
                   <thead class="thead-all">
                     <tr class="tr-th-all">
-                      <th scope="col" class="text-center">Role Code</th>
-                      <th scope="col" class="text-center">User Name</th>
+                      <th scope="col"
+                        class="text-center">{{globalServ.getGlobalNames('roleCode')}}</th>
+                      <th scope="col"
+                        class="text-center">{{globalServ.getGlobalNames('userName')}}</th>
                     </tr>
                   </thead>
                   <tbody *ngFor="let d of row.accessDTOs">
@@ -165,8 +161,7 @@
       </table>
       <div *ngIf="rows.length > config.itemsPerPage" class="text-center mt-3">
         <pagination-controls
-          (pageChange)="pageChanged($event)"
-        ></pagination-controls>
+          (pageChange)="pageChanged($event)"></pagination-controls>
       </div>
     </div>
   </div>
@@ -175,5 +170,4 @@
   [app-create-project]="selectedPayrollEmployeecategory"
   (selectedPayrollEmployeeCategoryEvent)="
     selectedPayrollEmployeeCategoryEvent()
-  "
-></div>
+  "></div>

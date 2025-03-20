@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { UtilService } from 'src/app/services/util.service';
+import { GlobalvariablesService } from '../../../services/globalvariables.service';
 
 @Component({
   selector: 'app-payrules-setup',
@@ -22,6 +23,7 @@ export class PayrulesSetupComponent implements OnInit {
     private httpGet: HttpGetService,
     private acRoute: ActivatedRoute,
     private utilServ: UtilService,
+    public globalServ: GlobalvariablesService,
     private spinner: NgxSpinnerService
 
   ) {
@@ -56,6 +58,8 @@ export class PayrulesSetupComponent implements OnInit {
     else {
       this.getRulesMaster();
     }
+    this.globalServ.getMyCompLabels('payrulesForm');
+    this.globalServ.getMyCompPlaceHolders('payrulesForm');
   }
   getRulesMaster() {
     this.spinner.show();

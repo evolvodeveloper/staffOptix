@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { HttpPutService } from 'src/app/services/http-put.service';
 import { UtilService } from 'src/app/services/util.service';
@@ -35,7 +36,8 @@ export class UserRoleMappingComponent implements OnInit {
     private acRoute: ActivatedRoute,
     private router: Router,
     private utilServ: UtilService,
-    private httpPut: HttpPutService
+    private httpPut: HttpPutService,
+    public globalServ: GlobalvariablesService
   ) {
     this.config = {
       itemsPerPage: 25,
@@ -45,6 +47,8 @@ export class UserRoleMappingComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.globalServ.getMyCompLabels('userRoleMapping');
+    this.globalServ.getMyCompPlaceHolders('userRoleMapping');
     this.acRoute.data.subscribe(async data => {
       const permission = data.condition
       this.hasPermissionToUpdate = permission.hasPermissionToUpdate
@@ -113,7 +117,7 @@ export class UserRoleMappingComponent implements OnInit {
     );
   }
   back() {
-    this.router.navigateByUrl('/setup');
+    this.router.navigateByUrl('/dashboard');
   }
   sweetalert(icon, title) {
     Swal.fire({
@@ -124,7 +128,7 @@ export class UserRoleMappingComponent implements OnInit {
   }
 
   getroleCodeList() {
-    this.httpGetService.getMasterList('secroles?app=atlas').subscribe(
+    this.httpGetService.getMasterList('secroles?app=ATLAS').subscribe(
       (res: any) => {
         this.roleCodeList = res.response;
       },
@@ -210,19 +214,19 @@ export class UserRoleMappingComponent implements OnInit {
     this.view = false;
     this.selectedRoles = [];
     this.selected_userName = null;
-    this.selectedUsers = { type: 'NEW' };
+    this.selectedUsers = { type: 'NEW', labels: this.globalServ.labels, placeholder: this.globalServ.placeholder };
   }
   viewData(row) {
     this.update = false;
     this.view = true;
-    this.selectedUsers = { type: 'VIEW', viewData: row };
+    this.selectedUsers = { type: 'VIEW', viewData: row,labels: this.globalServ.labels, placeholder: this.globalServ.placeholder };
     this.patchRow(row);
   }
   editData(row) {
     this.current_user = row;
     this.update = true;
     this.view = false;
-    this.selectedUsers = { type: 'EDIT', editData: row };
+    this.selectedUsers = { type: 'EDIT', editData: row,labels: this.globalServ.labels, placeholder: this.globalServ.placeholder };
     this.patchRow(row);
   }
   pageChanged(event) {
@@ -239,4 +243,5 @@ export class UserRoleMappingComponent implements OnInit {
       closeButton.click();
     }
   }
+
 }

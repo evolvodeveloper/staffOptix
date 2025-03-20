@@ -34,7 +34,7 @@ export class HolidayCalenderComponent implements OnInit {
     private router: Router,
     private spinner: NgxSpinnerService,
     private httpGetService: HttpGetService,
-    private global: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private acRoute: ActivatedRoute,
     private utilServ: UtilService,
     private cdr: ChangeDetectorRef,
@@ -54,6 +54,11 @@ export class HolidayCalenderComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.globalServ.getMyCompLabels('holidayCalendar');
+    this.globalServ.getMyCompPlaceHolders('holidayCalendar');
+    this.globalServ.getMyCompErrors('holidayCalendar');
+    this.globalServ.getMyCompLabels('calendarSetup');
+    this.globalServ.getMyCompPlaceHolders('calendarSetup');
     this.acRoute.data.subscribe(data => {
       const permission = data.condition
       this.hasPermissionToUpdate = permission.hasPermissionToUpdate
@@ -144,7 +149,7 @@ export class HolidayCalenderComponent implements OnInit {
                 element.day = "Saturday";
             }
           });
-          this.dateFormat = this.global.dateFormat;
+          this.dateFormat = this.globalServ.dateFormat;
           this.temp = res.response;
           this.spinner.hide();
           this.updateFilter(res.response);
@@ -185,8 +190,8 @@ export class HolidayCalenderComponent implements OnInit {
     modalRef.componentInstance.fromParent = data;
     modalRef.result.then(
       (x) => {
-        this.calCode = x.prop1
         this.getCalenders();
+        this.calCode = x.prop1
       },
     );
   }
@@ -211,7 +216,7 @@ export class HolidayCalenderComponent implements OnInit {
 
 
   back() {
-    this.router.navigateByUrl('/setup');
+    this.router.navigateByUrl('/dashboard');
   }
 
 }

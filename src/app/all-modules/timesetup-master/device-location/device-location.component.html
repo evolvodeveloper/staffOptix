@@ -4,7 +4,7 @@
         <div class="col-sm-12 col-lg-8">
                   <div class="d-flex align-items-baseline">
                 <i style="font-size:20px" class="fa fa-arrow-left" (click)="back()"  aria-label="back"></i>
-                  <h3 class="ms-4 page-title">Device Locations</h3>
+                  <h3 class="ms-4 page-title">{{globalServ.showLabel('deviceLocationHeader')}}</h3>
             </div>
         </div>
     </div>
@@ -16,7 +16,7 @@
         <div class="row mb-3">
             <div class="col-sm-12 col-lg-3">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="search by device location" [(ngModel)]="searchedFor" (keyup)="updateFilter($event)"
+                    <input type="text" class="form-control" placeholder="{{globalServ.showPlaceholder('deviceLocationSearch')}}" [(ngModel)]="searchedFor" (keyup)="updateFilter($event)"
                         style="border-radius: 8px 0px 0px 8px;">
                     <span class="input-group-text" id="basic-addon1">
                         <i class="fa-solid fa-magnifying-glass"></i>
@@ -30,11 +30,11 @@
             <div class="col-lg-2">
             </div>
             <div class="col-lg-2">
-                <button type="button" id="add_office" class="btn add-btn float-end d-flex" *ngIf="hasPermissionToUpdate" (click)="create()"><i id="add_office" class="material-icons me-2">add</i> Add New</button>
+                <button type="button" id="add_office" class="btn add-btn float-end d-flex" *ngIf="hasPermissionToUpdate" (click)="create()"><i id="add_office" class="material-icons me-2">add</i>{{globalServ.getGlobalNames('addNew')}}</button>
             </div>
 
             <div class="col-sm-6 col-lg-2 mt-30px">
-                <label class="form-label ms-2">Show entries</label>
+                <label class="form-label ms-2">{{globalServ.getGlobalNames('ShowEntries')}}</label>
                 <select class="form-select" (change)="resultsPerPage($event)">
                     <!-- <option value="10">10</option> -->
                     <option value="25">25</option>
@@ -48,19 +48,19 @@
             <table class="table table-hover table-nowrap custom-table mb-0 datatable">
                <thead class="thead-all">
                             <tr class="tr-th-all">
-                                <th scope="col">Device Location</th>
-                                <th scope="col">Description</th>
-                                <th scope="col">Location</th>
-                                <th scope="col" class="text-center">Restricted</th>
-                                <th scope="col" class="text-center">Active</th>
-                                <th class="text-center">Action</th>
+                                <th scope="col">{{globalServ.showLabel('deviceLocationTag')}}</th>
+                                <th scope="col">{{globalServ.showLabel('deviceLocationDesc')}}</th>
+                                <th scope="col">{{globalServ.showLabel('deviceOfficeLocation')}}</th>
+                                <th scope="col" class="text-center">{{globalServ.showLabel('deviceLocRes')}}</th>
+                                <th scope="col" class="text-center">{{globalServ.getGlobalNames('active')}}</th>
+                                <th class="text-center">{{globalServ.getGlobalNames('action')}}</th>
                             </tr>
                         </thead>
                 <tbody *ngIf="devicelocationList.length === 0">
                             <tr
                                 style=" text-align: center; height: 150px;">
                                 <td colspan="6">
-                                    "No records were found."
+                                    {{globalServ.showGlobalErrors('notFound')}}
                                 </td>
                             </tr>
                         </tbody>

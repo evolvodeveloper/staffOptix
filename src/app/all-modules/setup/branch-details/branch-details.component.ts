@@ -26,7 +26,6 @@ export class BranchDetailsComponent implements OnInit {
   branchview = false;
   branchupdate = false;
   locationData: any;
-  labels: any;
   timezones = [];
   countryNames = [];
   stateNames = [];
@@ -51,6 +50,12 @@ export class BranchDetailsComponent implements OnInit {
     image: null,
     imageByte: null,
   };
+  logoImg: any = {
+    fileName: null,
+    fileType: null,
+    image: null,
+    imageByte: null,
+  };
   searchedFor: string;
 
   constructor(private fb: FormBuilder,
@@ -58,7 +63,7 @@ export class BranchDetailsComponent implements OnInit {
     private utilServ: UtilService,
     private authenticationService: AuthenticationService,
     private http: HttpClient,
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private httpPut: HttpPutService,
     private spinner: NgxSpinnerService,
     private httpPost: HttpPostService,
@@ -77,18 +82,10 @@ export class BranchDetailsComponent implements OnInit {
     });
   }
 
-  getBranchLabels() {
-    this.spinner.show();
-    this.globalServ.getLabels('branchInfo').subscribe((res: any) => {
-      this.labels = res.response;
-      this.spinner.hide();
-    }, (err) => {
-      this.spinner.hide();
-      console.error(err.error.status.message);
-    });
-  }
+
   ngOnInit() {
-    // this.getBranchLabels();
+    this.globalServ.getMyCompLabels('branchInfo');
+    this.globalServ.getMyCompPlaceHolders('branchInfo')
     if (this.className == this.utilServ.universalSerchedData?.componentName) {
       this.searchedFor = this.utilServ.universalSerchedData?.searchedText;
     }
@@ -152,11 +149,6 @@ export class BranchDetailsComponent implements OnInit {
     );
   }
 
-  getLabelDescription(divId: string): string {
-    const label = this.labels?.find(item => item.colCode === divId);
-    return label ? label.labelDescription : '';
-  }
-
 
   branchFormContols() {
     this.branchForm = this.fb.group({
@@ -166,7 +158,7 @@ export class BranchDetailsComponent implements OnInit {
       branchCode: [null, [Validators.required, this.httpPost.customValidator()]],
       branchId: [null],
       branchLock: [false],
-      city: [null],
+      city: [null,Validators.required],
       state: [null, Validators.required],
       country: [null, Validators.required],
       zipCode: [null],
@@ -176,6 +168,7 @@ export class BranchDetailsComponent implements OnInit {
       headoffice: [false],
       imageType: [null],
       stamImgType: [null],
+      logoImgType: [null],
       isactive: [true],
 
       mobDateFormat: [null],
@@ -183,8 +176,10 @@ export class BranchDetailsComponent implements OnInit {
       priority: [null],
       qrCode: [null],
       stamp: [null],
+      logo: [null],
       qrName: [''],
       stampName: [''],
+      logoName: [''],
       shortName: [null, this.httpPost.customValidator()],
       theme: [null],
       timezone: [null, Validators.required],
@@ -201,16 +196,12 @@ export class BranchDetailsComponent implements OnInit {
       const extension = event.target.files[0]?.type;
       this.img.fileType = extension.replace('image/', '');
       const reader = new FileReader();
-
       reader.readAsDataURL(event.target.files[0]); // read file as data url
-
       reader.onload = (event) => {
         // called once readAsDataURL is completed
         this.img.image = event?.target?.result;
         const base64_data = this.img.image.split(',')[1]
-
         this.img.imageByte = base64_data
-
       };
       this.img.fileName = event.target.files[0].name
       // this.branchForm.controls.qrName.setValue(this.img.fileName),
@@ -224,27 +215,40 @@ export class BranchDetailsComponent implements OnInit {
       const extension = event.target.files[0]?.type;
       this.stampImg.fileType = extension.replace('image/', '');
       const reader = new FileReader();
-
       reader.readAsDataURL(event.target.files[0]); // read file as data url
-
       reader.onload = (event) => {
         // called once readAsDataURL is completed
         this.stampImg.image = event?.target?.result;
         const base64_data = this.stampImg.image.split(',')[1]
-
         this.stampImg.imageByte = base64_data
-
       };
       this.stampImg.fileName = event.target.files[0].name
       this.branchForm.controls.stamp.setValue(this.stampImg.imageByte),
         this.branchForm.controls.stamImgType.setValue(this.stampImg.fileType)
     }
-
+  }
+  onSelectFile_Logo(event: any) {
+    if (event.target.files && event.target.files[0]) {
+      const extension = event.target.files[0]?.type;
+      this.logoImg.fileType = extension.replace('image/', '');
+      const reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]); // read file as data url
+      reader.onload = (event) => {
+        // called once readAsDataURL is completed
+        this.logoImg.image = event?.target?.result;
+        const base64_data = this.logoImg.image.split(',')[1]
+        this.logoImg.imageByte = base64_data
+      };
+      this.logoImg.fileName = event.target.files[0].name
+      this.branchForm.controls.logo.setValue(this.logoImg.imageByte),
+        this.branchForm.controls.logoImgType.setValue(this.logoImg.fileType)
+    }
   }
 
 
 
   showBranchModel(row, action) {
+    
     this.img = {
       fileName: null,
       fileType: null,
@@ -257,24 +261,52 @@ export class BranchDetailsComponent implements OnInit {
       image: null,
       imageByte: null,
     };
+    this.logoImg = {
+      fileName: null,
+      fileType: null,
+      image: null,
+      imageByte: null,
+    };
+    console.log('row',row);
     this.branchForm.controls.branchCode.setValue(row.branchCode);
+    console.log( 'branchCode',this.branchForm.controls.branchCode);
     this.branchForm.controls.branchName.setValue(row.branchName);
+    console.log( 'branchName',this.branchForm.controls.branchName);
     this.branchForm.controls.address.setValue(row.address);
+    console.log( 'address',this.branchForm.controls.address);
     this.branchForm.controls.bankDetails.setValue(row.bankDetails);
+    console.log( 'bankDetails',this.branchForm.controls.bankDetails);
     this.branchForm.controls.branchId.setValue(row.branchId);
+    console.log( 'branchId',this.branchForm.controls.branchId);
     this.branchForm.controls.city.setValue(row.city);
+    console.log( 'city',this.branchForm.controls.city);
     this.branchForm.controls.companyCode.setValue(row.companyCode);
+    console.log( 'companyCode',this.branchForm.controls.companyCode);
     this.branchForm.controls.dateFormat.setValue(row.dateFormat);
+    console.log( 'dateFormat',this.branchForm.controls.dateFormat);
     this.branchForm.controls.dayClosingTime.setValue(row.dayClosingTime);
+    console.log( 'dayClosingTime',this.branchForm.controls.dayClosingTime);
     this.branchForm.controls.headoffice.setValue(row.headoffice);
+    console.log( 'headoffice',this.branchForm.controls.headoffice);
     this.branchForm.controls.isactive.setValue(row.isactive);
+    console.log( 'isactive',this.branchForm.controls.isactive);
     this.branchForm.controls.mobDateFormat.setValue(row.mobDateFormat);
+    console.log( 'mobDateFormat',this.branchForm.controls.mobDateFormat);
     this.branchForm.controls.phoneNo.setValue(row.phoneNo);
+    console.log( 'phoneNo',this.branchForm.controls.phoneNo);
     this.branchForm.controls.priority.setValue(row.priority);
+    console.log( 'priority',this.branchForm.controls.priority);
     this.branchForm.controls.zipCode.setValue(row.zipCode);
+    console.log( 'zipCode',this.branchForm.controls.zipCode);
     this.branchForm.controls.city.setValue(row.city);
+    console.log( 'city',this.branchForm.controls.city);
     this.branchForm.controls.state.setValue(row.state);
+    console.log( 'state',this.branchForm.controls.state);
     this.branchForm.controls.country.setValue(row.country);
+    console.log( 'country',this.branchForm.controls.country);
+    // this.branchForm.controls.logoName.setValue(row?.logoName);
+
+    console.log( 'logoName',this.branchForm.controls.logoName);
 
 
     this.branchForm.controls.shortName.setValue(row.shortName);
@@ -284,33 +316,48 @@ export class BranchDetailsComponent implements OnInit {
     // this.branchForm.controls.qrName.setValue(row.qrName == null ? '' : row.qrName);
     this.branchForm.controls.qrCode.setValue(row.qrCode);
     this.branchForm.controls.stamp.setValue(row.stamp);
+    // this.branchForm.controls.qrName.setValue(row.stampFileDir),
     this.branchForm.controls.imageType.setValue(row.imageType);
+    // this.branchForm.controls.stampName.setValue(row.stampName.concat('.jpg')),
     this.branchForm.controls.stamImgType.setValue(row.stamImgType);
+    this.branchForm.controls.logoImgType.setValue(row.logoImgType);
     this.branchForm.controls.fileDir.setValue(row.fileDir);
     this.branchForm.controls.branchLock.setValue(row.branchLock);
     this.branchForm.controls.createddate.setValue(row.createddate);
+    console.log( 'createddate',this.branchForm.controls.createddate);
+    
     this.branchForm.controls.createdby.setValue(row.createdby);
     this.branchForm.controls.lastmodifieddate.setValue(row.lastmodifieddate);
     this.branchForm.controls.lastmodifiedby.setValue(row.lastmodifiedby);
     const header = 'data:image/' + row.imageType + ';base64,';
     this.img = {
-      // fileName: this.branchForm.controls.qrName.value,
+      // fileName: row.qrName.concat('.jpg'),
       fileType: row.imageType,
       image: header.concat(row.qrCode),
       imageByte: row.qrCode,
     }
     this.stampImg = {
-      // fileName: this.branchForm.controls.qrName.value,
+      // fileName: row.stampName.concat('.jpg'),
       fileType: row.stamImgType,
       image: header.concat(row.stamp),
       imageByte: row.stamp,
     }
+    this.logoImg = {
+      // fileName: row.stampName.concat('.jpg'),
+      fileType: row.logoImgType,
+      image: header.concat(row.logo),
+      imageByte: row.logo,
+    }
     // this.img.fileName = event.target.files[0].name
     // this.branchForm.controls.qrName.setValue(this.img.fileName),
     this.branchForm.controls.qrCode.setValue(this.img.imageByte),
-    this.branchForm.controls.stamp.setValue(this.stampImg.imageByte),
+      this.branchForm.controls.stamp.setValue(this.stampImg.imageByte),
+
       this.branchForm.controls.imageType.setValue(this.img.fileType),
       this.branchForm.controls.stamImgType.setValue(this.stampImg.fileType)
+
+      this.branchForm.controls.imageType.setValue(this.img.fileType),
+      this.branchForm.controls.logoImgType.setValue(this.logoImg.fileType)
 
 
     if (action == 'view') {
@@ -319,10 +366,11 @@ export class BranchDetailsComponent implements OnInit {
       //this is for viewing the branch details and not allowing to edit it
       this.branchForm.disable();
     } else if (action == 'edit') {
+      this.branchupdate = true;
       this.branchForm.enable();
+      this.branchForm.controls.branchCode.disable();
       this.branchview = false;
       this.getIPAdress();
-      this.branchupdate = true;
     }
   }
 
@@ -371,6 +419,18 @@ export class BranchDetailsComponent implements OnInit {
       image: null,
       imageByte: null,
     }
+    this.stampImg = {
+      fileName: null,
+      fileType: null,
+      image: null,
+      imageByte: null,
+    };
+    this.logoImg = {
+      fileName: null,
+      fileType: null,
+      image: null,
+      imageByte: null,
+    };
     this.branchupdate = false;
     this.branchview = false;
     this.branchForm.reset();
@@ -414,10 +474,13 @@ export class BranchDetailsComponent implements OnInit {
       "lastmodifiedby": this.branchForm.controls.lastmodifiedby.value,
       "lastmodifieddate": this.branchForm.controls.lastmodifieddate.value,
       "qrName": this.branchForm.controls.qrName.value,
+      "logoName": this.branchForm.controls.logoName.value,
       // "stampName": this.branchForm.controls.stampName.value,
       "qrCode": this.img.imageByte,
       "stamp": this.stampImg.imageByte,
+      "logo": this.logoImg.imageByte,
       "stampImageType": this.branchForm.controls.stamImgType.value,
+      "logoType": this.branchForm.controls.logoImgType.value,
       "imageType": this.branchForm.controls.imageType.value,
     }
     this.httpPost.create('branch', [obj]).subscribe((res: any) => {
@@ -440,6 +503,18 @@ export class BranchDetailsComponent implements OnInit {
             image: null,
             imageByte: null,
           }
+          this.stampImg = {
+            fileName: null,
+            fileType: null,
+            image: null,
+            imageByte: null,
+          };
+          this.logoImg = {
+            fileName: null,
+            fileType: null,
+            image: null,
+            imageByte: null,
+          };
         })
       }
     },
@@ -490,15 +565,18 @@ export class BranchDetailsComponent implements OnInit {
       // "stampName": this.branchForm.controls.stampName.value,
       "qrCode": this.img.imageByte,
       "stamp": this.stampImg.imageByte,
+      "logo": this.logoImg.imageByte,
       "stampImageType": this.branchForm.controls.stamImgType.value,
       "imageType": this.branchForm.controls.imageType.value,
-    }   
+    }  
+    console.log(obj);
+     
     this.httpPut.doPut('branch', obj).subscribe((res: any) => {
       this.spinner.hide();
       if (res.status.message == 'SUCCESS') {
         if (this.modifyHeadOfficeRecord) {
           this.updateheadOfficeRecord();
-        } 
+        }
         Swal.fire({
           title: 'Success!',
           text: this.branchForm.controls.branchName.value + ' Updated',
@@ -514,6 +592,18 @@ export class BranchDetailsComponent implements OnInit {
             image: null,
             imageByte: null,
           }
+          this.stampImg = {
+            fileName: null,
+            fileType: null,
+            image: null,
+            imageByte: null,
+          };
+          this.logoImg = {
+            fileName: null,
+            fileType: null,
+            image: null,
+            imageByte: null,
+          };
           this.closeModel('dismiss');
         })
       }
@@ -531,55 +621,55 @@ export class BranchDetailsComponent implements OnInit {
   checkHeadOffice() {
     const row = this.branchs.find(x => x.headoffice == true);
     if (row) {
-    if (row.branchName !== this.branchForm.controls.branchName.value) {
-      if (this.branchForm.controls.headoffice.value) {
-        if (this.branchForm.controls.branchName.value !== null) {
-          if (row) {
+      if (row.branchName !== this.branchForm.controls.branchName.value) {
+        if (this.branchForm.controls.headoffice.value) {
+          if (this.branchForm.controls.branchName.value !== null) {
+            if (row) {
+              Swal.fire({
+                title: 'Are you sure?',
+                html:
+                  'Headoffice Already marked for ' + '<b>' + row?.branchName + '</b>' +
+                  '<br> Do You Want to Set ' + this.branchForm.controls.branchName.value + '?' + 'as Headoffice',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes',
+                allowOutsideClick: false,
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  this.modifyHeadOfficeRecord = row
+                }
+                else {
+                  this.branchForm.controls.headoffice.setValue(false);
+                }
+              })
+            }
+          } else {
             Swal.fire({
-              title: 'Are you sure?',
-              html:
-                'Headoffice Already marked for ' + '<b>' + row?.branchName + '</b>' +
-                '<br> Do You Want to Set ' + this.branchForm.controls.branchName.value + '?' + 'as Headoffice',
               icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Yes',
-              allowOutsideClick: false,
-            }).then((result) => {
-              if (result.isConfirmed) {
-                this.modifyHeadOfficeRecord = row
-              }
-              else {
-                this.branchForm.controls.headoffice.setValue(false);
-              }
-            })
+              text: 'Enter branch Name',
+              showConfirmButton: true,
+            });
+            this.branchForm.controls.headoffice.setValue(false);
           }
+        }
+        else {
+          this.modifyHeadOfficeRecord = null;
+        }
+      } else {
+        const rows = this.branchs.filter(x => x.headoffice == true);
+        if (rows.length > 1) {
+          this.branchForm.controls.headoffice.setValue(false);
         } else {
           Swal.fire({
             icon: 'warning',
-            text: 'Enter branch Name',
+            text: 'We required one branch as headoffice',
             showConfirmButton: true,
           });
-          this.branchForm.controls.headoffice.setValue(false);
-        }
-      }
-      else {
-        this.modifyHeadOfficeRecord = null;
-      }
-    } else {
-      const rows = this.branchs.filter(x => x.headoffice == true);
-      if (rows.length > 1) {
-        this.branchForm.controls.headoffice.setValue(false);
-      } else {
-        Swal.fire({
-          icon: 'warning',
-          text: 'We required one branch as headoffice',
-          showConfirmButton: true,
-        });
-        this.branchForm.controls.headoffice.setValue(true);
+          this.branchForm.controls.headoffice.setValue(true);
 
-      }
+        }
       }
     }
   }

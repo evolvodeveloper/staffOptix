@@ -7,6 +7,7 @@ import { HttpGetService } from 'src/app/services/http-get.service';
 import { HttpPutService } from 'src/app/services/http-put.service';
 import { UtilService } from 'src/app/services/util.service';
 import Swal from 'sweetalert2';
+import { GlobalvariablesService } from '../../services/globalvariables.service';
 
 @Component({
   selector: 'app-apply-loanlist',
@@ -37,7 +38,7 @@ export class ApplyLoanlistComponent implements OnInit {
     private utilServ: UtilService,
     private spinner: NgxSpinnerService,
     private route: Router,
-
+    public global: GlobalvariablesService,
     private fb: FormBuilder,
     private acRoute: ActivatedRoute
   ) {
@@ -100,6 +101,8 @@ export class ApplyLoanlistComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.global.getMyCompLabels('applyLoanComp');
+    this.global.getMyCompPlaceHolders('applyLoanComp');
     this.getUserProfile.call(this);
     this.acRoute.data.subscribe(data => {
       const permission = data.condition

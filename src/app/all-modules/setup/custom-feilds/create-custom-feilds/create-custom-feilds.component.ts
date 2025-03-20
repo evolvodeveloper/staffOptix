@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -89,21 +89,15 @@ export class CreateCustomFeildsComponent implements OnInit, OnDestroy{
     }
   }
 
-  create() {
-      console.log(this.customFeildsform.value);
-      
-      this.spinner.show();
-
+  create() {    
+    this.spinner.show();
       const data = {
         entityField: this.customFeildsform.controls.entityField.value,
         entityDataType: this.customFeildsform.controls.entityDataType.value,
         uiField: this.customFeildsform.controls.uiField.value,
         uiDataType: this.customFeildsform.controls.uiDataType.value,
         active: this.customFeildsform.controls.active.value,
-      };
-      console.log(data);
-      
-      
+    };    
       this.httpPost.create('hr/visit/ui-mapping/', data).subscribe((res: any) => {
         if (res.status.message == 'SUCCESS') {
           this.spinner.hide();
@@ -144,9 +138,7 @@ export class CreateCustomFeildsComponent implements OnInit, OnDestroy{
       active: this.customFeildsform.controls.active.value,
       companyCode: this.UtilServ.editData.companyCode,
       branchCode: this.UtilServ.editData.branchCode,
-    };
-    console.log(data);
-    
+    };   
     this.httpPut.doPut('hr/visit/ui-mapping/', data).subscribe((res: any) => {
       this.spinner.hide();
       if (res.status.message == 'SUCCESS') {

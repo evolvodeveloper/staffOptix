@@ -45,7 +45,7 @@ export class OtReportComponent implements OnInit, AfterViewInit {
   constructor(
     private httpPostService: HttpPostService,
     private spinner: NgxSpinnerService,
-    private global: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private httpGetService: HttpGetService,
     private router: Router,
     private httpGet: HttpGetService,
@@ -59,6 +59,8 @@ export class OtReportComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.globalServ.getMyCompLabels('otReport');
+    this.globalServ.getMyCompPlaceHolders('otReport');
     this.getPayrollList();
   }
   ngAfterViewInit() {
@@ -206,11 +208,9 @@ export class OtReportComponent implements OnInit, AfterViewInit {
       .subscribe((res: any) => {
         this.spinner.hide();
         const data: Blob = new Blob([res], { type: EXCEL_TYPE });
-        FileSaver.saveAs(
-          data,
-          'OtReport' + new Date().getTime() + EXCEL_EXTENSION
-        );
-        this.global.showSuccessPopUp('Excel', 'success');
+        const fileName = 'OT_Report_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_');
+        FileSaver.saveAs(data, fileName + EXCEL_EXTENSION);
+        this.globalServ.showSuccessPopUp('Excel', 'success', fileName);
       },
         err => {
           this.spinner.hide();
@@ -227,8 +227,9 @@ export class OtReportComponent implements OnInit, AfterViewInit {
     ).subscribe((res: any) => {
       this.spinner.hide();
       const file = new Blob([res], { type: 'application/pdf' });
-      FileSaver.saveAs(file, 'OT-report' + new Date().getTime() + '.pdf');
-      this.global.showSuccessPopUp('Pdf', 'success');
+      const fileName = 'OT_Report_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_');
+      FileSaver.saveAs(file, fileName + '.pdf');
+      this.globalServ.showSuccessPopUp('Pdf', 'success', fileName);
       // const fileURL = URL.createObjectURL(file);
       // window.open(fileURL);
     },

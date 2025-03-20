@@ -1,4 +1,4 @@
-<div class="container-xxl">
+<div class="">
   <!-- <div class="card mb-0" *ngIf="employee_details"> -->
   <div class="row customecard justify-content-center " *ngIf="employee_details">
     <!-- <div class="col-md-12"> -->
@@ -28,16 +28,19 @@
       <div class="col-md-5">
         <div class="profile-info-left">
           <div class="staff-id">
-            Employee Code :<span class="danger-color">
+            {{globalServ.getGlobalNames('employeeCode')}} :<span
+              class="danger-color">
               {{ employee_details?.employeeMaster?.employeeCode }}</span>
           </div>
 
           <div class="staff-id">
-            Designation :<span class="danger-color">
+            {{globalServ.getGlobalNames('designation')}} :<span
+              class="danger-color">
               {{ employee_details?.employeeMaster?.designation }}</span>
           </div>
           <div class="staff-id">
-            Department :<span class="danger-color">
+            {{globalServ.getGlobalNames('department')}} :<span
+              class="danger-color">
               {{ employee_details?.employeeMaster?.deptCode }}</span>
           </div>
         </div>
@@ -45,20 +48,21 @@
       <div class="col-md-5">
         <div class="personal-info">
           <div class="staff-id">
-            Phone :<span class="danger-color">
+            {{globalServ.showLabel('phone')}} :<span class="danger-color">
               {{ employee_details?.employeeMaster.contactNo
               ? employee_details?.employeeMaster?.contactNo
               : "-" }}</span>
           </div>
 
           <div class="staff-id">
-            Email :<span class="danger-color">
+            {{globalServ.showLabel('email')}} :<span class="danger-color">
               {{ employee_details?.employeeMaster.email
               ? employee_details?.employeeMaster?.email
               : "-"}}</span>
           </div>
           <div class="staff-id">
-            Date of Joining :<span class="danger-color">
+            {{globalServ.showLabel('dateofJoining')}} :<span
+              class="danger-color">
               {{ employee_details?.employeeMaster?.joinDate
               ? (employee_details?.employeeMaster?.joinDate| date:
               dateFormat )
@@ -75,7 +79,7 @@
 <br />
 
 <div class="content-wrapper">
-  <div class="container-xxl flex-grow-1 container-p-y">
+  <div class=" flex-grow-1 container-p-y">
     <div class="row">
       <!-- <div class="col-12"> -->
 
@@ -94,7 +98,7 @@
               role="tab"
               aria-controls="pills-profile"
               aria-selected="true">
-              Profile
+              {{globalServ.showLabel('profile')}}
             </button>
           </li>
 
@@ -108,7 +112,7 @@
               role="tab"
               aria-controls="pills-payroll"
               aria-selected="false">
-              Payroll
+              {{globalServ.getGlobalNames('payroll')}}
             </button>
           </li>
           <li class="nav-item me-3" role="presentation">
@@ -121,7 +125,7 @@
               role="tab"
               aria-controls="pills-doucuments"
               aria-selected="false">
-              Documents
+              {{globalServ.showLabel('documents')}}
             </button>
           </li>
           <li class="nav-item me-3" role="presentation">
@@ -134,7 +138,7 @@
               role="tab"
               aria-controls="pills-expenses"
               aria-selected="false">
-              Expenses
+              {{globalServ.showLabel('expenses')}}
             </button>
           </li>
         </ul>
@@ -153,11 +157,12 @@
               <div class="card mb-4">
                 <div class="card-body">
                   <small
-                    class="card-text text-uppercase fw-medium">About</small>
+                    class="card-text text-uppercase fw-medium">{{globalServ.showLabel('about')}}</small>
                   <ul class="list-unstyled my-3 py-1">
                     <li class="d-flex align-items-center mb-3">
                       <!-- <i class="fa fa-user icon" aria-hidden="true"></i> -->
-                      <span class="fw-medium mx-2">Full Name:</span>
+                      <span
+                        class="fw-medium mx-2">{{globalServ.showLabel('fullName')}}:</span>
                       <span class=" mx-2"> {{
                         employee_details?.employeeMaster?.employeeName}}, {{
                         employee_details?.employeeMaster?.lastName}}</span>
@@ -165,7 +170,7 @@
 
                     <li class="d-flex align-items-center mb-3">
                       <i class="mdi mdi-check mdi-24px"></i><span
-                        class="fw-medium mx-2">Dob:</span>
+                        class="fw-medium mx-2">{{globalServ.showLabel('dob')}}:</span>
                       <span class="mx-2"> {{
                         employee_details?.employeeDetails?.dob
                         ? (employee_details?.employeeDetails?.dob |
@@ -174,37 +179,37 @@
                     </li>
                     <li class="d-flex align-items-center mb-3">
                       <i class="mdi mdi-check mdi-24px"></i><span
-                        class="fw-medium mx-2">Roles:</span>
+                        class="fw-medium mx-2">{{globalServ.getGlobalNames('roles')}}:</span>
                       <span class="mx-2"
                         [innerHTML]="userProfile?.rolesWithBr"></span>
                     </li>
                     <li class="d-flex align-items-center mb-3">
                       <i class="mdi mdi-star-outline mdi-24px"></i><span
-                        class="fw-medium mx-2">Location:</span>
+                        class="fw-medium mx-2">{{globalServ.getGlobalNames('location')}}:</span>
                       <span class="mx-2">{{
                         employee_details?.employeeMaster?.locationCode}} </span>
                     </li>
                     <li class="d-flex align-items-center mb-3">
                       <i class="mdi mdi-flag-outline mdi-24px"></i><span
-                        class="fw-medium mx-2">Project:</span>
+                        class="fw-medium mx-2">{{globalServ.getGlobalNames('project')}}:</span>
                       <span class="mx-2">{{
                         employee_details?.employeeMaster?.projectCode}}</span>
                     </li>
                     <li class="d-flex align-items-center mb-3">
                       <i class="mdi mdi-phone-outline mdi-24px"></i><span
-                        class="fw-medium mx-2">Address:</span>
+                        class="fw-medium mx-2">{{globalServ.showLabel('address')}}:</span>
                       <span class=" mx-2">{{
                         employee_details?.employeeDetails?.address1}}</span>
                     </li>
                     <li class="d-flex align-items-center mb-3">
                       <i class="mdi mdi-message-outline mdi-24px"></i><span
-                        class="fw-medium mx-2">City:</span>
+                        class="fw-medium mx-2">{{globalServ.showLabel('city')}}:</span>
                       <span class=" mx-2">{{
                         employee_details?.employeeDetails?.city}}</span>
                     </li>
                     <li class="d-flex align-items-center mb-3">
                       <i class="mdi mdi-email-outline mdi-24px"></i><span
-                        class="fw-medium mx-2">State:</span>
+                        class="fw-medium mx-2">{{globalServ.showLabel('state')}}:</span>
                       <span class=" mx-2">{{
                         employee_details?.employeeDetails?.state}}</span>
                     </li>
@@ -370,26 +375,26 @@
           <div class="row mt-3 mb-3">
             <div
               class="col-lg-10 col-md-10 col-sm-12 d-flex align-items-baseline">
-              <p>Please select the month, for which you would like to view the
-                payslip.</p>
+              <p>{{globalServ.showLabel('reqPayslipMonth')}}.</p>
               <div class="col-md-2 ms-2">
                 <input
                   class="form-control "
                   type="month"
                   style="height: calc(2.5rem + calc(var(--mo-border-width)* 2));"
-                  placeholder="Month/YYYY"
+                  placeholder="{{globalServ.showGlobalplaceholders('Month/YYYY')}}"
                   [(ngModel)]="fulldate" (change)="getPayslip()" />
               </div>
             </div>
             <div class="col-md" *ngIf="pdfSrc">
               <button class="btn add-btn" (click)="savePdf()">
-                Download <i class="fa fa-download"></i>
+                {{globalServ.showLabel('Download')}}<i
+                  class="fa fa-download"></i>
               </button>
             </div>
           </div>
           <div class="row">
             <div class="col-md-12 pdfBlock">
-                  <pdf-viewer [src]="pdfSrc" [render-text]="true"
+              <pdf-viewer [src]="pdfSrc" [render-text]="true"
                 [external-link-target]="'blank'" [autoresize]="true"
                 [stick-to-page]="false" [fit-to-page]='false' [zoom]="0.5"
                 [original-size]="false" [show-all]="true"
@@ -409,8 +414,8 @@
           aria-labelledby="pills-doucuments-tab"
           tabindex="0">
           <ng-container>
-            <div class="columnName">Upload Employee Documents (accepts only
-              .png, .jpg, .jpeg, .pdf files)</div>
+            <div class="columnName">{{globalServ.showLabel('uploadEmpDOcs')}}
+              (accepts only .png, .jpg, .jpeg, .pdf files)</div>
             <div class="row ">
               <div class="startDiv card col-xl-3 col-sm-6 col-12"
                 *ngFor="let fileInput  of empDoc ;let i = index">
@@ -437,8 +442,8 @@
                       class="fas fa-cloud-upload-alt d-flex justify-content-center"
                       style="color: #6990f2; font-size: 50px;"></i>
                     <p value="Upload Images" class="ms-2"
-                      style="color: #6990f2; font-size: 16px;">&nbsp;Browse
-                      File to Upload</p>
+                      style="color: #6990f2; font-size: 16px;">&nbsp;{{globalServ.showLabel('browseFiles')}}
+                    </p>
                   </div>
                 </div>
                 <div class="text-center" *ngIf="fileInput.imageByteCode"
@@ -453,7 +458,8 @@
                     style="display: none" />
                   <i class=" text-success fa-solid fa-circle-check"
                     style="font-size: x-large;"></i>
-                  <p>{{fileInput.fileName | decreaseText :6}} uploaded</p>
+                  <p>{{fileInput.fileName | decreaseText :6}}
+                    {{globalServ.getGlobalNames('uploaded')}} </p>
                 </div>
               </div>
             </div>
@@ -462,7 +468,8 @@
             <div class="col-md-12">
               <button id="submit" class="btn add-btn"
                 [disabled]="!modifiedDocuments"
-                (click)="submitDocuments()" type="submit">Submit</button>
+                (click)="submitDocuments()" type="submit">
+                {{globalServ.getGlobalNames('submit')}}</button>
             </div>
           </div>
         </div>
@@ -483,7 +490,7 @@
                     type="text"
                     id="filter"
                     class="form-control"
-                    placeholder="search by title or type"
+                    placeholder="{{globalServ.showGlobalplaceholders('searchExpType')}}"
                     [(ngModel)]="searchedFor"
                     (keyup)="updateFilter($event)"
                     style="
@@ -509,7 +516,7 @@
                   class="form-control"
                   type="month"
                   style="height: calc(2.5rem + calc(var(--mo-border-width)* 2));"
-                  placeholder="Month/YYYY"
+                  placeholder="{{globalServ.showGlobalplaceholders('Month/YYYY')}}"
                   [(ngModel)]="fulldate" (change)="dateChange()" />
               </div>
 
@@ -538,7 +545,8 @@
                 </a> -->
               </div>
               <div class="col-sm-6 col-md-6 col-lg-2 mt-30px">
-                <label class="form-label">Records/page</label>
+                <label
+                  class="form-label">{{globalServ.getGlobalNames('ShowEntries')}}</label>
                 <select class="form-select" (change)="resultsPerPage($event)">
                   <option value="10">10</option>
                   <option value="25">25</option>
@@ -555,12 +563,18 @@
                   class="table table-hover small table-nowrap custom-table mb-0 datatable">
                   <thead class="thead-all">
                     <tr class="tr-th-all">
-                      <th scope="col" class="text-center">Date</th>
-                      <th scope="col" class="text-center">Title</th>
-                      <th scope="col" class="text-center">Expense Type</th>
-                      <th scope="col" class="text-center">Amount</th>
-                      <th scope="col" class="text-center">Notes</th>
-                      <th scope="col" class="text-center">Status</th>
+                      <th scope="col"
+                        class="text-center">{{globalServ.getGlobalNames('date')}}</th>
+                      <th scope="col"
+                        class="text-center">{{globalServ.showLabel('title')}}</th>
+                      <th scope="col"
+                        class="text-center">{{globalServ.showLabel('ExpenseType')}}</th>
+                      <th scope="col" class="text-center">
+                        {{globalServ.getGlobalNames('amount')}}</th>
+                      <th scope="col"
+                        class="text-center">{{globalServ.showLabel('Notes')}}</th>
+                      <th scope="col"
+                        class="text-center">{{globalServ.getGlobalNames('status')}}</th>
                       <!-- <th scope="col" class="text-center">Claimed</th> -->
                       <!-- <th scope="col" class="text-center">Action</th> -->
                     </tr>
@@ -569,7 +583,7 @@
                     <tr
                       style=" text-align: center; height: 150px;">
                       <td colspan="7">
-                        "No records were found."
+                        {{globalServ.showGlobalErrors('norecords')}}
                       </td>
                     </tr>
                   </tbody>
@@ -619,8 +633,9 @@
     </div>
   </div>
 </div>
-<div id="previewFile" class="modal custom-modal fade" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+<div id="previewFile" class="modal custom-modal fade" role="dialog"
+  data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="dialog">
     <div class="modal-content">
       <ng-container *ngIf="PreviewObject?.fileType === 'pdf'">
         <embed [src]="PreviewObject?.fileContent" type="application/pdf"
@@ -639,7 +654,7 @@
           type="button"
           class="btn delete-btn closeDesig"
           data-bs-dismiss="modal"
-          aria-label="Close"> Cancel</button>
+          aria-label="Close"> {{globalServ.getGlobalNames('cancel')}}</button>
 
       </div>
     </div>

@@ -14,7 +14,7 @@
                     (change)="checkCondition(payruleSetupForm.controls.isConditional.value)"
                     [(formControl)]="payruleSetupForm.controls.isConditional" />
                 <p class="isConditional ms-2">
-                  Does this rule have conditions?
+                    {{globalServ.showLabel('isConditional')}}
                 </p>
             </div>
 
@@ -23,7 +23,7 @@
                 <div class="col-md-4 col-lg-4">
                     <div class>
                         <label class="col-form-label"
-                            for="calcType">Calculation Type
+                            for="calcType">{{globalServ.showLabel('calcType')}}
                             &nbsp;<span
                                 style="color: red; margin-left: 1px">*</span>
                         </label>
@@ -32,44 +32,45 @@
                             [class.is-invalid]="payruleSetupForm.controls.calcType.invalid 
                             && (payruleSetupForm.controls.calcType.dirty || payruleSetupForm.controls.calcType.touched)"
                             formControlName="calcType">
-                            <option selected value disabled>Select Calculation
-                                Type
+                            <option selected value disabled>-
                             </option>
                             <option *ngFor="let ct of calcTypes"
                                 [value]="ct.code">
                                 {{ ct.name }}
                             </option>
                         </select>
-                        <small class="block"
+                        <small class="block mt-2"
                             *ngIf="
                 payruleSetupForm.get('calcType').invalid &&
                 payruleSetupForm.get('calcType').touched
               " class="text-danger">
-                            Calculation Type required</small>
+                            {{globalServ.showLabel('calcType')}}
+                            {{globalServ.showGlobalErrors('required')}}</small>
                     </div>
                 </div>
                 <div class="col-md-4 col-lg-4">
                     <div class=" "
                         *ngIf="payruleSetupForm.controls.calcType.value === 'pct'">
                         <label
-                            class="col-form-label">Percentage&nbsp;<span
+                            class="col-form-label">{{globalServ.showLabel('percentage')}}&nbsp;<span
                                 style="color: red; margin-left: 1px">*</span></label>
                         <input
                             class="form-control"
                             type="number"
                             placeholder="Enter percentage"
                             formControlName="percentage" />
-                        <small class="block"
+                        <small class="block mt-2"
                             *ngIf="
                 payruleSetupForm.get('percentage').invalid &&
                 payruleSetupForm.get('percentage').touched
-              " class="text-danger"> Percentage required</small>
+              " class="text-danger"> {{globalServ.showLabel('percentage')}}
+                            {{globalServ.showGlobalErrors('required')}}</small>
                     </div>
 
                     <div class=" "
                         *ngIf="payruleSetupForm.controls.calcType.value === 'fixed'">
                         <label
-                            class="col-form-label">Fixed Amount &nbsp;<span
+                            class="col-form-label">{{globalServ.getGlobalNames('fixedAmount')}}&nbsp;<span
                                 style="color: red; margin-left: 1px">*</span>
                         </label>
                         <input
@@ -78,31 +79,32 @@
                             type="number"
                             formControlName="fixedAmount" />
 
-                        <small class="block"
+                        <small class="block mt-2"
                             *ngIf="
                 payruleSetupForm.get('fixedAmount').invalid &&
                 payruleSetupForm.get('fixedAmount').touched
-              " class="text-danger"> Amount required</small>
+              " class="text-danger"> Amount
+                            {{globalServ.showGlobalErrors('required')}}</small>
                     </div>
                 </div>
                 <div class="col-md-4 col-lg-4"
                     *ngIf="payruleSetupForm.controls.calcType.value === 'pct'">
                     <label
-                        class="col-form-label">Parent Component&nbsp;<span
+                        class="col-form-label">{{globalServ.showLabel('parentComponentCode')}}&nbsp;<span
                             style="color: red; margin-left: 1px">*</span></label>
                     <select
                         class="form-select mx-2"
                         id="parentComponentCode"
                         formControlName="parentComponentCode">
                         <option selected value
-                            disabled>Parent Component</option>
+                            disabled>{{globalServ.showLabel('parentComponentCode')}}</option>
                         <option
                             *ngFor="let pc of salaryMasterList"
                             [value]="pc.componentCode">
                             {{ pc.componentCode }}
                         </option>
                     </select>
-                   
+
                 </div>
             </div>
         </form>
@@ -115,11 +117,12 @@
 
                     <mat-expansion-panel [expanded]="stepRules === index"
                         (opened)="setStepRules(index)">
-
                         <mat-expansion-panel-header>
                             <mat-panel-title>
-                                <span *ngIf="payruleSetupFormArray.get('componentCode').value"> 
-                                    {{payruleSetupFormArray.get('componentCode').value}}_{{index +1}}
+                                <span
+                                    *ngIf="payruleSetupFormArray.get('componentCode').value">
+                                    {{payruleSetupFormArray.get('componentCode').value}}_{{index
+                                    +1}}
 
                                 </span>
                             </mat-panel-title>
@@ -131,7 +134,7 @@
                             id="percentage">
                             <div class="d-flex text-nowrap">
                                 <span
-                                    class="d-flex align-items-center">Calculation Type&nbsp;<span
+                                    class="d-flex align-items-center">{{globalServ.showLabel('calcType')}}&nbsp;<span
                                         style="color: red; margin-left: 1px">*</span></span>
                                 <span>
 
@@ -144,21 +147,22 @@
                                     payruleSetupFormArray.get('calcType').touched)"
                                         formControlName="calcType">
                                         <option selected value
-                                            disabled>Calculation
-                                            Type</option>
+                                            disabled>{{globalServ.getGlobalNames('select')}}
+                                            {{globalServ.showLabel('calcType')}}</option>
                                         <option *ngFor="let ct of calcTypes"
                                             [value]="ct.code">
                                             {{ ct.name }}
                                         </option>
                                     </select>
                                     <div>
-                                        <small
+                                        <small 
                                             *ngIf="
                 payruleSetupFormArray.get('calcType').invalid &&
                 payruleSetupFormArray.get('calcType').touched
               "
-                                            class="text-danger">
-                                            Calculation Type required</small>
+                                            class="text-danger mt-2">
+                                            {{globalServ.showLabel('calcType')}}
+                                            {{globalServ.showGlobalErrors('required')}}</small>
                                     </div>
                                 </span>
                             </div>
@@ -167,7 +171,8 @@
                         <div class="col-md-12">
                             <div class="d-flex my-3 align-items-center"
                                 id="comparatorComponent">
-                                if <div class="d-flex text-nowrap">
+                                {{globalServ.getGlobalNames('If')}} <div
+                                    class="d-flex text-nowrap">
                                     <span class="mx-2">
                                         <select
                                             class="form-select widthFit"
@@ -177,8 +182,8 @@
                                             id="comparatorComponent"
                                             formControlName="comparatorComponent">
                                             <option selected value
-                                                disabled>Comparator
-                                                Component</option>
+                                                disabled>{{globalServ.getGlobalNames('select')}}
+                                                {{globalServ.showLabel('comparatorComponent')}}</option>
                                             <option
                                                 *ngFor="let pc of salaryMasterList"
                                                 [value]="pc.componentCode">
@@ -190,13 +195,16 @@
                                                 *ngIf="
                 payruleSetupFormArray.get('comparatorComponent').invalid &&
                 payruleSetupFormArray.get('comparatorComponent').touched
-              " class="text-danger">Comparator Component required</small>
+              "
+                                                class="text-danger">{{globalServ.showLabel('comparatorComponent')}}
+                                                {{globalServ.showGlobalErrors('required')}}</small>
                                         </div>
                                     </span>
 
-                                    <span class="mx-2 my-auto"> is </span>
+                                    <span class="mx-2 my-auto">
+                                        {{globalServ.getGlobalNames('is')}}
+                                    </span>
                                     <span class="mx-2">
-
                                         <select
                                             class="form-select widthFit"
                                             id="comparator"
@@ -205,8 +213,8 @@
                                     payruleSetupFormArray.get('comparator').touched)"
                                             formControlName="comparator">
                                             <option selected value
-                                                disabled>Select
-                                                Comparator</option>
+                                                disabled>{{globalServ.getGlobalNames('select')}}
+                                                {{globalServ.showLabel('comparator')}}</option>
                                             <option
                                                 *ngFor="let pc of comparatorsList"
                                                 [value]="pc.code">
@@ -218,8 +226,8 @@
                                                 *ngIf="
                 payruleSetupFormArray.get('comparator').invalid &&
                 payruleSetupFormArray.get('comparator').touched
-              " class="text-danger">
-                                                Comparator required</small>
+              " class="text-danger"> {{globalServ.showLabel('comparator')}}
+                                                {{globalServ.showGlobalErrors('required')}}</small>
                                         </div>
                                     </span>
                                     <span>
@@ -238,7 +246,7 @@
                                     <span
                                         *ngIf="payruleSetupFormArray.controls.comparator.value === 'BETWEEN'"
                                         class="mx-2 my-auto">
-                                        and
+                                        {{globalServ.getGlobalNames('and')}}
                                     </span>
                                     <input
                                         *ngIf="payruleSetupFormArray.controls.comparator.value === 'BETWEEN'"
@@ -253,7 +261,8 @@
 
                         <div class="col-md-12">
                             <div class="d-flex my-3 align-items-center">
-                                <span class="me-2 d-flex my-auto"> then
+                                <span class="me-2 d-flex my-auto">
+                                    {{globalServ.getGlobalNames('then')}}
                                     {{this.fromParent.prop1}} = </span>
                                 <input
                                     *ngIf="payruleSetupFormArray.controls.calcType.value === 'fixed'"
@@ -282,7 +291,7 @@
                                         <select
                                             class="form-select widthFit mx-2"
                                             id="parentComponentCode"
-                                                [class.is-invalid]="payruleSetupFormArray.get('parentComponentCode').invalid &&
+                                            [class.is-invalid]="payruleSetupFormArray.get('parentComponentCode').invalid &&
                                      (payruleSetupFormArray.get('parentComponentCode').dirty ||
                                     payruleSetupFormArray.get('parentComponentCode').touched)"
                                             formControlName="parentComponentCode">

@@ -16,10 +16,26 @@ const routes: Routes = [
     path: '',
     component: AllModulesComponent,
     children: [
-      { path: 'setup', loadChildren: () => import(`./setup/setup.module`).then(m => m.SetupModule) },
+      {
+        path: 'setup', loadChildren: () => import(`./setup/setup.module`).then(m => m.SetupModule),
+        resolve: {
+          condition: CheckPermissionResolver
+        }
 
-      { path: 'timesetup', loadChildren: () => import(`./timesetup-master/timesetup-master.module`).then(m => m.TimesetupMasterModule) },
-      { path: 'payrollsetup', loadChildren: () => import(`./payroll-setup-master/payroll-setup-master.module`).then(m => m.PayrollSetupMasterModule) },
+      },
+
+      {
+        path: 'timesetup', loadChildren: () => import(`./timesetup-master/timesetup-master.module`).then(m => m.TimesetupMasterModule),
+        resolve: {
+          condition: CheckPermissionResolver
+        }
+      },
+      {
+        path: 'payrollsetup', loadChildren: () => import(`./payroll-setup-master/payroll-setup-master.module`).then(m => m.PayrollSetupMasterModule),
+        resolve: {
+          condition: CheckPermissionResolver
+        }
+      },
       { path: 'rpt', loadChildren: () => import(`./reports/reports.module`).then(m => m.ReportsModule) },
       {
         path: 'payroll-master', loadChildren: () => import('./payroll-master/payroll-master.module').then(
@@ -148,6 +164,7 @@ const routes: Routes = [
       {
         path: 'incomeTax', loadChildren: () => import(`../income-tax/income-tax.module`).then(m => m.IncomeTaxModule)
       },
+      { path: 'taxDeclaration', loadChildren: () => import(`../tax-declaration/tax-declaration.module`).then(m => m.TaxDeclarationModule) },
 
 
       {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { UtilService } from 'src/app/services/util.service';
 import Swal from 'sweetalert2';
@@ -24,7 +25,7 @@ export class DesignationComponent implements OnInit {
     private httpGetService: HttpGetService,
     private acRoute: ActivatedRoute,
     private utilServ: UtilService,
-
+    public globalServ: GlobalvariablesService,
     private spinner: NgxSpinnerService,
 
   ) {
@@ -38,6 +39,8 @@ export class DesignationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.globalServ.getMyCompLabels('Designation');
+    this.globalServ.getMyCompPlaceHolders('Designation');
     this.acRoute.data.subscribe(data => {
       const permission = data.condition
       this.hasPermissionToUpdate = permission.hasPermissionToUpdate

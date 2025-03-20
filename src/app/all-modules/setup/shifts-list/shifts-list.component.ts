@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import Swal from 'sweetalert2';
 import { AddShiftsComponent } from './add-shifts/add-shifts.component';
@@ -20,6 +21,7 @@ export class ShiftsListComponent implements OnInit {
   constructor(
     private httpGet: HttpGetService,
     private router: Router,
+    public globalServ: GlobalvariablesService,
     private spinner: NgxSpinnerService,
     private acRoute: ActivatedRoute,
     private modalService: NgbModal
@@ -38,6 +40,9 @@ export class ShiftsListComponent implements OnInit {
       this.hasPermissionToApprove = permission.hasPermissionToApprove
     });
     this.getShifts();
+    this.globalServ.getMyCompLabels('shiftMaster');
+    this.globalServ.getMyCompPlaceHolders('shiftMaster');
+    this.globalServ.getMyCompErrors('shiftMaster');
   }
   formattedWeekends(val): any {
     const d = [];

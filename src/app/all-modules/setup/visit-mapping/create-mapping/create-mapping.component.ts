@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -9,7 +9,6 @@ import { HttpPostService } from 'src/app/services/http-post.service';
 import { HttpPutService } from 'src/app/services/http-put.service';
 import { UtilService } from 'src/app/services/util.service';
 import Swal from 'sweetalert2';
-import { FormArray } from '@angular/forms';
 
 @Component({
   selector: 'app-create-mapping',
@@ -54,10 +53,7 @@ export class CreateMappingComponent implements OnInit, OnDestroy{
     this.getVisitConfigs();
 this.getAllEmps();
     this.getDepartments();   
-    this.disableEmpCode = this.UtilServ.allVisitConfigs;
-    console.log('disableEmpCode',this.disableEmpCode);
-    
-
+    this.disableEmpCode = this.UtilServ.allVisitConfigs;   
     this.mappingForm = this.formBuilder.group({
       visitConfigIds: [null, [Validators.required]],
       empCode: [[]], 
@@ -97,16 +93,9 @@ this.getAllEmps();
       this.mappingForm.enable();
 
       const editData = this.UtilServ.editData;
-      console.log('editData',editData);
-      
-
-      if(editData.empcodes.length > 0){
-        console.log('employee');
-        
+      if (editData.empcodes.length > 0) {       
         this.selectedOption = 'employee'
-      } else if(editData.deptCode){
-        console.log('department');
-        
+      } else if (editData.deptCode) {       
         this.selectedOption = 'department'
       }
 
@@ -139,9 +128,7 @@ this.getAllEmps();
     // this.stopSpinner = true;
     this.httpGetService.getMasterList('visit').subscribe((res: any) => {
     this.ids = res.response;
-    // this.stopSpinner = false;
-    console.log('ids',this.ids);
-  
+      // this.stopSpinner = false; 
     },
       err => {
         // this.stopSpinner = false;
@@ -184,9 +171,8 @@ this.getAllEmps();
     // this.spinner.show();
     this.httpGetService.getMasterList('depts/active').subscribe((res: any) => {
       const rows = res.response;
-        this.departments = rows;
-        console.log(this.departments);
-        
+      this.departments = rows;
+
       // this.spinner.hide();
     }, err => {
       // this.spinner.hide();
@@ -236,7 +222,6 @@ this.getAllEmps();
   updateMapping() {
     this.spinner.show();
     const deptCodeList = this.mappingForm.value.deptCode ? [this.mappingForm.value.deptCode] : [];
-
     const data = {
       // id: this.UtilServ.editData.id,
       visitConfigId: this.mappingForm.value.visitConfigIds,
@@ -244,10 +229,7 @@ this.getAllEmps();
       deptCode: deptCodeList,
       // companyCode: this.UtilServ.editData.companyCode,
       // branchCode: this.UtilServ.editData.branchCode,
-
-    }
-    console.log('data',data);
-    
+    }    
     this.httpPut.doPut('emp/visit/mapping', data).subscribe(
       (res: any) => {
         this.spinner.hide();

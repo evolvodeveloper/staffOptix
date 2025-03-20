@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { CreateLeaveSetupComponent } from './create-leave-setup/create-leave-setup.component';
@@ -20,7 +21,7 @@ import { LeaveSetupComponent } from './leave-setup.component';
     FormsModule,
     SharedModule,
     NgxPaginationModule,
-
+    NgSelectModule,
     ReactiveFormsModule,
     LeaveSetupRoutingModule,
   ],

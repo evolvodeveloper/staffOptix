@@ -82,7 +82,7 @@ export class AdminAttendanceComponent implements OnInit {
     private httpGet: HttpGetService,
     private httpPost: HttpPostService,
     private spinner: NgxSpinnerService,
-    private global: GlobalvariablesService,
+    public global: GlobalvariablesService,
     private modalService: NgbModal,
     private router: Router,
     private excelService: ExcelService,
@@ -102,6 +102,7 @@ export class AdminAttendanceComponent implements OnInit {
     this.getDepartments();
     this.getProjects();
     this.showWeekOff = this.global.hasFlexibleWeekends === 'N' ? false : true;
+    this.global.getMyCompLabels('attSummaryComp');
   }
 
   getProjects() {
@@ -173,7 +174,7 @@ export class AdminAttendanceComponent implements OnInit {
         const employee_data = [];
         unique.forEach((u) => {
           const arr = [];
-          let p = 0, ab = 0, l = 0, hd = 0, w = 0, h = 0, workingDays = 0;
+          let p = 0, ab = 0, l = 0, od=0, hd = 0, w = 0, h = 0, workingDays = 0;
 
           res.response.forEach((a) => {
             if (a.employeeStatus == 'Full Day') {
@@ -184,6 +185,7 @@ export class AdminAttendanceComponent implements OnInit {
                 // a.status == 'Full Day' ? a.shortStatus = 'P' : a.status == 'Missing Swipe' ? a.shortStatus = 'P/*' : a.shortStatus;
                 a.employeeStatus == 'P' || a.employeeStatus == 'Full Day' || a.employeeStatus == 'Missing Swipe' || a.employeeStatus == 'W/P' || a.employeeStatus == 'H/P' || a.employeeStatus == 'Half Day' ? ++p : p;
                 a.employeeStatus == 'Reported' ? ++l : l;
+                a.employeeStatus == 'OD' ? ++od : od;
                 a.employeeStatus == 'L' || a.employeeStatus == '-' ? ++ab : ab;
                 a.employeeStatus == 'Half Day' ? ++hd : hd;
                 a.employeeStatus == 'W' || a.employeeStatus == 'W/P' ? ++w : w;
@@ -198,7 +200,7 @@ export class AdminAttendanceComponent implements OnInit {
                     a.employeeStatus == 'Reported' ? 'L' :
                       a.employeeStatus == 'L' ? 'X' :
                         a.employeeStatus == 'Full Day' ? 'P' :
-                        a.employeeStatus,
+                          a.employeeStatus,
                 employeeName: a.employeeName,
                 aliasName: a.aliasName,
                 inTime: a.inTime ? a.inTime : '00:00:00',
@@ -208,7 +210,7 @@ export class AdminAttendanceComponent implements OnInit {
             }
           });
           employee_data.push({
-            name: '', code: u, data: arr, 'workingDays': workingDays, 'present': p, 'leave': l, 'absent': ab, 'halfDay': hd,
+            name: '', code: u, empType: '', deptCode:'', data: arr, 'workingDays': workingDays, 'present': p, 'od': od, 'leave': l, 'absent': ab, 'halfDay': hd,
             weekOff: w, holiday: h
           });
         });
@@ -218,12 +220,13 @@ export class AdminAttendanceComponent implements OnInit {
           for (const record of res.response) {
 
             if (record.employeeCode == employeeCode.code) {
-              employeeCode.name = record.employeeName
+              employeeCode.name = record.employeeName,
+                employeeCode.employeeType = record.employeeType,
+                employeeCode.deptCode = record.deptCode,
               employeeCode.aliasName = record.aliasName
             }
           }
         }
-
         for (const employee of employee_data) {
           const employeeData = employee.data;
           // Loop through the monthDates
@@ -290,12 +293,14 @@ export class AdminAttendanceComponent implements OnInit {
 
 
   saveAsExcel() {
-    const transformedData = [];
+    const transformedData = [];   
     this.attendance_list.forEach((item) => {
-      let p = 0, a = 0, l = 0, hd = 0, w = 0, h = 0, workingDays = 0;
+      let p = 0, a = 0, l = 0, hd = 0, od=0, w = 0, h = 0, workingDays = 0;
       const record = {
         'Employee Code': item.code,
         'Employee Name': item.name,
+        'Employee Type': item.employeeType !== null ? item.employeeType : '',
+        'Dept': item.deptCode !== null ? item.deptCode :'',
       };
       item.data.forEach((day) => {
         day.status == 'Full Day' ? day.shortStatus = 'P' : day.status == 'Missing Swipe' ? day.shortStatus = 'P/*' : day.status == null ? day.shortStatus = '' : day.shortStatus;
@@ -303,6 +308,7 @@ export class AdminAttendanceComponent implements OnInit {
           record[day.date] = day.shortStatus == null ? '' : day.shortStatus;
           day.status == 'P' || day.status == 'Full Day' || day.status == 'Half Day' || day.status == 'Missing Swipe' || day.status == 'W/P' || day.status == 'H/P' ? ++p : p;
           day.status == 'Reported' ? ++l : l;
+          day.status == 'OD' ? ++od: od;
           day.status == 'L' || day.status == '-' ? ++a : a;
           day.status == 'Half Day' ? ++hd : hd;
           day.status == 'W' || day.status == 'W/P' ? ++w : w;
@@ -316,6 +322,7 @@ export class AdminAttendanceComponent implements OnInit {
       record[''] = '';
       record['Working Days'] = workingDays;
       record['Present'] = p;
+      record['OD'] = od;
       record['Leave'] = l;
       record['Absent'] = a;
       // record['Half Day'] = hd;
@@ -323,7 +330,7 @@ export class AdminAttendanceComponent implements OnInit {
       record['Holiday'] = h;
       transformedData.push(record);
     });
-    this.excelService.exportAsExcelFile(transformedData, 'Attendance');
+    this.excelService.exportAsExcelFile(transformedData, 'Attendance_');
   }
 
 
@@ -368,31 +375,35 @@ export class AdminAttendanceComponent implements OnInit {
 
   async checkInTimeStatisticsChart() {
     const status = ['P', 'Full Day', 'L', 'Reported', 'Half Day']
-    const record = [];
+    let record = [];
     const date = moment().format('YYYY-MM-DD')
     status.forEach(element => {
       const filteredEmployees = this.temp.filter(employee =>
-        employee.data.some(record => record.status === element && record.date == date)
+        employee.data.some(r => r.status === element && r.date == date)
       );
       record.push({
-        name: element == "P" || element == "Full Day" ? 'Present' : element == "L" ? 'Not Reported' : element == "Reported" ? 'Leave' : 'Half Day',
+        name: element === "P" || element === "Full Day" ? 'Present' : element === "L" ? 'Not Reported' : element === "Reported" ? 'Leave' : 'Half Day',
         value: filteredEmployees.length,
         code: element
       })
     });
-    // const modifiedRecord = []
-    // record.forEach(x => {
-    //   modifiedRecord.push({
-    //     name: `${x.name} ${x.value}`,
-    //     value: x.value
-    //   })
-    // })
-
+    let filtered = [], filteredData = [];
+    filteredData = record.reduce((acc, x) => {
+      if (!filtered.includes(x.name)) {
+        filtered.push(x.name);
+        acc.push(x);
+      } else {
+        const data = acc.find(y => y.name === x.name);
+        if (data) {
+          data.value += x.value;
+        }
+      }
+      return acc;
+    }, []);
     const colorPalette = ['#55ce63 ', '#cc7b4a', '#FF4C6C', '#FFBF00'];
     this.option = {
       title: {
-        text: "Today's Attendance Snapshot",
-        // subtext: 'Employee check-in times'
+        text: this.global.showLabel('attSnapshot'),
         left: 'center'
       },
       tooltip: {
@@ -435,7 +446,7 @@ export class AdminAttendanceComponent implements OnInit {
           labelLine: {
             show: false
           },
-          data: record,
+          data: filteredData,
         }
       ]
     };
@@ -477,7 +488,7 @@ export class AdminAttendanceComponent implements OnInit {
       else {
         this.hideMarkAttendance = true;
       }
-        this.isMouseDown = true;
+      this.isMouseDown = true;
       this.selectedCells = [{ rowIndex, colIndex, data }];
     }
   }

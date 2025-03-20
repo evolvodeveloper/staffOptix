@@ -26,7 +26,7 @@ export class WorkFromHomeSetupComponent implements OnInit {
     private render: Renderer2,
     private el: ElementRef,
     private spinner: NgxSpinnerService,
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private httpPut: HttpPutService,
     private fb: FormBuilder) {
   }
@@ -53,6 +53,11 @@ export class WorkFromHomeSetupComponent implements OnInit {
   ];
 
   ngOnInit() {
+    this.globalServ.getMyCompLabels('wfhSetup');
+    this.globalServ.getMyCompPlaceHolders('wfhSetup');
+    this.globalServ.getMyCompLabels('onDutySetup');
+    this.globalServ.getMyCompPlaceHolders('onDutySetup');
+
     this.wfhForm = this.fb.group({
       payrollCode: [null, [Validators.required]],
       allowHalfDay: false,
@@ -117,4 +122,6 @@ export class WorkFromHomeSetupComponent implements OnInit {
   back() {
     this.router.navigateByUrl('/timesetup');
   }
+
+
 }

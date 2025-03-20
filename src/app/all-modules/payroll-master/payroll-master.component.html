@@ -5,7 +5,9 @@
             <div class="d-flex align-items-baseline">
                 <i style="font-size:20px" class="fa fa-arrow-left"
                     (click)="back()" aria-label="back"></i>
-                <h3 class="ms-4 page-title">Payroll Master</h3>
+                <h3 class="ms-4 page-title">
+                    {{globalServ.showLabel('payrollMasterHeader')}}
+                </h3>
             </div>
         </div>
     </div>
@@ -17,7 +19,7 @@
             <div class="col-sm-12 col-lg-3">
                 <div class="input-group">
                     <input type="text" class="form-control"
-                        placeholder="search by employee name, employee code, alias name"
+                        placeholder="{{globalServ.showPlaceholder('searchPayrollMaster')}}"
                         [(ngModel)]="searchedFor" (keyup)="updateFilter($event)"
                         style="border-radius: 8px 0px 0px 8px;">
                     <span class="input-group-text" id="basic-addon1">
@@ -34,12 +36,13 @@
                 <button type="button" id="add_office"
                     class="btn add-btn float-end d-flex"
                     *ngIf="hasPermissionToUpdate" (click)="create()"><i
-                        id="add_office" class="material-icons me-2">add</i> Add
-                    New</button>
+                        id="add_office"
+                        class="material-icons me-2">add</i>{{globalServ.getGlobalNames('addNew')}}</button>
             </div>
 
             <div class="col-sm-6 col-lg-2 mt-30px">
-                <label class="form-label ms-2">Show entries</label>
+                <label
+                    class="form-label ms-2">{{globalServ.getGlobalNames('ShowEntries')}}</label>
                 <select class="form-select" (change)="resultsPerPage($event)">
                     <!-- <option value="10">10</option> -->
                     <option value="25">25</option>
@@ -55,20 +58,32 @@
                 <thead class="thead-all">
                     <tr class="tr-th-all">
                         <th></th>
-                        <th scope="col">Employee</th>
-                        <th scope="col">Payroll</th>
-                        <th scope="col">Department</th>
-                        <th scope="col">Designation</th>
+                        <th scope="col">
+                            {{globalServ.getGlobalNames('employee')}}
+                        </th>
+                        <th scope="col">
+                            {{globalServ.getGlobalNames('payroll')}}
+                        </th>
+                        <th scope="col">
+                            {{globalServ.getGlobalNames('department')}}
+                        </th>
+                        <th scope="col">
+                            {{globalServ.getGlobalNames('designation')}}
+                        </th>
                         <!-- <th scope="col">Salary Component</th> -->
-                        <th scope="col" class="text-center">Active</th>
-                        <th class="text-center">Action</th>
+                        <th scope="col" class="text-center">
+                            {{globalServ.getGlobalNames('active')}}
+                        </th>
+                        <th class="text-center">
+                            {{globalServ.getGlobalNames('action')}}
+                        </th>
                     </tr>
                 </thead>
                 <tbody *ngIf="payrollMasterData.length === 0">
                     <tr
                         style=" text-align: center; height: 150px;">
                         <td colspan="8">
-                            "No records were found."
+                            {{globalServ.showGlobalErrors('notFound')}}
                         </td>
                     </tr>
                 </tbody>
@@ -114,12 +129,12 @@
                                     <button id="edit_Payroll" type="button"
                                         *ngIf="hasPermissionToUpdate"
                                         class="btn btn-light me-1 text-secondary"
-                                        placement="top" ngbTooltip="Edit"
+                                        placement="top" ngbTooltip="Edit" title="Edit" 
                                         (click)="editData(row)">
                                         <i id="edit_Payroll"
                                             class="fa-solid fa-pen"></i>
                                     </button>
-                                     <button id="approve_Payroll" type="button"
+                                    <button id="approve_Payroll" type="button"
                                         *ngIf="hasPermissionToApprove && row.approved === false"
                                         class="btn btn-light me-1 text-success"
                                         placement="top" ngbTooltip="Approve"
@@ -135,30 +150,40 @@
                                 <div class="bg-white p-2 custdiv">
                                     <div class="row">
                                         <div class="col-md">
-                                            <small>Bank Acc Number</small>
+                                            <small>
+                                                {{globalServ.getGlobalNames('bankAccountNumber')}}
+                                            </small>
                                             <h5 class="mb-0">{{row.bankAccountNo
                                                 }}</h5>
                                         </div>
 
                                         <div class="col-md">
-                                            <small>Bank Name</small>
+                                            <small>
+                                                {{globalServ.getGlobalNames('bankName')}}
+                                            </small>
                                             <h5 class="mb-0">{{row.bankName
                                                 }}</h5>
                                         </div>
 
                                         <div class="col-md">
-                                            <small>Bank Code</small>
+                                            <small>
+                                                {{globalServ.getGlobalNames('bankCode')}}
+                                            </small>
                                             <h5 class="mb-0">{{row.bankCode
                                                 }}</h5>
                                         </div>
 
                                         <div class="col-md">
-                                            <small>Bank Branch</small>
+                                            <small>
+                                                {{globalServ.getGlobalNames('bankBranch')}}
+                                            </small>
                                             <h5 class="mb-0">{{row.bankBranch
                                                 }}</h5>
                                         </div>
                                         <div class="col-md">
-                                            <small>Bank Address</small>
+                                            <small>
+                                                {{globalServ.getGlobalNames('bankAddress')}}
+                                            </small>
                                             <h5 class="mb-0">{{row.bankAddress
                                                 }}</h5>
                                         </div>

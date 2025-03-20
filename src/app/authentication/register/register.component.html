@@ -71,10 +71,8 @@
         <div class="account-box">
           <div class="account-wrapper">
             <h3 class="account-title mb-5">Sign Up</h3>
-            <!-- Account Form -->
             <form action="dashboard">
               <div class="form-group input">
-                <!-- <label>Email</label> -->
                 <div class="input-group">
                   <input
                     id="email"
@@ -94,7 +92,7 @@
                     title="Email Already Exists">
                     <i
                       id="email"
-                      style="color: #dc3545"
+                      style="color: #ff7a87"
                       class="fa fa-exclamation-triangle"
                       aria-hidden="true"></i>
                   </span>
@@ -122,11 +120,11 @@
                     <div id="loading-mini"></div>
                   </span>
                 </div>
-                <div  style="color: #dc3545;"
+                <div  style="color: #ff7a87;"
                     *ngIf="logInForm.get('email').hasError('required') && logInForm.get('email').touched">
                     Email is required.
                   </div>
-                  <div  style="color: #dc3545;"
+                  <div  style="color: #ff7a87;"
                     *ngIf="logInForm.get('email').hasError('email') && logInForm.get('email').touched">
                     Please enter a valid email address.
                   </div>
@@ -200,7 +198,7 @@
                     title="USERNAME ALREADY EXISTS">
                     <i
                       id="userName"
-                      style="color: #dc3545"
+                      style="color: #ff7a87"
                       class="fa fa-exclamation-triangle"
                       aria-hidden="true"></i>
                   </span>
@@ -228,7 +226,7 @@
                     title="Contact No Field Required">
                     <div id="phoneNo"
                       *ngIf="logInForm.controls['phoneNo'].errors.required"
-                      style="color: #dc3545">
+                      style="color: #ff7a87">
                       <i id="phoneNo"
                         class="fa fa-exclamation-triangle"
                         aria-hidden="true"></i>
@@ -263,7 +261,7 @@
                     id="password-field"
                     data-placement="right"
                     title="Must be at least 8 characters!">
-                    <div style="color: #dc3545">
+                    <div style="color: #ff7a87">
                       <i
                         class="fa fa-exclamation-triangle"
                         aria-hidden="true"></i>
@@ -294,12 +292,12 @@
                   <span
                     class="input-group-custom"
                     *ngIf="confirm_password.hasError('mismatch')"
-                    style="color: #dc3545"
+                    style="color: #ff7a87"
                     data-toggle="tooltip"
                     id="confirmpassword"
                     data-placement="right"
                     title="Password Does not match">
-                    <div style="color: #dc3545">
+                    <div style="color: #ff7a87">
                       <i
                         id="confirmpassword"
                         class="fa fa-exclamation-triangle"
@@ -317,7 +315,6 @@
                   showSuccessuserNameToolTip === 'USERNAME ALREADY EXISTS' ||
                   confirm_password.hasError('mismatch')"
                   (click)="showCompany()">
-                  <!-- EMAIL NOT EXISTS -->
                   Next
                 </button>
               </div>
@@ -343,7 +340,6 @@
                 </p>
               </div>
             </form>
-            <!-- /Account Form -->
           </div>
         </div>
       </div>
@@ -355,32 +351,42 @@
   <div class="container-fluid">
     <div class="row w-100 position-absolute">
       <div
-        class="col-md-6 text-center d-flex justify-content-center account-login-right w-50 position-fixed">
+        class="col-md-6 text-center d-flex justify-content-center account-login-right w-50 position-fixed"
+      >
         <div
           class="d-flex align-items-center flex-column justify-content-center"
-          style="gap: 37px">
+          style="gap: 37px"
+        >
           <div
-            class=" d-flex flex-row-start align-items-center"
-            style="gap: 11px">
-            <img style="height: 108px; width: 108px;" alt
-              src="assets/img/atlas-logo-full.png" />
+            class="d-flex flex-row-start align-items-center"
+            style="gap: 11px"
+          >
+            <img
+              style="height: 108px; width: 10 d8px"
+              alt
+              src="assets/img/atlas-logo-full.png"
+            />
           </div>
           <div
             class="align-items-start position-relative"
-            style="padding: 0 42px; gap: 10px; font-size: 20px">
+            style="padding: 0 42px; gap: 10px; font-size: 20px"
+          >
             <div
               class="position-relative rounded bg-white overflow-hidden"
-              style="width: 389px; height: 283.63px">
+              style="width: 389px; height: 283.63px"
+            >
               <img alt class="mt-3" src="assets/img/comapny.svg" />
 
               <div
                 class="position-absolute"
-                style="top: 163px; left: calc(50% - 90.5px)">
+                style="top: 163px; left: calc(50% - 90.5px)"
+              >
                 Secure and Reliable
               </div>
               <div
                 class="fw-normal position-absolute"
-                style="top: 198px; left: 34px; width: 320px; font-size: 12px">
+                style="top: 198px; left: 34px; width: 320px; font-size: 12px"
+              >
                 To a new era of workforce management! With Atlas, you can track
                 your employees' locations securely and efficiently, no matter
                 where you are.
@@ -399,21 +405,19 @@
                   111px 10px 67px rgba(3, 38, 164, 0.05),
                   49px 4px 50px rgba(3, 38, 164, 0.09),
                   12px 1px 27px rgba(3, 38, 164, 0.1);
-              ">
+              "
+            >
               <img
                 class="mb-3 position-absolute"
                 style="top: 11.59px; left: 12.56px"
                 alt
-                src="assets/img/Frame.svg" />
+                src="assets/img/Frame.svg"
+              />
 
-              <div class="payments-made-simple">
-                Attendance
-                Management
-              </div>
+              <div class="payments-made-simple">Attendance Management</div>
               <div class="user-friendly-and-efficient">
                 User-friendly and efficient solution designed to streamline and
                 simplify your attendance management process.
-
               </div>
             </div>
           </div>
@@ -421,7 +425,8 @@
       </div>
       <div
         class="col-md-6 d-flex position-absolute styleofcompany"
-        style="min-height: 100vh; align-items: center; justify-content: center">
+        style="min-height: 100vh; align-items: center; justify-content: center"
+      >
         <div class="account-box">
           <div class="account-wrapper">
             <h3 class="account-title">Company Details</h3>
@@ -429,14 +434,15 @@
               <div class="form-group input">
                 <div class="input-group">
                   <input
-                    class="form-control  bg-white"
+                    class="form-control bg-white"
                     type="text"
                     placeholder="Enter Your Company Code"
                     id="companyCode"
                     (keyup)="
                       onCmpCodeChange(companyForm.controls.companyCode.value)
                     "
-                    [formControl]="companyForm.controls.companyCode" />
+                    [formControl]="companyForm.controls.companyCode"
+                  />
                   <span
                     class="input-group-custom"
                     *ngIf="
@@ -444,20 +450,21 @@
                     "
                     data-toggle="tooltip"
                     data-placement="right"
-                    title>
+                    title
+                  >
                     <i
                       style="color: #35ef57"
                       class="far fa-check-circle"
-                      aria-hidden="true"></i>
+                      aria-hidden="true"
+                    ></i>
                   </span>
                   <span
                     class="input-group-custom"
-                    *ngIf="
-                      showSuccesCompanyCodeToolTip === 'nothing'
-                    "
+                    *ngIf="showSuccesCompanyCodeToolTip === 'nothing'"
                     data-toggle="tooltip"
                     data-placement="right"
-                    title>
+                    title
+                  >
                     <div id="loading-mini"></div>
                   </span>
                   <span
@@ -468,18 +475,20 @@
                     "
                     data-toggle="tooltip"
                     data-placement="right"
-                    title="Company Not Exists">
+                    title="Company Not Exists"
+                  >
                     <i
-                      style="color: #dc3545"
+                      style="color: #ff7a87"
                       class="fa fa-exclamation-triangle"
-                      aria-hidden="true"></i>
+                      aria-hidden="true"
+                    ></i>
                   </span>
                 </div>
               </div>
               <div class="form-group input">
                 <div class="input-group">
                   <input
-                    class="form-control  bg-white"
+                    class="form-control bg-white"
                     type="text"
                     placeholder="Enter Your Company Name"
                     id="companyName"
@@ -491,7 +500,8 @@
                         companyForm.controls.companyName.value
                       )
                     "
-                    [formControl]="companyForm.controls.companyName" />
+                    [formControl]="companyForm.controls.companyName"
+                  />
                   <span
                     class="input-group-custom"
                     *ngIf="
@@ -499,20 +509,21 @@
                     "
                     data-toggle="tooltip"
                     data-placement="right"
-                    title>
+                    title
+                  >
                     <i
                       style="color: #35ef57"
                       class="far fa-check-circle"
-                      aria-hidden="true"></i>
+                      aria-hidden="true"
+                    ></i>
                   </span>
                   <span
                     class="input-group-custom"
-                    *ngIf="
-                      showSuccesCompanyNameToolTip === 'nothing'
-                    "
+                    *ngIf="showSuccesCompanyNameToolTip === 'nothing'"
                     data-toggle="tooltip"
                     data-placement="right"
-                    title>
+                    title
+                  >
                     <div id="loading-mini"></div>
                   </span>
                   <span
@@ -523,31 +534,36 @@
                     "
                     data-toggle="tooltip"
                     data-placement="right"
-                    title="Company Not Exists">
+                    title="Company Not Exists"
+                  >
                     <i
-                      style="color: #dc3545"
+                      style="color: #ff7a87"
                       class="fa fa-exclamation-triangle"
-                      aria-hidden="true"></i>
+                      aria-hidden="true"
+                    ></i>
                   </span>
                 </div>
               </div>
               <div class="form-group input">
                 <div class="input-group">
                   <input
-                    class="form-control  bg-white"
+                    class="form-control bg-white"
                     type="text"
                     maxlength="3"
                     placeholder="Enter Company's Shortname"
                     [formControl]="companyForm.controls.shortName"
-                    id="shortName">
-                </div></div>
+                    id="shortName"
+                  />
+                </div>
+              </div>
 
               <div class="form-group input">
                 <div class="input-group">
                   <select
                     class="select form-select"
                     aria-label="Default select example"
-                    [formControl]="companyForm.controls.industry">
+                    [formControl]="companyForm.controls.industry"
+                  >
                     <option value disabled selected>Select Industry</option>
                     <option *ngFor="let i of industries" [value]="i">
                       {{ i }}
@@ -561,7 +577,8 @@
                   type="checkbox"
                   id="multiBranch"
                   (click)="toggleB($event)"
-                  [formControl]="logInForm.controls.multiBranch" />
+                  [formControl]="logInForm.controls.multiBranch"
+                />
                 <label class="form-check-label" for="multiBranch">
                   Enable Multi Branch
                 </label>
@@ -569,9 +586,10 @@
 
               <div class="form-group text-end" *ngIf="hasMultiBranchTrue">
                 <button
-                  (click)="openModal('','')"
+                  (click)="openModal('', '')"
                   class="btn btn-primary"
-                  style="display: inline-flex">
+                  style="display: inline-flex"
+                >
                   <i class="material-icons me-2 fs-5">add</i> Add Branch
                 </button>
               </div>
@@ -579,10 +597,12 @@
               <div
                 class="accordion"
                 id="accordionExample"
-                *ngIf="showBranchList">
+                *ngIf="showBranchList"
+              >
                 <div
                   class="accordion-item mb-3"
-                  *ngFor="let b of branchObj; let i = index">
+                  *ngFor="let b of branchObj; let i = index"
+                >
                   <h2 class="accordion-header">
                     <button
                       class="accordion-button"
@@ -590,14 +610,16 @@
                       data-bs-toggle="collapse"
                       data-bs-target="#collapseOne"
                       aria-expanded="true"
-                      aria-controls="collapseOne">
+                      aria-controls="collapseOne"
+                    >
                       Branch {{ i + 1 }}
                     </button>
                   </h2>
                   <div
                     id="collapseOne"
                     class="accordion-collapse collapse show"
-                    data-bs-parent="#accordionExample">
+                    data-bs-parent="#accordionExample"
+                  >
                     <div class="accordion-body">
                       <div class="row" style="margin-bottom: 10px">
                         <div class="col">Branch Name</div>
@@ -634,14 +656,15 @@
                         <button
                           type="button"
                           class="btn float-end btn-sm gap-2 btn-primary"
-                          (click)="openModal(b,'edit')">
-                          <i class="fa fa-pencil"></i>&nbsp;
-                          Edit Branch
+                          (click)="openModal(b, 'edit')"
+                        >
+                          <i class="fa fa-pencil"></i>&nbsp; Edit Branch
                         </button>
                         <button
                           type="button"
                           class="btn float-start btn-sm btn-danger"
-                          (click)="removeBranch(i)">
+                          (click)="removeBranch(i)"
+                        >
                           <i class="fa-solid fa-trash me-1"></i>&nbsp;Delete
                           Branch
                         </button>
@@ -651,36 +674,677 @@
                   </div>
                 </div>
               </div>
-              <div class=" mt-3">
+              <div class="mt-3">
                 <button
                   class="btn btn-outline-primary float-start mb-3"
                   type="submit"
-                  (click)="backTo1stPage()">
+                  (click)="backTo1stPage()"
+                >
                   Previous
                 </button>
                 <button
                   [disabled]="
-                companyForm.invalid ||
-                companyForm.pristine ||
-                logInForm.pristine ||
-                logInForm.invalid ||
-                branchObj.length === 0 ||
-                showSuccesCompanyNameToolTip === 'COMPANY NAME ALREADY EXISTS' || 
-                showSuccessEmailToolTip !== 'EMAIL NOT EXISTS' ||
-                showSuccessuserNameToolTip === 'USERNAME ALREADY EXISTS'
-                "
+                    companyForm.invalid ||
+                    companyForm.pristine ||
+                    logInForm.pristine ||
+                    logInForm.invalid ||
+                    branchObj.length === 0 ||
+                    showSuccesCompanyNameToolTip ===
+                      'COMPANY NAME ALREADY EXISTS' ||
+                    showSuccessEmailToolTip !== 'EMAIL NOT EXISTS' ||
+                    showSuccessuserNameToolTip === 'USERNAME ALREADY EXISTS'
+                  "
                   class="btn btn-primary float-end mb-3"
                   type="submit"
                   (click)="Submit()"
-                  style="width: 100px">
+                  style="width: 100px"
+                >
                   Submit
                 </button>
               </div>
             </form>
-            <!-- </form> -->
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- <div class="container" *ngIf="showEmailBox">
+  <div class="login-card row">
+    <div class="login-form col-md-6">
+      <img
+        style="height: 70px; width: 145px"
+        alt
+        src="assets/img/xaur_white_logo.svg"
+      />
+      <h2 class="mt-5">Sign Up</h2>
+      <form action="dashboard">
+        <div class="form-group">
+          <div class="d-flex justify-content-end align-items-center">
+            <input
+              type="email"
+              id="email"
+              placeholder="Business Email"
+              [formControl]="logInForm.controls.email"
+              [email]="true"
+              (keyup)="onEmailChange(logInForm.controls.email.value)"
+            />
+            <span
+              id="email"
+              *ngIf="showSuccessEmailToolTip === 'EMAIL ALREADY EXIST'"
+              data-toggle="tooltip"
+              data-placement="right"
+              title="Email Already Exists"
+            >
+              <i
+                id="email"
+                style="color: #ff7a87"
+                class="fa fa-exclamation-triangle"
+                aria-hidden="true"
+              ></i>
+            </span>
+            <span
+              id="email"
+              *ngIf="showSuccessEmailToolTip === 'EMAIL NOT EXISTS'"
+              data-toggle="tooltip"
+              data-placement="right"
+              title
+            >
+              <i
+                style="color: #35ef57"
+                id="email"
+                class="far fa-check-circle"
+                aria-hidden="true"
+              ></i>
+            </span>
+            <span
+              *ngIf="showSuccessEmailToolTip === 'nothing'"
+              data-toggle="tooltip"
+              data-placement="right"
+              title
+            >
+              <div id="loading-mini"></div>
+            </span>
+          </div>
+          <div
+            style="color: #ff7a87"
+            class="errorBg"
+            *ngIf="
+              logInForm.get('email').hasError('required') &&
+              logInForm.get('email').touched
+            "
+          >
+            Email is required.
+          </div>
+          <div
+            style="color: #ff7a87"
+                class="errorBg"
+            *ngIf="
+              logInForm.get('email').hasError('email') &&
+              logInForm.get('email').touched
+            "
+          >
+            Please enter a valid email address.
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 form-group text-center">
+            <input
+              id="firstName"
+              type="text"
+              [formControl]="logInForm.controls.firstName"
+              placeholder="Enter Your First Name"
+            />
+          </div>
+
+          <div class="col-md-6 form-group text-center">
+            <input
+              id="lastName"
+              type="text"
+              [formControl]="logInForm.controls.lastName"
+              placeholder="Enter Your Last Name"
+            />
+          </div>
+        </div>
+
+        <div
+          class="form-group text-center "
+        >
+           <div class="d-flex justify-content-end align-items-center">
+          <input
+            id="userName"
+            type="text"
+            maxlength="12"
+            (keyup)="onUserNameChange(logInForm.controls.userName.value)"
+            [formControl]="logInForm.controls.userName"
+            placeholder="Enter Your User Name"
+          />
+          <span
+            id="userName"
+            *ngIf="showSuccessuserNameToolTip === 'USERNAME NOT EXISTS'"
+            data-toggle="tooltip"
+            data-placement="right"
+            title
+          >
+            <i
+              id="userName"
+              style="color: #35ef57"
+              class="far fa-check-circle"
+              aria-hidden="true"
+            ></i>
+          </span>
+          <span
+            *ngIf="showSuccessuserNameToolTip === 'nothing'"
+            data-toggle="tooltip"
+            data-placement="right"
+            title
+          >
+            <div id="loading-mini"></div>
+          </span>
+          <span
+            id="userName"
+            *ngIf="showSuccessuserNameToolTip === 'USERNAME ALREADY EXISTS'"
+            data-toggle="tooltip"
+            data-placement="right"
+            title="USERNAME ALREADY EXISTS"
+          >
+            <i
+              id="userName"
+              style="color: #ff7a87"
+              class="fa fa-exclamation-triangle"
+              aria-hidden="true"
+            ></i>
+          </span>
+        </div>
+          <div
+            style="color: #ff7a87"
+            class="errorBg"
+            *ngIf="
+              logInForm.get('userName').hasError('required') &&
+              logInForm.get('userName').touched
+            "
+          >
+            User Name is required.
+          </div>
+        </div>
+        <div
+          class="form-group text-center "
+        >
+           <div class="d-flex justify-content-end align-items-center">
+          <input
+            id="phoneNo"
+            type="number"
+            [formControl]="logInForm.controls.phoneNo"
+            placeholder="Enter Your Mobile Number"
+          />
+          <span
+            id="phoneNo"
+            *ngIf="
+              logInForm.controls['phoneNo'].hasError('required') &&
+              (logInForm.controls['phoneNo'].dirty ||
+                logInForm.controls['phoneNo'].touched)
+            "
+            data-toggle="tooltip"
+            data-placement="right"
+            title="Contact No Field Required"
+          >
+            <div
+              id="phoneNo"
+              *ngIf="logInForm.controls['phoneNo'].errors.required"
+              style="color: #ff7a87"
+            >
+              <i
+                id="phoneNo"
+                class="fa fa-exclamation-triangle"
+                aria-hidden="true"
+              ></i>
+            </div>
+          </span>
+        </div>
+          <div
+            style="color: #ff7a87"
+            class="errorBg"
+            *ngIf="
+              logInForm.get('phoneNo').hasError('required') &&
+              logInForm.get('phoneNo').touched
+            "
+          >
+          Phone Number is required.
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div
+              class="form-group text-center d-flex justify-content-end align-items-center"
+            >
+              <input
+                name="password"
+                [type]="showPassword ? 'text' : 'password'"
+                (keyup)="onPasswordChange()"
+                [formControl]="logInForm.controls.password"
+                id="password-field"
+                placeholder="Enter Your Password"
+              />
+              <span id="password-field">
+                <i
+                  alt="show"
+                  class="far fa-eye"
+                  id="password-field"
+                  *ngIf="showPassword"
+                  [name]="showPassword ? 'eye-off' : 'eye'"
+                  (click)="showPassword = !showPassword"
+                ></i>
+                <i
+                  alt="hide"
+                  id="password-field"
+                  class="far fa-eye-slash eye-hide"
+                  *ngIf="!showPassword"
+                  (click)="showPassword = !showPassword"
+                ></i>
+              </span>
+              <span
+                style="padding: 0 0 0 11px"
+                *ngIf="logInForm.controls['password'].hasError('minlength')"
+                data-toggle="tooltip"
+                id="password-field"
+                data-placement="right"
+                title="Must be at least 8 characters!"
+              >
+                <div style="color: #ff7a87">
+                  <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                </div>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div
+              class="form-group d-flex justify-content-end align-items-center"
+            >
+              <input
+                name="password"
+                id="confirmpassword"
+                [type]="confirmpassword ? 'text' : 'password'"
+                (keyup)="onPasswordChange()"
+                [formControl]="logInForm.controls.confirm_password"
+                placeholder="Re-Enter Your Password"
+              />
+              <span id="confirmpassword">
+                <i
+                  alt="show"
+                  class="far fa-eye"
+                  id="confirmpassword"
+                  *ngIf="confirmpassword"
+                  [name]="confirmpassword ? 'eye-off' : 'eye'"
+                  (click)="confirmpassword = !confirmpassword"
+                ></i>
+                <i
+                  alt="hide"
+                  class="far fa-eye-slash eye-hide"
+                  id="confirmpassword"
+                  *ngIf="!confirmpassword"
+                  (click)="confirmpassword = !confirmpassword"
+                ></i>
+              </span>
+              <span
+                *ngIf="confirm_password.hasError('mismatch')"
+                style="color: #ff7a87; padding: 0 0 0 11px"
+                data-toggle="tooltip"
+                id="confirmpassword"
+                data-placement="right"
+                title="Password Does not match"
+              >
+                <div style="color: #ff7a87">
+                  <i
+                    id="confirmpassword"
+                    class="fa fa-exclamation-triangle"
+                    aria-hidden="true"
+                  ></i></div
+              ></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <div  *ngIf="showSuccessEmailToolTip !== 'EMAIL NOT EXISTS'">
+            <button
+           
+            id="next_btn"
+            [disabled]="
+                  logInForm.pristine ||
+                  logInForm.invalid ||
+                  showSuccessEmailToolTip !== 'EMAIL NOT EXISTS' ||
+                  showSuccessuserNameToolTip === 'USERNAME ALREADY EXISTS' ||
+                  confirm_password.hasError('mismatch')"
+                  (click)="showCompany()"
+            class="login-button"
+          >
+            Next
+          </button>
+          </div>
+          <div  *ngIf="showSuccessEmailToolTip === 'EMAIL NOT EXISTS'">
+            <button
+            
+            id="next_btn"
+            [disabled]="
+                  logInForm.pristine ||
+                  logInForm.invalid ||
+                  showSuccessEmailToolTip !== 'EMAIL NOT EXISTS' ||
+                  showSuccessuserNameToolTip === 'USERNAME ALREADY EXISTS' ||
+                  confirm_password.hasError('mismatch')"
+                  (click)="showCompany()"
+            class="login-button"
+          >
+            Next
+          </button>
+          </div>
+         
+         
+        </div>
+      </form>
+      <div class="signup">
+        <p class="text-p">
+          I have an <span class="bold-text">Account</span> login now?
+        </p>
+        <button class="signup-button" routerLink="/auth">Sign In</button>
+      </div>
+    </div>
+    <div class="info-section col-md-6 account-login-right">
+      <div class="logo">
+        <img src="assets/img/sideimg.svg" alt="Attendance Management" />
+      </div>
+      <div style="display: flex; flex-direction: column; padding: 0">
+        <h1 class="mb-4">
+          Revolutionizing<br />Employee <span>Attendance</span><br />Management
+        </h1>
+        <div class="features mt-5">
+          <div class="feature">
+            Cloud based Platform to access the data anytime anywhere.
+          </div>
+          <div class="feature">Complete reporting of the employee details.</div>
+          <div class="feature">Real-time information on your finger tips.</div>
+          <div class="feature">Reduces the cost and manpower and etc.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container" *ngIf="showCompanyBox">
+  <div class="login-card row">
+    <div class="login-form col-md-6">
+      <img
+        style="height: 70px; width: 145px"
+        alt
+        src="assets/img/xaur_white_logo.svg"
+      />
+      <h2 class="mt-5">Company Details</h2>
+      <form action="dashboard">
+        <div class="form-group ">
+           <div class="d-flex justify-content-end align-items-center">
+          <input
+            type="text"
+            id="companyCode"
+            placeholder="Enter Your Company Code"
+            (keyup)="onCmpCodeChange(companyForm.controls.companyCode.value)"
+            [formControl]="companyForm.controls.companyCode"
+          />
+          <span
+            *ngIf="showSuccesCompanyCodeToolTip === 'COMPANY CODE NOT EXISTS'"
+            data-toggle="tooltip"
+            data-placement="right"
+            title
+          >
+            <i
+              style="color: #35ef57"
+              class="far fa-check-circle"
+              aria-hidden="true"
+            ></i>
+          </span>
+          <span
+            *ngIf="showSuccesCompanyCodeToolTip === 'nothing'"
+            data-toggle="tooltip"
+            data-placement="right"
+            title
+          >
+            <div id="loading-mini"></div>
+          </span>
+          <span
+            *ngIf="
+              showSuccesCompanyCodeToolTip === 'COMPANY CODE ALREADY EXISTS'
+            "
+            data-toggle="tooltip"
+            data-placement="right"
+            title="Company Not Exists"
+          >
+            <i
+              style="color: #ff7a87"
+              class="fa fa-exclamation-triangle"
+              aria-hidden="true"
+            ></i>
+          </span>
+        </div>
+          <div
+            style="color: #ff7a87"
+            *ngIf="
+              companyForm.get('companyCode').hasError('required') &&
+              companyForm.get('companyCode').touched
+            "
+          >
+          Company Code is required.
+          </div>
+        </div>
+ 
+        <div
+          class="form-group text-center"
+        >
+           <div class="d-flex justify-content-end align-items-center">
+          <input
+            id="companyName"
+            (keyup)="onCmpNameChange(companyForm.controls.companyName.value)"
+            (keyup)="
+              getShortNamefromCmpName(companyForm.controls.companyName.value)
+            "
+            [formControl]="companyForm.controls.companyName"
+            placeholder="Enter Your Company Name"
+          />
+          <span
+            *ngIf="showSuccesCompanyNameToolTip === 'COMPANY NAME NOT EXISTS'"
+            data-toggle="tooltip"
+            data-placement="right"
+            title
+          >
+            <i
+              style="color: #35ef57"
+              class="far fa-check-circle"
+              aria-hidden="true"
+            ></i>
+          </span>
+          <span
+            *ngIf="showSuccesCompanyNameToolTip === 'nothing'"
+            data-toggle="tooltip"
+            data-placement="right"
+            title
+          >
+            <div id="loading-mini"></div>
+          </span>
+          <span
+            *ngIf="
+              showSuccesCompanyNameToolTip === 'COMPANY NAME ALREADY EXISTS'
+            "
+            data-toggle="tooltip"
+            data-placement="right"
+            title="Company Not Exists"
+          >
+            <i
+              style="color: #ff7a87"
+              class="fa fa-exclamation-triangle"
+              aria-hidden="true"
+            ></i>
+          </span>
+        </div>
+          <div
+          class="errorBg"
+          style="color: #ff7a87"
+          *ngIf="
+            companyForm.get('companyName').hasError('required') &&
+            companyForm.get('companyName').touched
+          "
+        >
+        Company Name is required.
+        </div>
+        </div>
+
+        <div class="form-group text-center">
+          <input
+            type="text"
+            maxlength="3"
+            id="shortName"
+            [formControl]="companyForm.controls.shortName"
+            placeholder="Enter Your Company's Shortname"
+          />
+          <div
+          style="color: #ff7a87"
+          class="errorBg"
+          *ngIf="
+            companyForm.get('shortName').hasError('required') &&
+            companyForm.get('shortName').touched
+          "
+        >
+        Short Name is required.
+        </div>
+        </div>
+        <div class="form-group text-center">
+          <select
+            style="width: -webkit-fill-available"
+            class="select form-select"
+            [formControl]="companyForm.controls.industry"
+          >
+            <option value disabled selected>Select Industry</option>
+            <option *ngFor="let i of industries" [value]="i">
+              {{ i }}
+            </option>
+          </select>
+        </div>
+        <div
+          class="row"
+          style="
+            border-radius: 5px;
+            margin: 0;
+            border-style: dashed;
+            border-color: #ffffff;
+            border-width: 1px;
+            position: relative;
+          "
+        >
+          <div class="col-md-6">
+            <div class="form-check mt-2 mb-2">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="multiBranch"
+                (click)="toggleB($event)"
+                [formControl]="logInForm.controls.multiBranch"
+              />
+              <label class="form-check-label" for="multiBranch">
+                Enable Multi Branch
+              </label>
+            </div>
+          </div>
+          <div class="col-md-6 d-flex justify-content-end align-items-center">
+            <div
+              *ngIf="hasMultiBranchTrue"
+              class="mt-2 mb-2 d-flex align-items-center"
+            >
+              <label
+                class="form-check-label"
+                style="margin-right: 1.5em"
+                for="multiBranch"
+              >
+                Add Branches
+              </label>
+              <i
+                (click)="openModal('', '')"
+                class="fa-solid fa-circle-plus"
+                style="font-size: 20px"
+              ></i>
+            </div>
+
+            
+          </div>
+          <div class="line-978" *ngIf="showBranchList"></div>
+          <div class="mt-3" *ngIf="showBranchList">
+            <div class="row" *ngFor="let b of branchObj; let i = index">
+              <div class="col-md-8">
+                <div>
+                  <h2>
+                    {{ b?.branchName }}
+                  </h2>
+                </div>
+              </div>
+              <div class="col-md-2 text-end">
+                <i class="fa-solid fa-pen-to-square" (click)="openModal(b, 'edit')"></i>
+              </div>
+              <div class="col-md-2 text-end">
+                <i class="fa-solid fa-trash" style="color: #ff7a87;" (click)="removeBranch(i)"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button
+            class="Previous-button"
+            type="submit"
+            (click)="backTo1stPage()"
+          >
+            Previous
+          </button>
+          <button
+            [disabled]="
+              companyForm.invalid ||
+              companyForm.pristine ||
+              logInForm.pristine ||
+              logInForm.invalid ||
+              branchObj.length === 0 ||
+              showSuccesCompanyNameToolTip === 'COMPANY NAME ALREADY EXISTS' ||
+              showSuccessEmailToolTip !== 'EMAIL NOT EXISTS' ||
+              showSuccessuserNameToolTip === 'USERNAME ALREADY EXISTS'
+            "
+            class="login-button"
+            type="submit"
+            (click)="Submit()"
+            style="width: 100px"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+      <br />
+      <div class="line-978"></div>
+      <br />
+      <div class="signup">
+        <p class="text-p">
+          I have an <span class="bold-text">Account</span> login now?
+        </p>
+        <button class="signup-button" routerLink="/auth">Sign In</button>
+      </div>
+    </div>
+    <div class="info-section col-md-6 account-login-right">
+      <div class="logo">
+        <img src="assets/img/sideimg.svg" alt="Attendance Management" />
+      </div>
+      <div style="display: flex; flex-direction: column; padding: 0">
+        <h1 class="mb-4">
+          Revolutionizing<br />Employee <span>Attendance</span><br />Management
+        </h1>
+        <div class="features mt-5">
+          <div class="feature">
+            Cloud based Platform to access the data anytime anywhere.
+          </div>
+          <div class="feature">Complete reporting of the employee details.</div>
+          <div class="feature">Real-time information on your finger tips.</div>
+          <div class="feature">Reduces the cost and manpower and etc.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->

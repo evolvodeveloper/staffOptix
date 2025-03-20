@@ -1,7 +1,4 @@
-<!-- Header -->
-<div class="header">
-
-    <!-- Logo -->
+<!-- <div class="header">
     <div class="header-left">
         <a [routerLink]="['/dashboard']" class="logo">
             <img src="assets/img/logo.png" width="40" height="40" alt
@@ -11,8 +8,6 @@
 
         </a>
     </div>
-    <!-- /Logo -->
-
     <a id="toggle_btn">
         <span class="bar-icon">
             <span></span>
@@ -21,28 +16,17 @@
         </span>
     </a>
 
-    <!-- Header Title -->
-    <div class="page-title-box">
-        <h3>{{companyName}}</h3>
-    </div>
-    <!-- /Header Title -->
 
     <a id="mobile_btn" class="mobile_btn" href="javascript:"><i
             class="fa fa-bars"></i></a>
 
-    <!-- Header Menu -->
     <ul class="nav user-menu">
-        <!-- <li class="nav-item" style="margin: auto;">
-            <button type="button" class="btn btn-success  punch-btn me-2"
-                *ngIf="punchInMarked === 'false'" (click)="punchIn()">Clock In</button>
-            <button type="button" class="btn delete-btn  punch-btn"
-                *ngIf="punchInMarked === 'true'" (click)="punchOut()">Clock Out</button>
-        </li> -->
+
         <li class="nav-item me-3 dropdown  main-drop" style="margin: auto;"
             *ngIf="hasPermissionToUpdate" >
             <a class="nav-link dropdown-toggle" role="button" id="navbarDropdown"
                 data-bs-toggle="dropdown" aria-expanded="false">
-                <i style='font-size:20px; color: #fff; line-height: 50px;'
+                <i style='font-size:20px; color: #213343; line-height: 50px;'
                     class='far'>&#xf0f3;</i>
                 <span *ngIf="pendingApprovalsCount > 0"
                     class="position-absolute start-100 translate-middle badge rounded-pill bg-danger">
@@ -126,13 +110,185 @@
                     <span *ngIf="!profilePic">
                         <img src="assets/img/avatar21.jpg" alt>
                         <span
-                            style="font-size: large; color: #5470c6; font-weight: 600; position: absolute;
+                            style="font-size: large; color: #213343; font-weight: 600; position: absolute;
                             left: 9px;  margin: auto;">{{shortName}}</span>
                     </span>
                     <img *ngIf="profilePic" src="{{profilePic}}" alt
                         style="height: 40px; width: 40px; object-fit: cover;">
                     <span class="status online"></span></span>
 
+                <span class>{{username}}</span>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" a
+                        routerLink="/emp-profile">Profile</a></li>
+                <li><a class="dropdown-item" routerLink="/changepswd">Change
+                        Password</a></li>
+                <li><a class="dropdown-item" (click)="logout()">Sign
+                        Out</a></li>
+            </ul>
+        </li>
+
+    </ul>
+
+    <div class="dropdown mobile-user-menu">
+        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+            aria-expanded="false"><i
+                class="fa fa-ellipsis-v"></i></a>
+        <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" routerLink="/emp-profile">My Profile</a>
+            <a class="dropdown-item" routerLink="/changepswd">Change
+                Password</a>
+            <a class="dropdown-item" (click)="logout()">Sign Out</a>
+        </div>
+    </div>
+</div> -->
+
+<!-- Header -->
+<div class="header">
+ 
+    <!-- Logo -->
+    <div class="header-left">
+        <a [routerLink]="['/dashboard']" class="logo">
+            <img src="assets/img/logo.png" width="40" height="40" alt
+                *ngIf="!pageProfileLogo">
+            <img [src]="pageProfileLogo" width="40" height="40" alt
+                class="widthfit" *ngIf="pageProfileLogo">
+ 
+        </a>
+    </div>
+    <!-- /Logo -->
+ 
+    <a id="toggle_btn">
+        <span class="bar-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </span>
+    </a>
+ 
+    <!-- Header Title -->
+    <div class="page-title-box col-md col-sm col-lg">
+        <h3>{{companyName}}</h3>
+    </div>
+    <!-- /Header Title -->
+ 
+    <a id="mobile_btn" class="mobile_btn" href="javascript:"><i
+            class="fa fa-bars"></i></a>
+ 
+    <!-- Header Menu -->
+    <ul class="nav user-menu">
+        <!-- <li class="nav-item" style="margin: auto;">
+            <button type="button" class="btn btn-success  punch-btn me-2"
+                *ngIf="punchInMarked === 'false'" (click)="punchIn()">Clock In</button>
+            <button type="button" class="btn delete-btn  punch-btn"
+                *ngIf="punchInMarked === 'true'" (click)="punchOut()">Clock Out</button>
+        </li> -->
+        <li class="nav-item dropdown has-arrow main-drop" *ngIf="selectedLang">
+            <a class="nav-link dropdown-toggle" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                {{selectedLang}}
+            </a>
+         <ul class="dropdown-menu">
+                <li *ngFor="let lg of listOfLang"><a class="dropdown-item"
+                        (click)="chooseLanguage(lg)">{{lg.languageName}}</a></li>
+                    </ul>
+                </li>
+        <li class="nav-item me-3 dropdown  main-drop" style="margin: auto;"
+            *ngIf="hasPermissionToUpdate && pendingApprovalsCount>0" >
+            <a class="nav-link dropdown-toggle" role="button" id="navbarDropdown"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <i style='font-size:20px; color: #fff; line-height: 50px;'
+                    class='far'>&#xf0f3;</i>
+                <span *ngIf="pendingApprovalsCount > 0"
+                    class="position-absolute start-100 translate-middle badge rounded-pill bg-danger">
+                    {{ pendingApprovalsCount }}
+                </span>
+            </a>
+            <ul class="dropdown-menu" id="navbarDropdown" aria-labelledby="navbarDropdown"
+                [ngClass]="{'scollClass': showTimeSheet || showExp || showLeave}">
+                <li *ngFor="let sc of notificationRecords">
+                    <span
+                        class="dropdown-item d-flex justify-content-between mt-1"
+                        [ngStyle]="{'background-color': (showLeave) || (showExp) || (showTimeSheet) ? '#5470c6' : '',
+                             'color': (showLeave) || ( showExp) || ( showTimeSheet) ? '#fff' : ''}"
+                        (click)="showHide(sc.type)">
+                        <span> <b>{{sc.type}}  </b> </span>
+                        <span> <b>{{sc.list.length}}
+                       <i class="fa-solid fa-chevron-down" *ngIf="sc.type === 'Leave' && !showLeave" ></i>
+                       <i class="fa-solid fa-chevron-up" *ngIf="sc.type === 'Leave' && showLeave"></i>
+                      <i class="fa-solid fa-chevron-down" *ngIf="sc.type === 'Expenses' && !showExp" ></i>
+                       <i class="fa-solid fa-chevron-up" *ngIf="sc.type === 'Expenses' && showExp"></i>
+ 
+                         <i class="fa-solid fa-chevron-down" *ngIf="sc.type === 'Timesheet' && !showTimeSheet" ></i>
+                       <i class="fa-solid fa-chevron-up" *ngIf="sc.type === 'Timesheet' && showTimeSheet"></i>
+                   
+                    </b></span>
+                    </span>
+                    <ng-container *ngFor="let row of sc.list">
+                        <a class="dropdown-item"
+                            *ngIf="row.type === 'Leave' && showLeave"
+                            routerLink="/leavehistory">
+                            <b>{{row.empName}}</b> has applied for
+                            <b>{{row.subType}}</b> form <b>{{row.fromDate}}</b>
+                            to <b>{{row.toDate}}</b></a>
+                        <a class="dropdown-item"
+                            *ngIf="row.type === 'Expenses'  && showExp"
+                            routerLink="/expenses"> <b>{{row.empName}}</b>
+                            submitted an expense claim of
+                            <b>{{row.amount}}/-</b> on <b>{{row.billDate| date:
+                                dateFormat}}</b></a>
+                        <a class="dropdown-item"
+                            *ngIf="row.type === 'Timesheet'  && showTimeSheet"
+                            routerLink="/all-payroll-employees/emp_timesheet"><b>
+                                {{row.empName}} 's</b> timesheet record needs
+                            approval on <b>{{row.dateCode | date:
+                                dateFormat}}</b></a>
+                    </ng-container>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item dropdown has-arrow main-drop"
+            *ngIf="hasPermissionToUpdate">
+            <a class="nav-link dropdown-toggle" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                HR Setup
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown"
+                style="max-height: 70vh; overflow-y: scroll;">
+                <li *ngFor="let sc of headerShortCuts"><a class="dropdown-item"
+                        routerLink="{{sc.link}}">{{sc.reportCode}}</a></li>
+            </ul>
+        </li>
+ 
+        <select class="me-4 custselect " *ngIf="displayBranch && onlyoneBranch"
+            [(ngModel)]="branchCode"
+            (change)="getBranchCategory()">
+            <option class="select-option" *ngFor="let b of branchs"
+                [value]="b.branchCode">
+                {{b.branchName}}</option>
+        </select>
+ 
+        <li class="nav-item" *ngIf="displayBranch && !onlyoneBranch">
+            <a class="nav-link dropdown-toggle" role="button"
+                aria-expanded="false">
+                {{branchName}}
+            </a>
+        </li>
+        <li class="nav-item dropdown has-arrow main-drop">
+            <a class="nav-link dropdown-toggle" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="user-img me-1">
+                    <span *ngIf="!profilePic">
+                        <img src="assets/img/avatar21.jpg" alt>
+                        <span
+                            style="font-size: large; color: #5470c6; font-weight: 600; position: absolute;
+                            left: 9px;  margin: auto;">{{shortName}}</span>
+                    </span>
+                    <img *ngIf="profilePic" src="{{profilePic}}" alt
+                        style="height: 40px; width: 40px; object-fit: cover;">
+                    <span class="status online"></span></span>
+ 
                 <span class>{{username}}</span>
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -145,10 +301,10 @@
                         Out</a></li>
             </ul>
         </li>
-
+ 
     </ul>
     <!-- /Header Menu -->
-
+ 
     <!-- Mobile Menu -->
     <div class="dropdown mobile-user-menu">
         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
@@ -156,6 +312,20 @@
                 class="fa fa-ellipsis-v"></i></a>
         <div class="dropdown-menu dropdown-menu-right">
             <a class="dropdown-item" routerLink="/emp-profile">My Profile</a>
+ 
+            <a class="dropdown-item" (click)="showLanguages()">{{selectedLang}}
+                <span class><i class="fa-solid fa-chevron-right"></i></span>
+            </a>
+ 
+            <!-- <div class="dropdown-item submenu">
+                <a class="dropdown-toggle"
+                    data-bs-toggle="dropdown">{{selectedLang}}</a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" *ngFor="let lg of listOfLang"
+                        (click)="chooseLanguage(lg)">{{lg.languageName}}</a>
+                </div>
+            </div> -->
+ 
             <a class="dropdown-item" routerLink="/changepswd">Change
                 Password</a>
             <a class="dropdown-item" (click)="logout()">Sign Out</a>
@@ -163,44 +333,17 @@
     </div>
     <!-- /Mobile Menu -->
 </div>
+<div *ngIf="displayLanguages" class="language-card">
+    <div class="card">
+        <div class="card-header">
+            Select Language
+        </div>
+        <div class="card-body">
+            <a class="dropdown-item" *ngFor="let lg of listOfLang"
+                (click)="chooseLangNdHide(lg)">
+                {{lg.languageName}}
+            </a>
+        </div>
+    </div>
+</div>
 <!-- /Header -->
-
-<li class="dropdown dropdown-submenu">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown Link
-        5</a>
-    <ul class="dropdown-menu">
-        <li><a href="#">Dropdown Submenu Link 5.1</a></li>
-        <li><a href="#">Dropdown Submenu Link 5.2</a></li>
-        <li><a href="#">Dropdown Submenu Link 5.3</a></li>
-        <li class="divider"></li>
-        <li class="dropdown dropdown-submenu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown
-                Submenu Link 5.4</a>
-            <ul class="dropdown-menu">
-                <li><a href="#">Dropdown Submenu Link 5.4.1</a></li>
-                <li><a href="#">Dropdown Submenu Link 5.4.2</a></li>
-                <li class="divider"></li>
-                <li class="dropdown dropdown-submenu">
-                    <a href="#" class="dropdown-toggle"
-                        data-toggle="dropdown">Dropdown Submenu Link 5.4.3</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Dropdown Submenu Link 5.4.3.1</a></li>
-                        <li><a href="#">Dropdown Submenu Link 5.4.3.2</a></li>
-                        <li><a href="#">Dropdown Submenu Link 5.4.3.3</a></li>
-                        <li><a href="#">Dropdown Submenu Link 5.4.3.4</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown dropdown-submenu"><a href="#"
-                        class="dropdown-toggle" data-toggle="dropdown">Dropdown
-                        Submenu Link 5.4.4</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Dropdown Submenu Link 5.4.4.1</a></li>
-                        <li><a href="#">Dropdown Submenu Link 5.4.4.2</a></li>
-                        <li><a href="#">Dropdown Submenu Link 5.4.4.3</a></li>
-                        <li><a href="#">Dropdown Submenu Link 5.4.4.4</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </li>
-    </ul>
-</li>

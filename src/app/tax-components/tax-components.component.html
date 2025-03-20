@@ -13,58 +13,62 @@
     </div>
 </div>
 <div class="p-3">
-    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-        <li class="nav-item me-2" role="presentation">
-            <button
-                style="height: 40px; padding: revert"
-                (click)="tab1()"
-                class="nav-link active"
-                id="pills-declaration-tab"
-                data-bs-toggle="pill"
-                data-bs-target="#pills-declaration"
-                type="button"
-                role="tab"
-                aria-controls="pills-declaration"
-                aria-selected="true">
-                <div class="d-flex my-2 justify-content-center">
-                    Declaration
-                </div>
-            </button>
-        </li>
-        <li class="nav-item me-2" role="presentation">
-            <button
-                style="height: 40px; padding: revert"
-                (click)="tab2()"
-                class="nav-link"
-                id="pills-PreviousIncome-tab"
-                data-bs-toggle="pill"
-                data-bs-target="#pills-PreviousIncome"
-                type="button"
-                role="tab"
-                aria-controls="pills-PreviousIncome"
-                aria-selected="false">
-                <div class="d-flex my-2 justify-content-center">Previous
-                    Income</div>
-            </button>
-        </li>
+    <div class="col-md" style="    display: flex;
+    justify-content: space-between;
+">
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item me-2" role="presentation">
+                <button
+                    style="height: 40px; padding: revert"
+                    (click)="tab1()"
+                    class="nav-link active"
+                    id="pills-declaration-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-declaration"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills-declaration"
+                    aria-selected="true">
+                    <div class="d-flex my-2 justify-content-center">
+                        Declaration
+                    </div>
+                </button>
+            </li>
+            <li class="nav-item me-2" role="presentation">
+                <button
+                    style="height: 40px; padding: revert"
+                    (click)="tab2()"
+                    class="nav-link"
+                    id="pills-PreviousIncome-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-PreviousIncome"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills-PreviousIncome"
+                    aria-selected="false">
+                    <div class="d-flex my-2 justify-content-center">Previous
+                        Income</div>
+                </button>
+            </li>
 
-        <li class="nav-item me-2" role="presentation">
-            <button
-                style="height: 40px; padding: revert"
-                (click)="tab3()"
-                class="nav-link"
-                id="pills-Form12BB-tab"
-                data-bs-toggle="pill"
-                data-bs-target="#pills-Form12BB"
-                type="button"
-                role="tab"
-                aria-controls="pills-Form12BB"
-                aria-selected="false">
-                <div class="d-flex my-2 justify-content-center">Form 12 BB</div>
-            </button>
-        </li>
+            <li class="nav-item me-2" role="presentation">
+                <button
+                    style="height: 40px; padding: revert"
+                    (click)="tab3()"
+                    class="nav-link"
+                    id="pills-Form12BB-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-Form12BB"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills-Form12BB"
+                    aria-selected="false">
+                    <div class="d-flex my-2 justify-content-center">Form 12
+                        BB</div>
+                </button>
+            </li>
 
-        <!-- <li class="nav-item me-2" role="presentation">
+            <!-- <li class="nav-item me-2" role="presentation">
             <button
                 style="height: 40px; padding: revert"
                 (click)="tab4()"
@@ -96,7 +100,17 @@
             </button>
         </li> -->
 
-    </ul>
+        </ul>
+        <div class="col-md-2">
+            <!-- <div class="col-md-2"> -->
+            <select class="form-select" [(ngModel)]="selectedFY"
+                (change)="getMonthsBetween(selectedFY)">
+                <option [value]="yr"
+                    *ngFor="let yr of financialYears">{{yr}}</option>
+            </select>
+        </div>
+        <!-- </div> -->
+    </div>
 
     <div class="tab-content" id="pills-tabContent">
         <div
@@ -107,9 +121,20 @@
             tabindex="0">
             <h3>Declaration</h3>
             <section class="card p-4">
-                <p class="d-flex align-items-baseline "><i
-                        class="fa-solid fa-lightbulb me-2"></i> Important!</p>
+                <span class="d-flex align-items-baseline "><i
+                        class="fa-solid fa-lightbulb me-2"></i>
+                    Important!</span>
                 <ul>
+                    <li>
+                        Your Income and tax liability is being computed as
+                        per {{selectedPlan ? selectedPlan['name']: ''}}. To lear more, and switch to other
+                        regime, <span class="text-primary"
+                            data-toggle="tooltip"
+                            data-bs-toggle="modal"
+                            data-bs-target="#taxRegime"><a
+                                style="cursor: pointer;">click
+                                here</a></span>
+                    </li>
                     <li>'$' - Not consider for exemption if opted for New Tax
                         Regime (section 115BAC)</li>
                     <li> You can declare your investements amounts till 22nd of
@@ -160,7 +185,6 @@
                             <li class="nav-item me-2" role="presentation">
                                 <button
                                     style="height: 40px; padding: revert"
-                                    (click)="myDecalrationFun()"
                                     class="nav-link active"
                                     id="pills-mydeclaration-tab"
                                     data-bs-toggle="pill"
@@ -497,7 +521,7 @@
                                                 <th scope="col"
                                                     class="text-left">Status</th>
                                                 <th scope="col"
-                                                    class="text-right">Action</th>
+                                                    class="text-center">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -1068,12 +1092,11 @@
                         </div>
                         <!-- Income FromOther Sources ends -->
                     </div>
-
                 </div>
+
+       
             </div>
-
         </div>
-
         <div
             class="tab-pane fade"
             id="pills-PreviousIncome"
@@ -1100,7 +1123,7 @@
                                 class="text-left">HRA</th>
                             <th scope="col"
                                 class="text-left">ESI</th>
-                                <th scope="col"
+                            <th scope="col"
                                 class="text-left">Income Tax</th>
                             <th scope="col"
                                 class="text-end">
@@ -1115,7 +1138,7 @@
                             <td>0</td>
                             <td>0</td>
                             <td>0</td>
-                             <td>0</td>
+                            <td>0</td>
                             <td class="text-end">
                                 <div
                                     class="btn-group me-2"
@@ -1134,13 +1157,13 @@
                                 </div>
                             </td>
                         </tr>
-                           <tr>
+                        <tr>
                             <td>May - 2024</td>
                             <td>0</td>
                             <td>0</td>
                             <td>0</td>
                             <td>0</td>
-                             <td>0</td>
+                            <td>0</td>
                             <td class="text-end">
                                 <div
                                     class="btn-group me-2"
@@ -1159,13 +1182,13 @@
                                 </div>
                             </td>
                         </tr>
-                           <tr>
+                        <tr>
                             <td>June - 2024</td>
                             <td>0</td>
                             <td>0</td>
                             <td>0</td>
                             <td>0</td>
-                             <td>0</td>
+                            <td>0</td>
                             <td class="text-end">
                                 <div
                                     class="btn-group me-2"
@@ -1190,152 +1213,218 @@
         </div>
 
     </div>
+</div>
 
-    <div id="rentedResidenceModel" class="modal custom-modal fade"
-        role="dialog">
-        <div class="modal-dialog modal-dialog-centered modal-xl"
-            role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Rented Property Details
-                    </h5>
-                    <i class="fa-solid fa-xmark fs-4"
-                        id="close_model" data-bs-dismiss="modal"
-                        (click)="closeModel('dismiss')"></i></div>
-                <div class="modal-body">
+<div id="rentedResidenceModel" class="modal custom-modal fade"
+    role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-xl"
+        role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Rented Property Details
+                </h5>
+                <i class="fa-solid fa-xmark fs-4"
+                    id="close_model" data-bs-dismiss="modal"
+                    (click)="closeModel('dismiss')"></i></div>
+            <div class="modal-body">
 
-                    <div class="row">
-                        <div class="col-md-4 mt-2 form-group">
-                            <label
-                                class="text-sm mb-1">From&nbsp;<span
-                                    style="color: red; margin-left: 1px">*</span></label>
-                            <select
-                                class="form-select"
-                                id="rentedFrom">
-                                <option [value]="p"
-                                    *ngFor="let p of rentedFrom">
-                                    {{ p }}
-                                </option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-4 mt-2 form-group">
-                            <label
-                                class="text-sm mb-1">To&nbsp;<span
-                                    style="color: red; margin-left: 1px">*</span></label>
-                            <select
-                                class="form-select"
-                                id="rentedtill">
-                                <option [value]="p"
-                                    *ngFor="let p of rentedFrom">
-                                    {{ p }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-md-4 ">
-                            <label class="text-sm mb-1">Total Months : 00
-                            </label>
-                        </div>
-                    </div>
+                <div class="row">
                     <div class="col-md-4 mt-2 form-group">
                         <label
-                            class="text-sm mb-1" for="rentPaid">Total
-                            Rent&nbsp;<span
+                            class="text-sm mb-1">From&nbsp;<span
                                 style="color: red; margin-left: 1px">*</span></label>
-                        <input
-                            class="form-control"
-                            id="rentPaid"
-                            placeholder="Total Rent Paid" />
-                    </div>
-
-                    <div class="col-md-4 mt-2 form-group">
-                        <label
-                            class="text-sm mb-1" for="Address">Address</label>
-                        <input
-                            class="form-control"
-                            id="Address" />
-                    </div>
-                    <div class="col-md-4 mt-2 form-group">
-                        <label
-                            class="text-sm mb-1" for="City">City</label>
                         <select
                             class="form-select"
-                            id="City">
+                            id="rentedFrom">
                             <option [value]="p"
-                                *ngFor="let p of cities">
+                                *ngFor="let p of rentedFrom">
                                 {{ p }}
                             </option>
                         </select>
                     </div>
 
-                    <div class="row text-primary mt-2">
-                        <p class="d-flex align-items-baseline"><i
-                                class="fa-solid fa-file-arrow-up me-2"></i>Rent
-                            Receipt or Aggrement</p>
+                    <div class="col-md-4 mt-2 form-group">
+                        <label
+                            class="text-sm mb-1">To&nbsp;<span
+                                style="color: red; margin-left: 1px">*</span></label>
+                        <select
+                            class="form-select"
+                            id="rentedtill">
+                            <option [value]="p"
+                                *ngFor="let p of rentedFrom">
+                                {{ p }}
+                            </option>
+                        </select>
                     </div>
+                    <div class="col-md-4 ">
+                        <label class="text-sm mb-1">Total Months : 00
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-4 mt-2 form-group">
+                    <label
+                        class="text-sm mb-1" for="rentPaid">Total
+                        Rent&nbsp;<span
+                            style="color: red; margin-left: 1px">*</span></label>
+                    <input
+                        class="form-control"
+                        id="rentPaid"
+                        placeholder="Total Rent Paid" />
+                </div>
 
-                    <div class="row">
-                        <div class="col-md-12">
-                            Owner Details
-                            <div class="row">
+                <div class="col-md-4 mt-2 form-group">
+                    <label
+                        class="text-sm mb-1" for="Address">Address</label>
+                    <input
+                        class="form-control"
+                        id="Address" />
+                </div>
+                <div class="col-md-4 mt-2 form-group">
+                    <label
+                        class="text-sm mb-1" for="City">City</label>
+                    <select
+                        class="form-select"
+                        id="City">
+                        <option [value]="p"
+                            *ngFor="let p of cities">
+                            {{ p }}
+                        </option>
+                    </select>
+                </div>
 
-                                <div class="col-md-4 mt-2 form-group">
-                                    <label
-                                        class="text-sm mb-1"
-                                        for="OwnerName">Owner
-                                        Name</label>
-                                    <input
-                                        class="form-control"
-                                        id="OwnerName"
-                                        placeholder="Enter Owner Name" />
-                                </div>
+                <div class="row text-primary mt-2">
+                    <p class="d-flex align-items-baseline"><i
+                            class="fa-solid fa-file-arrow-up me-2"></i>Rent
+                        Receipt or Aggrement</p>
+                </div>
 
+                <div class="row">
+                    <div class="col-md-12">
+                        Owner Details
+                        <div class="row">
+                            <div class="col-md-4 mt-2 form-group">
+                                <label
+                                    class="text-sm mb-1"
+                                    for="OwnerName">Owner
+                                    Name</label>
+                                <input
+                                    class="form-control"
+                                    id="OwnerName"
+                                    placeholder="Enter Owner Name" />
                             </div>
-                            <div class="row">
-                                <div class="col-md-4 mt-2 form-group">
-                                    <label
-                                        class="text-sm mb-1"
-                                        for="OwnerName">Owner
-                                        Address</label>
-                                    <textarea
-                                        class="form-control"
-                                        id="OwnerAddress"
-                                        placeholder="Enter Owner Address"></textarea>
-                                </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-md-4 mt-2 form-group">
-                                    <label
-                                        class="text-sm mb-1"
-                                        for="PANnumber">Owner
-                                        PAN</label>
-                                    <input
-                                        class="form-control"
-                                        id="PANnumber"
-                                        placeholder="Enter Owner PAN number">
-                                </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mt-2 form-group">
+                                <label
+                                    class="text-sm mb-1"
+                                    for="OwnerName">Owner
+                                    Address</label>
+                                <textarea
+                                    class="form-control"
+                                    id="OwnerAddress"
+                                    placeholder="Enter Owner Address"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mt-2 form-group">
+                                <label
+                                    class="text-sm mb-1"
+                                    for="PANnumber">Owner
+                                    PAN</label>
+                                <input
+                                    class="form-control"
+                                    id="PANnumber"
+                                    placeholder="Enter Owner PAN number">
                             </div>
                         </div>
                     </div>
-
                 </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<div id="ownedResidenceModel" class="modal custom-modal fade" role>
+    <div class="modal-dialog modal-dialog-centered modal-xl"
+        role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Owned Property Details</h5>
+                <i class="fa-solid fa-xmark fs-4"
+                    id="close_model" data-bs-dismiss="modal"
+                    (click)="closeModel('dismiss')"></i></div>
+            <div class="modal-body">
 
             </div>
         </div>
     </div>
-    <div id="ownedResidenceModel" class="modal custom-modal fade" role="dialog">
-        <div class="modal-dialog modal-dialog-centered modal-xl"
-            role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Owned Property Details</h5>
-                    <i class="fa-solid fa-xmark fs-4"
-                        id="close_model" data-bs-dismiss="modal"
-                        (click)="closeModel('dismiss')"></i></div>
-                <div class="modal-body">
+</div>
+
+<!-- <div id="taxRegime" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-md"
+        role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tax Regimes </h5>
+                <button
+                    id="leave_setup_close"
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12" *ngIf="!isLoading"> 
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <div class="form-check"
+                                    *ngFor="let option of regimeLabels | keyvalue">
+                                    <input class="form-check-input" type="radio"
+                                        [id]="option.key" [value]="option.key"
+                                        [(ngModel)]="selectedRegime"
+                                        (click)="onPlanChange(option)"
+                                        name="taxRegime">
+                                    <label class="form-check-label"
+                                        [for]="option.key">
+                                        {{ option.value.name }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" *ngIf="selectedData.length > 0 ">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">{{ selectedRegimeLabel }}
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Income Range</th>
+                                            <th scope="col">Tax Rate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let slab of selectedData">
+                                            <td>{{ slab.incomeRange }}</td>
+                                            <td>{{ slab.taxRate }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                    </div>
 
                 </div>
             </div>
         </div>
     </div>
+</div> -->
