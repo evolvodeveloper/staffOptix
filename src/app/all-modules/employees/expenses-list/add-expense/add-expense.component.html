@@ -3,8 +3,12 @@
     <div class="col-sm-12 col-lg-8 d-flex align-items-baseline">
       <i style="font-size:20px" class="fa fa-arrow-left me-4"
         (click)="back()" aria-label="back"></i>
-      <h3 class="page-title">{{ view ? "View" : update ? "Update" : "Create" }}
-        Expense</h3>
+      <h3 class="page-title">
+        {{ view ? globalServ.getGlobalNames('view') : (update ?
+        globalServ.getGlobalNames('update')
+        :globalServ.getGlobalNames('create')) }}
+        {{globalServ.showLabel('ExpensesHeader')}}
+      </h3>
     </div>
   </div>
 </div>
@@ -16,7 +20,8 @@
         <div class="row">
           <div class="col-sm-12 col-md-6">
             <div class="form-group">
-              <label class="col-form-label">Date&nbsp;<span
+              <label
+                class="col-form-label">{{globalServ.getGlobalNames('date')}}&nbsp;<span
                   style="color: red; margin-left: 1px">*</span></label>
               <input
                 type="date"
@@ -34,7 +39,7 @@
                 <div
                   *ngIf="expenseForm.controls['dateOfExpense'].errors.required"
                   style="color: #dc3545">
-                  This feild is required.
+                   {{globalServ.showGlobalErrors('fieldRequired')}}
                 </div>
               </div>
             </div>
@@ -42,7 +47,8 @@
 
           <div class="col-sm-12 col-md-6">
             <div class="form-group">
-              <label class="col-form-label">Expense Type</label>
+              <label class="col-form-label">
+                {{globalServ.showLabel('ExpenseType')}}</label>
               <select
                 id="expenseType"
                 class="form-select"
@@ -58,33 +64,37 @@
 
           <div class="col-sm-12 col-md-6">
             <div class="form-group">
-              <label class="col-form-label">Expense Title&nbsp;<span
+              <label class="col-form-label">
+                {{globalServ.showLabel('title')}}&nbsp;<span
                   style="color: red; margin-left: 1px">*</span></label>
               <input
                 type="text"
-                placeholder="Enter Expense Title"
+                placeholder="{{globalServ.showPlaceholder('EnterExpenseTitle')}}"
                 class="form-control"
                 id="expenseTittle"
                 formControlName="expenseTittle" />
-              <div *ngIf="expenseForm.controls['expenseTittle'].invalid && (expenseForm.controls['expenseTittle'].dirty ||
-                    expenseForm.controls['expenseTittle'].touched)" style="padding: 0px">
+              <div
+                *ngIf="expenseForm.controls['expenseTittle'].invalid && (expenseForm.controls['expenseTittle'].dirty ||
+                    expenseForm.controls['expenseTittle'].touched)"
+                style="padding: 0px">
                 <div
                   *ngIf="expenseForm.controls['expenseTittle'].errors.required"
                   style="color: #dc3545"> Expense tittle is required. </div>
               </div>
               <div
                 *ngIf="expenseForm.get('expenseTittle').hasError('invalidFormat')"
-                style="color: #dc3545">field should not contain special characters</div>
+                style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
             </div>
           </div>
 
           <div class="col-sm-12 col-md-6">
             <div class="form-group">
-              <label class="col-form-label">Amount&nbsp;<span
+              <label
+                class="col-form-label">{{globalServ.getGlobalNames('amount')}}&nbsp;<span
                   style="color: red; margin-left: 1px">*</span></label>
               <input
                 type="number"
-                placeholder="Enter Amount"
+                placeholder="{{globalServ.showPlaceholder('EnterAmount')}}"
                 class="form-control"
                 id="amount"
                 [class.is-invalid]="expenseForm.controls.amount.invalid && (expenseForm.controls.amount.dirty || expenseForm.controls.amount.touched)"
@@ -99,7 +109,7 @@
                 <div
                   *ngIf="expenseForm.controls['amount'].errors.required"
                   style="color: #dc3545">
-                  This feild is required.
+                 {{globalServ.showGlobalErrors('fieldRequired')}}
                 </div>
               </div>
             </div>
@@ -107,7 +117,8 @@
 
           <div class="col-sm-12"></div>
           <div class="col-sm-12">
-            <h4 class="col-form-label">Purpose Of Expense</h4>
+            <h4
+              class="col-form-label">{{globalServ.showLabel('PurposeOfExpense')}}</h4>
             <textarea
               id="comments"
               class="textArea border-rounded"
@@ -120,7 +131,8 @@
       </div>
       <div class="col-2"></div>
       <div class="col-sm-5 col-lg-5 mb-4">
-        <h4 class="col-form-label">Receipt Of Expense</h4>
+        <h4
+          class="col-form-label">{{globalServ.showLabel('ReceiptOfExpense')}}</h4>
         <!--    (click)="forToedit(i, url)" -->
         <div class="mt-3 row justify-content-between">
           <ng-container *ngFor="let url of receipts; let i = index">
@@ -128,7 +140,7 @@
               <div
                 class="position-relative d-flex images justify-content-center"
                 *ngIf="!url.isDeleted && url.fileType !== 'pdf'">
-                <img 
+                <img style="object-fit:contain;width: 100%;"
                   [src]="url.viewImage"/>
                 <i class="fa-solid fa-trash position-absolute text-danger"
                   style="right: 20%; top: 10px;" (click)="forToedit(i,url)"
@@ -161,7 +173,8 @@
                 onclick="document.getElementById('selectedFile').click();"><i
                   class="fa fa-plus"></i>&nbsp;Upload Receipts</a>
               <div *ngIf="view">
-                <h6 *ngIf="receipts.length === 0">No Images found</h6>
+                <h6 *ngIf="receipts.length === 0">
+                  {{globalServ.showLabel('NoImagesfound')}}</h6>
               </div>
             </div>
           </div>
@@ -226,18 +239,20 @@
       <div class="item-row head w-100">
         <div class="col-12 item-h">
           <div class="titlediv">
-            <h5 class="mb-0" *ngIf="!view">Add Multiple Items</h5>
-            <h5 class="mb-0" *ngIf="view && itemsArray.length > 0">View Multiple
-              Items</h5>
-            <h5 class="mb-0" *ngIf="view && itemsArray.length === 0">No Items
-              Found.</h5>
+            <h5 class="mb-0"
+              *ngIf="!view">{{globalServ.showLabel('AddMultipleItems')}}</h5>
+            <h5 class="mb-0"
+              *ngIf="view && itemsArray.length > 0">{{globalServ.showLabel('ViewMultipleItems')}}</h5>
+            <h5 class="mb-0"
+              *ngIf="view && itemsArray.length === 0">{{globalServ.getGlobalNames('nodatafound')}}</h5>
           </div>
           <div *ngIf="!view" style="float: right">
             <button
               type="button"
               (click)="addItem()"
               class="btn btn-primary btn-sm mt-1 me-2 align-items-end d-flex">
-              <i class="material-icons me-2">add</i> Add More
+              <i class="material-icons me-2">add</i>
+              {{globalServ.getGlobalNames('addMore')}}
             </button>
           </div>
         </div>
@@ -253,7 +268,7 @@
                 [disabled]="view"
                 [ngModelOptions]="{ standalone: true }" />
               <label>
-                Item Name&nbsp;<span
+                {{globalServ.showLabel('ItemNames')}}&nbsp;<span
                   style="color: red; margin-left: 1px">*</span>
               </label>
             </div>
@@ -267,7 +282,8 @@
                 (keyup)="getTotal()"
                 [disabled]="view"
                 type="number" />
-              <label>Quantity</label>
+              <label> {{globalServ.showLabel('ItemQty')}}&nbsp;<span
+                  style="color: red; margin-left: 1px">*</span></label>
             </div>
           </div>
           <div class="col-md-2 item-h">
@@ -279,7 +295,8 @@
                 (keyup)="getTotal()"
                 [disabled]="view"
                 type="number" />
-              <label> Rate </label>
+              <label> {{globalServ.showLabel('ItemRate')}}&nbsp;<span
+                  style="color: red; margin-left: 1px">*</span> </label>
             </div>
           </div>
           <div class="col-md-2 item-h">
@@ -291,7 +308,7 @@
                 [ngModelOptions]="{ standalone: true }"
                 type="number"
                 readonly />
-              <label> Total </label>
+              <label> {{globalServ.showLabel('totalAmt')}} </label>
             </div>
           </div>
           <div class="item-h" *ngIf="!view">
@@ -312,7 +329,7 @@
     type="button"
     class="btn delete-btn"
     (click)="back()">
-    Cancel
+    {{globalServ.getGlobalNames('cancel')}}
   </button>
   <button
     id="submit_apply_expense"
@@ -321,7 +338,7 @@
     *ngIf="!update"
     [disabled]="expenseForm.invalid"
     (click)="createExpense()">
-    Submit
+    {{globalServ.getGlobalNames('submit')}}
   </button>
   <button
     id="update_apply_expense"
@@ -330,7 +347,7 @@
     *ngIf="update"
     [disabled]="expenseForm.invalid"
     (click)="Update()">
-    Update
+    {{globalServ.getGlobalNames('update')}}
   </button>
 </div>
 
@@ -340,12 +357,12 @@
     type="button"
     class="btn delete-btn"
     (click)="back()">
-    Cancel
+    {{globalServ.getGlobalNames('cancel')}}
   </button>
 </div>
 
-<div id="previewExp" class="modal custom-modal fade" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+<div id="previewExp" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="dialog">
     <div class="modal-content">
       <ng-container *ngIf="PreviewObject?.fileType === 'pdf'">
         <embed [src]="PreviewObject?.viewImage" type="application/pdf"
@@ -364,7 +381,7 @@
           type="button"
           class="btn delete-btn closeDesig ms-2"
           data-bs-dismiss="modal"
-          aria-label="Close"> Cancel</button>
+          aria-label="Close"> {{globalServ.getGlobalNames('cancel')}}</button>
       </div>
     </div>
   </div>

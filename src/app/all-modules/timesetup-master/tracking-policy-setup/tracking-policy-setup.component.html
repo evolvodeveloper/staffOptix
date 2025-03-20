@@ -4,7 +4,7 @@
             <div class="d-flex align-items-baseline">
                 <i style="font-size:20px" class="fa fa-arrow-left"
                     (click)="back()" aria-label="back"></i>
-                <h3 class="ms-4 page-title">Tracking Policy</h3>
+                <h3 class="ms-4 page-title">{{globalServ.showLabel('trackingPolicyHeader')}}</h3>
             </div>
         </div>
     </div>
@@ -17,7 +17,7 @@
             <div class="col-sm-12 col-lg-3">
                 <div class="input-group">
                     <input type="text" class="form-control"
-                        placeholder="search by tracking policy"
+                         placeholder="{{globalServ.showPlaceholder('searchTracking')}}"
                         (keyup)="updateFilter($event)"
                         style="border-radius: 8px 0px 0px 8px;height: calc(2.5rem + calc(var(--mo-border-width) * 2));">
                     <span class="input-group-text" id="basic-addon1">
@@ -36,11 +36,11 @@
             <div class="col-lg-2">
                 <button id="add_user" type="button"  *ngIf="hasPermissionToUpdate" class="btn add-btn float-end d-flex"
                    (click)="create()"><i
-                        class="material-icons me-2">add</i> Add Policy</button>
+                        class="material-icons me-2">add</i> {{globalServ.getGlobalNames('addPolicy')}}</button>
             </div>
 
             <div class="col-sm-6 col-lg-2 mt-30px">
-                <label class="form-label ms-2">Show entries</label>
+                <label class="form-label ms-2">{{globalServ.getGlobalNames('ShowEntries')}}</label>
                 <select class="form-select" (change)="resultsPerPage($event)">
                     <!-- <option value="10">10</option> -->
                     <option value="25">25</option>
@@ -57,47 +57,47 @@
                 class="table table-hover table-nowrap custom-table mb-0 datatable">
                 <thead class="thead-all">
                     <tr class="tr-th-all">
-                        <th scope="col">Tracking Policy</th>
-                        <th scope="col" class="text-center">Penalize for No Attendance</th>
-                        <th scope="col" class="text-center">Penalize no. of working days</th>
-                        <th scope="col" class="text-center">Penalize for Late Arrival</th>
-                        <th scope="col" class="text-center">Penalize for Less Hours</th>
-                        <th scope="col" class="text-center">Action</th>
+                        <th scope="col">{{globalServ.showLabel('trackingPolicyHeader')}}</th>
+                        <th scope="col" class="text-center">{{globalServ.showLabel('penalizeForNoAtt')}}</th>
+                        <th scope="col" class="text-center">{{globalServ.showLabel('penaltyWork')}}</th>
+                        <th scope="col" class="text-center">{{globalServ.showLabel('penLateArr')}}</th>
+                        <th scope="col" class="text-center">{{globalServ.showLabel('penLessHrs')}}</th>
+                        <th scope="col" class="text-center">{{globalServ.getGlobalNames('action')}}</th>
                     </tr>
                 </thead>
                  <tbody *ngIf="rows.length === 0" >
                 <tr  style=" text-align: center; height: 150px;">
                   <td colspan="8">
-                     "No records were found with the selected filter criteria."
+                     {{globalServ.showGlobalErrors('notFound')}}
                   </td>
                 </tr>
                 </tbody>
                 <tbody *ngIf="rows.length > 0">
                     <tr class="dasboard-td"
                         *ngFor="let row of rows | paginate: config; let i = index">
-                        <td>{{row.trackingPolicy.policyCode}}</td>
+                        <td>{{row?.trackingPolicy?.policyCode}}</td>
                         <td class="text-center">
-                            <i *ngIf="row.noShowPolicy.goDeduct"
+                            <i *ngIf="row?.noShowPolicy?.goDeduct"
                                 class="fa-solid fa-circle"
                                 style="color: #55CE63;"></i>
-                            <i *ngIf="!row.noShowPolicy.goDeduct" class="fa-solid fa-circle"
+                            <i *ngIf="!row?.noShowPolicy?.goDeduct" class="fa-solid fa-circle"
                                 style="color: #f62d51;"></i>
                         </td>
-                        <td class="text-center">{{row.noShowPolicy.deductDaysOfSalary}}</td>
+                        <td class="text-center">{{row?.noShowPolicy?.deductDaysOfSalary}}</td>
            
                         <td class="text-center">
-                            <i *ngIf="row.lateArrivalPolicy.penalizeForLateArrival"
+                            <i *ngIf="row?.lateArrivalPolicy?.penalizeForLateArrival"
                                 class="fa-solid fa-circle"
                                 style="color: #55CE63;"></i>
-                            <i *ngIf="!row.lateArrivalPolicy.penalizeForLateArrival"
+                            <i *ngIf="!row?.lateArrivalPolicy?.penalizeForLateArrival"
                                 class="fa-solid fa-circle"
                                 style="color: #f62d51;"></i>
                         </td>
                            <td class="text-center">
-                            <i *ngIf="row.workingHoursPolicy.penalizeForLessHours"
+                            <i *ngIf="row?.workingHoursPolicy?.penalizeForLessHours"
                                 class="fa-solid fa-circle"
                                 style="color: #55CE63;"></i>
-                            <i *ngIf="!row.workingHoursPolicy.penalizeForLessHours"
+                            <i *ngIf="!row?.workingHoursPolicy?.penalizeForLessHours"
                                 class="fa-solid fa-circle"
                                 style="color: #f62d51;"></i>
                         </td>

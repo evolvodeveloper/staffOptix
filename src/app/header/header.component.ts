@@ -33,6 +33,10 @@ export class HeaderComponent implements OnInit {
   showLeave = true;
   showExp = true;
   showTimeSheet = true;
+  onlyoneBranch = false;
+  selectedLang: string;
+  listOfLang = [];
+  displayLanguages = false;
   hasPermissionToUpdate = false;
   hasPermissionToApprove = false;
   pendingApprovalsCount: number;
@@ -53,9 +57,15 @@ export class HeaderComponent implements OnInit {
       this.userProfile = await res.response;
       // this.getPunchDetails();
       this.utilServ.userProfileData = res.response;
-      if (res.response.isMultibranch) {
-        this.utilServ.setVisibility(res.response.isMultibranch);
-      }
+      // if (res.response.isMultibranch) {
+      //   if (this.branchs.length > 1) {
+      //     this.displayBranch = true;
+      //     this.onlyoneBranch = res.response.isMultibranch;
+      //   } else {
+      //     this.displayBranch = true;
+      //     this.onlyoneBranch = false;
+      //   }
+      // }
       if (this.utilServ.userProfileData.image) {
         const header = 'data:image/' + this.utilServ.userProfileData.fileType + ';base64,';
         this.profilePic = header.concat(this.utilServ.userProfileData.image)
@@ -66,6 +76,11 @@ export class HeaderComponent implements OnInit {
       }
     })
   }
+  showLanguages() {
+    this.displayLanguages = !this.displayLanguages;
+  }
+
+
   async getPunchDetails() {
     const ip = localStorage?.getItem('Ipaddress');
     await this.httpGet.getMasterList('employeestatus?employeeCode=' + this.userProfile.employeeCode + '&source=web' + '&address=' + ip).subscribe((res: any) => {
@@ -80,8 +95,40 @@ export class HeaderComponent implements OnInit {
       }
     })
   }
-
+  getLang() {
+    this.httpGet.getMasterList('getlocale').subscribe((res: any) => {
+      this.listOfLang = res.response;
+      const localId = localStorage.getItem('lang-Code');
+      if (localStorage.getItem('lang-Code')) {
+        const row = res.response.find(x => x.localId == localId);
+        this.selectedLang = row.languageName;
+      } else {
+        const row = res.response.find(x => x.isDefault === true);
+        this.selectedLang = row.languageName;
+        localStorage.setItem('lang-Code', row.localId);
+      }
+    })
+  }
+  chooseLanguage(row) {
+    this.selectedLang = row.languageName;
+    localStorage.setItem('lang-Code', row.localId);
+    location.reload();
+  }
+  chooseLangNdHide(row) {
+    this.selectedLang = row.languageName;
+    localStorage.setItem('lang-Code', row.localId);
+    this.displayLanguages = !this.displayLanguages;
+  }
   async ngOnInit() {
+    this.getLang();
+    if (this.utilServ.userProfileData.image) {
+        const header = 'data:image/' + this.utilServ.userProfileData.fileType + ';base64,';
+        this.profilePic = header.concat(this.utilServ.userProfileData.image)
+      }
+      else {
+      const shortName = this.utilServ.userProfileData.name ? this.utilServ.userProfileData.name?.charAt(0) : '';
+        this.shortName = shortName.toLocaleUpperCase();
+      }
     const userData = JSON.parse(localStorage.getItem('user-data'));
     // userData = JSON.parse(localStorage.getItem('user-data'));
     const isAdmin = userData.roles.some(role => role === 'ADMIN');
@@ -93,12 +140,18 @@ export class HeaderComponent implements OnInit {
     } else {
       this.hasPermissionToUpdate = false;
     }
-    this.companyName = localStorage.getItem('companyName');
     this.getLogo();
     this.getProfile();
     // this.getDatas("notification");
     // this.getDatas("message");
     this.username = localStorage.getItem('userName');
+
+    const companyName = localStorage.getItem('companyName');
+    // if (companyName.length > 15) {
+    //   return this.companyName = companyName.substring(0, 15) + '...';
+    // } else {
+      return this.companyName = companyName;
+    // }
   }
   getNotifications() {
     const notificationRecords: { [key: string]: any[] } = {};
@@ -286,6 +339,7 @@ export class HeaderComponent implements OnInit {
     localStorage.removeItem('user-data');
     localStorage.removeItem('branch');
     localStorage.removeItem('branchCode');
+    localStorage.removeItem('selectedPlan');
 
 
     // localStorage.clear();

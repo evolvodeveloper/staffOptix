@@ -8,7 +8,8 @@
                 <div class="d-flex align-items-baseline">
                     <i style="font-size:20px" class="fa fa-arrow-left"
                         (click)="back()" aria-label="back"></i>
-                    <h3 class="ms-4 page-title">Department Wise Report</h3>
+                    <h3 class="ms-4 page-title">
+                        {{global.showLabel('deptwiseHeader')}}</h3>
                 </div>
 
             </div>
@@ -19,7 +20,7 @@
     <!-- Search Filter -->
     <div class="row">
         <div class="col-md-3">
-            <label for="dept">Department</label>
+            <label for="dept">{{global.getGlobalNames('department')}}</label>
             <select class="form-select" id="departments"
                 [(ngModel)]="department"
                 (change)="modified()">
@@ -28,7 +29,7 @@
             </select>
         </div>
         <div class="col-md-3">
-            <label for="dept">Date</label>
+            <label for="dept">{{global.getGlobalNames('date')}}</label>
             <input
                 class="form-control"
                 type="date"
@@ -63,11 +64,13 @@
             <button id="submit_salary_details"
                 class="btn add-btn float-end m-1"
                 [disabled]="!date || departments.length === 0"
-                (click)="submit()">Submit</button>
+                (click)="submit()">{{global.getGlobalNames('submit')}}</button>
             <button id="save_pdf" class="btn add-btn float-end me-4  m-1"
-                (click)="savePDF()" [disabled]="rows.length === 0">Save as PDF</button>
+                (click)="savePDF()"
+                [disabled]="rows.length === 0">{{global.getGlobalNames('saveAsPDF')}}</button>
             <button id="save_excel" class="btn add-btn float-end me-4  m-1"
-                (click)="saveExcel()" [disabled]="rows.length === 0">Save as Excel</button>
+                (click)="saveExcel()"
+                [disabled]="rows.length === 0">{{global.getGlobalNames('saveAsExcel')}}</button>
         </div>
     </div>
     <!-- /Search Filter -->
@@ -75,26 +78,31 @@
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive card p-3">
-                <table datatable
+                 <table datatable
                     class="table table-hover custom-table mb-0 datatable">
                     <thead class="thead-all">
                         <tr class="tr-th-all">
-                            <th scope="col" class>Department</th>
-                            <th scope="col" class="text-end">Total
-                                Employees</th>
-                            <th scope="col" class="text-end">Reporting
-                                Employees</th>
-                            <th scope="col" class="text-end">Present</th>
-                            <th scope="col" class="text-end">Leave</th>
-                            <th scope="col" class="text-end">Late</th>
-                            <th scope="col" class="text-end">Absent</th>
+                            <th scope="col"
+                                class>{{global.getGlobalNames('department')}}</th>
+                            <th scope="col"
+                                class="text-end">{{global.getGlobalNames('totalEmployees')}}</th>
+                            <th scope="col"
+                                class="text-end">{{global.getGlobalNames('rpe')}}</th>
+                            <th scope="col"
+                                class="text-end">{{global.getGlobalNames('present')}}</th>
+                            <th scope="col"
+                                class="text-end">{{global.getGlobalNames('Leave')}}</th>
+                            <th scope="col"
+                                class="text-end">{{global.getGlobalNames('late')}}</th>
+                            <th scope="col"
+                                class="text-end">{{global.getGlobalNames('Absent')}}</th>
                         </tr>
                     </thead>
                     <tbody *ngIf="rows.length === 0 && message === 'modified'">
                         <tr
                             style=" text-align: center; height: 150px;">
                             <td colspan="11">
-                                "No records were found with the selected filter criteria."
+                                {{global.showGlobalErrors('notFound')}}
                             </td>
                         </tr>
                     </tbody>
@@ -103,7 +111,7 @@
                         <tr
                             style=" text-align: center; height: 150px;">
                             <td colspan="11">
-                                "Great choices! Finalize your selection by clicking 'Submit' to generate a report with the filtered data you've chosen."
+                                {{global.showGlobalErrors('greatChoices')}}
                             </td>
                         </tr>
                     </tbody>
@@ -111,7 +119,7 @@
                         <tr
                             style=" text-align: center; height: 150px;">
                             <td colspan="11">
-                                "Sorry for the Inconvenience!"
+                                {{global.showGlobalErrors('sorry')}}
                             </td>
                         </tr>
                     </tbody>
@@ -127,11 +135,11 @@
                                 <td
                                     class="text-end">{{row?.attResponse?.present}}</td>
                                 <td
-                                class="text-end">{{row?.attResponse?.leave}}</td>
+                                    class="text-end">{{row?.attResponse?.leave}}</td>
                                 <td
-                                class="text-end">{{row?.attResponse?.late}}</td>
+                                    class="text-end">{{row?.attResponse?.late}}</td>
                                 <td
-                                class="text-end">{{row?.attResponse?.notReported}}</td>
+                                    class="text-end">{{row?.attResponse?.notReported}}</td>
 
                             </tr>
                         </ng-container>

@@ -3,8 +3,11 @@
         <div class="col-sm-12 col-lg-8 d-flex align-items-baseline">
             <i style="font-size:20px" class="fa fa-arrow-left"
                 (click)="cancel()" aria-label="back"></i>
-            <h3 class="ms-4 page-title"> {{ view ? "View" : update ? "Update" :
-                "Create" }} Office Location</h3>
+            <h3 class="ms-4 page-title"> {{ view ?
+                globalServ.getGlobalNames('view') : (update ?
+                globalServ.getGlobalNames('update')
+                :globalServ.getGlobalNames('create')) }}
+                {{globalServ.showLabel('officeLocationHeader')}}</h3>
         </div>
     </div>
 </div>
@@ -15,15 +18,15 @@
                 <div class="col-md-6 mt-4">
                     <div class="form-group">
                         <label class="text-sm mb-1">
-                            Office Location&nbsp;<span
+                            {{globalServ.showLabel('officeLocationHeader')}}&nbsp;<span
                                 style="color: red; margin-left: 1px">*</span>
                         </label>
                         <input
                             class="form-control"
                             id="locationCode"
-                            placeholder="Enter Office Location"
+                            placeholder="{{globalServ.showPlaceholder('loc')}}"
                             [formControl]="locationForm.controls.locationCode" />
-                        <div
+                        <div class="mt-2"
                             *ngIf="locationForm.controls['locationCode'].invalid &&
                             (locationForm.controls['locationCode'].dirty ||
                             locationForm.controls['locationCode'].touched)"
@@ -31,24 +34,24 @@
                             <div
                                 *ngIf="locationForm.controls['locationCode'].errors.required"
                                 style="color: #dc3545">
-                                Office location is required.
+                                {{globalServ.showLabel('officeLocHeader')}}
+                                {{globalServ.showGlobalErrors('required')}}
                             </div>
                         </div>
                         <div
                             *ngIf="locationForm.get('locationCode').hasError('invalidFormat')"
-                            style="color: #dc3545">field should not contain
-                            special
-                            characters</div>
+                            style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
                     </div>
                 </div>
                 <div class="col-md-6 mt-4">
                     <div class="form-group">
-                        <label class="text-sm mb-1">Description
+                        <label
+                            class="text-sm mb-1">{{globalServ.showLabel('officeDesc')}}
                         </label>
                         <textarea
                             class="form-control"
                             id="description"
-                            placeholder="Enter Description"
+                            placeholder="{{globalServ.showGlobalplaceholders('enterDesc')}}"
                             [formControl]="locationForm.controls.description"></textarea>
                     </div>
                 </div>
@@ -56,53 +59,53 @@
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label class="text-sm mb-1">Primary Address</label>
+                        <label
+                            class="text-sm mb-1">{{globalServ.showLabel('officeAddress')}}</label>
                         <textarea
                             class="form-control"
                             id="address1"
-                            placeholder="Enter Primary Address"
+                            placeholder="{{globalServ.showPlaceholder('primaryAdd')}}"
                             [formControl]="locationForm.controls.address1"></textarea>
                     </div>
                 </div>
 
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="text-sm mb-1">Secondary
-                            Address</label>
+                        <label class="text-sm mb-1">
+                            {{globalServ.showLabel('officeSecAddr')}}</label>
                         <textarea
                             class="form-control"
                             id="address2"
-                            placeholder="Enter Primary Address"
+                            placeholder="{{globalServ.showPlaceholder('secoAdd')}}"
                             [formControl]="locationForm.controls.address2"></textarea>
                     </div>
                 </div>
 
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="text-sm mb-1">City</label>
+                        <label
+                            class="text-sm mb-1">{{globalServ.showLabel('officeCity')}}</label>
                         <input
                             class="form-control"
                             id="City"
-                            placeholder="Enter City"
+                            placeholder="{{globalServ.showPlaceholder('enterCity')}}"
                             [formControl]="locationForm.controls.city">
                     </div>
                 </div>
 
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="text-sm mb-1">State</label>
+                        <label
+                            class="text-sm mb-1">{{globalServ.showLabel('officeState')}}</label>
                         <ng-select
                             [items]="stateNames"
                             bindLabel="state"
                             bindValue="state"
                             [multiple]="false"
-                            placeholder="Select State"
+                            placeholder="{{globalServ.showPlaceholder('selectState')}}"
                             style="
                       width: 100%;
-                      margin-left: calc(var(--mo-border-width) * -1);
-                      border-top-left-radius: 0;
-                      border-bottom-left-radius: 0;
-                    "
+                      margin-left: calc(var(--mo-border-width) * -1);"
                             class="ngSelectform"
                             [formControl]="locationForm.controls.state">
                         </ng-select>
@@ -111,17 +114,16 @@
 
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="text-sm mb-1">Country</label>
+                        <label
+                            class="text-sm mb-1">{{globalServ.showLabel('officeCountry')}}</label>
                         <ng-select
                             [items]="countryNames"
                             bindLabel="country"
                             bindValue="country"
                             [multiple]="false"
-                            placeholder="Select State"
+                            placeholder="{{globalServ.showPlaceholder('selectCountry')}}"
                             (change)="getStatesForThatCmp(locationForm.controls.country.value)"
-                            style=" width: 100%; margin-left: calc(var(--mo-border-width) * -1);
-                             border-top-left-radius: 0;
-                             border-bottom-left-radius: 0;"
+                            style=" width: 100%; margin-left: calc(var(--mo-border-width) * -1);"
                             class="ngSelectform"
                             [formControl]="locationForm.controls.country">
                         </ng-select>
@@ -137,9 +139,8 @@
                             id="isDefault"
                             (change)="checkDefault()"
                             [formControl]="locationForm.controls.isDefault" />
-                        <label for="isDefault">Do you want to make this Location
-                            as
-                            Default ?</label>
+                        <label
+                            for="isDefault">{{globalServ.showLabel('defaultLoc')}}</label>
                     </div>
                 </div>
 
@@ -151,7 +152,7 @@
                             value
                             id="isActive"
                             [formControl]="locationForm.controls.isActive" />
-                        <label>Active</label>
+                        <label>{{globalServ.getGlobalNames('active')}}</label>
                     </div>
                 </div>
             </section>
@@ -162,8 +163,10 @@
                 id="cancel_Office"
                 (click)="cancel()"
                 class="btn delete-btn me-1">
-                <span *ngIf="view"> Close</span>
-                <span [hidden]="view ">Cancel</span>
+                <span *ngIf="view">
+                    {{globalServ.getGlobalNames('close')}}</span>
+                <span
+                    [hidden]="view ">{{globalServ.getGlobalNames('cancel')}}</span>
             </button>
             <button
                 id="create_Office"
@@ -171,7 +174,7 @@
                 [hidden]="view || update "
                 (click)="create()"
                 class="btn add-btn  ">
-                Create
+                {{globalServ.getGlobalNames('create')}}
             </button>
             <button
                 id="update_Office"
@@ -179,7 +182,7 @@
                 *ngIf="update"
                 (click)="Update()"
                 class="btn add-btn  ">
-                Update
+                {{globalServ.getGlobalNames('update')}}
             </button>
         </div>
     </div>

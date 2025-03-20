@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { UtilService } from 'src/app/services/util.service';
 
@@ -22,6 +23,7 @@ export class SalarycmpComponent implements OnInit {
     private httpGet: HttpGetService,
     private utilServ: UtilService,
     private acRoute: ActivatedRoute,
+    public globalServ: GlobalvariablesService,
     private spinner: NgxSpinnerService
   ) {
     this.config = {
@@ -55,6 +57,8 @@ export class SalarycmpComponent implements OnInit {
       this.getsalaryCmpMaster();
 
     }
+    this.globalServ.getMyCompLabels('salaryComponent');
+    this.globalServ.getMyCompPlaceHolders('salaryComponent');
   }
   getsalaryCmpMaster() {
     this.spinner.show();

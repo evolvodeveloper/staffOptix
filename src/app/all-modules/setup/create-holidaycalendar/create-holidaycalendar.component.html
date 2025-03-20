@@ -1,76 +1,107 @@
-<div class="modal fade modal-right" style="padding-right: 17px; display: none;" [ngClass]="{'show':open1}"
+<div class="modal fade modal-right" style="padding-right: 17px; display: none;"
+    [ngClass]="{'show':open1}"
     [ngStyle]="open1 && {'display': 'block'}">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title"> {{view ? 'View' : update ? 'Update' : 'Create'}} Holiday Calendar </h1>
-                <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+                <h1 class="modal-title"> {{ view ?
+                    globalServ.getGlobalNames('view') : (update ?
+                    globalServ.getGlobalNames('update')
+                    :globalServ.getGlobalNames('create')) }}
+                    {{globalServ.showLabel('hcHeader')}}</h1>
+                <button type="button" class="btn-close" (click)="closeModal()"
+                    aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-12">
                         <form [formGroup]="holidayCalendarForm" novalidate>
                             <div class="form-group input">
-                                <label class="mb-1 text-sm" id="holidayCalendarCode">Holiday Calendar&nbsp;<span style="color: red; margin-left: 1px">*</span></label>
-                                <select class="form-select" id="holidayCalendarCode"
+                                <label class="mb-1 text-sm"
+                                    id="holidayCalendarCode">{{globalServ.showLabel('hcHeader')}}&nbsp;<span
+                                        style="color: red; margin-left: 1px">*</span></label>
+                                <select class="form-select"
+                                    id="holidayCalendarCode"
                                     [formControl]="holidayCalendarForm.controls.holidayCalendarCode">
-                                   <option value="" selected disabled>Select calendar</option>
-                                    <option *ngFor="let pc of parentCalendars" [value]="pc.calendarCode">
+                                    <option value selected
+                                        disabled>{{globalServ.showLabel('selectCalendar')}}</option>
+                                    <option *ngFor="let pc of parentCalendars"
+                                        [value]="pc.calendarCode">
                                         {{pc.calendarCode}}
                                     </option>
                                 </select>
-                                <div id="holidayCalendarCode" *ngIf="
+                                <div class="mt-2" id="holidayCalendarCode" *ngIf="
                                 holidayCalendarForm.controls['holidayCalendarCode'].invalid &&
                                     (holidayCalendarForm.controls['holidayCalendarCode'].dirty ||
                                     holidayCalendarForm.controls['holidayCalendarCode'].touched)
                                     " style="padding: 0px">
-                                    <div *ngIf="holidayCalendarForm.controls['holidayCalendarCode'].errors.required"
+                                    <div
+                                        *ngIf="holidayCalendarForm.controls['holidayCalendarCode'].errors.required"
                                         style="color: #dc3545">
-                                        Holiday is required.
+                                        {{globalServ.showLabel('hcHeader')}}
+                                        {{globalServ.showGlobalErrors('required')}}
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group input mt-2">
-                                <label class="mb-1 text-sm" id="dateCode">Date&nbsp;<span style="color: red; margin-left: 1px">*</span></label>
-                                <input class="form-control" id="dateCode" type="date" placeholder="Date"
+                                <label class="mb-1 text-sm"
+                                    id="dateCode">{{globalServ.getGlobalNames('date')}}&nbsp;<span
+                                        style="color: red; margin-left: 1px">*</span></label>
+                                <input class="form-control" id="dateCode"
+                                    type="date" placeholder="Date"
                                     [formControl]="holidayCalendarForm.controls.dateCode"
-                                    (change)="onHolidayCalendarCodeChange()" 
-                                    placeholder="Enter HolidayCalendar Code" />
-                                <div id="dateCode" *ngIf="holidayCalendarForm.controls['dateCode'].invalid && (holidayCalendarForm.controls['dateCode'].dirty ||
-                             holidayCalendarForm.controls['dateCode'].touched)" style="padding: 0px">
-                                    <div *ngIf="holidayCalendarForm.controls['dateCode'].errors.required"
+                                    (change)="onHolidayCalendarCodeChange()" />
+                                <div class="mt-2" id="dateCode"
+                                    *ngIf="holidayCalendarForm.controls['dateCode'].invalid && (holidayCalendarForm.controls['dateCode'].dirty ||
+                             holidayCalendarForm.controls['dateCode'].touched)"
+                                    style="padding: 0px">
+                                    <div
+                                        *ngIf="holidayCalendarForm.controls['dateCode'].errors.required"
                                         style="color: #dc3545">
-                                        Date is required.
+                                        {{globalServ.getGlobalNames('date')}}
+                                        {{globalServ.showGlobalErrors('required')}}
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group input mt-2">
-                                <label class="mb-1 text-sm">Year&nbsp;<span style="color: red; margin-left: 1px">*</span></label>
-                                <input class="form-control" id="yearCode" [readOnly]="true" placeholder="Select Year"
+                                <label
+                                    class="mb-1 text-sm">{{globalServ.showLabel('year')}}&nbsp;<span
+                                        style="color: red; margin-left: 1px">*</span></label>
+                                <input class="form-control" id="yearCode"
+                                    [readOnly]="true" placeholder="Select Year"
                                     [formControl]="holidayCalendarForm.controls.yearCode" />
-                                <div id="yearCode" *ngIf="
+                                <div class="mt-2" id="yearCode" *ngIf="
                                 holidayCalendarForm.controls['yearCode'].invalid &&
                                     (holidayCalendarForm.controls['yearCode'].dirty ||
                                     holidayCalendarForm.controls['yearCode'].touched)
                                 " style="padding: 0px">
-                                    <div id="yearCode" *ngIf="holidayCalendarForm.controls['yearCode'].errors.required"
+                                    <div id="yearCode"
+                                        *ngIf="holidayCalendarForm.controls['yearCode'].errors.required"
                                         style="color: #dc3545">
-                                        Year is required.
+                                        {{globalServ.showLabel('year')}}
+                                        {{globalServ.showGlobalErrors('required')}}
                                     </div>
                                 </div>
                             </div>
 
                             <div class="form-group input mt-2">
 
-                                <label class="mb-1 text-sm" id="description">Description&nbsp;<span style="color: red; margin-left: 1px">*</span></label>
-                                <input class="form-control" id="description" placeholder="Description"
+                                <label class="mb-1 text-sm"
+                                    id="description">{{globalServ.showLabel('hcDescription')}}&nbsp;<span
+                                        style="color: red; margin-left: 1px">*</span></label>
+                                <input class="form-control" id="description"
+                                    placeholder="{{globalServ.showGlobalplaceholders('enterDesc')}}"
                                     [formControl]="holidayCalendarForm.controls.description" />
-                                <div id="description" *ngIf="holidayCalendarForm.controls['description'].invalid &&
+                                <div class="mt-2" id="description"
+                                    *ngIf="holidayCalendarForm.controls['description'].invalid &&
                                         (holidayCalendarForm.controls['description'].dirty ||
-                                            holidayCalendarForm.controls['description'].touched)" style="padding: 0px">
-                                    <div *ngIf="holidayCalendarForm.controls['description'].errors.required"
+                                            holidayCalendarForm.controls['description'].touched)"
+                                    style="padding: 0px">
+                                    <div
+                                        *ngIf="holidayCalendarForm.controls['description'].errors.required"
                                         style="color: #dc3545">
-                                        Description is required.
+                                        {{globalServ.showLabel('hcDescription')}}
+                                        {{globalServ.showGlobalErrors('required')}}
                                     </div>
                                 </div>
 
@@ -79,23 +110,34 @@
                                 [formControl]="holidayCalendarForm.controls.isOptional">
                                 <small> Is Optional</small>
                             </mat-slide-toggle> -->
-                            
-            <div class="mb-3 form-check">
-                    <input class="form-check-input"  id="isActive" color="primary" type="checkbox" [formControl]="holidayCalendarForm.controls.isOptional">
-                    <label class="form-check-label"> Is  Optional</label>
-                </div>
+
+                            <div class="mb-3 form-check">
+                                <input class="form-check-input" id="isActive"
+                                    color="primary" type="checkbox"
+                                    [formControl]="holidayCalendarForm.controls.isOptional">
+                                <label class="form-check-label">
+                                    {{globalServ.getGlobalNames('isOptional')}}
+                                </label>
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn delete-btn" (click)="closeModal()">Cancel</button>
-                <button [disabled]="holidayCalendarForm.pristine || holidayCalendarForm.invalid"
-                    [hidden]="view || update" (click)="create()" class="btn add-btn ">
-                    Create
+                <button type="button" class="btn delete-btn"
+                    (click)="closeModal()">
+                    {{globalServ.getGlobalNames('cancel')}}
                 </button>
-                <button *ngIf="update"  [disabled]="holidayCalendarForm.pristine || holidayCalendarForm.invalid" (click)="Update()" class="btn add-btn ">
-                    Update
+                <button
+                    [disabled]="holidayCalendarForm.pristine || holidayCalendarForm.invalid"
+                    [hidden]="view || update" (click)="create()"
+                    class="btn add-btn ">
+                    {{globalServ.getGlobalNames('create')}}
+                </button>
+                <button *ngIf="update"
+                    [disabled]="holidayCalendarForm.pristine || holidayCalendarForm.invalid"
+                    (click)="Update()" class="btn add-btn ">
+                    {{globalServ.getGlobalNames('update')}}
                 </button>
             </div>
         </div>

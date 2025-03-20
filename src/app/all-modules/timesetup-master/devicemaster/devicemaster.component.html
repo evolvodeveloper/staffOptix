@@ -4,14 +4,14 @@
             <div class="col d-flex align-items-baseline">
                 <i style="font-size:20px"
                     class="fa fa-arrow-left" (click)="back()"
-                    aria-label="back"></i> <h3 class="page-title ms-4"> Device
-                    List</h3>
+                    aria-label="back"></i> <h3 class="page-title ms-4">
+                    {{globalServ.showLabel('devListHeader')}}</h3>
             </div>
             <div class="col-auto float-right ml-auto">
                 <a class="btn add-btn" data-bs-target="#add_device"
                     *ngIf="hasPermissionToUpdate"
-                    data-bs-toggle="modal"><i class="fa fa-plus"></i> Add
-                    Device</a>
+                    data-bs-toggle="modal"><i class="fa fa-plus"></i>
+                    {{globalServ.showLabel('addDevice')}}</a>
             </div>
         </div>
     </div>
@@ -23,14 +23,19 @@
                     class="table table-hover custom-table mb-0 datatable">
                     <thead class="thead-all">
                         <tr class="tr-th-all">
-                            <th>Device</th>
-                            <th>Device Type </th>
-                            <th>Captures </th>
-                            <th class="text-center">Use For Attendance </th>
-                            <th class="text-center">Has Biometric</th>
-                            <th class="text-center">Has Facial</th>
-                            <th class="text-center">Active</th>
-                            <th class="text-center">Action</th>
+                            <th>{{globalServ.getGlobalNames('device')}}</th>
+                            <th>{{globalServ.showLabel('deviceType')}} </th>
+                            <th>{{globalServ.showLabel('capture')}} </th>
+                            <th class="text-center">
+                                {{globalServ.showLabel('attendance')}}</th>
+                            <th
+                                class="text-center">{{globalServ.showLabel('biometric')}}</th>
+                            <th
+                                class="text-center">{{globalServ.showLabel('facial')}}</th>
+                            <th
+                                class="text-center">{{globalServ.getGlobalNames('active')}}</th>
+                            <th
+                                class="text-center">{{globalServ.getGlobalNames('action')}}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -115,11 +120,13 @@
 </div>
 <!-- /Page Content -->
 
-<div id="add_device" class="modal custom-modal fade" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+<div id="add_device" class="modal custom-modal fade" role="dialog"
+    data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add Device</h5>
+                <h5
+                    class="modal-title">{{globalServ.showLabel('addDevice')}}</h5>
                 <button type="button" class="close" data-dismiss="modal"
                     data-bs-dismiss="modal" aria-label="Close" (click)="cancel()">
                     <span aria-hidden="true">&times;</span>
@@ -128,62 +135,64 @@
             <div class="modal-body">
                 <form [formGroup]="deviceMasterForm">
                     <div class="form-group">
-                        <label>Device Id&nbsp;<span
+                        <label>{{globalServ.getGlobalNames('DeviceId')}}&nbsp;<span
                                 class="text-danger">*</span></label>
                         <input class="form-control" type="text"
                             id="deviceId"
                             formControlName="deviceId">
-                        <div
+                        <div class="mt-2"
                             *ngIf="deviceMasterForm.get('deviceId').invalid &&(deviceMasterForm.controls['deviceId'].dirty  || deviceMasterForm.get('deviceId').touched)">
                             <small id="deviceSerial"
                                 *ngIf="deviceMasterForm.get('deviceId').invalid && (deviceMasterForm.controls['deviceId'].dirty  ||deviceMasterForm.get('deviceId').touched)"
-                                class="text-danger"> Device Id is
-                                required</small>
+                                class="text-danger">
+                                {{globalServ.getGlobalNames('DeviceId')}}
+                                {{globalServ.showGlobalErrors('required')}}</small>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Device Serial Number&nbsp;<span
+                        <label>{{globalServ.showLabel('deviceSno')}}&nbsp;<span
                                 class="text-danger">*</span></label>
                         <input class="form-control" type="text"
                             id="deviceSerial"
                             formControlName="deviceSerial">
-                        <div
+                        <div class="mt-2"
                             *ngIf="deviceMasterForm.get('deviceSerial').invalid && (deviceMasterForm.controls['deviceSerial'].dirty  || deviceMasterForm.get('deviceSerial').touched)">
                             <small id="deviceSerial"
                                 *ngIf="deviceMasterForm.get('deviceSerial').invalid && (deviceMasterForm.controls['deviceSerial'].dirty  || deviceMasterForm.get('deviceSerial').touched)"
-                                class="text-danger"> serial number is
-                                required</small>
+                                class="text-danger">
+                                {{globalServ.showLabel('deviceSno')}}
+                                {{globalServ.showGlobalErrors('required')}}</small>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Device Type&nbsp;<span
+                        <label>{{globalServ.showLabel('deviceType')}}&nbsp;<span
                                 class="text-danger">*</span></label>
                         <select
                             class="form-select"
                             id="deviceType"
                             [formControl]="deviceMasterForm.controls.deviceType">
-                            <option selected disabled>Select Type</option>
+                            <option selected disabled>-</option>
                             <option [value]="p"
                                 *ngFor="let p of deviceTypes">
                                 {{ p }}
                             </option>
                         </select>
-                        <div
+                        <div class="mt-2"
                             *ngIf="deviceMasterForm.get('deviceType').invalid && (deviceMasterForm.controls['deviceType'].dirty  || deviceMasterForm.get('deviceType').touched)">
                             <small id="deviceType"
                                 *ngIf="deviceMasterForm.get('deviceType').invalid && (deviceMasterForm.controls['deviceType'].dirty  || deviceMasterForm.get('deviceType').touched)"
-                                class="text-danger"> Device type is
-                                required</small>
+                                class="text-danger">{{globalServ.showLabel('deviceType')}}
+                                {{globalServ.showGlobalErrors('required')}}</small>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Captures</label>
+                        <label>{{globalServ.showLabel('capture')}}</label>
                         <select
                             class="form-select"
                             id="captures"
                             [formControl]="deviceMasterForm.controls.captures">
-                            <option selected disabled>Select Captures</option>
+                            <option selected disabled>-</option>
                             <option [value]="c"
                                 *ngFor="let c of captures">
                                 {{ c }}
@@ -191,19 +200,19 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Secret Key</label>
+                        <label>{{globalServ.showLabel('secretKey')}}</label>
                         <input class="form-control" type="text"
                             id="secretKey"
                             formControlName="secretKey">
                     </div>
 
                     <div class="form-group">
-                        <label>Device Location</label>
+                        <label>{{globalServ.showLabel('deviceLocation')}}</label>
                         <select
                             class="form-select"
                             id="captures"
                             [formControl]="deviceMasterForm.controls.deviceLocCode">
-                            <option selected disabled>Select Location</option>
+                            <option selected disabled>-</option>
                             <option [value]="c.deviceLocCode"
                                 *ngFor="let c of deviceLoc">
                                 {{ c.deviceLocCode }}
@@ -217,8 +226,7 @@
                                 formControlName="isactive"
                                 color="primary" type="checkbox">
                             <label class="form-check-label">
-                                Is Active
-                            </label>
+                                {{globalServ.getGlobalNames('active')}} </label>
                         </div>
                     </div>
 
@@ -228,15 +236,19 @@
                             type="button"
                             class="btn delete-btn"
                             data-bs-dismiss="modal"
-                            aria-label="Close" (click)="cancel()">Cancel</button>
+                            aria-label="Close"
+                            (click)="cancel()">{{globalServ.getGlobalNames('cancel')}}
+                        </button>
                         <button id="submit_deviceMasterForm" *ngIf="!update"
                             class="btn add-btn"
                             [disabled]="deviceMasterForm.invalid"
-                            (click)="submit()" type="submit">Submit</button>
+                            (click)="submit()" type="submit">
+                            {{globalServ.getGlobalNames('submit')}} </button>
                         <button id="submit_leavePlanForm" *ngIf="update"
                             class="btn add-btn"
                             [disabled]="deviceMasterForm.pristine"
-                            (click)="Update()" type="submit">Update</button>
+                            (click)="Update()" type="submit">
+                            {{globalServ.getGlobalNames('update')}} </button>
                     </div>
                     <div class="text-center mt-1" *ngIf="view">
                         <button
@@ -244,7 +256,8 @@
                             type="button"
                             class=" btn delete-btn"
                             data-bs-dismiss="modal"
-                            aria-label="Close" (click)="cancel()" >Close</button>
+                            aria-label="Close"
+                            (click)="cancel()">{{globalServ.getGlobalNames('close')}}</button>
                     </div>
 
                 </form>

@@ -18,7 +18,7 @@
             type="text"
             id="filter"
             class="form-control"
-            placeholder="search by role"
+            placeholder="{{globalServ.showGlobalplaceholders('search')}}"
             (keyup)="updateFilter($event)"
             style="border-radius: 8px 0px 0px 8px" />
           <span class="input-group-text" id="basic-addon1">
@@ -155,16 +155,17 @@
           <!-- <div class="form-floating"> -->
           <div class="form-group input">
             <label class="mb-1 text-sm">
-              Role Code&nbsp;<span
+              {{globalServ.showLabel('roleCode')}}&nbsp;<span
                 style="color: red; margin-left: 1px">*</span></label>
             <input
               class="form-control"
               id="roleCode"
+              appCaseSensitive
               maxlength="{{ charLimit }}"
               [(ngModel)]="roleCode"
               [formControl]="roleForm.controls.roleCode"
-              placeholder="Enter Role Code" />
-            <div
+              placeholder="{{globalServ.showPlaceholder('eroleCode')}}" />
+            <div class="mt-2"
               *ngIf="
                   roleForm.controls['roleCode'].invalid &&
                   (roleForm.controls['roleCode'].dirty ||
@@ -174,19 +175,18 @@
               <div
                 *ngIf="roleForm.controls['roleCode'].errors.required"
                 style="color: #dc3545">
-                Role Code is required.
+                {{globalServ.showLabel('roleCode')}}
+                {{globalServ.showGlobalErrors('required')}}
               </div>
             </div>
             <div
-              *ngIf="roleForm.get('roleCode').hasError('invalidFormat')"
-              style="color: #dc3545">field should not contain special
-              characters</div>
-            <div
               *ngIf="roleForm.controls['roleCode'].value?.length > charLimit - 1"
-              style="color: #dc3545">Max
-              {{charLimit}}
-              Characters
+              style="color: #dc3545">{{globalServ.showGlobalErrors('max')}} {{
+              charLimit }} {{globalServ.showGlobalErrors('char')}}
             </div>
+            <div
+              *ngIf="roleForm.get('roleCode').hasError('invalidFormat')"
+              style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
           </div>
           <!-- </div> -->
 
@@ -196,7 +196,7 @@
               [formControl]="roleForm.controls.isactive"
               id="isactive"
               color="primary">
-             Active
+              {{globalServ.getGlobalNames('active')}}
             </mat-slide-toggle>
           </div>
         </form>
@@ -212,7 +212,7 @@
           [disabled]="roleForm.invalid"
           [hidden]="view"
           (click)="saveChanges()">
-          Save changes
+          {{globalServ.getGlobalNames('save') }}
         </button>
       </div>
 

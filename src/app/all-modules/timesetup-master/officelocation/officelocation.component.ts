@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { UtilService } from 'src/app/services/util.service';
 
@@ -22,6 +23,7 @@ export class OfficelocationComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private utilServ: UtilService,
     private acRoute: ActivatedRoute,
+    public globalServ: GlobalvariablesService
 
   ) {
     this.config = {
@@ -34,6 +36,9 @@ export class OfficelocationComponent implements OnInit {
 
 
   ngOnInit() {
+      this.globalServ.getMyCompLabels('officeLocation');
+    this.globalServ.getMyCompPlaceHolders('officeLocation');
+    this.globalServ.getMyCompErrors('officeLocation');
     this.acRoute.data.subscribe(data => {
       const permission = data.condition
       this.hasPermissionToUpdate = permission.hasPermissionToUpdate
@@ -55,12 +60,16 @@ export class OfficelocationComponent implements OnInit {
     }
     else {
       this.getOfficeLocations();
+      
     }
     // this.acRoute.data.subscribe(data => {
     //   const permission = data.condition
     //   this.hasPermissionToUpdate = permission.hasPermissionToUpdate
     //   this.hasPermissionToApprove = permission.hasPermissionToApprove
     // });
+
+     
+      
 
   }
   getOfficeLocations() {
@@ -86,6 +95,7 @@ export class OfficelocationComponent implements OnInit {
         console.error(err.error.status.message);
       }
     )
+   
   }
 
   viewData(row) {

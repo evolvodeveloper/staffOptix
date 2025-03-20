@@ -8,7 +8,6 @@ import { HttpPostService } from 'src/app/services/http-post.service';
 import { HttpPutService } from 'src/app/services/http-put.service';
 import { UtilService } from 'src/app/services/util.service';
 import Swal from 'sweetalert2';
-
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: '[app-create-project]',
@@ -30,7 +29,6 @@ export class CreateProjectComponent implements OnInit, OnChanges, OnDestroy {
   rolesArrLen = [];
   empcategorys = [];
   userList: [];
-  labels : any ;
   active = false;
   charLimit: number;
   selectedPayrollEmployeecategory: any;
@@ -38,7 +36,6 @@ export class CreateProjectComponent implements OnInit, OnChanges, OnDestroy {
     { code: 'Fixed Cost', name: 'Fixed Cost' },
     { code: 'TnM', name: 'TnM' },
   ];
-  placeholder: any;
   roleTypes = [
     { id: '1', name: 'Owners' },
     { id: '2', name: 'Managers' },
@@ -55,7 +52,7 @@ export class CreateProjectComponent implements OnInit, OnChanges, OnDestroy {
     private spinner: NgxSpinnerService,
     private utilServ: UtilService,
     private httpGetService: HttpGetService,
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private httpGet: HttpGetService,
   ) { }
 
@@ -107,42 +104,11 @@ export class CreateProjectComponent implements OnInit, OnChanges, OnDestroy {
     this.open = false;
     this.selectedPayrollEmployeeCategoryEvent.emit();
   }
-  getLabelDescription(divId: string): string {
-    const label = this.labels?.find(item => item.colCode === divId);
-    return label ? label.labelDescription : '';
-  }
 
-  getPlaceholdersDescription(divId: string): string {
-    const pc = this.placeholder?.find(item => item.placeholderColCode === divId);
-    return pc ? pc.placeholderDescription : '';
-  }
 
-  getProjectMasterLabels() {
-    this.spinner.show();
-    this.globalServ.getLabels('projectMaster').subscribe((res: any) => {
-      this.labels = res.response;
-      this.spinner.hide();
-    }, (err) => {
-      this.spinner.hide();
-      console.error(err.error.status.message);
-    });
-  }
-  getProjectPlaceHolders() {
-    this.spinner.show();
-    this.globalServ.getPlaceholders('projectMaster').subscribe((res: any) => {
-      this.placeholder = res.response;
-      this.spinner.hide();
-    }, (err) => {
-      this.spinner.hide();
 
-      console.error(err.error.status.message);
-    });
-  }
   ngOnInit(): void {
-    // this.getProjectMasterLabels();
-    // this.getProjectPlaceHolders();
     this.getUsers();
-    // this.getLabels();
     this.projectForm = this.fb.group({
       categoryCode: [null, [Validators.required, this.httpPostService.customValidator()]],
       shortName: [null],
@@ -206,8 +172,6 @@ export class CreateProjectComponent implements OnInit, OnChanges, OnDestroy {
       this.view = false;
       this.update = true;
       this.projectForm.enable();
-
-
       this.utilServ.editData.accessDTOs.forEach((x) => {
         this.roleAccessArray.push({
           id: x.id,
@@ -245,14 +209,13 @@ export class CreateProjectComponent implements OnInit, OnChanges, OnDestroy {
         this.utilServ.editData.isactive
       );
       this.projectForm.controls.categoryCode.disable();
-
     }
   }
 
 
   getUsers() {
     this.httpGetService
-      .getMasterList('secUser/userName?userType=Employee')
+      .getMasterList('secUser/userName?userType=EMPLOYEE')
       .subscribe(
         (res: any) => {
           this.userList = res.response;
@@ -262,11 +225,9 @@ export class CreateProjectComponent implements OnInit, OnChanges, OnDestroy {
         }
       );
   }
-
   cancel() {
     this.router.navigateByUrl('setup/project');
   }
-
   createApi() {
     let proceed = false;
     this.roleAccessArray.forEach(x => {
@@ -276,61 +237,61 @@ export class CreateProjectComponent implements OnInit, OnChanges, OnDestroy {
       }
     })
     if (proceed) {
-    this.projectForm.get('categoryCode').setValue(this.globalServ.checkAndRemoveSpecialCharacters(this.projectForm.controls.categoryCode.value), { emitEvent: false });
-    this.spinner.show();
-    const obj = {
-      masterDTO: {
-        categoryCode: this.projectForm.controls.categoryCode.value,
-        shortName: this.projectForm.controls.shortName.value,
-        description: this.projectForm.controls.description.value,
-        projectType: this.projectForm.controls.projectType.value,
-        projectOwner: this.projectForm.controls.projectOwner.value,
-        isGlobal: false,
-        isVisible: true,
-        isactive:
-          this.projectForm.controls.isactive.value == null
-            ? false
-            : this.projectForm.controls.isactive.value,
-      },
-      accessDTOs: this.roleAccessArray,
-    };
-    this.httpPostService
-      .create('projwithaccess', JSON.stringify(obj))
-      .subscribe(
-        (res: any) => {
-          this.spinner.hide();
+      this.projectForm.get('categoryCode').setValue(this.globalServ.checkAndRemoveSpecialCharacters(this.projectForm.controls.categoryCode.value), { emitEvent: false });
+      this.spinner.show();
+      const obj = {
+        masterDTO: {
+          categoryCode: this.projectForm.controls.categoryCode.value,
+          shortName: this.projectForm.controls.shortName.value,
+          description: this.projectForm.controls.description.value,
+          projectType: this.projectForm.controls.projectType.value,
+          projectOwner: this.projectForm.controls.projectOwner.value,
+          isGlobal: false,
+          isVisible: true,
+          isactive:
+            this.projectForm.controls.isactive.value == null
+              ? false
+              : this.projectForm.controls.isactive.value,
+        },
+        accessDTOs: this.roleAccessArray,
+      };
+      this.httpPostService
+        .create('projwithaccess', JSON.stringify(obj))
+        .subscribe(
+          (res: any) => {
+            this.spinner.hide();
 
-          if (res.status.message == 'SUCCESS') {
-            Swal.fire({
-              title: 'Success!',
-              text: this.projectForm.controls.categoryCode.value + ' Created',
-              icon: 'success',
-              timer: 10000,
-            }).then(() => {
-              this.projectForm.reset();
-              this.utilServ.allProjects = [];
-              this.roleAccessArray = [];
-              this.projectForm.controls.isactive.setValue(true);
-              this.router.navigateByUrl('setup/project');
-            });
-          } else {
+            if (res.status.message == 'SUCCESS') {
+              Swal.fire({
+                title: 'Success!',
+                text: this.projectForm.controls.categoryCode.value + ' Created',
+                icon: 'success',
+                timer: 10000,
+              }).then(() => {
+                this.projectForm.reset();
+                this.utilServ.allProjects = [];
+                this.roleAccessArray = [];
+                this.projectForm.controls.isactive.setValue(true);
+                this.router.navigateByUrl('setup/project');
+              });
+            } else {
+              Swal.fire({
+                title: 'Error!',
+                text: res.status.message,
+                icon: 'warning', showConfirmButton: true,
+              });
+            }
+          },
+          (err) => {
+            console.error(err);
+            this.spinner.hide();
             Swal.fire({
               title: 'Error!',
-              text: res.status.message,
-              icon: 'warning', showConfirmButton: true,
+              text: err.error.status.message,
+              icon: 'error',
             });
           }
-        },
-        (err) => {
-          console.error(err);
-          this.spinner.hide();
-          Swal.fire({
-            title: 'Error!',
-            text: err.error.status.message,
-            icon: 'error',
-          });
-        }
-      );
+        );
     } else {
       Swal.fire({
         title: 'Error!',
@@ -348,68 +309,61 @@ export class CreateProjectComponent implements OnInit, OnChanges, OnDestroy {
       }
     })
     if (proceed) {
-    this.projectForm.get('categoryCode').setValue(this.globalServ.checkAndRemoveSpecialCharacters(this.projectForm.controls.categoryCode.value), { emitEvent: false });
-    this.spinner.show();
-
-    const obj = {
-
-      masterDTO: {
-        projectId: this.utilServ.editData.projectId,
-        categoryCode: this.projectForm.controls.categoryCode.value,
-        shortName: this.projectForm.controls.shortName.value,
-        description: this.projectForm.controls.description.value,
-        projectType: this.projectForm.controls.projectType.value,
-        projectOwner: this.projectForm.controls.projectOwner.value,
-        isGlobal: false,
-        isVisible: true,
-        isactive:
-          this.projectForm.controls.isactive.value == null
-            ? false
-            : this.projectForm.controls.isactive.value,
-        branchCode: this.utilServ.editData.branchCode,
-        companyCode: this.utilServ.editData.companyCode,
-        createdby: this.utilServ.editData.createdby,
-        createddate: this.utilServ.editData.createddate,
-      },
-
-      accessDTOs: this.roleAccessArray,
-
-
-    };
-
-    this.httpPostService
-      .create('projwithaccess', JSON.stringify(obj))
-      .subscribe((res: any) => {
-        this.spinner.hide();
-
-        if (res.status.message == 'SUCCESS') {
-          Swal.fire({
-            title: 'Success!',
-            text: this.projectForm.controls.categoryCode.value + ' Updated',
-            icon: 'success',
-            timer: 10000,
-          }).then(() => {
-            this.projectForm.reset();
-            this.utilServ.allProjects = [];
-            this.closeModal();
-          });
-        } else {
-          Swal.fire({
-            title: 'Error!',
-            text: res.status.message,
-            icon: 'warning',
-            showConfirmButton: true,
-          });
-        }
-      }, (err) => {
+      this.projectForm.get('categoryCode').setValue(this.globalServ.checkAndRemoveSpecialCharacters(this.projectForm.controls.categoryCode.value), { emitEvent: false });
+      this.spinner.show();
+      const obj = {
+        masterDTO: {
+          projectId: this.utilServ.editData.projectId,
+          categoryCode: this.projectForm.controls.categoryCode.value,
+          shortName: this.projectForm.controls.shortName.value,
+          description: this.projectForm.controls.description.value,
+          projectType: this.projectForm.controls.projectType.value,
+          projectOwner: this.projectForm.controls.projectOwner.value,
+          isGlobal: false,
+          isVisible: true,
+          isactive:
+            this.projectForm.controls.isactive.value == null
+              ? false
+              : this.projectForm.controls.isactive.value,
+          branchCode: this.utilServ.editData.branchCode,
+          companyCode: this.utilServ.editData.companyCode,
+          createdby: this.utilServ.editData.createdby,
+          createddate: this.utilServ.editData.createddate,
+        },
+        accessDTOs: this.roleAccessArray,
+      };
+      this.httpPostService
+        .create('projwithaccess', JSON.stringify(obj))
+        .subscribe((res: any) => {
+          this.spinner.hide();
+          if (res.status.message == 'SUCCESS') {
+            Swal.fire({
+              title: 'Success!',
+              text: this.projectForm.controls.categoryCode.value + ' Updated',
+              icon: 'success',
+              timer: 10000,
+            }).then(() => {
+              this.projectForm.reset();
+              this.utilServ.allProjects = [];
+              this.closeModal();
+            });
+          } else {
+            Swal.fire({
+              title: 'Error!',
+              text: res.status.message,
+              icon: 'warning',
+              showConfirmButton: true,
+            });
+          }
+        }, (err) => {
           console.error(err);
           Swal.fire({
             title: 'Error!',
             text: err.error.status.message,
             icon: 'error',
           });
-        this.spinner.hide();
-      });
+          this.spinner.hide();
+        });
     } else {
       Swal.fire({
         title: 'Error!',
@@ -470,16 +424,14 @@ export class CreateProjectComponent implements OnInit, OnChanges, OnDestroy {
       this.roleAccessArray.forEach((x) => {
         x.status =
           typeof x.REJECTED !== 'undefined' && x.REJECTED
-          ? 'delete'
-          : typeof x.status === 'undefined'
+            ? 'delete'
+            : typeof x.status === 'undefined'
               ? 'NEW'
               : x.status;
       });
     }
     this.rolesArrLen = this.roleAccessArray.filter(x => x.status !== 'delete' || !x.REJECTED);
   }
-
-
   ngOnDestroy() {
     this.update = false;
     this.view = false;

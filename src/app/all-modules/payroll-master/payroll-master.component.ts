@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { HttpPostService } from 'src/app/services/http-post.service';
 import { HttpPutService } from 'src/app/services/http-put.service';
@@ -33,6 +34,7 @@ export class PayrollMasterComponent implements OnInit {
     private acRoute: ActivatedRoute,
     private utilServ: UtilService,
     private formBuilder: FormBuilder,
+    public globalServ: GlobalvariablesService
   ) {
     this.config = {
       itemsPerPage: 25,
@@ -62,18 +64,19 @@ export class PayrollMasterComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.globalServ.getMyCompLabels('payrollMaster');
+    this.globalServ.getMyCompPlaceHolders('payrollMaster');
+    this.globalServ.getMyCompErrors('payrollMaster');
     this.acRoute.data.subscribe(data => {
       const permission = data.condition
       this.hasPermissionToUpdate = permission.hasPermissionToUpdate
       this.hasPermissionToApprove = permission.hasPermissionToApprove
     });
-
     this.getPayrollMaster();
 
   }
   back() {
-    this.router.navigateByUrl('/payrollsetup');
+    this.router.navigateByUrl('/dashboard');
   }
   updateFilter(event) {
     const val = event.target.value.toLowerCase();
@@ -91,6 +94,50 @@ export class PayrollMasterComponent implements OnInit {
       componentName: this.className,
       searchedText: this.searchedFor
     }
+  }
+
+  pageChanged(event) {
+    this.config.currentPage = event;
+  }
+
+  resultsPerPage(event) {
+    this.config.itemsPerPage =
+      event.target.value == 'all' ? this.temp.length : event.target.value;
+    this.config.currentPage = 1;
+  }
+
+
+  getPayrollMaster() {
+    const sortOrder = 'asc'
+    this.spinner.show();
+    this.httpGetService.getMasterList('payroll/all').subscribe(
+      (res: any) => {
+        const data = res.response.sort((a, b) => {
+          if (a.employeeCode < b.employeeCode) {
+            return sortOrder === 'asc' ? -1 : 1;
+          }
+          return 0;
+        });
+        data.forEach(element => {
+          element.fullName = `${element.employeeName}${element.lastName == null ? '' : ', ' + element.lastName}`
+        });
+        this.temp = data;
+        if (this.className == this.utilServ.universalSerchedData?.componentName) {
+          this.searchedFor = this.utilServ.universalSerchedData?.searchedText;
+        }
+        if (this.searchedFor !== '' && this.searchedFor !== undefined) {
+          const val = this.searchedFor.toLowerCase();
+          this.payrollMasterData = this.temp.filter(function (d) {
+            return d.employeeCode.toLowerCase().indexOf(val) !== -1 || d.employeeName.toLowerCase().indexOf(val) !== -1 || (d.aliasName ? d.aliasName?.toLowerCase().indexOf(val) !== -1 : '') || !val;
+          });
+        } else {
+          this.payrollMasterData = this.temp;
+        }
+        this.spinner.hide();
+      }, (err) => {
+        this.spinner.hide();
+        console.error(err.error.status.message);
+      });
   }
   approveEmployee(obj) {
     this.spinner.show();
@@ -126,42 +173,6 @@ export class PayrollMasterComponent implements OnInit {
           text: err.error.status.message,
           icon: 'error',
         });
-      });
-  }
-  pageChanged(event) {
-    this.config.currentPage = event;
-  }
-
-  resultsPerPage(event) {
-    this.config.itemsPerPage =
-      event.target.value == 'all' ? this.temp.length : event.target.value;
-    this.config.currentPage = 1;
-  }
-
-
-  getPayrollMaster() {
-    this.spinner.show();
-    this.httpGetService.getMasterList('payroll/all').subscribe(
-      (res: any) => {
-        res.response.forEach(element => {
-          element.fullName = `${element.employeeName}${element.lastName == null ? '' : ', ' + element.lastName}`
-        });
-        this.temp = res.response;
-        if (this.className == this.utilServ.universalSerchedData?.componentName) {
-          this.searchedFor = this.utilServ.universalSerchedData?.searchedText;
-        }
-        if (this.searchedFor !== '' && this.searchedFor !== undefined) {
-          const val = this.searchedFor.toLowerCase();
-          this.payrollMasterData = this.temp.filter(function (d) {
-            return d.employeeName.toLowerCase().indexOf(val) !== -1 || !val;
-          });
-        } else {
-          this.payrollMasterData = this.temp;
-        }
-        this.spinner.hide();
-      }, (err) => {
-        this.spinner.hide();
-        console.error(err.error.status.message);
       });
   }
 }

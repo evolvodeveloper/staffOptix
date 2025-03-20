@@ -2,12 +2,11 @@
   <div class="row align-items-center">
     <div class="col-sm-12 col-lg-8">
       <div class="d-flex align-items-baseline">
-        <i
-          style="font-size: 20px"
+        <i style="font-size: 20px"
           class="fa fa-arrow-left"
           routerLink="/dashboard"
           aria-label="back"></i>
-        <h3 class="ms-4 page-title">Leave History</h3>
+        <h3 class="ms-4 page-title">{{global.showLabel("LeaveHistoryHeader")}} </h3>
       </div>
     </div>
   </div>
@@ -20,7 +19,7 @@
         type="text"
         id="filter"
         class="form-control"
-        placeholder="search by leave type"
+          placeholder="{{global.showPlaceholder('leaveType')}}"
         [(ngModel)]="searchedFor"
         (keyup)="updateFilter($event)"
         style="
@@ -32,7 +31,7 @@
         *ngIf="secondTab"
         type="text"
         class="form-control"
-        placeholder="search by employee/leave type"
+          placeholder="{{global.showPlaceholder('empLeaveType')}}"
         [(ngModel)]="searchedForunApproved"
         (keyup)="updateFilter1($event)"
         style="
@@ -44,7 +43,7 @@
         *ngIf="thirdTab"
         type="text"
         class="form-control"
-        placeholder="search by leave type"
+          placeholder="{{global.showPlaceholder('leaveType')}}"
         [(ngModel)]="searchedInBalance"
         (keyup)="updateFilter2($event)"
         style="
@@ -61,11 +60,10 @@
 
   <div class="col-lg-2 col-md-6 col-sm-12" *ngIf="firstTab || secondTab ">
     <mat-form-field appearance="outline">
-      <mat-label>Month and Year</mat-label>
+      <mat-label>{{global.getGlobalNames('montNdYear')}}</mat-label>
       <input
         matInput
         [matDatepicker]="dp"
-        [min]="minDate"
         [max]="maxDate"
         [(ngModel)]="date" />
       <mat-datepicker-toggle
@@ -83,11 +81,11 @@
 
   <div class="col-sm-6 col-md-6 col-lg-5">
     <a class="btn add-btn" (click)="applyLeave('', '')" *ngIf="this.userProfile"><i class="fa fa-plus"></i>
-      Apply Leave
+      {{global.showLabel('ApplyLeave')}}
     </a>
   </div>
   <div class="col-sm-6 col-md-6 col-lg-2 mt-30px">
-    <label class="form-label">Records/page</label>
+    <label class="form-label"> {{global.getGlobalNames('ShowEntries')}}</label>
     <select class="form-select"   *ngIf="firstTab" (change)="resultsPerPage($event)">
       <!-- <option value="10">10</option> -->
       <option value="25">25</option>
@@ -95,14 +93,14 @@
       <option value="100">100</option>
       <option value="all">All</option>
     </select>
-        <select class="form-select"    *ngIf="secondTab" (change)="resultsPerPage1($event)">
+        <select class="form-select"    *ngIf="secondTab" (change)="resultsPerPage($event)">
       <!-- <option value="10">10</option> -->
       <option value="25">25</option>
       <option value="50">50</option>
       <option value="100">100</option>
       <option value="all">All</option>
     </select>
-        <select class="form-select"   *ngIf="thirdTab" (change)="resultsPerPage2($event)">
+        <select class="form-select"   *ngIf="thirdTab" (change)="resultsPerPage($event)">
       <!-- <option value="10">10</option> -->
       <option value="25">25</option>
       <option value="50">50</option>
@@ -124,7 +122,7 @@
         role="tab"
         aria-controls="pills-history"
         aria-selected="true">
-        Applied Leave
+          {{global.showLabel("AppliedLeave")}}
       </button>
     </li>
     <li
@@ -142,7 +140,7 @@
         role="tab"
         aria-controls="pills-unapproved"
         aria-selected="false">
-        Unapproved Leaves
+        {{global.showLabel("UnapprovedLeaves")}}
       </button>
     </li>
     <li class="nav-item ms-2" role="presentation">
@@ -156,7 +154,7 @@
         role="tab"
         aria-controls="pills-balance"
         aria-selected="false">
-        Balance Leaves
+             {{global.showLabel("BalanceLeaves")}}
       </button>
     </li>
   </ul>
@@ -165,7 +163,6 @@
 
       <div class="tab-content" id="pills-tabContent">
         <!-- history tab starts -->
-
         <div
           class="tab-pane fade"  [ngClass]="{'show active':firstTab}"
           id="pills-history"
@@ -177,22 +174,22 @@
               class="table table-hover  small table-nowrap custom-table mb-0 datatable">
               <thead class="thead-all">
                 <tr class="tr-th-all">
-                  <th scope="col" class="text-center">Emp Code</th>
+                  <th scope="col" class="text-center"> {{global.getGlobalNames('empCode')}}</th>
                   <!-- <th scope="col" class="text-center">Emp Name</th> -->
-                  <th scope="col" class="text-center">From Date</th>
-                  <th scope="col" class="text-center">To Date</th>
-                  <th scope="col" class="text-center">Leave Type</th>
-                  <th scope="col" class="text-center">Num Leaves</th>
-                  <th scope="col" class="text-center">Status</th>
-                  <th scope="col" class="text-center">Approved</th>
+                  <th scope="col" class="text-center">{{global.getGlobalNames('fromDate')}}</th>
+                  <th scope="col" class="text-center">{{global.getGlobalNames('toDate')}}</th>
+                  <th scope="col" class="text-center"> {{global.getGlobalNames("LeaveType")}}</th>
+                  <th scope="col" class="text-center">{{global.showLabel("NumLeaves")}} </th>
+                  <th scope="col" class="text-center">{{global.getGlobalNames('status')}}</th>
+                  <th scope="col" class="text-center">{{global.getGlobalNames('approved')}}</th>
                   <!-- <th scope="col" class="text-center">canMixOtherLeave</th> -->
 
-                  <th scope="col" class="text-center">Action</th>
+                  <th scope="col" class="text-center">{{global.getGlobalNames('action')}}</th>
                 </tr>
               </thead>
               <tbody *ngIf="leaveHistory.length === 0">
                 <tr style="text-align: center; height: 150px">
-                  <td colspan="8"> "Kudos to Your Commitment: No Leaves Taken!"</td>
+                  <td colspan="8"> {{global.showLabel('noleavesTaken')}}</td>
                 </tr>
               </tbody>
               <tbody *ngIf="leaveHistory.length > 0">
@@ -234,7 +231,7 @@
                           ngbTooltip="View"
                           data-bs-toggle="tooltip"
                           data-bs-placement="top"
-                          title="To View leave"
+                          title="View"
                           (click)="applyLeave(row, 'view')">
                           <i class="fa-solid fa-eye"></i>
                         </button>
@@ -269,7 +266,7 @@
                           placement="top"
                           data-bs-toggle="tooltip"
                           data-bs-placement="top"
-                          title="To Cancel your leave"
+                          title="Cancel"
                           ngbTooltip="Withdraw my Leave"
                           (click)="cancel(row)">
                           <i class="fa-solid fa-trash"></i>
@@ -306,28 +303,28 @@
                 class="table table-hover small table-nowrap custom-table mb-0 datatable">
                 <thead class="thead-all">
                   <tr class="tr-th-all">
-                    <th scope="col" class="text-center">Emp Code</th>
-                    <th scope="col" class>Emp Name</th>
-                    <th scope="col" class="text-center">From Date</th>
-                    <th scope="col" class="text-center">To Date</th>
-                    <th scope="col">Leave Type</th>
-                    <th scope="col">Num Leaves</th>
-                    <th scope="col" class="text-center">Status</th>
+                    <th scope="col" class="text-center">{{global.getGlobalNames('empCode')}}</th>
+                    <th scope="col" class>{{global.getGlobalNames('empName')}}</th>
+                    <th scope="col" class="text-center">{{global.getGlobalNames('fromDate')}}</th>
+                    <th scope="col" class="text-center">{{global.getGlobalNames('toDate')}}</th>
+                    <th scope="col">{{global.getGlobalNames("LeaveType")}}</th>
+                    <th scope="col">{{global.showLabel("NumLeaves")}}</th>
+                    <th scope="col" class="text-center">{{global.getGlobalNames('status')}}</th>
                     <!-- <th scope="col" class="text-center">Approved</th> -->
                     <!-- <th scope="col" class="text-center">canMixOtherLeave</th> -->
 
-                    <th scope="col" class="text-center">Action</th>
+                    <th scope="col" class="text-center">{{global.getGlobalNames('action')}}</th>
                   </tr>
                 </thead>
                 <tbody *ngIf="unapprovedLeaves.length === 0">
                   <tr style="text-align: center; height: 150px">
-                    <td colspan="8">"Hooray! At present, there are no leave requests that require approval."</td>
+                    <td colspan="8">{{global.showLabel("noleavereq")}}</td>
                   </tr>
                 </tbody>
                 <tbody *ngIf="unapprovedLeaves.length > 0">
                   <ng-container
                     *ngFor="
-                      let row of unapprovedLeaves | paginate : config1;
+                      let row of unapprovedLeaves | paginate : config;
                       let i = index
                     ">
                     <tr class="dasboard-td">
@@ -352,7 +349,7 @@
                             ngbTooltip="View"
                             data-bs-toggle="tooltip"
                             data-bs-placement="top"
-                            title="To View there leave"
+                            title="View"
                             (click)="applyLeave(row, 'view')">
                             <i class="fa-solid fa-eye"></i>
                           </button>
@@ -369,7 +366,7 @@
                             ngbTooltip="Approve"
                             data-bs-toggle="tooltip"
                             data-bs-placement="top"
-                            title="To Approve the leave"
+                            title="Approve"
                             (click)="approveData(row)">
                             <i class="fa-solid fa-circle-check"></i>
                           </button>
@@ -385,7 +382,7 @@
                             placement="top"
                             data-bs-toggle="tooltip"
                             data-bs-placement="top"
-                            title="To Reject the leave"
+                            title="Reject"
                             (click)="reject(row)">
                             <i class="fa-solid fa-times"></i>
                           </button>
@@ -396,10 +393,10 @@
                 </tbody>
               </table>
               <div id="unapprovedLeavespagination"
-                *ngIf="secondTab && unapprovedLeaves.length > config1.itemsPerPage"
+                *ngIf="secondTab && unapprovedLeaves.length > config.itemsPerPage"
                 class="text-center mt-3">
                 <pagination-controls
-                  (pageChange)="pageChanged1($event)"></pagination-controls>
+                  (pageChange)="pageChanged($event)"></pagination-controls>
               </div>
             </div>
           </div>
@@ -419,11 +416,11 @@
                 class="table table-hover small table-nowrap custom-table mb-0 datatable">
                 <thead class="thead-all">
                   <tr class="tr-th-all">
-                    <th scope="col" class="text-center">Calendar Year</th>
-                    <th scope="col">Emp Code</th>
-                    <th scope="col" class>Leave Plan</th>
-                    <th scope="col">Leave Type</th>
-                    <th scope="col" class="text-center">Current Balance</th>
+                    <th scope="col" class="text-center">{{global.showLabel("CalendarYear")}} </th>
+                    <th scope="col">{{global.getGlobalNames('empCode')}}</th>
+                    <th scope="col" class>{{global.getGlobalNames("LeavePlan")}}</th>
+                    <th scope="col">{{global.getGlobalNames("LeaveType")}}</th>
+                    <th scope="col" class="text-center">{{global.showLabel("CurrentBalance")}}</th>
                     <!-- <th scope="col">Num Leaves</th>
                     <th scope="col" class="text-center">Status</th>
                     <th scope="col" class="text-center">Action</th> -->
@@ -431,13 +428,13 @@
                 </thead>
                 <tbody *ngIf="balanceLeaves.length === 0">
                   <tr style="text-align: center; height: 150px">
-                    <td colspan="5">"Oops! As of now, there are no available leave days for application or management has not granted any leave for you."</td>
+                    <td colspan="5"> {{global.showLabel("noBalLeaves")}}</td>
                   </tr>
                 </tbody>
                 <tbody *ngIf="balanceLeaves.length >0">
                   <ng-container
                     *ngFor="
-                      let row of balanceLeaves | paginate : config2;
+                      let row of balanceLeaves | paginate : config;
                       let i = index
                     ">
                     <tr class="dasboard-td">
@@ -503,10 +500,10 @@
                 </tbody>
               </table>
               <div id="balanceLeavespagination"
-                *ngIf="thirdTab && balanceLeaves.length > config2.itemsPerPage"
+                *ngIf="thirdTab && balanceLeaves.length > config.itemsPerPage"
                 class="text-center mt-3">
                 <pagination-controls
-                  (pageChange)="pageChanged2($event)"></pagination-controls>
+                  (pageChange)="pageChanged($event)"></pagination-controls>
               </div>
             </div>
           </div>

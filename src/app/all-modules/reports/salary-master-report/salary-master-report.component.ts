@@ -44,7 +44,7 @@ export class SalaryMasterReportComponent implements OnInit, AfterViewInit {
   constructor(
     private httpPostService: HttpPostService,
     private spinner: NgxSpinnerService,
-    private global: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private httpGetService: HttpGetService,
     private router: Router
   ) {
@@ -56,6 +56,8 @@ export class SalaryMasterReportComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.globalServ.getMyCompLabels('salaryMaster');
+    this.globalServ.getMyCompPlaceHolders('salaryMaster');
     this.getDepartments();
     this.getPayrollCodes();
     // this.getBranchList();
@@ -150,8 +152,7 @@ export class SalaryMasterReportComponent implements OnInit, AfterViewInit {
   submit(): void {
     this.spinner.show();
     this.config.currentPage = 1;
-    this.httpGetService.
-      getMasterList('reports/salCompMaster?payrollCode=' +
+    this.httpGetService.getMasterList('reports/salCompMaster?payrollCode=' +
         this.reportObj.payrollCode +
         '&empCode=' +
         this.reportObj.employeeCode +
@@ -206,17 +207,19 @@ export class SalaryMasterReportComponent implements OnInit, AfterViewInit {
       .subscribe((res: any) => {
         this.spinner.hide();
         const data: Blob = new Blob([res], { type: EXCEL_TYPE });
+        const fileName = 'salary_Master_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_');
         FileSaver.saveAs(
           data,
-          'salary_Details' + new Date().getTime() + EXCEL_EXTENSION
+          fileName + EXCEL_EXTENSION
         );
-        this.global.showSuccessPopUp('Excel', 'success');
+        this.globalServ.showSuccessPopUp('Excel', 'success', fileName);
       },
         err => {
           this.spinner.hide();
+          const error = err.error.status ? err.error.status.message : 'UNKNOWN ERROR OCCURRED'
           Swal.fire({
             title: 'Error!',
-            text: err.error.status.message,
+            text: error,
             icon: 'error',
           })
         });
@@ -224,29 +227,26 @@ export class SalaryMasterReportComponent implements OnInit, AfterViewInit {
 
   savePDF() {
     this.spinner.show();
-    // const obj = {
-    //   jasper_report_name: 'salaries_detail_report',
-    //   report_name: 'Salary Details Report',
-    //   company_code: JSON.parse(localStorage.getItem('user-data')).company,
-    //   category_code: this.reportObj.category,
-    //   branch_code: JSON.parse(localStorage.getItem('user-data')).branch,
-    //   payrollCode: this.reportObj.payrollCode,
-    //   employee_id: this.reportObj.employeeCode,
-    //   from_date: this.reportObj.from,
-    //   to_date: this.reportObj.to,
-    // };
-    // const data = new FormData();
-    // data.append('json', JSON.stringify(obj));
     this.httpGetService
       .getPdf('reports/salCompMaster/pdf?empCode=' + this.reportObj.employeeCode + '&payrollCode=' + this.reportObj.payrollCode + '&deptCode=' + this.reportObj.department)
       .subscribe((res: any) => {
         this.spinner.hide();
         const file = new Blob([res], { type: 'application/pdf' });
-        FileSaver.saveAs(file, 'Salary-Master-report' + new Date().getTime() + '.pdf');
-        this.global.showSuccessPopUp('Pdf', 'success');
+        const fileName = 'salary_Master_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_');
+        FileSaver.saveAs(file, fileName + '.pdf');
+        this.globalServ.showSuccessPopUp('Pdf', 'success', fileName);
         // const fileURL = URL.createObjectURL(file);
         // window.open(fileURL);
-      });
+      },
+        err => {
+          this.spinner.hide();
+          const error = err.error.status ? err.error.status.message : 'UNKNOWN ERROR OCCURRED'
+          Swal.fire({
+            title: 'Error!',
+            text: error,
+            icon: 'error',
+          })
+        });
   }
   expandRow(row: any): void {
     row.expand = true;

@@ -37,7 +37,7 @@ export class UserComponent implements OnInit {
   constructor(
     private router: Router,
     private httpGetService: HttpGetService,
-    private global: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private utilServ: UtilService,
     private acRoute: ActivatedRoute,
     private spinner: NgxSpinnerService,
@@ -54,6 +54,8 @@ export class UserComponent implements OnInit {
     this.ngOnInit();
   }
   ngOnInit(): void {
+    this.globalServ.getMyCompLabels('users');
+    this.globalServ.getMyCompPlaceHolders('users');
     this.acRoute.data.subscribe(data => {
       const permission = data.condition
       this.hasPermissionToUpdate = permission.hasPermissionToUpdate
@@ -80,7 +82,7 @@ export class UserComponent implements OnInit {
     this.spinner.show();
     this.httpGetService.getMasterList('secUsers').subscribe((res: any) => {
       const rows = res.response;
-      this.dateFormat = this.global.dateFormat;
+      this.dateFormat = this.globalServ.dateFormat;
       this.temp = [...rows];
       this.utilServ.secusersApiData = rows;
       this.spinner.hide();
@@ -142,7 +144,7 @@ export class UserComponent implements OnInit {
 
   create() {
     //this.router.navigateByUrl('settings/create-designation');
-    this.selectedUser = { type: 'NEW' };
+    this.selectedUser = { type: 'NEW', labels: this.globalServ.labels, placeholder: this.globalServ.placeholder };
   }
 
   back() {
@@ -153,12 +155,12 @@ export class UserComponent implements OnInit {
     //this.UtilServ.viewData = row;
     this.selectedUser = row;
     //this.router.navigateByUrl('settings/create-designation');
-    this.selectedUser = { type: 'VIEW', viewData: row };
+    this.selectedUser = { type: 'VIEW', viewData: row, labels: this.globalServ.labels, placeholder: this.globalServ.placeholder };
   }
   editData(row) {
     //this.UtilServ.editData = row;
     this.selectedUser = row;
     //this.router.navigateByUrl('settings/create-designation');
-    this.selectedUser = { type: 'EDIT', editData: row };
+    this.selectedUser = { type: 'EDIT', editData: row, labels: this.globalServ.labels, placeholder: this.globalServ.placeholder };
   }
 }

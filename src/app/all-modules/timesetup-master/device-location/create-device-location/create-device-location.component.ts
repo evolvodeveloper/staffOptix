@@ -31,7 +31,7 @@ export class CreateDeviceLocationComponent implements OnInit, OnDestroy {
     private httpGet: HttpGetService,
     private router: Router,
     private utilServ: UtilService,
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private spinner: NgxSpinnerService,
   ) { }
   ngOnInit() {

@@ -3,15 +3,15 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MAT_NATIVE_DATE_FORMATS } from '@angular/material/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import moment from 'moment';
 
+import moment from 'moment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { canLeaveComponent } from 'src/app/authentication/guards/unsaved-changes.guard';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { HttpPostService } from 'src/app/services/http-post.service';
 import { HttpPutService } from 'src/app/services/http-put.service';
 import Swal from 'sweetalert2';
-import { GlobalvariablesService } from '../../../services/globalvariables.service';
 export const MY_FORMATS = {
   parse: {
     dateInput: 'MM/YYYY',
@@ -84,6 +84,7 @@ export class ApplyLeaveComponent implements canLeaveComponent, AfterContentInit 
     private spinner: NgxSpinnerService,
     public globalServ: GlobalvariablesService,
     private fb: FormBuilder,
+    public global: GlobalvariablesService,
     // private matDatepicker: MatDatepicker<Date>,
     private httpPost: HttpPostService,
     private httpPut: HttpPutService,
@@ -197,9 +198,8 @@ export class ApplyLeaveComponent implements canLeaveComponent, AfterContentInit 
     // return window.confirm('Oops! you have unsaved changes on this page')
   }
 
-
-  ngAfterContentInit() {
-    this.checkConditions = this.globalServ.allowPersonToApplyLeaveBeyondLeaveBal === 'Y' ? false : true;
+  ngAfterContentInit() {   
+    this.checkConditions = this.globalServ.allowPersonToApplyLeaveBeyondLeaveBal === 'Y' ? true : false;
     this.view = this.userdata.action == 'view' ? true : false;
     this.update = this.userdata.action == 'edit' ? true : false;
     this.applyLeaveForm = this.fb.group({
@@ -443,7 +443,7 @@ export class ApplyLeaveComponent implements canLeaveComponent, AfterContentInit 
             element.applyCount = founded.currentBalance;
           }
           else {
-            if (this.checkConditions) {
+            if (!this.checkConditions) {
               element.disable = true;
               element.applyCount = 0;
             } else {
@@ -452,7 +452,7 @@ export class ApplyLeaveComponent implements canLeaveComponent, AfterContentInit 
             }
           }
         })
-        this.lTypes = lTypes;
+        this.lTypes = lTypes.filter(x => x.isVisible !== false);
       },
       (err) => {
         console.error(err.error);

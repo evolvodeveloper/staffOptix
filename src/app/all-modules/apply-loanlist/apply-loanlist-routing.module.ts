@@ -5,7 +5,9 @@ import { ApplyLoanlistComponent } from './apply-loanlist.component';
 
 const routes: Routes = [
   { path: '', component: ApplyLoanlistComponent },
-  { path: 'apply', component: ApplyLoanComponent },
+  {
+    path: 'apply', component: ApplyLoanComponent
+  },
 
 ];
 

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { UtilService } from 'src/app/services/util.service';
 import Swal from 'sweetalert2';
@@ -24,6 +25,7 @@ export class ProjectListComponent implements OnInit {
     private httpGetService: HttpGetService,
     private spinner: NgxSpinnerService,
     private utilServ: UtilService,
+    public globalServ: GlobalvariablesService,
     private acRoute: ActivatedRoute
   ) {
     this.config = {
@@ -44,7 +46,7 @@ export class ProjectListComponent implements OnInit {
       if (this.searchedFor !== '' && this.searchedFor !== undefined) {
         const val = this.searchedFor.toLowerCase();
         this.rows = this.utilServ.allProjects.filter(function (d) {
-          return d.categoryCode.toLowerCase().indexOf(val) !== -1 || !val;
+          return d.categoryCode?.toLowerCase().indexOf(val) !== -1 || !val;
         });
       }
       else {
@@ -53,6 +55,8 @@ export class ProjectListComponent implements OnInit {
     } else {
       this.getEmpCategories();
     }
+    this.globalServ.getMyCompLabels('projectMaster');
+    this.globalServ.getMyCompPlaceHolders('projectMaster');
   }
   getEmpCategories() {
     this.spinner.show();
@@ -64,7 +68,7 @@ export class ProjectListComponent implements OnInit {
         if (this.searchedFor !== '' && this.searchedFor !== undefined) {
           const val = this.searchedFor.toLowerCase();
           this.rows = res.response.filter(function (d) {
-            return d.categoryCode.toLowerCase().indexOf(val) !== -1 || !val;
+            return d.categoryCode?.toLowerCase().indexOf(val) !== -1 || !val;
           });
         }
         else {

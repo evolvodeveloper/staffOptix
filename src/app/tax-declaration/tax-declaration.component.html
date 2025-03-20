@@ -1,0 +1,880 @@
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col-sm-12 col-lg-10">
+            <div class="d-flex align-items-baseline">
+                <i
+                    style="font-size: 20px"
+                    class="fa fa-arrow-left"
+                    routerLink="/dashboard"
+                    aria-label="back"></i>
+                <h3 class="ms-4 page-title">Tax Declarations</h3>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <!-- <div class="col-md-2"> -->
+            <select class="form-select" [(ngModel)]="selectedFY"
+                (change)="getMonthsBetween(selectedFY)">
+                <option [value]="yr"
+                    *ngFor="let yr of financialYears">{{yr}}</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="p-3">
+    <div class>
+        <!-- <div
+            class="tab-pane fade show active"
+            id="pills-declaration"
+            role="tabpanel"
+            aria-labelledby="pills-declaration-tab"
+            tabindex="0"> -->
+        <section class="card p-4">
+            <span class="d-flex align-items-baseline "><i
+                    class="fa-solid fa-lightbulb me-2"></i>
+                Important!</span>
+            <ul>
+                <li>
+                    Your Income and tax liability is being computed as
+                    per <b> {{selectedPlan ? selectedPlan['name']: ''}}</b>. To
+                    lear more, and switch to other
+                    regime, <span class="text-primary"
+                        data-toggle="tooltip"
+                        data-bs-toggle="modal"
+                        data-bs-target="#taxRegime"><a
+                            style="cursor: pointer;">click
+                            here</a></span>
+                </li>
+                <li>'$' - Not consider for exemption if opted for New Tax
+                    Regime (section 115BAC)</li>
+                <li> You can declare your investements amounts till 22nd of
+                    every month untill the cutoff date of Jan 22, 2025</li>
+                <li>Last date for submitting your investment proofs is Feb
+                    22, 2025. </li>
+            </ul>
+            <div>
+                <span
+                    style="background-color: rgb(247 213 167); padding: 1%; border-radius: 5px;">
+                    Not submitting your investement proofs may lead to
+                    additional tax being deducted in the subsequent months
+                    of this fiscal year.
+                </span>
+            </div>
+        </section>
+        <div class="card p-3">
+            <div class="row ">
+                <div class="col-md">
+                    <p>Gross Taxable Income <i
+                            class=" ms-2 fa-solid fa-circle-info"
+                            matTooltip="Sum Of all the Components (A)"
+                            matTooltipPosition="above"></i>
+                        <span
+                            class="block">
+                            {{formattedTaxDetails?.totalGrossAmount}}
+                        </span></p>
+
+                </div>
+                <div class="col-md">
+                    <p>Total Deductions <i class=" ms-2 fa-solid fa-circle-info"
+                            matTooltip="Sum Of all the Approved Deductions (B)"
+                            matTooltipPosition="above"></i>
+                        <span
+                            class="block">
+                            {{formattedTaxDetails?.totalDeductionsAmount}}
+                        </span></p>
+                </div>
+                <div class="col-md">
+                    <p>Total Exemptions <i class=" ms-2 fa-solid fa-circle-info"
+                            matTooltip="Sum Of all the Approved Exemptions (C)"
+                            matTooltipPosition="above"></i>
+                        <span
+                            class="block">
+                            {{formattedTaxDetails?.totalExemptionsAmount}}</span></p>
+                </div>
+
+                <div class="col-md">
+                    <p>Standard Deduction <i
+                            class=" ms-2 fa-solid fa-circle-info"
+                            matTooltip="As per regime (D)"
+                            matTooltipPosition="above"></i>
+                        <span
+                            class="block">{{formattedTaxDetails?.standardDeduction}}
+                        </span></p>
+                </div>
+
+                <div class="col-md">
+                    <p>Net Taxable Income <i
+                            class=" ms-2 fa-solid fa-circle-info"
+                            matTooltip="A - (B + C + D)"
+                            matTooltipPosition="above"></i>
+                        <span
+                            class="block"> {{
+                            formattedTaxDetails?.totalTaxableAmount }}
+                        </span></p>
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col-md col-sm-6">
+                    <p>Gross Tax Payable
+                        <span
+                            class="block">{{ formattedTaxDetails?.TDSAmount
+                            }}</span></p>
+                </div>
+                <div class="col-md">
+                    <p>Total Cess
+                        <span class="block">
+                            {{ formattedTaxDetails?.cessAmount }}</span></p>
+                </div>
+                <div class="col-md">
+                    <p>Net Tax Payable
+                        <span class="block">
+                            {{formattedTaxDetails?.netTaxAmount }}</span></p>
+                </div>
+                <div class="col-md">
+                    <p>Tax Paid Till Now
+                        <span class="block">
+                            {{ formattedTaxDetails?.totalTaxAmountPaid }}</span></p>
+                </div>
+                <div class="col-md">
+                    <p>Remaining Tax To Be Paid
+                        <span class="block">
+                            {{ formattedTaxDetails?.totalTaxAmountToBePaid}}</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <!-- sub tabs in declaration -->
+
+            <div class="col-md-12">
+                <ul class="nav nav-pills mb-3" id="pills-tab"
+                    role="tablist">
+                    <li class="nav-item me-2" role="presentation"
+                        *ngFor="let section of taxDeductionsList | keyvalue">
+                        <button
+                            style="height: 40px; padding: revert"
+                            class="nav-link"
+                            [ngClass]="{'active': section.key === activeTab}"
+                            (click)="selectTab(section.key)"
+                            id="pills-{{section.key}}-tab" d
+                            data-bs-toggle="pill"
+                            [attr.data-bs-target]="'#pills-' + section.key"
+                            type="button"
+                            role="tab"
+                            [attr.aria-controls]="'pills-' + section.key"
+                            [attr.aria-selected]="section.key === activeTab">
+                            <div class="d-flex my-2 justify-content-center">
+                                {{ section.key }}
+                            </div>
+                        </button>
+                    </li>
+
+                    <li class="nav-item me-2" role="presentation"
+                        *ngFor="let section of taxExemptions | keyvalue">
+                        <button
+                            style="height: 40px; padding: revert"
+                            class="nav-link"
+                            [ngClass]="{'active': section.key === activeTab}"
+                            (click)="selectTab(section.key)"
+                            id="pills-{{section.key}}-tab"
+                            data-bs-toggle="pill"
+                            [attr.data-bs-target]="'#pills-' + section.key"
+                            type="button"
+                            role="tab"
+                            [attr.aria-controls]="'pills-' + section.key"
+                            [attr.aria-selected]="section.key === activeTab">
+                            <div class="d-flex my-2 justify-content-center">
+                                {{ section.key }}
+                            </div>
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="pills-tabContent">
+                    <div
+                        class="tab-pane fade"
+                        *ngFor="let section of taxDeductionsList | keyvalue"
+                        [ngClass]="{'show active': section.key === activeTab}"
+                        [attr.id]="'pills-' + section.key"
+                        role="tabpanel"
+                        [attr.aria-labelledby]="'pills-' + section.key + '-tab'"
+                        tabindex="0">
+                        <div class>
+                            <mat-accordion>
+                                <mat-expansion-panel
+                                    *ngFor="let deduction of section.value"
+                                    [expanded]="section.key === activeTab">
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                            <h5>{{ deduction.deductionGroupName
+                                                }}</h5>
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+
+                                    <table
+                                        class="table table-hover table-nowrap custom-table mb-0 datatable">
+                                        <thead class="thead-all">
+                                            <tr class="tr-th-all">
+                                                <th scope="col">
+                                                    Deduction Code</th>
+                                                <th scope="col">Deduction
+                                                    Name</th>
+                                                <th scope="col">Max
+                                                    Limit</th>
+                                                <th scope="col"
+                                                    class="text-end">Declaration</th>
+                                                <th scope="col"
+                                                    class="text-center">Proof</th>
+                                                <th scope="col"
+                                                    class="text-center">Status</th>
+                                                <th scope="col"
+                                                    class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="dashboard-td"
+                                                *ngFor="let taxDeduction of deduction.taxDeductions">
+                                                <td class="text-wrap">{{
+                                                    taxDeduction.deductionCode
+                                                    }}</td>
+                                                <td class="text-wrap">{{
+                                                    taxDeduction.deductionName
+                                                    }}</td>
+                                                <td>{{ taxDeduction.maxLimit
+                                                    }}</td>
+                                                <td class="text-end">
+                                                    <span
+                                                        *ngIf="!taxDeduction.Editrecord">{{taxDeduction.taxDeductionSubmittedAmount?
+                                                        taxDeduction.taxDeductionSubmittedAmount
+                                                        :'-' }}
+                                                    </span>
+                                                    <span
+                                                        *ngIf="taxDeduction.Editrecord"><input
+                                                            type="number"
+                                                            [(ngModel)]="taxDeduction.taxDeductionSubmittedAmount"
+                                                            [ngModelOptions]="{ standalone: true }"
+                                                            style="width: 120px; float: right;"
+                                                            class="form-control">
+                                                    </span>
+                                                </td>
+                                                <td class="text-center"
+                                                    style="width: 80px;">
+                                                    <span
+                                                        *ngIf="!taxDeduction.Editrecord && taxDeduction.file">
+                                                        <i
+                                                            class=" text-warning fa-solid fa-circle-check me-2"></i>
+                                                    </span>
+                                                    <span
+                                                        *ngIf="!taxDeduction.Editrecord && taxDeduction.file"
+                                                        data-bs-target="#taxImages"
+                                                        data-bs-toggle="modal"
+                                                        (click)="goingToOpenTheImgModel(taxDeduction, taxDeduction.deductionName,'Tax_Declarations')">
+                                                        <i class="text-primary fa-solid fa-eye"></i>
+                                                    </span>
+                                                    <span
+                                                        *ngIf="!taxDeduction.Editrecord && !taxDeduction.file">-</span>
+                                                    <span
+                                                        *ngIf="taxDeduction.Editrecord">
+                                                        <div
+                                                            *ngIf="!taxDeduction.file"
+                                                            class="w-100">
+                                                            <div
+                                                                data-bs-target="#taxImages"
+                                                                data-bs-toggle="modal"
+                                                                class="uploaddiv1"
+                                                                (click)="openFileInput(taxDeduction.id, taxDeduction.deductionName,'Tax_Declarations',taxDeduction)">
+                                                                <!-- <input
+                                                                        type="file"
+                                                                        class="file-input"
+                                                                        name="file"
+                                                                        [id]="taxDeduction.id"
+                                                                        accept=".pdf, .png, .jpg, .jpeg"
+                                                                        (change)="sendFile($event, taxDeduction,'Tax_Declarations')"
+                                                                        style="display: none" /> -->
+                                                                <a
+                                                                    style="color: #0000FF;"><i
+                                                                        class="fa-solid fa-paperclip"></i><span>Upload
+                                                                        Proof</span>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="text-center"
+                                                            style=" display: flex; justify-content: space-around; align-items: baseline;">
+                                                            <span
+                                                                *ngIf="taxDeduction.file">
+                                                                <i
+                                                                    class=" text-warning fa-solid fa-circle-check"></i>
+                                                            </span>
+                                                            <span
+                                                                *ngIf="taxDeduction.file"
+                                                                data-bs-target="#taxImages"
+                                                                data-bs-toggle="modal"
+                                                                (click)="goingToOpenTheImgModel(taxDeduction, taxDeduction.deductionName,'Tax_Declarations')">
+                                                                <i
+                                                                    class="text-primary fa-solid fa-eye"></i>
+                                                            </span>
+                                                            <i
+                                                                *ngIf="taxDeduction.file"
+                                                                class="text-danger fa-solid fa-trash"
+                                                                (click)="deleteProof(taxDeduction)"></i>
+                                                        </div>
+
+                                                    </span>
+                                                </td>
+                                                <td
+                                                    class="text-center">-</td>
+
+                                                <td class="text-center">
+                                                    <div
+                                                        class="btn-group me-2"
+                                                        role="group"
+                                                        aria-label="Second group">
+                                                        <button
+                                                            *ngIf="!taxDeduction.Editrecord"
+                                                            id="edit {{taxDeduction.deductionName}}"
+                                                            type="button"
+                                                            class="btn btn-light me-1 text-secondary"
+                                                            placement="top"
+                                                            ngbTooltip="Edit"
+                                                            (click)="editRow(taxDeduction,'TAX_DEDUCTION')">
+                                                            <i
+                                                                id="edit {{ taxDeduction.deductionName}}"
+                                                                class="fa-solid fa-pen"></i>
+                                                        </button>
+                                                        <button
+                                                            *ngIf="taxDeduction.Editrecord"
+                                                            id="save {{ taxDeduction.deductionName}}"
+                                                            type="button"
+                                                            class="btn btn-light me-1 text-secondary"
+                                                            placement="top"
+                                                            ngbTooltip="save"
+                                                            (click)="saveRow(taxDeduction, 'TAX_DEDUCTION')">
+                                                            <i
+                                                                id="save {{ taxDeduction.deductionName}}"
+                                                                class="fa-solid fa-circle-check text-primary"></i>
+                                                        </button>
+                                                        <button
+                                                            *ngIf="taxDeduction.Editrecord"
+                                                            id="edit {{ taxDeduction.exemptionCode}}"
+                                                            type="button"
+                                                            class="btn btn-light me-1 text-secondary"
+                                                            placement="top"
+                                                            ngbTooltip="Edit"
+                                                            (click)="remove(taxDeduction,'TAX_DEDUCTION')">
+                                                            <i
+                                                                id="edit {{ taxDeduction.exemptionCode}}"
+                                                                class="fa-solid text-danger fa-ban"></i>
+                                                        </button>
+                                                        <button
+                                                            *ngIf="!taxDeduction.Editrecord"
+                                                            id="delete {{ taxDeduction.deductionName}}"
+                                                            type="button"
+                                                            (click)="deleteRow(taxDeduction,'TAX_DEDUCTION')"
+                                                            class="btn btn-light me-1 text-danger"
+                                                            placement="top"
+                                                            ngbTooltip="delete">
+                                                            <i
+                                                                class="fa-solid fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </div>
+                    </div>
+                    <!-- Exemptions starts -->
+                    <div
+                        class="tab-pane fade"
+                        *ngFor="let section of taxExemptions | keyvalue"
+                        [ngClass]="{'show active': section.key === activeTab}"
+                        [attr.id]="'pills-' + section.key"
+                        role="tabpanel"
+                        [attr.aria-labelledby]="'pills-' + section.key + '-tab'"
+                        tabindex="0">
+                        <div class>
+                            <!-- <h3>{{ section.key }}</h3> -->
+                            <mat-accordion>
+                                <mat-expansion-panel
+                                    *ngFor="let ex of section.value"
+                                    [expanded]="section.key === activeTab">
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                            <h5>{{ ex.exemptionGroupName }}</h5>
+                                            <!-- <p>Max Limit: {{ deduction.maxLimit }}</p> -->
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+
+                                    <table
+                                        class="table table-hover table-nowrap custom-table mb-0 datatable">
+                                        <thead class="thead-all">
+                                            <tr class="tr-th-all">
+                                                <th scope="col">
+                                                    Exemption Code</th>
+                                                <th scope="col">Exemption
+                                                    Name</th>
+                                                <th scope="col">Max
+                                                    Limit</th>
+                                                <th scope="col"
+                                                    class="text-end">Declaration</th>
+                                                <th scope="col"
+                                                    class="text-center">Proof</th>
+                                                <th scope="col"
+                                                    class="text-center">Status</th>
+                                                <th scope="col"
+                                                    class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="dashboard-td"
+                                                *ngFor="let taxExp of ex.taxExemptionList">
+                                                <td class="text-wrap">{{
+                                                    taxExp.exemptionCode
+                                                    }}</td>
+                                                <td class="text-wrap">{{
+                                                    taxExp.exemptionName
+                                                    }}</td>
+                                                <td>{{ taxExp.maxLimit
+                                                    }}</td>
+
+                                                <td class="text-end">
+                                                    <span
+                                                        *ngIf="!taxExp.Editrecord">{{taxExp.taxExemptionSubmittedAmount?
+                                                        taxExp.taxExemptionSubmittedAmount
+                                                        :'-' }}
+                                                    </span>
+                                                    <span
+                                                        *ngIf="taxExp.Editrecord"><input
+                                                            type="number"
+                                                            [(ngModel)]="taxExp.taxExemptionSubmittedAmount"
+                                                            [ngModelOptions]="{ standalone: true }"
+                                                            style="width: 120px; float: right;"
+                                                            class="form-control">
+                                                    </span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span
+                                                        *ngIf="!taxExp.Editrecord && taxExp.file"><i
+                                                            class=" text-warning fa-solid fa-circle-check me-2"></i>
+                                                    </span>
+                                                    <span
+                                                        *ngIf="!taxExp.Editrecord && taxExp.file"
+                                                        data-bs-target="#taxImages"
+                                                        data-bs-toggle="modal"
+                                                        (click)="goingToOpenTheImgModel(taxExp,taxExp.exemptionName,'Tax_Exemption')">
+                                                        <i
+                                                            class="text-primary fa-solid fa-eye"></i>
+                                                    </span>
+                                                    <span
+                                                        *ngIf="!taxExp.Editrecord && !taxExp.file">-
+                                                    </span>
+                                                    <span
+                                                        *ngIf="taxExp.Editrecord">
+                                                        <div
+                                                            *ngIf="!taxExp.file"
+                                                            class="w-100">
+                                                            <div
+                                                                data-bs-target="#taxImages"
+                                                                data-bs-toggle="modal"
+                                                                class="uploaddiv1"
+                                                                (click)="openFileInput(taxExp.id,taxExp.exemptionName,'Tax_Exemption',taxExp)">
+                                                                <!-- <input
+                                                                        type="file"
+                                                                        class="file-input"
+                                                                        name="file"
+                                                                        [id]="taxExp.id"
+                                                                        accept=".pdf, .png, .jpg, .jpeg"
+                                                                        (change)="sendFile($event, taxExp,'Tax_Exemption')"
+                                                                        style="display: none" /> -->
+                                                                <a
+                                                                    style="color: #0000FF;"><i
+                                                                        class="fa-solid fa-paperclip"></i><span>Upload
+                                                                        Proof</span>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+
+                                                        <div
+                                                            class="text-center"
+                                                            style=" display: flex; justify-content: space-around; align-items: baseline;">
+                                                            <span
+                                                                *ngIf="taxExp.file">
+                                                                <i
+                                                                    class=" text-warning fa-solid fa-circle-check"></i>
+                                                            </span>
+                                                            <span
+                                                                *ngIf="taxExp.file"
+                                                                data-bs-target="#taxImages"
+                                                                data-bs-toggle="modal"
+                                                                (click)="goingToOpenTheImgModel(taxExp,taxExp.exemptionName,'Tax_Exemption')">
+                                                                <i
+                                                                    class="text-primary fa-solid fa-eye"></i>
+                                                            </span>
+
+                                                            <i
+                                                                *ngIf="taxExp.file"
+                                                                class="text-danger fa-solid fa-trash "
+                                                                (click)="deleteProof(taxExp)"></i>
+                                                        </div>
+
+                                                    </span>
+                                                </td>
+
+                                                <td
+                                                    class="text-center">-</td>
+
+                                                <td class="text-center">
+                                                    <div
+                                                        class="btn-group me-2"
+                                                        role="group"
+                                                        aria-label="Second group">
+                                                        <button
+                                                            *ngIf="!taxExp.Editrecord"
+                                                            id="edit {{ taxExp.exemptionCode}}"
+                                                            type="button"
+                                                            class="btn btn-light me-1 text-secondary"
+                                                            placement="top"
+                                                            ngbTooltip="Edit"
+                                                            (click)="editRow(taxExp,'taxExemption')">
+                                                            <i
+                                                                id="edit {{ taxExp.exemptionCode}}"
+                                                                class="fa-solid fa-pen"></i>
+                                                        </button>
+                                                        <button
+                                                            *ngIf="taxExp.Editrecord"
+                                                            id="save {{ taxExp.exemptionCode}}"
+                                                            type="button"
+                                                            class="btn btn-light me-1 text-secondary"
+                                                            placement="top"
+                                                            ngbTooltip="save"
+                                                            (click)="saveRow(taxExp,'taxExemption')">
+                                                            <i
+                                                                id="save {{ taxExp.exemptionCode}}"
+                                                                class="fa-solid fa-circle-check text-primary"></i>
+                                                        </button>
+                                                        <button
+                                                            *ngIf="taxExp.Editrecord"
+                                                            id="edit {{ taxExp.exemptionCode}}"
+                                                            type="button"
+                                                            class="btn btn-light me-1 text-secondary"
+                                                            placement="top"
+                                                            ngbTooltip="remove"
+                                                            (click)="remove(taxExp,'taxExemption')">
+                                                            <i
+                                                                id="edit {{ taxExp.exemptionCode}}"
+                                                                class="fa-solid text-danger fa-ban"></i>
+                                                        </button>
+                                                        <button
+                                                            *ngIf="!taxExp.Editrecord"
+                                                            id="delete {{ taxExp.exemptionCode}}"
+                                                            type="button"
+                                                            (click)="deleteRow(taxExp,'taxExemption')"
+                                                            class="btn btn-light me-1 text-danger"
+                                                            placement="top"
+                                                            ngbTooltip="delete">
+                                                            <i
+                                                                class="fa-solid fa-trash"></i>
+                                                        </button>
+
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </div>
+                    </div>
+                    <!-- Exemptions ends -->
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div id="rentedResidenceModel" class="modal custom-modal fade"
+    role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-xl"
+        role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Rented Property Details
+                </h5>
+                <i class="fa-solid fa-xmark fs-4"
+                    id="close_model" data-bs-dismiss="modal"
+                    (click)="closeModel('dismiss')"></i></div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-md-4 mt-2 form-group">
+                        <label
+                            class="text-sm mb-1">From&nbsp;<span
+                                style="color: red; margin-left: 1px">*</span></label>
+                        <select
+                            class="form-select"
+                            id="rentedFrom">
+                            <option [value]="p"
+                                *ngFor="let p of rentedFrom">
+                                {{ p }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 mt-2 form-group">
+                        <label
+                            class="text-sm mb-1">To&nbsp;<span
+                                style="color: red; margin-left: 1px">*</span></label>
+                        <select
+                            class="form-select"
+                            id="rentedtill">
+                            <option [value]="p"
+                                *ngFor="let p of rentedFrom">
+                                {{ p }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 ">
+                        <label class="text-sm mb-1">Total Months : 00
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-4 mt-2 form-group">
+                    <label
+                        class="text-sm mb-1" for="rentPaid">Total
+                        Rent&nbsp;<span
+                            style="color: red; margin-left: 1px">*</span></label>
+                    <input
+                        class="form-control"
+                        id="rentPaid"
+                        placeholder="Total Rent Paid" />
+                </div>
+
+                <div class="col-md-4 mt-2 form-group">
+                    <label
+                        class="text-sm mb-1" for="Address">Address</label>
+                    <input
+                        class="form-control"
+                        id="Address" />
+                </div>
+                <div class="col-md-4 mt-2 form-group">
+                    <label
+                        class="text-sm mb-1" for="City">City</label>
+                    <select
+                        class="form-select"
+                        id="City">
+                        <option [value]="p"
+                            *ngFor="let p of cities">
+                            {{ p }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="row text-primary mt-2">
+                    <p class="d-flex align-items-baseline"><i
+                            class="fa-solid fa-file-arrow-up me-2"></i>Rent
+                        Receipt or Aggrement</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        Owner Details
+                        <div class="row">
+                            <div class="col-md-4 mt-2 form-group">
+                                <label
+                                    class="text-sm mb-1"
+                                    for="OwnerName">Owner
+                                    Name</label>
+                                <input
+                                    class="form-control"
+                                    id="OwnerName"
+                                    placeholder="Enter Owner Name" />
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mt-2 form-group">
+                                <label
+                                    class="text-sm mb-1"
+                                    for="OwnerName">Owner
+                                    Address</label>
+                                <textarea
+                                    class="form-control"
+                                    id="OwnerAddress"
+                                    placeholder="Enter Owner Address"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mt-2 form-group">
+                                <label
+                                    class="text-sm mb-1"
+                                    for="PANnumber">Owner
+                                    PAN</label>
+                                <input
+                                    class="form-control"
+                                    id="PANnumber"
+                                    placeholder="Enter Owner PAN number">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<div id="taxImages" class="modal custom-modal fade" role>
+    <div class="modal-dialog modal-dialog-centered modal-lg"
+        role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Income Proofs</h5>
+                <i class="fa-solid fa-xmark fs-4"
+                    id="close_model" data-bs-dismiss="modal"
+                    (click)="closeModel('dismiss')"></i></div>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- <div class="col-md-12"> -->
+                    <div class="col-md"
+                        style="overflow: scroll;height: 160px; overflow-x: hidden; scrollbar-width: thin;"
+                        *ngIf="taxDeclarationImages?.listOfImages?.length> 0">
+                        <h6>List of Proofs :</h6>
+                        <div class="m-2 d-flex"
+                            *ngFor="let img of taxDeclarationImages?.listOfImages ;let i = index">
+                            <span class="badge  bg-inverse-info p-3 text-wrap" style=" width: 80%; margin: auto;"
+                                (click)="openImg(img.fileURL)">
+                                <a
+                                    style="text-decoration: underline; cursor: pointer;">
+                                    {{i+1}}- {{img.fileName}}</a></span>
+
+                                <!-- downloadBlob() -->
+                                <i class="text-primary fa-solid fa-eye mx-2 d-flex align-items-center"    (click)="openImg(img.fileURL)"></i>
+                                <i class="text-primary fa-solid mx-2 fa-download d-flex align-items-center"    (click)="downloadBlob(img.fileURL,img)"></i>
+                                <i *ngIf="taxDeclarationImages?.edit === true"
+                                class="fa-solid fa-rectangle-xmark text-danger mx-2 d-flex align-items-center"
+                                style="font-size: 25px;"
+                                (click)="removeTheImage(img.index)"></i>
+
+                        </div>
+                    </div>
+                    <div class="col-md"
+                        style="display: flex;justify-content: center;align-items: center;"
+                        *ngIf="(taxDeclarationImages?.listOfImages?.length === 0 || !taxDeclarationImages?.listOfImages) && taxDeclarationImages?.edit === true">
+                        <span class>Please upload your proofs </span>
+                    </div>
+                        <div class="col-md"
+                        style="display: flex;justify-content: center;align-items: center;"
+                        *ngIf="(taxDeclarationImages?.listOfImages?.length === 0 || !taxDeclarationImages?.listOfImages) && taxDeclarationImages?.edit !== true">
+                        <span class>No proofs</span>
+                    </div>
+                    <div class="col-md d-flex justify-content-center"
+                        *ngIf="taxDeclarationImages?.edit === true">
+                        <div class="uploaddiv m-1 ">
+                            <input
+                                type="file"
+                                class="file-input"
+                                name="file"
+                                id="selectedFile"
+                                accept=".pdf, .png, .jpg, .jpeg"
+                                (change)="sendFile($event)"
+                                style="display: none" />
+                            <!-- <input type="file" id="selectedFile" size="34"
+                accept=".png, .jpg, .jpeg, .pdf" (change)="onSelectFile($event)"
+                style="display: none" /> -->
+                            <a type="button" value="Upload Images"
+                                class="btn btn-outline-primary col-form-label"
+                                onclick="document.getElementById('selectedFile').click();"><i
+                                    class="fa fa-plus"></i>&nbsp;Upload
+                                Receipts</a>
+
+                        </div>
+                    </div>
+
+                    <!-- </div> -->
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn add-btn" id="submit_model" *ngIf="taxDeclarationImages?.edit === true"
+                    data-bs-dismiss="modal" (click)="uploadImages()">
+                    Submit
+                </button>
+                <button class="btn delete-btn" id="submit_model" *ngIf="taxDeclarationImages?.edit !== true"
+                    data-bs-dismiss="modal"  (click)="closeModel('dismiss')">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="taxRegime" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-md"
+        role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tax Regimes </h5>
+                <button
+                    id="leave_setup_close"
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12" *ngIf="!isLoading">
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <div class="form-check"
+                                    *ngFor="let option of regimeLabels | keyvalue">
+                                    <input class="form-check-input" type="radio"
+                                        [id]="option.key" [value]="option.key"
+                                        [(ngModel)]="selectedRegime"
+                                        (click)="onPlanChange(option)"
+                                        name="taxRegime">
+                                    <label class="form-check-label"
+                                        [for]="option.key">
+                                        {{ option.value.name }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" *ngIf="selectedData.length > 0 ">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">{{
+                                    selectedRegimeLabel }}
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Income Range</th>
+                                            <th scope="col">Tax Rate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let slab of selectedData">
+                                            <td>{{ slab.incomeRange }}</td>
+                                            <td>{{ slab.taxRate }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

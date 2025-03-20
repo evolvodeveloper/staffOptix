@@ -685,13 +685,10 @@ export class BulkUploadsComponent {
     const end = new Date(endDate);
 
     if (start < end) {
-      // console.log("Start date is less than end date.");
       return true; // Start date is valid
     } else if (start > end) {
-      // console.log("Start date is greater than end date.");
       return false; // Invalid: start date is greater
     } else {
-      // console.log("Start date is equal to end date.");
       return false; // Invalid: dates are equal
     }
   }

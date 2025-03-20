@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { UtilService } from 'src/app/services/util.service';
 import Swal from 'sweetalert2';
@@ -14,6 +15,8 @@ import Swal from 'sweetalert2';
 export class DepartmentComponent implements OnInit {
   rows = [];
   temp = [];
+  labels = [];
+  placeholder = [];
   config: any;
   selectedDepartment: any;
   hasPermissionToUpdate = false;
@@ -25,7 +28,8 @@ export class DepartmentComponent implements OnInit {
     private acRoute: ActivatedRoute,
     private httpGetService: HttpGetService,
     private utilServ: UtilService,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    public globalServ: GlobalvariablesService
 
   ) {
     this.config = {
@@ -54,7 +58,11 @@ export class DepartmentComponent implements OnInit {
     } else {
       this.getDepartments();
     }
+    this.globalServ.getMyCompLabels('departmentMaster');
+    this.globalServ.getMyCompPlaceHolders('departmentMaster');
+    this.globalServ.getMyCompErrors('departmentMaster');
   }
+
   getDepartments() {
     this.spinner.show();
     this.httpGetService.getMasterList('getdeptwithaccess').subscribe((res: any) => {
@@ -122,16 +130,16 @@ export class DepartmentComponent implements OnInit {
   }
 
   create() {
-    this.selectedDepartment = { type: 'NEW' };
+    this.selectedDepartment = { type: 'NEW', labels: this.globalServ.labels, placeholder: this.globalServ.placeholder };
   }
   viewData(row) {
     this.selectedDepartment = row;
-    this.selectedDepartment = { type: 'VIEW', viewData: row };
+    this.selectedDepartment = { type: 'VIEW', viewData: row, labels: this.globalServ.labels, placeholder: this.globalServ.placeholder };
 
   }
   editData(row) {
     this.selectedDepartment = row;
-    this.selectedDepartment = { type: 'EDIT', editData: row };
+    this.selectedDepartment = { type: 'EDIT', editData: row, labels: this.globalServ.labels, placeholder: this.globalServ.placeholder };
 
   }
 }

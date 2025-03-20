@@ -17,7 +17,6 @@ export class ShiftsComponent implements OnInit {
   shiftassignmentsList = [];
   temp = [];
   config: any;
-  config1: any;
   unassigntemp = [];
   firstTab = true;
   secondTab = false;
@@ -38,7 +37,7 @@ export class ShiftsComponent implements OnInit {
     private router: Router,
     private acRoute: ActivatedRoute,
     private utilServ: UtilService,
-    private global: GlobalvariablesService,
+    public global: GlobalvariablesService,
     private modalService: NgbModal,
     private spinner: NgxSpinnerService,
 
@@ -48,11 +47,11 @@ export class ShiftsComponent implements OnInit {
       currentPage: 1,
       totalItems: this.shiftassignmentsList.length,
     };
-    this.config1 = {
-      itemsPerPage: 25,
-      currentPage: 1,
-      totalItems: this.unassignedshifts.length,
-    };
+    // this.config1 = {
+    //   itemsPerPage: 25,
+    //   currentPage: 1,
+    //   totalItems: this.unassignedshifts.length,
+    // };
   }
 
   tab1() {
@@ -61,7 +60,7 @@ export class ShiftsComponent implements OnInit {
     this.temp = [...this.shiftassignmentsList];
     this.config.totalItems = this.shiftassignmentsList.length;
     this.config.currentPage = 1;
-    this.config1.itemsPerPage = 25;
+    this.config.itemsPerPage = 25;
     this.unassignedshifts = [...this.unassigntemp];
 
   }
@@ -69,13 +68,10 @@ export class ShiftsComponent implements OnInit {
     this.firstTab = false;
     this.secondTab = true;
     this.unassigntemp = [...this.unassignedshifts];
-    this.config1.totalItems = this.unassignedshifts.length;
-    this.config1.itemsPerPage = 25;
-    this.config1.currentPage = 1;
+    this.config.totalItems = this.unassignedshifts.length;
+    this.config.currentPage = 1;
+    this.config.itemsPerPage = 25;
     this.shiftassignmentsList = [...this.temp];
-
-  }
-  changeDataByShift() {
 
   }
 
@@ -88,6 +84,8 @@ export class ShiftsComponent implements OnInit {
       this.hasPermissionToUpdate = permission.hasPermissionToUpdate
       this.hasPermissionToApprove = permission.hasPermissionToApprove
     });
+    this.global.getMyCompLabels('shiftAssignmentComp');
+    this.global.getMyCompPlaceHolders('shiftAssignmentComp'); 
   }
   checkEmpByShifts(startdate, enddate, shiftCode) {
     this.dateForUnassigned = startdate;
@@ -108,8 +106,8 @@ export class ShiftsComponent implements OnInit {
       (res: any) => {
         this.unassignedshifts = res.response;
         this.unassigntemp = [...this.unassignedshifts];
-        this.config1.totalItems = this.unassignedshifts.length;
-        this.config1.currentPage = 1;
+        this.config.totalItems = this.unassignedshifts.length;
+        this.config.currentPage = 1;
         this.spinner.hide();
       },
       (err) => {
@@ -256,16 +254,14 @@ export class ShiftsComponent implements OnInit {
     this.config.currentPage = 1;
   }
   resultsPerPage1(event) {
-    this.config1.itemsPerPage =
+    this.config.itemsPerPage =
       event.target.value == 'all' ? this.unassigntemp.length : event.target.value;
-    this.config1.currentPage = 1;
+    this.config.currentPage = 1;
   }
   pageChanged(event) {
     this.config.currentPage = event;
   }
-  pageChangedUnassigned(event) {
-    this.config1.currentPage = event;
-  }
+
   openModal() {
     this.modalService.open(AddShiftsComponent, {
       scrollable: true,

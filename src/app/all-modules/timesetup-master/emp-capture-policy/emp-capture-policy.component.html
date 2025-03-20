@@ -7,7 +7,8 @@
           class="fa fa-arrow-left"
           (click)="back()"
           aria-label="back"></i>
-        <h3 class="ms-4 page-title">Capture Policy</h3>
+        <h3
+          class="ms-4 page-title">{{globalServ.showLabel('capPolicyHeader')}}</h3>
       </div>
     </div>
   </div>
@@ -20,7 +21,7 @@
         type="text"
         id="filter"
         class="form-control"
-        placeholder="Search"
+        placeholder="{{globalServ.showGlobalplaceholders('search')}}"
         [(ngModel)]="searchedFor"
         (keyup)="updateFilter($event)"
         style="
@@ -40,11 +41,11 @@
   <div class="col-sm-6 col-md-6 col-lg-5">
     <a class="btn add-btn" (click)="addPolicy()"
       *ngIf="hasPermissionToUpdate"><i class="fa fa-plus"></i>
-      Add Policy
+      {{globalServ.getGlobalNames('addPolicy')}}
     </a>
   </div>
   <div class="col-sm-6 col-md-6 col-lg-2 mt-30px">
-    <label class="form-label">Records/page</label>
+    <label class="form-label">{{globalServ.getGlobalNames('records')}}</label>
     <select class="form-select" (change)="resultsPerPage($event)">
       <option value="25">25</option>
       <option value="50">50</option>
@@ -59,19 +60,24 @@
     <thead class="thead-all">
       <tr class="tr-th-all">
         <th scope="col"></th>
-        <th scope="col">CaptureCode</th>
-        <th scope="col" class="text-center">Is Biometric</th>
-        <th scope="col" class="text-center">Is WebCheckin</th>
-        <th scope="col" class="text-center">Is MobileCheckin</th>
-        <th scope="col" class="text-center">Is Default</th>
-        <th scope="col" class="text-center">Active</th>
-        <th scope="col" class="text-center">Action</th>
+        <th scope="col">{{globalServ.showLabel('captureCode')}}</th>
+        <th scope="col" class="text-center">{{globalServ.showLabel('bio')}}</th>
+        <th scope="col" class="text-center">{{globalServ.showLabel('web')}}</th>
+        <th scope="col"
+          class="text-center">{{globalServ.showLabel('mobile')}}</th>
+
+        <th scope="col"
+          class="text-center">{{globalServ.getGlobalNames('isDefault')}}</th>
+        <th scope="col"
+          class="text-center">{{globalServ.getGlobalNames('active')}}</th>
+        <th scope="col"
+          class="text-center">{{globalServ.getGlobalNames('action')}}</th>
       </tr>
     </thead>
     <tbody *ngIf="capturePolicies.length === 0">
       <tr style="text-align: center; height: 150px">
         <td colspan="8">
-          "No records were found with the selected filter criteria."
+          {{globalServ.showGlobalErrors('notFound')}}
         </td>
       </tr>
     </tbody>
@@ -81,7 +87,7 @@
         <tr
           class="dasboard-td">
           <td>
-            <small><i
+            <small *ngIf="row.geofence.length>0 || row.ipRange.length>0"><i
                 *ngIf="!row.expand"
                 class="fa fa-angle-up fs-5"
                 aria-hidden="true"
@@ -173,20 +179,19 @@
 
           <td colspan="8" class="p-3">
             <div class="table-responsive">
-
               <ng-container *ngIf="row.geofence.length>0">
-
                 <h4 class="mt-0 c-ptr" (click)="oncontatbl()"><i
                     class="fa fa-angle-right" *ngIf="!isShown"></i>
                   <i class="fa fa-angle-down " aria-hidden="true"
-                    *ngIf="isShown"></i> Geofence</h4>
+                    *ngIf="isShown"></i>
+                  {{globalServ.showLabel('geofence')}}</h4>
                 <table class="table  table-nowrap custom-table mb-0 datatable"
                   *ngIf="isShown">
                   <thead class="thead-all">
                     <tr class="tr-th-all">
-                      <th scope="col">Geo Location</th>
-                      <th scope="col">Lat Long</th>
-                      <th scope="col">Radius</th>
+                      <th scope="col">{{globalServ.showLabel('geoLoc')}} </th>
+                      <th scope="col">{{globalServ.showLabel('lat')}}</th>
+                      <th scope="col">{{globalServ.showLabel('radius')}}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -203,13 +208,14 @@
                 <h4 class="mt-0 c-ptr" (click)="oncontatblForIp()"><i
                     class="fa fa-angle-right" *ngIf="!isShownForIp"></i>
                   <i class="fa fa-angle-down " aria-hidden="true"
-                    *ngIf="isShownForIp"></i> Ip Range</h4>
+                    *ngIf="isShownForIp"></i>
+                  {{globalServ.showLabel('ipRange')}}</h4>
                 <table class="table  table-nowrap custom-table mb-0 datatable"
                   *ngIf="isShownForIp">
                   <thead class="thead-all">
                     <tr class="tr-th-all">
-                      <th scope="col">Ip Start</th>
-                      <th scope="col">Ip End</th>
+                      <th scope="col">{{globalServ.showLabel('ipStart')}}</th>
+                      <th scope="col">{{globalServ.showLabel('ipEnd')}}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -226,13 +232,15 @@
                 <h4 class="mt-0 c-ptr" (click)="onPolicyMembers()"><i
                     class="fa fa-angle-right" *ngIf="!isShownForMem"></i>
                   <i class="fa fa-angle-down " aria-hidden="true"
-                    *ngIf="isShownForMem"></i> Policy Members</h4>
+                    *ngIf="isShownForMem"></i>
+                  {{globalServ.showLabel('policyMem')}}</h4>
                 <table class="table  table-nowrap custom-table mb-0 datatable"
                   *ngIf="isShownForMem">
                   <thead class="thead-all">
                     <tr class="tr-th-all">
-                      <th scope="col">MemberCode</th>
-                      <th scope="col">Member Type</th>
+                      <th scope="col">{{globalServ.showLabel('memCode')}}</th>
+                      <th scope="col">{{globalServ.showLabel('memType')}}</th>
+                      <th scope="col"> {{globalServ.showLabel('memType')}}</th>
                     </tr>
                   </thead>
                   <tbody>

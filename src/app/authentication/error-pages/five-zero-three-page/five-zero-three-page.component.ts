@@ -14,7 +14,7 @@ export class FiveZeroThreePageComponent {
   ) { }
 
   revertBack() {
-    this.router.navigate(['/']);
+    this.router.navigate(['']);
   }
 
 }

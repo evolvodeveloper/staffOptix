@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import moment from 'moment';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
+
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { UtilService } from '../../services/util.service';
 import { LoadMoreComponent } from './load-more/load-more.component';
@@ -32,13 +34,17 @@ export class DashboardComponent implements OnInit {
   constructor(private httpGet: HttpGetService,
     private acRoute: ActivatedRoute,
     private http: HttpClient,
+    public globalServ: GlobalvariablesService,
     private utilServ: UtilService,
+    // private tawkService: TawkServiceService,
     private modalService: NgbModal) { }
 
   async ngOnInit() {
+    // this.tawkService.loadTawk();
     this.getAttendanceReport();
     this.getEmployeeReport();
     this.getAbsentees();
+    this.globalServ.getMyCompLabels('dashboard')
     this.getEmployeeLoginDetails();
     this.utilServ.universalSerchedData = {
       componentName: null,

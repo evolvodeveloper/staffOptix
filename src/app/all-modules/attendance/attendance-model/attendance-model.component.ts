@@ -21,7 +21,7 @@ export class AttendanceModelComponent implements OnInit {
   assignStatus: string;
   shifts = [];
   shiftCode: string;
-  userComments: string;
+  userComments: string = '';
   leaveCode: string;
   dateFormat: string;
   source: string;
@@ -37,7 +37,7 @@ export class AttendanceModelComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal,
     private httpPut: HttpPutService,
     private httpGet: HttpGetService,
-    private global: GlobalvariablesService,
+    public global: GlobalvariablesService,
     private spinner: NgxSpinnerService,
     private httpPost: HttpPostService
 

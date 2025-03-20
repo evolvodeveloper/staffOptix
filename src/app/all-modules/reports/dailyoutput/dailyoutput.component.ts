@@ -161,11 +161,12 @@ export class DailyoutputComponent implements OnInit, AfterViewInit {
       .subscribe((res: any) => {
         this.spinner.hide();
         const data: Blob = new Blob([res], { type: EXCEL_TYPE });
+        const fileName = 'Daily_Output_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_')
         FileSaver.saveAs(
           data,
-          'Daily-Output' + new Date().getTime() + EXCEL_EXTENSION
+          fileName + EXCEL_EXTENSION
         );
-        this.global.showSuccessPopUp('Excel', 'success');
+        this.global.showSuccessPopUp('Excel', 'success', fileName);
       },
         err => {
           this.spinner.hide();

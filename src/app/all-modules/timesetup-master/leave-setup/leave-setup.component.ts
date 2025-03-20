@@ -35,8 +35,7 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
   thirdTab = false;
   onlyCreate = true;
   config: any;
-  config1: any;
-  config2Type: any;
+
   searchLeavePlan: string;
   searchLeaveType: string;
   searchedInSetUp: string;
@@ -49,8 +48,6 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
   firstDatesOfMonths: any;
   dateFormat: string;
   leaveTypesList = [];
-  labels: any;
-  placeholder: any;
   constructor(
     private httpGet: HttpGetService,
     private acRoute: ActivatedRoute,
@@ -59,8 +56,7 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
     private utilServ: UtilService,
     public activeModal: NgbActiveModal,
     private router: Router,
-    private global: GlobalvariablesService,
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private httpPOst: HttpPostService,
     private httpPutServ: HttpPutService,
     private cdr: ChangeDetectorRef
@@ -70,17 +66,17 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
       currentPage: 1,
       totalItems: this.leaveSetupList.length,
     };
-    this.config1 = {
-      itemsPerPage: 25,
-      currentPage: 1,
-      totalItems: this.leavePlansList.length,
-    };
-    this.config2Type = {
-      itemsPerPage: 25,
-      currentPage: 1,
-      totalItems: this.leaveTypesList.length,
-    };
-    this.dateFormat = this.global.dateFormat;
+    // this.config1 = {
+    //   itemsPerPage: 25,
+    //   currentPage: 1,
+    //   totalItems: this.leavePlansList.length,
+    // };
+    // this.config2Type = {
+    //   itemsPerPage: 25,
+    //   currentPage: 1,
+    //   totalItems: this.leaveTypesList.length,
+    // };
+    this.dateFormat = this.globalServ.dateFormat;
     this.charLimit = this.globalServ.charLimitValue;
   }
   dates = [];
@@ -89,7 +85,6 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
   getFirstDatesOfMonths(): MonthObject[] {
     const currentYear = moment().year();
     const monthObjects: MonthObject[] = [];
-
     for (let month = 0; month < 12; month++) {
       const monthName = moment().month(month).format('MMMM');
       const firstDateOfMonth = moment({ year: currentYear, month, day: 1 });
@@ -102,44 +97,14 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
 
       monthObjects.push(monthObject);
     }
-
     return monthObjects;
   }
 
-  getLabelDescription(divId: string): string {
-    const label = this.labels?.find(item => item.colCode === divId);
-    return label ? label.labelDescription : '';
-  }
-
-  getPlaceholdersDescription(divId: string): string {
-    const pc = this.placeholder?.find(item => item.placeholderColCode === divId);
-    return pc ? pc.placeholderDescription : '';
-  }
-
-  getLevaeSetupLabels() {
-    this.spinner.show();
-    this.globalServ.getLabels('leavesetup').subscribe((res: any) => {
-      this.labels = res.response;
-      this.spinner.hide();
-    }, (err) => {
-      this.spinner.hide();
-      console.error(err.error.status.message);
-    });
-  }
-  getLeavesetupPlaceHolder() {
-    this.spinner.show();
-    this.globalServ.getPlaceholders('leavesetup').subscribe((res: any) => {
-      this.placeholder = res.response;
-      this.spinner.hide();
-    }, (err) => {
-      this.spinner.hide();
-
-      console.error(err.error.status.message);
-    });
-  }
   ngOnInit() {
-    // this.getLevaeSetupLabels();
-    // this.getLeavesetupPlaceHolder();
+    this.globalServ.getMyCompLabels('leavesetup');
+    this.globalServ.getMyCompPlaceHolders('leavesetup');
+    this.globalServ.getMyCompErrors('leavesetup')
+
     this.acRoute.data.subscribe(data => {
       const permission = data.condition
       this.hasPermissionToUpdate = permission.hasPermissionToUpdate
@@ -150,7 +115,7 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
       description: [null],
       leaveCalSrtDate: [null],
       branchCode: [null],
-      leaveCalendarStartDate: [null],
+      leaveCalendarStartDate: [null, Validators.required],
       runLeavepolicyOnDt: [null, Validators.required],
       companyCode: [null],
       createdby: [null],
@@ -169,7 +134,7 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
       isMaritalStatusBased: [false],
       forMaritalStatus: null,
       isactive: true,
-      isVisible: false,
+      isVisible: true,
       "leaveTypeId": null,
       "branchyCode": null,
       "companyCode": null,
@@ -182,6 +147,9 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
     this.firstDatesOfMonths = this.getFirstDatesOfMonths();
     for (let i = 1; i <= 30; i++) {
       this.dates.push(i);
+    }
+    if (this.utilServ.previousSelectedTab == 'firstTab') {
+      this.tab1();
     }
     // this.dates.push('MonthEnd');
     this.leaveSetupList = this.utilServ.leaveSetupBackup;
@@ -249,6 +217,8 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
       });
   }
   tab1() {
+    this.config.currentPage = 1;
+    this.cdr.detectChanges();
     this.firstTab = true;
     this.secondTab = false;
     this.thirdTab = false;
@@ -264,10 +234,10 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
       this.leaveSetupList = this.utilServ.leaveSetupBackup;
     }
     this.config.totalItems = this.utilServ.leaveSetupBackup.length;
-    this.config.currentPage = 1;
-
   }
   tab2() {
+    this.config.currentPage = 1;
+    this.cdr.detectChanges();
     this.firstTab = false;
     this.secondTab = true;
     this.thirdTab = false;
@@ -284,10 +254,11 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
       this.leavePlansList = this.utilServ.leavePlanbackup;
     }
     // this.leavePlansList = this.utilServ.leavePlanbackup;
-    this.config1.totalItems = this.leavePlansList;
-    this.config1.currentPage = 1;
+    this.config.totalItems = this.leavePlansList.length;
   }
   tab3() {
+    this.config.currentPage = 1;
+    this.cdr.detectChanges();
     this.firstTab = false;
     this.secondTab = false;
     this.thirdTab = true;
@@ -303,9 +274,7 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
       this.leaveTypesList = this.utilServ.leaveTypesBackup;
     }
     // this.leaveTypesList = this.utilServ.leaveTypesBackup;
-    this.config2Type.totalItems = this.utilServ.leaveTypesBackup.length;
-    this.config2Type.currentPage = 1;
-
+    this.config.totalItems = this.utilServ.leaveTypesBackup.length;
   }
 
   getleavePlans() {
@@ -336,24 +305,33 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
         console.error(err.error);
       });
   }
-
-
   addleaveType() {
     this.leaveTypeForm.reset();
     this.leaveTypeForm.enable();
     this.leaveTypeUpdate = false;
     this.leaveTypeview = false;
     this.leaveTypeForm.controls.isactive.setValue(true);
+    this.leaveTypeForm.controls.isVisible.setValue(true);
     this.genderBased();
     this.maritalStatusBased();
   }
-
   addPlan() {
     this.leavePlanForm.reset();
     this.leavePlanForm.enable();
     this.update = false;
     this.view = false;
-
+  }
+  closeModelPlan() {
+    const closeButton = document.querySelector('.closeModelPlan') as HTMLElement;
+    if (closeButton) {
+      closeButton.click();
+    }
+  }
+  closeModelType() {
+    const closeButton = document.querySelector('.closeModelType') as HTMLElement;
+    if (closeButton) {
+      closeButton.click();
+    }
   }
   genderBased() {
     this.cdr.detectChanges();
@@ -431,6 +409,7 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
       "branchyCode": row.branchyCode,
       "companyCode": row.companyCode,
       "isactive": row.isactive,
+      isVisible: row.isVisible,
       "createdby": row.createdby,
       "createddate": row.createddate,
       "lastmodifiedby": row.lastmodifiedby,
@@ -448,6 +427,7 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
       "leaveTypeId": row.leaveTypeId,
       "leaveTypeCode": row.leaveTypeCode,
       "description": row.description,
+      isVisible: row.isVisible,
       "isGenderBased": row.isGenderBased,
       "forGender": row.forGender,
       "isMaritalStatusBased": row.isMaritalStatusBased,
@@ -468,17 +448,21 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
   }
 
   createLeaveSetup() {
+    this.utilServ.previousSelectedTab = 'firstTab';
     this.router.navigateByUrl('timesetup/leavesetup/create-leave-setup');
   }
 
 
 
   viewData(row) {
+    this.utilServ.previousSelectedTab = 'firstTab';
     this.utilServ.viewData = row;
+
     this.router.navigateByUrl('timesetup/leavesetup/create-leave-setup');
 
   }
   editData(row) {
+    this.utilServ.previousSelectedTab = 'firstTab';
     this.utilServ.editData = row;
     this.router.navigateByUrl('timesetup/leavesetup/create-leave-setup');
   }
@@ -486,14 +470,12 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
     this.config.itemsPerPage =
       event.target.value == 'all' ? this.utilServ.leaveSetupBackup.length : event.target.value;
     this.config.currentPage = 1;
-    this.config1.itemsPerPage =
+    this.config.itemsPerPage =
       event.target.value == 'all' ? this.utilServ.leavePlanbackup.length : event.target.value;
-    this.config1.currentPage = 1;
-
-
-    this.config2Type.itemsPerPage =
+    this.config.currentPage = 1;
+    this.config.itemsPerPage =
       event.target.value == 'all' ? this.utilServ.leaveTypesBackup.length : event.target.value;
-    this.config2Type.currentPage = 1;
+    this.config.currentPage = 1;
   }
 
   updateFilter(event) {
@@ -527,8 +509,8 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
       });
       this.leavePlansList = temp;
     }
-    this.config1.totalItems = this.leavePlansList.length;
-    this.config1.currentPage = 1;
+    this.config.totalItems = this.leavePlansList.length;
+    this.config.currentPage = 1;
     this.utilServ.universalSerchedData = {
       componentName: this.className,
       searchedText: this.searchLeavePlan,
@@ -546,8 +528,8 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
       });
       this.leaveTypesList = temp;
     }
-    this.config2Type.totalItems = this.leaveTypesList.length;
-    this.config2Type.currentPage = 1;
+    this.config.totalItems = this.leaveTypesList.length;
+    this.config.currentPage = 1;
     this.utilServ.universalSerchedData = {
       componentName: this.className,
       searchedText: this.searchLeavePlan,
@@ -560,12 +542,6 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
     this.config.currentPage = event;
   }
 
-  pageChanged1(event) {
-    this.config1.currentPage = event;
-  }
-  pageChangedType(event) {
-    this.config2Type.currentPage = event;
-  }
   getLeaveSetup() {
     this.utilServ.leaveSetupBackup = [];
     this.spinner.show();
@@ -618,6 +594,7 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
           }).then(() => {
             this.leavePlanForm.reset();
             this.getleavePlans();
+            this.closeModelPlan();
           });
         } else {
           Swal.fire({
@@ -673,6 +650,7 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
           this.leavePlanForm.reset();
           this.leavePlanForm.enable();
           this.getleavePlans();
+          this.closeModelPlan();
           this.update = false;
           this.activeModal.close();
 
@@ -727,6 +705,7 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
             this.leaveTypeForm.reset();
             this.leaveTypeForm.controls.isactive.setValue(true);
             this.getLeaveTypes();
+            this.closeModelType();
             this.activeModal.close();
           });
         } else {
@@ -790,6 +769,7 @@ export class LeaveSetupComponent implements OnInit, OnDestroy {
           this.leaveTypeForm.reset();
           this.leaveTypeForm.controls.isactive.setValue(true);
           this.getLeaveTypes();
+          this.closeModelType();
           this.activeModal.close();
           this.leaveTypeForm.enable();
           this.leaveTypeUpdate = false;

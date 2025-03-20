@@ -30,7 +30,7 @@ export class OtEmployeesListComponent implements OnInit {
     private httpPost: HttpPostService,
     private acRoute: ActivatedRoute,
     private utilServ: UtilService,
-    private global: GlobalvariablesService,
+    public global: GlobalvariablesService,
     private httPut: HttpPutService,
     private spinner: NgxSpinnerService,
   ) {
@@ -52,6 +52,7 @@ export class OtEmployeesListComponent implements OnInit {
     }
   }
   ngOnInit() {
+    this.global.getMyCompLabels('OTAssign');
     this.dateFormat = this.global.dateFormat;
     this.getPayrollCodes();
     // this.acRoute.data.subscribe(data => {

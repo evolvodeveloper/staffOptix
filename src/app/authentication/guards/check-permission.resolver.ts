@@ -17,17 +17,21 @@ export class CheckPermissionResolver  {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
     const routeName = state.url;
     if (routeName !== '/attendance/employee-dashboard') {
-    // Check if menu data is already available or not added by venu
-    if (this.utilServ.menuData.length > 0) {
-      return of(this.checkPermissions(routeName));
-    } else {
-      // Use an Observable to wait for menu data to be available
 
-      return this.globalServ.menuDataSubject.pipe(
-        filter(menuData => menuData.length > 0),
-        take(1),
-        map(() => this.checkPermissions(routeName))
-      );
+      if (routeName == 'changepswd') {
+        this.router.navigateByUrl('/changepswd');
+      } else {
+        // Check if menu data is already available or not added by venu
+      if (this.utilServ.menuData.length > 0) {
+        return of(this.checkPermissions(routeName));
+      } else {
+        // Use an Observable to wait for menu data to be available
+        return this.globalServ.menuDataSubject.pipe(
+          filter(menuData => menuData.length > 0),
+          take(1),
+          map(() => this.checkPermissions(routeName))
+        );
+      }
     }
   }
   }

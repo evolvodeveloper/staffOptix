@@ -54,7 +54,7 @@ export class CreatePayrollMasterComponent implements OnInit, OnDestroy {
   ];
   iAmAdmin = false;
   constructor(
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private httpGetService: HttpGetService,
     private httpPostService: HttpPostService,
     private spinner: NgxSpinnerService,
@@ -246,7 +246,7 @@ export class CreatePayrollMasterComponent implements OnInit, OnDestroy {
       this.addPayrollForm.controls.lastName.enable();
       this.addPayrollForm.controls.designation.enable();
       this.addPayrollForm.controls.projectCode.enable();
-      this.addPayrollForm.controls.deptCode.enable();
+      this.addPayrollForm.controls.deptCode.enable();                  
     }
   }
 
@@ -360,7 +360,10 @@ export class CreatePayrollMasterComponent implements OnInit, OnDestroy {
         this.totalDeduction = deductAmt;
         this.totalearningAmt = earningAmt;
         this.totalSalary = amount;
-        this.addPayrollForm.controls.salary.setValue(this.totalearningAmt);
+        if (!this.addPayrollForm.controls.rulesQuestion.value) {
+          console.log('rulesQuestion', this.addPayrollForm.controls.rulesQuestion.value);
+          this.addPayrollForm.controls.salary.setValue(this.totalearningAmt);
+        }
         this.salaryValue();
         this.showComponentCode = true;
         this.spinner.hide();
@@ -403,7 +406,11 @@ export class CreatePayrollMasterComponent implements OnInit, OnDestroy {
       this.totalDeduction = deductAmt;
       this.totalearningAmt = earningAmt;
       this.totalSalary = amount;
-      this.addPayrollForm.controls.salary.setValue(this.totalearningAmt);
+      if (!this.addPayrollForm.controls.rulesQuestion.value) {
+        console.log('rulesQuestion',this.addPayrollForm.controls.rulesQuestion.value);
+        
+        this.addPayrollForm.controls.salary.setValue(this.totalearningAmt);        
+      }
       this.salaryValue();
     },
       err => {

@@ -6,17 +6,10 @@
         class="fa fa-arrow-left"
         routerLink="/dashboard"
         aria-label="back"></i>
-      <h3 class="ms-4 page-title">Run Payroll</h3>
+      <h3 class="ms-4 page-title">
+        {{ globalServ.showLabel('runPayrollHeader') }}
+      </h3>
     </div>
-  </div>
-  <div class="col-sm-2">
-    <!-- <label class="form-label ms-2">Show entries</label>
-    <select class="form-select" (change)="resultsPerPage($event)">
-      <option value="25">25</option>
-      <option value="50">50</option>
-      <option value="100">100</option>
-      <option value="all">All</option>
-    </select> -->
   </div>
 </div>
 
@@ -25,12 +18,15 @@
     <div class="row">
       <div class="col-md-3">
         <div class="form-group">
-          <label class="col-form-label" for="payrollCode">Payroll </label>
+          <label class="col-form-label" for="payrollCode">
+            {{ globalServ.getGlobalNames('payroll') }}
+          </label>
           <select
             class="form-select"
             (change)="onPayrollChange()"
             [(ngModel)]="payrollCode">
-            <option [value] selected disabled>Select Payroll</option>
+            <option [value] selected disabled>{{
+              globalServ.showLabel('selectPayroll') }}</option>
             <option *ngFor="let pc of payrollsetups" [value]="pc.payrollCode">
               {{ pc.payrollCode }}
             </option>
@@ -39,13 +35,14 @@
       </div>
       <div class="col-md-2">
         <div class="form-group">
-          <label class="col-form-label" for="Date">Date </label>
+          <label class="col-form-label" for="Date">{{
+            globalServ.getGlobalNames('date') }} </label>
           <input
             class="form-control"
             type="month"
             [max]="maxDt"
             *ngIf="salaryFrequency === 'Month'"
-            placeholder="Month/YYYY"
+            placeholder="{{globalServ.showGlobalplaceholders('Month/YYYY')}}"
             [(ngModel)]="fulldate" />
 
           <input
@@ -58,24 +55,38 @@
         </div>
       </div>
       <div class="col-md">
-        
+
       </div>
     </div>
     <div class="row mb-3">
+        <div class="col-sm-6 col-lg-3 d-flex align-items-end">
+            <div class="input-group">
+                <input type="text" class="form-control"
+                [(ngModel)]="searchedData"
+          placeholder="{{globalServ.showGlobalplaceholders('search')}}"
+                    (keyup)="updateFilter($event)"
+                    style="border-radius: 8px 0px 0px 8px; 
+    height: calc(2.5rem + calc(var(--mo-border-width) * 2));">
+                <span class="input-group-text" id="basic-addon1">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+            </div>
+        </div>
+
       <div
         class="col-sm-6 col-md d-flex align-items-center justify-content-end">
         <button
           (click)="submit()"
           class="btn add-btn mx-2"
           [disabled]="!fulldate">
-          Submit
+          {{ globalServ.getGlobalNames('submit') }}
         </button>
         <button
           id="approve_timesheet"
           class="btn success-btn float-end mx-2"
           [disabled]="!runpayroll"
           (click)="runPayroll()">
-          Run Payroll
+          {{ globalServ.showLabel('runPayroll') }}
         </button>
       </div>
     </div>
@@ -95,7 +106,7 @@
                 role="tab"
                 aria-controls="pills-needValidation"
                 aria-selected="true">
-                Need Validation Timesheets
+                {{ globalServ.showLabel('needValidationTimesheets') }}
               </button>
             </li>
             <li class="nav-item ms-2 my-1" role="presentation">
@@ -109,7 +120,7 @@
                 role="tab"
                 aria-controls="pills-unapprovedTimesheet"
                 aria-selected="true">
-                Unapproved Timesheets
+                {{ globalServ.showLabel('unapprovedTimesheets') }}
               </button>
             </li>
             <li
@@ -126,7 +137,7 @@
                 role="tab"
                 aria-controls="pills-unapprovedLeaves"
                 aria-selected="false">
-                Unapproved Leaves
+                {{ globalServ.showLabel('unapprovedLeaves') }}
               </button>
             </li>
             <li
@@ -144,7 +155,7 @@
                 role="tab"
                 aria-controls="pills-approvedTimesheet"
                 aria-selected="false">
-                Approved Timesheet
+                {{ globalServ.showLabel('approvedTimesheets') }}
               </button>
             </li>
             <li
@@ -162,7 +173,7 @@
                 role="tab"
                 aria-controls="pills-approvedLeaves"
                 aria-selected="false">
-                Approved Leaves
+                {{ globalServ.showLabel('approvedLeaves') }}
               </button>
             </li>
           </ul>
@@ -177,7 +188,7 @@
                 class="btn success-btn float-end my-2 mx-2"
                 [disabled]="approvedRowsPost.length === 0"
                 (click)="approveRecord()">
-                Approve
+                {{ globalServ.getGlobalNames('approve') }}
               </button>
 
               <button
@@ -186,7 +197,7 @@
                 class="btn success-btn float-end my-2 mx-2"
                 [disabled]="approvedLeavesPost.length === 0"
                 (click)="approveLeaves()">
-                Approve Leave
+                {{ globalServ.showLabel('approveLeave') }}
               </button>
               <button
                 *ngIf="secondTab  && hasPermissionToApprove"
@@ -194,9 +205,8 @@
                 class="btn delete-btn float-end my-2 mx-2"
                 [disabled]="approvedLeavesPost.length === 0"
                 (click)="rejectLeave()">
-                Reject Leave
+                {{ globalServ.showLabel('rejectLeave') }}
               </button>
-
             </div>
           </div>
         </div>
@@ -224,7 +234,7 @@
                         <tr class="tr-th-all">
                           <th></th>
                           <th>
-                            Date
+                            {{ globalServ.getGlobalNames('date') }}
                             <i
                               class="fa fa-sort"
                               data-column="dateCode"
@@ -236,7 +246,7 @@
                         }"></i>
                           </th>
                           <th>
-                            Employee Name
+                            {{ globalServ.getGlobalNames('employeeName') }}
                             <i
                               class="fa fa-sort"
                               data-column="employeeName"
@@ -250,12 +260,17 @@
                             sortOrder === 'desc'
                         }"></i>
                           </th>
-                          <th class>Shift</th>
-                          <th class="text-center">Is Holiday</th>
-                          <th class="text-center">Is Week Off</th>
-                          <th class>Work Hrs</th>
+                          <th class>{{ globalServ.getGlobalNames('shiftName')
+                            }}</th>
                           <th class="text-center">
-                            Total Hrs
+                            {{ globalServ.showLabel('isHoliday') }}
+                          </th>
+                          <th class="text-center">
+                            {{ globalServ.showLabel('isWeeklyOff') }}
+                          </th>
+                          <th class>{{ globalServ.showLabel('workHrs') }}</th>
+                          <th class="text-center">
+                            {{ globalServ.getGlobalNames('totalHours') }}
                             <i
                               class="fa fa-sort"
                               data-column="totalHours1"
@@ -268,7 +283,7 @@
                         }"></i>
                           </th>
                           <th class="text-center">
-                            Effective Hrs
+                            {{ globalServ.showLabel('effectiveHrs') }}
                             <i
                               class="fa fa-sort"
                               data-column="effectiveHrs1"
@@ -280,21 +295,22 @@
                             sortColumn === 'effectiveHrs1' && sortOrder === 'desc'
                         }"></i>
                           </th>
-                          <th>Comment</th>
+                          <th>{{ globalServ.showLabel('Comment') }}</th>
                           <th class="text-center"
-                            *ngIf="needvalidationRecords.length > 0">Action</th>
+                            *ngIf="needvalidationRecords.length > 0">{{
+                            globalServ.getGlobalNames('action') }}</th>
                         </tr>
                       </thead>
                       <tbody *ngIf="needvalidationRecords.length === 0">
                         <tr
                           style=" text-align: center; height: 150px;">
                           <td colspan="12">
-                            "No records were found with the selected filter criteria."
+                            {{ globalServ.showGlobalErrors('notFound') }}
                           </td>
                         </tr>
                       </tbody>
                       <tbody
-                        *ngFor="let vnr of needvalidationRecords;let i = index">
+                        *ngFor="let vnr of needvalidationRecords | paginate : config; let i = index">
                         <tr *ngIf="vnr.needValidation === true"
                           class="dasboard-td">
                           <td><i *ngIf="!vnr.expand" class="fa fa-plus"
@@ -350,9 +366,10 @@
 
                           <td class>
                             <span *ngIf="!vnr?.inDateEditMode">
-                              In-Date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              {{ globalServ.getGlobalNames('inDate') }}
+                              :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                               <b class="edit-cal">{{ vnr.inDate }}
-                                {{ vnr.inTime  }}
+                                {{ vnr.inTime }}
                               </b>
                             </span>
                             <div
@@ -382,9 +399,10 @@
                             <span
                               *ngIf="!vnr?.outDateEditMode"
                               style="margin-top: -10px">
-                              Out-Date:&nbsp;&nbsp;&nbsp;
+                              {{ globalServ.getGlobalNames('outDate')
+                              }}:&nbsp;&nbsp;&nbsp;
                               <b class="edit-cal">{{ vnr.outDate }}
-                                {{ vnr.outTime  }}
+                                {{ vnr.outTime }}
                               </b>
                             </span>
                             <div
@@ -465,14 +483,31 @@
                               class="table table-bordered table-responsive-sm">
                               <thead class="thead-all">
                                 <tr class="tr-th-all">
-                                  <th scope="col">Date</th>
-                                  <th scope="col">Employee Code</th>
-                                  <th scope="col">Time</th>
-                                  <th scope="col">IN/OUT</th>
-                                  <th scope="col">Device Id</th>
-                                  <th scope="col">Status</th>
-                                  <th scope="col">Comments</th>
-                                  <th scope="col">Processed?</th>
+                                  <th scope="col">
+                                    {{ globalServ.getGlobalNames('date') }}
+                                  </th>
+                                  <th scope="col">
+                                    {{ globalServ.getGlobalNames('employeeCode')
+                                    }}
+                                  </th>
+                                  <th scope="col">
+                                    {{ globalServ.showLabel('Time') }}
+                                  </th>
+                                  <th scope="col">
+                                    {{ globalServ.showLabel('IN/OUT') }}
+                                  </th>
+                                  <th scope="col">
+                                    {{ globalServ.getGlobalNames('DeviceId') }}
+                                  </th>
+                                  <th scope="col">
+                                    {{ globalServ.getGlobalNames('status') }}
+                                  </th>
+                                  <th scope="col">
+                                    {{ globalServ.showLabel('Comment') }}
+                                  </th>
+                                  <th scope="col">
+                                    {{ globalServ.showLabel('isProcessed') }}
+                                  </th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -490,7 +525,8 @@
                                 <tr *ngIf="vnr.logRecords.length === 0"
                                   style=" text-align: center; height: 150px;">
                                   <td colspan="12">
-                                    "No records were found"
+                                    {{ globalServ.showGlobalErrors('notFound')
+                                    }}
                                   </td>
                                 </tr>
                               </tbody>
@@ -500,12 +536,12 @@
 
                       </tbody>
                     </table>
-                    <!-- <div
-                  *ngIf="needvalidationRecords.length > needvalidationRecordsConfig.itemsPerPage"
+                    <div
+                  *ngIf="needvalidationRecords.length > config.itemsPerPage"
                   class="text-center mt-3">
                   <pagination-controls
-                    (pageChange)="pageChangedeedvalidation($event)"></pagination-controls>
-                </div> -->
+                    (pageChange)="pageChanged($event)"></pagination-controls>
+                </div>
                   </div>
                 </div>
               </div>
@@ -542,11 +578,11 @@
                             data-bs-toggle="tooltip"
                             data-bs-placement="top"
                             data-bs-custom-class="custom-tooltip"
-                            title="To Select all Records"></i>
+                            title="Select All"></i>
                         </div>
                       </th>
                       <th>
-                        Date<i
+                        {{ globalServ.getGlobalNames('date') }}<i
                           class="fa fa-sort ms-1"
                           data-column="dateCode"
                           (click)="sortData('dateCode')"
@@ -558,7 +594,7 @@
                           }"></i>
                       </th>
                       <th>
-                        Employee Name<i
+                        {{ globalServ.getGlobalNames('employeeName') }}<i
                           class="fa fa-sort ms-1"
                           data-column="employeeName"
                           (click)="sortData('employeeName')"
@@ -571,12 +607,20 @@
                               sortOrder === 'desc'
                           }"></i>
                       </th>
-                      <th class>Shift</th>
-                      <th class="text-center">Is Holiday</th>
-                      <th class="text-center">Is Week Off</th>
-                      <th class>Work Hrs</th>
+                      <th class>
+                        {{ globalServ.getGlobalNames('shiftName') }}
+                      </th>
                       <th class="text-center">
-                        Total Hrs<i
+                        {{ globalServ.showLabel('isHoliday') }}
+                      </th>
+                      <th class="text-center">
+                        {{ globalServ.showLabel('isWeeklyOff') }}
+                      </th>
+                      <th class>
+                        {{ globalServ.showLabel('workHrs') }}
+                      </th>
+                      <th class="text-center">
+                        {{ globalServ.getGlobalNames('totalHours') }}<i
                           class="fa fa-sort ms-1"
                           data-column="totalHours1"
                           (click)="sortData('totalHours1')"
@@ -590,7 +634,7 @@
                           }"></i>
                       </th>
                       <th class="text-center">
-                        Effective Hrs<i
+                        {{ globalServ.showLabel('effectiveHrs') }}<i
                           class="fa fa-sort ms-1"
                           data-column="effectiveHrs1"
                           (click)="sortData('effectiveHrs1')"
@@ -603,7 +647,9 @@
                               sortOrder === 'desc'
                           }"></i>
                       </th>
-                      <th>Comments</th>
+                      <th>
+                        {{ globalServ.showLabel('Comment') }}
+                      </th>
                       <!-- <th class="text-center"
                                     *ngIf="unapprovedRecords.length > 0">
                                     Action
@@ -613,8 +659,7 @@
                   <tbody *ngIf="!clickedOnSubmit">
                     <tr style="text-align: center; height: 150px">
                       <td colspan="9">
-                        "Finalize your selection by clicking 'Submit' to
-                        generate records with the filtered data you've chosen."
+                        {{ globalServ.showLabel('finalize') }}
                       </td>
                     </tr>
                   </tbody>
@@ -622,7 +667,7 @@
                     *ngIf="unapprovedRecords.length === 0 && clickedOnSubmit">
                     <tr style="text-align: center; height: 150px">
                       <td colspan="9">
-                        "Hooray! all records are approved."
+                        {{ globalServ.showLabel('hooray') }}
                       </td>
                     </tr>
                   </tbody>
@@ -630,7 +675,7 @@
                   <tbody *ngIf="unapprovedRecords.length > 0">
                     <ng-container
                       *ngFor="
-                        let row of unapprovedRecords 
+                        let row of unapprovedRecords | paginate : config;
                         let i = index
                       ">
                       <!-- | paginate : config; -->
@@ -672,9 +717,10 @@
                         </td>
                         <td class>
                           <span *ngIf="!row?.inDateEditMode">
-                            In-Date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            {{ globalServ.getGlobalNames('inDate')
+                            }}:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <b class="edit-cal">{{ row.inDate }}
-                              {{ row.inTime  }}
+                              {{ row.inTime }}
                             </b>
                           </span>
                           <div
@@ -704,9 +750,10 @@
                           <span
                             *ngIf="!row?.outDateEditMode"
                             style="margin-top: -10px">
-                            Out-Date:&nbsp;&nbsp;&nbsp;
+                            {{ globalServ.getGlobalNames('outDate')
+                            }}:&nbsp;&nbsp;&nbsp;
                             <b class="edit-cal">{{ row.outDate }}
-                              {{ row.outTime  }}
+                              {{ row.outTime }}
                             </b>
                           </span>
                           <div
@@ -744,12 +791,12 @@
                     </ng-container>
                   </tbody>
                 </table>
-                <!-- <div
+                <div
                   *ngIf="unapprovedRecords.length > config.itemsPerPage"
                   class="text-center mt-3">
                   <pagination-controls
                     (pageChange)="pageChanged($event)"></pagination-controls>
-                </div> -->
+                </div>
               </div>
             </div>
             <!-- un approved records ends -->
@@ -784,11 +831,11 @@
                             data-bs-toggle="tooltip"
                             data-bs-placement="top"
                             data-bs-custom-class="custom-tooltip"
-                            title="To Select all Records"></i>
+                            title="Select All"></i>
                         </div>
                       </th>
                       <th>
-                        From Date568<i
+                        {{ globalServ.getGlobalNames('fromDate') }}<i
                           class="fa fa-sort ms-1"
                           data-column="leaveFromdate"
                           (click)="sortData('leaveFromdate')"
@@ -802,7 +849,7 @@
                           }"></i>
                       </th>
                       <th>
-                        To Date<i
+                        {{ globalServ.getGlobalNames('toDate') }}<i
                           class="fa fa-sort ms-1"
                           data-column="leaveTodate"
                           (click)="sortData('leaveTodate')"
@@ -816,7 +863,7 @@
                           }"></i>
                       </th>
                       <th>
-                        Employee Name<i
+                        {{ globalServ.getGlobalNames('employeeName') }}<i
                           class="fa fa-sort ms-1"
                           data-column="employeeName"
                           (click)="sortData('employeeName')"
@@ -829,9 +876,15 @@
                               sortOrder === 'desc'
                           }"></i>
                       </th>
-                      <th class>Leave Type</th>
-                      <th class="text-end">Number Of Leaves</th>
-                      <th class="text-center">Status</th>
+                      <th class>
+                        {{ globalServ.getGlobalNames('LeaveType') }}
+                      </th>
+                      <th class="text-end">
+                        {{ globalServ.showLabel('numLeaves') }}
+                      </th>
+                      <th class="text-center">
+                        {{ globalServ.getGlobalNames('status') }}
+                      </th>
 
                       <!-- <th class="text-center"
                                     *ngIf="leavesNeedToApprove.length > 0">
@@ -843,8 +896,7 @@
                   <tbody *ngIf="!clickedOnSubmit">
                     <tr style="text-align: center; height: 150px">
                       <td colspan="9">
-                        "Finalize your selection by clicking 'Submit' to
-                        generate records with the filtered data you've chosen."
+                        {{ globalServ.showLabel('finalize') }}
                       </td>
                     </tr>
                   </tbody>
@@ -852,7 +904,7 @@
                     *ngIf="leavesNeedToApprove.length === 0 && clickedOnSubmit">
                     <tr style="text-align: center; height: 150px">
                       <td colspan="9">
-                        "Hooray! all records are approved."
+                        {{ globalServ.showLabel('hooray') }}
                       </td>
                     </tr>
                   </tbody>
@@ -860,7 +912,7 @@
                   <tbody *ngIf="leavesNeedToApprove.length > 0">
                     <ng-container
                       *ngFor="
-                        let row of leavesNeedToApprove;
+                        let row of leavesNeedToApprove | paginate:config;
                         let i = index
                       ">
                       <!-- | paginate : leavesNeedToApproveConfig -->
@@ -891,12 +943,12 @@
                     </ng-container>
                   </tbody>
                 </table>
-                <!-- <div
-                  *ngIf="leavesNeedToApprove.length > leavesNeedToApproveConfig.itemsPerPage"
+                <div
+                  *ngIf="leavesNeedToApprove.length > config.itemsPerPage"
                   class="text-center mt-3">
                   <pagination-controls
-                    (pageChange)="pageChangedForleavesNeedToApproveConfig($event)"></pagination-controls>
-                </div> -->
+                    (pageChange)="pageChanged($event)"></pagination-controls>
+                </div>
               </div>
             </div>
             <!-- leave unapproved records ends -->
@@ -914,7 +966,7 @@
                   <thead class="thead-all">
                     <tr class="tr-th-all">
                       <th>
-                        Date<i
+                        {{ globalServ.getGlobalNames('date') }}<i
                           class="fa fa-sort ms-1"
                           data-column="dateCode"
                           (click)="sortData('dateCode')"
@@ -926,7 +978,7 @@
                           }"></i>
                       </th>
                       <th>
-                        Employee Name<i
+                        {{ globalServ.getGlobalNames('employeeName') }} <i
                           class="fa fa-sort ms-1"
                           data-column="employeeName"
                           (click)="sortData('employeeName')"
@@ -939,12 +991,16 @@
                               sortOrder === 'desc'
                           }"></i>
                       </th>
-                      <th class>Shift</th>
-                      <th class="text-center">Is Holiday</th>
-                      <th class="text-center">Is Week Off</th>
-                      <th class>Work Hrs</th>
+                      <th class>{{ globalServ.getGlobalNames('shift') }}</th>
+                      <th class="text-center">{{
+                        globalServ.showLabel('isHoliday') }}</th>
+                      <th class="text-center">{{
+                        globalServ.showLabel('isWeeklyOff') }}</th>
+                      <th class>
+                        {{ globalServ.showLabel('workHrs') }}
+                      </th>
                       <th class="text-center">
-                        Total Hrs<i
+                        {{ globalServ.getGlobalNames('totalHours') }}<i
                           class="fa fa-sort ms-1"
                           data-column="totalHours1"
                           (click)="sortData('totalHours1')"
@@ -958,7 +1014,7 @@
                           }"></i>
                       </th>
                       <th class="text-center">
-                        Effective Hrs<i
+                        {{ globalServ.showLabel('effectiveHrs') }}<i
                           class="fa fa-sort ms-1"
                           data-column="effectiveHrs1"
                           (click)="sortData('effectiveHrs1')"
@@ -971,14 +1027,16 @@
                               sortOrder === 'desc'
                           }"></i>
                       </th>
-                      <th>Finalized</th>
+                      <th>
+                        {{ globalServ.showLabel('Finalized') }}
+                      </th>
                     </tr>
                   </thead>
 
                   <tbody *ngIf="approvedTimesheetRecords.length === 0">
                     <tr style="text-align: center; height: 150px">
                       <td colspan="9">
-                        "Hooray! all records are approved."
+                        {{ globalServ.showLabel('hooray') }}
                       </td>
                     </tr>
                   </tbody>
@@ -986,7 +1044,7 @@
                   <tbody *ngIf="approvedTimesheetRecords.length > 0">
                     <ng-container
                       *ngFor="
-                        let row of approvedTimesheetRecords;
+                        let row of approvedTimesheetRecords | paginate : config;
                         let i = index
                       ">
                       <!-- | paginate : approveTimesheetconfig -->
@@ -1022,9 +1080,10 @@
                         </td>
                         <td class>
                           <span *ngIf="!row?.inDateEditMode">
-                            In-Date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            {{ globalServ.getGlobalNames('inDate') }}
+                            :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <b class="edit-cal">{{ row.inDate }}
-                              {{ row.inTime  }}
+                              {{ row.inTime }}
                             </b>
                           </span>
                           <div
@@ -1054,9 +1113,10 @@
                           <span
                             *ngIf="!row?.outDateEditMode"
                             style="margin-top: -10px">
-                            Out-Date:&nbsp;&nbsp;&nbsp;
+                            {{ globalServ.getGlobalNames('outDate')
+                            }}:&nbsp;&nbsp;&nbsp;
                             <b class="edit-cal">{{ row.outDate }}
-                              {{ row.outTime  }}
+                              {{ row.outTime }}
                             </b>
                           </span>
                           <div
@@ -1104,12 +1164,12 @@
                     </ng-container>
                   </tbody>
                 </table>
-                <!-- <div
-                  *ngIf="approvedTimesheetRecords.length > approveTimesheetconfig.itemsPerPage"
+                <div
+                  *ngIf="approvedTimesheetRecords.length > config.itemsPerPage"
                   class="text-center mt-3">
                   <pagination-controls
-                    (pageChange)="pageChangedForapproveTimesheetconfig($event)"></pagination-controls>
-                </div> -->
+                    (pageChange)="pageChanged($event)"></pagination-controls>
+                </div>
               </div>
             </div>
             <!-- approved timesheet ends -->
@@ -1128,7 +1188,7 @@
                     <tr class="tr-th-all">
 
                       <th>
-                        From Date<i
+                        {{globalServ.getGlobalNames('fromDate')}}<i
                           class="fa fa-sort ms-1"
                           data-column="leaveFromdate"
                           (click)="sortData('leaveFromdate')"
@@ -1142,7 +1202,7 @@
                           }"></i>
                       </th>
                       <th>
-                        To Date<i
+                        {{globalServ.getGlobalNames('toDate')}}<i
                           class="fa fa-sort ms-1"
                           data-column="leaveTodate"
                           (click)="sortData('leaveTodate')"
@@ -1156,7 +1216,7 @@
                           }"></i>
                       </th>
                       <th>
-                        Employee Name<i
+                        {{globalServ.getGlobalNames('employeeName')}}<i
                           class="fa fa-sort ms-1"
                           data-column="employeeName"
                           (click)="sortData('employeeName')"
@@ -1169,9 +1229,15 @@
                               sortOrder === 'desc'
                           }"></i>
                       </th>
-                      <th class>Leave Type</th>
-                      <th class="text-end">Number Of Leaves</th>
-                      <th class="text-center">Status</th>
+                      <th class>
+                        {{globalServ.getGlobalNames('LeaveType')}}
+                      </th>
+                      <th class="text-end">
+                        {{globalServ.showLabel('numLeaves')}}
+                      </th>
+                      <th class="text-center">
+                        {{globalServ.getGlobalNames('status')}}
+                      </th>
                     </tr>
                   </thead>
 
@@ -1179,7 +1245,7 @@
                     *ngIf="approvedLeavesRecords.length === 0">
                     <tr style="text-align: center; height: 150px">
                       <td colspan="9">
-                        "No records Found."
+                        {{globalServ.showGlobalErrors('notFound')}}
                       </td>
                     </tr>
                   </tbody>
@@ -1187,7 +1253,7 @@
                   <tbody *ngIf="approvedLeavesRecords.length > 0">
                     <ng-container
                       *ngFor="
-                        let row of approvedLeavesRecords ;
+                        let row of approvedLeavesRecords | paginate : config ;
                         let i = index
                       ">
                       <!-- | paginate : approveLeavesconfig -->
@@ -1210,12 +1276,12 @@
                     </ng-container>
                   </tbody>
                 </table>
-                <!-- <div
-                  *ngIf="approvedLeavesRecords.length > approveLeavesconfig.itemsPerPage"
+                <div
+                  *ngIf="approvedLeavesRecords.length > config.itemsPerPage"
                   class="text-center mt-3">
                   <pagination-controls
                     (pageChange)="pageChanged($event)"></pagination-controls>
-                </div> -->
+                </div>
               </div>
             </div>
             <!-- approved leaves ends -->
@@ -1226,11 +1292,14 @@
     </div>
   </div>
 </div>
-<div id="viewRecord" class="modal custom-modal fade" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+<div id="viewRecord" class="modal custom-modal fade" role="dialog"
+  data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Time Sheet</h5>
+        <h5 class="modal-title">
+          {{globalServ.getGlobalNames('TimeSheet')}}
+        </h5>
         <button
           id="timesheetclose"
           type="button"
@@ -1242,28 +1311,36 @@
       <div class="modal-body">
         <div class="row">
           <div class="col-md-12 text-center">
-            <span class="block my-2">Date :
+            <span class="block my-2"> {{globalServ.getGlobalNames('date')}} :
               {{ view?.dateCode | date : dateFormat }}
             </span>
-            <span class="my-2">Comment:
+            <span class="my-2">{{globalServ.getGlobalNames('Comment')}} :
               {{ view?.comments ? view?.comments : "-" }}
             </span>
           </div>
           <div class="col-md-6">
             <section class="border-bottom p-2"
               style="border: 1px solid; border-color: #8e958e55; border-radius: 10px;">
-              <h5 class="border-bottom p-2">Details</h5>
+              <h5 class="border-bottom p-2">
+                {{globalServ.getGlobalNames('details')}}</h5>
               <table class="w-100">
                 <tbody>
-                  <tr class="p-2"><td class="text-muted">Employee code
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.getGlobalNames('employeeCode')}}
                       :</td><td>{{view?.employeeCode}}</td></tr>
-                  <tr class="p-2"><td class="text-muted">Employee name : </td>
+                  <tr class="p-2"><td
+                      class="text-muted">{{globalServ.getGlobalNames('employeeName')}}
+                      : </td>
                     <td> {{view?.employeeName}} </td></tr>
-                  <tr class="p-2"><td class="text-muted"> Shift :</td>
+                  <tr class="p-2"><td
+                      class="text-muted">{{globalServ.getGlobalNames('shift')}}
+                      :</td>
                     <td>{{view?.shift}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Branch :</td> <td>
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.getGlobalNames('Branch')}} :</td> <td>
                       {{view?.branchCode}}</td></tr>
-                  <tr class="p-2"> <td class="text-muted"> Company
+                  <tr class="p-2"> <td class="text-muted">
+                      {{globalServ.showLabel('company')}}
                       :</td><td>{{view?.companyCode}}</td> </tr>
                 </tbody>
               </table>
@@ -1271,28 +1348,43 @@
 
             <section class="border-bottom p-2 my-2"
               style="border: 1px solid; border-color: #8e958e55; border-radius: 10px;">
-              <h5 class="border-bottom p-2">Status</h5>
+              <h5 class="border-bottom p-2">
+                {{globalServ.getGlobalNames('status')}}
+              </h5>
               <table class="w-100">
                 <tbody>
-                  <tr class="p-2"><td class="text-muted"> Entry Status
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.getGlobalNames('entryStatus')}}
                       :</td><td>{{ view?.entryStatus}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted">Entry Hrs : </td><td>{{
+                  <tr class="p-2"><td
+                      class="text-muted">{{globalServ.showLabel('entryHrs')}} :
+                    </td><td>{{
                       view?.entryHrs }}</td></tr>
-                  <tr class="p-2"><td class="text-muted"> Exit Status :</td><td>
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.getGlobalNames('exitStatus')}} :</td><td>
                       {{ view?.exitStatus }}</td></tr>
-                  <tr class="p-2"><td class="text-muted"> Exit Hrs : </td><td>{{
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.showLabel('exitHrs')}} : </td><td>{{
                       view?.exitHrs }}</td></tr>
-                  <tr class="p-2"><td class="text-muted"> Is Holiday :</td>
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.showLabel('isHoliday')}} :</td>
                     <td>{{ view?.isHoliday }}</td></tr>
-                  <tr class="p-2"><td class="text-muted"> Is WeeklyOff :</td>
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.showLabel('isWeeklyOff')}} :</td>
                     <td>{{view?.isWeeklyOff }}</td></tr>
-                  <tr class="p-2"><td class="text-muted">Status:</td><td>{{
+                  <tr class="p-2"><td
+                      class="text-muted">{{globalServ.getGlobalNames('status')}}
+                      :</td><td>{{
                       view?.status }}</td></tr>
-                  <tr class="p-2"><td class="text-muted"> Need Validation :</td>
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.showLabel('needValidation')}} :</td>
                     <td>{{ view?.needValidation }}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Is Finalized :</td>
+                  <tr class="p-2"><td
+                      class="text-muted">{{globalServ.showLabel('isFinalized')}}
+                      :</td>
                     <td>{{ view?.isFinalized }}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Approved :</td> <td>{{
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.showLabel('approved')}} :</td> <td>{{
                       view?.isApproved }}</td> </tr>
                 </tbody></table>
             </section>
@@ -1301,26 +1393,38 @@
           <div class="col-md-6">
             <section class="border-bottom p-2"
               style="border: 1px solid; border-color: #8e958e55; border-radius: 10px;">
-              <h5 class="border-bottom p-2">Attendance Details</h5>
+              <h5 class="border-bottom p-2">
+                {{globalServ.showLabel('attendanceDetails')}}
+              </h5>
               <table class="w-100">
                 <tbody>
-                  <tr class="p-2"><td class="text-muted">In Date
+                  <tr class="p-2"><td
+                      class="text-muted">{{globalServ.getGlobalNames('inDate')}}
                       :</td><td>{{view?.inDate | date : dateFormat}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> In Time :</td><td>{{
-                      view?.inTime }}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Out Date :</td><td>{{
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.getGlobalNames('inTime')}} :</td><td>{{
+                      view?.inTime}}</td> </tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.getGlobalNames('outDate')}} :</td><td>{{
                       view?.outDate | date : dateFormat}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Out Time :</td><td>{{
-                      view?.outTime }}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Total Hours
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.getGlobalNames('outTime')}} :</td><td>{{
+                      view?.outTime}}</td> </tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.getGlobalNames('totalHours')}}
                       :</td><td>{{ view?.totalHours1}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Effective Hours
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.showLabel('effectiveHrs')}}
                       :</td><td>{{ view?.effectiveHrs1}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> OT Hours :</td><td>{{
+                  <tr class="p-2"><td
+                      class="text-muted">{{globalServ.getGlobalNames('OTHrs')}}
+                      :</td><td>{{
                       view?.otHours}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Regular Hours
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.getGlobalNames('RegularHours')}}
                       :</td><td>{{ view?.regularhours}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Attendance Status
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.showLabel('attendanceStatus')}}
                       :</td><td>{{ view?.attStatus}}</td> </tr>
                 </tbody>
               </table>
@@ -1328,18 +1432,26 @@
 
             <section class="border-bottom p-2 my-2"
               style="border: 1px solid; border-color: #8e958e55; border-radius: 10px;">
-              <h5 class="border-bottom p-2">Device</h5>
+              <h5 class="border-bottom p-2">
+                {{globalServ.getGlobalNames('device')}}
+              </h5>
               <table>
                 <tbody>
-                  <tr class="p-2"><td class="text-muted"> In Device :</td><td>{{
+                  <tr class="p-2"><td
+                      class="text-muted">{{globalServ.showLabel('inDevice')}}
+                      :</td><td>{{
                       view?.inDevice}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> In Location
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.showLabel('inLocation')}}
                       :</td><td>{{ view?.inLocation}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted">Last In Time
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.showLabel('lastInTime')}}
                       :</td><td>{{ view?.lastInTime}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Out Device
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.showLabel('outDevice')}}
                       :</td><td>{{ view?.outDevice}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Out Location
+                  <tr class="p-2"><td class="text-muted">
+                      {{globalServ.showLabel('outLocation')}}
                       :</td><td>{{ view?.outLocation}}</td> </tr>
 
                 </tbody>

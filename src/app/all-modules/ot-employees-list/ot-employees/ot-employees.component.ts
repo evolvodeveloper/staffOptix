@@ -31,7 +31,7 @@ export class OtEmployeesComponent implements OnInit {
     private fb: FormBuilder,
     private spinner: NgxSpinnerService,
     private router: Router,
-    private global: GlobalvariablesService,
+    public global: GlobalvariablesService,
     private utilServ: UtilService,
     private httpPut: HttpPutService,
     private httpGet: HttpGetService,
@@ -146,11 +146,16 @@ export class OtEmployeesComponent implements OnInit {
     this.httpPost.create('uploadOt', this.empOtForm.controls.employeeData.value).subscribe((res: any) => {
       this.spinner.hide();
       if (res.status.message == 'SUCCESS') {
-        this.sweetAlert_topEnd('success', 'OT  has been created successfully!');
+        this.sweetAlert_topEnd('success', 'OT has been created successfully!');
         this.empOtForm.reset();
         this.empOtForm.get('employeeData').setValue([]);
+        this.records.forEach((x) => {
+          x.checked = false;
+          this.empOtForm.controls.employeeData.setValue([]);
+        })
         this.records = [];
         this.checkedAll = false;
+
       }
       else {
         Swal.fire({

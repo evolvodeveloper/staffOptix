@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import $ from 'jquery';
 import PerfectScrollbar from 'perfect-scrollbar';
@@ -11,7 +11,7 @@ import { UtilService } from '../services/util.service';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })
-export class SidebarComponent implements OnInit, AfterContentInit {
+export class SidebarComponent implements OnInit {
   menu_listJSON = [];
   // sorted_menu = [];
   urlComplete = {
@@ -76,11 +76,6 @@ export class SidebarComponent implements OnInit, AfterContentInit {
         this.checkLocalStorage.call(this);
       }, 1000);
     }
-  }
-  ngAfterContentInit() {
-    this.utilServ.isVisible$.subscribe(isVisible => {
-      this.onlyoneBranch = isVisible;
-    });
   }
 
   ngOnInit() {
@@ -147,6 +142,9 @@ export class SidebarComponent implements OnInit, AfterContentInit {
       // if (this.branchs.length == 1) {
       //   this.onlyoneBranch = true;
       // }
+      console.log('branchs', this.branchs, this.onlyoneBranch, localStorage.getItem('branchCode'));
+      this.onlyoneBranch = this.utilServ.userProfileData ? this.utilServ.userProfileData.isMultibranch:false;
+
       if (localStorage.getItem('branchCode')) {
         const row = this.branchs.find(x => x.branchCode === localStorage.getItem('branchCode'));
         if (row) {

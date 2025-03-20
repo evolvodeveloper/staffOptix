@@ -5,119 +5,118 @@
                 <div class="d-flex align-items-baseline">
                     <i style="font-size:20px" class="fa fa-arrow-left"
                         routerLink="/dashboard" aria-label="back"></i>
-                    <h3 class="ms-4 page-title">Daily Roster</h3>
+                    <h3
+                        class="ms-4 page-title">{{global.showLabel('DailyRosterHeader')}}</h3>
                 </div>
 
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-7">
-            <div class="row">
-                <div class="col-md-4">
-                    <label for="dept">Department</label>
-                    <select id="dept" class="form-select"
-                        [(ngModel)]="selected_department"
-                        (change)="employeesByDepartment()">
-                        <option *ngFor="let d of departments_list"
-                            [value]="d.dept">
-                            {{ d.dept }}
-                        </option>
-                    </select>
-                </div>
-                <div class="col-md-4" [ngClass]="{'d-flex':!stopSpinner}">
-                    <label for="Employee">Employee</label>
-                    <!-- <div class="form-floating " > -->
-                    <select id="Employee" *ngIf="stopSpinner"
-                        class="form-select" [(ngModel)]="empCode"
-                        (change)="modified()">
-                        <option [value]="ep.employeeCode"
-                            *ngFor="let ep of employee">{{ep.employeeName}}</option>
-                    </select>
-                    <!-- </div> -->
-                    <div id="loading" *ngIf="!stopSpinner"></div>
-                </div>
-                <div class="col-md-4">
-                    <mat-label>Month and Year</mat-label>
-                    <mat-form-field appearance="outline">
-                        <input matInput [matDatepicker]="dp"
-                            [(ngModel)]="date" />
-                        <mat-datepicker-toggle matIconSuffix
-                            [for]="dp"></mat-datepicker-toggle>
-                        <mat-datepicker
-                            style="height: 50px;"
-                            #dp
-                            startView="multi-year"
-                            (monthSelected)="setMonthAndYear($event, dp)"
-                            panelClass="example-month-picker">
-                        </mat-datepicker>
-                    </mat-form-field>
-                </div>
-            </div>
+<div class="col-md-7" >
 
-            <div class="row mb-2">
-                <div class="col-sm-6 col-md-4 d-flex mb-2 align-items-end">
-                    <div class="input-group">
-                        <input type="text" class="form-control"
-                            placeholder="Search"
-                            [(ngModel)]="searchedFor"
-                            (keyup)="updateFilter($event)"
-                            style="border-radius: 8px 0px 0px 8px; 
+    <div class="row">
+        <div class="col-md-4">
+            <label for="dept">{{global.getGlobalNames('department')}}</label>
+            <select id="dept" class="form-select"
+                [(ngModel)]="selected_department"
+                (change)="employeesByDepartment()">
+                <option *ngFor="let d of departments_list"
+                    [value]="d.dept">
+                    {{ d.dept }}
+                </option>
+            </select>
+        </div>
+        <div class="col-md-4" [ngClass]="{'d-flex':!stopSpinner}">
+            <label for="Employee">{{global.getGlobalNames('employee')}}</label>
+            <!-- <div class="form-floating " > -->
+            <select id="Employee" *ngIf="stopSpinner" class="form-select"
+                [(ngModel)]="empCode"
+                (change)="modified()">
+                <option [value]="ep.employeeCode"
+                    *ngFor="let ep of employee">{{ep.employeeName}}</option>
+            </select>
+            <!-- </div> -->
+            <div id="loading" *ngIf="!stopSpinner"></div>
+        </div>
+        <div class="col-md-4">
+            <mat-label>{{global.getGlobalNames('montNdYear')}}</mat-label>
+            <mat-form-field appearance="outline">
+                <input matInput [matDatepicker]="dp" [(ngModel)]="date" />
+                <mat-datepicker-toggle matIconSuffix
+                    [for]="dp"></mat-datepicker-toggle>
+                <mat-datepicker
+                    style="height: 50px;"
+                    #dp
+                    startView="multi-year"
+                    (monthSelected)="setMonthAndYear($event, dp)"
+                    panelClass="example-month-picker">
+                </mat-datepicker>
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-sm-6 col-md-4 d-flex mb-2 align-items-end">
+            <div class="input-group">
+                <input type="text" class="form-control"
+                    placeholder="{{global.showGlobalplaceholders('search')}}"
+                    [(ngModel)]="searchedFor"
+                    (keyup)="updateFilter($event)"
+                    style="border-radius: 8px 0px 0px 8px; 
     height: calc(2.5rem + calc(var(--mo-border-width) * 2));
 ">
-                        <span class="input-group-text" id="basic-addon1">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </span>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-md-4 mb-2">
-                    <label class>Show entries</label>
-                    <select class="form-select"
-                        (change)="resultsPerPage($event)">
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                        <option value="all">All</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label for="Shifts">Shifts</label>
-                    <!-- <div class="form-floating "> -->
-                    <select id="Shifts" class="form-select"
-                        [(ngModel)]="shiftCode"
-                        (change)="modified()">
-                        <option [value]="sh.shiftCode"
-                            *ngFor="let sh of shifts">{{sh.shiftCode}}</option>
-                    </select>
-                    <!-- </div> -->
-                </div>
-                <div
-                    class="col-md-12 mt-2 d-flex justify-content-end align-items-end">
-                    <button id="submit_timesheet" class="btn add-btn"
-                        (click)="getDailyRoaster()" [disabled]="!empCode">Submit
-                    </button>
-                </div>
+                <span class="input-group-text" id="basic-addon1">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
             </div>
         </div>
-        <div class="col-md-5 col-lg-5 d-flex">
-            <div
-                class="card flex-fill dash-statistics"
-                style="
+        <div class="col-sm-6 col-md-4 mb-2">
+            <label class>{{global.getGlobalNames('ShowEntries')}}</label>
+            <select class="form-select" (change)="resultsPerPage($event)">
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="all">All</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="Shifts">{{global.getGlobalNames('shift')}}</label>
+            <!-- <div class="form-floating "> -->
+            <select id="Shifts" class="form-select" [(ngModel)]="shiftCode"
+                (change)="modified()">
+                <option [value]="sh.shiftCode"
+                    *ngFor="let sh of shifts">{{sh.shiftCode}}</option>
+            </select>
+            <!-- </div> -->
+        </div>
+
+        <div class="col-md-12 mt-2 d-flex justify-content-end align-items-end">
+            <button id="submit_timesheet" class="btn add-btn"
+                (click)="getDailyRoaster()"
+                [disabled]="!empCode">{{global.getGlobalNames('submit')}}
+            </button>
+        </div>
+
+    </div>
+    </div>
+    <div class="col-md-5 col-lg-5 d-flex">
+        <div
+            class="card flex-fill dash-statistics"
+            style="
         background: #fcfcfc;
         border-radius: 12px;
         border-style: solid;
         border-color: #c7ddff;
         border-width: 1px;
       ">
-                <div class="card-body">
-                    <div echarts [options]="option" class="demo-chart-600"
-                        style="height: 170px;"></div>
-                </div>
+            <div class="card-body">
+                <div echarts [options]="option" class="demo-chart-600"
+                    style="height: 170px;"></div>
             </div>
         </div>
-
     </div>
-
+</div>
     <div class="row col-md-12 m-auto" style="background: #fff;">
         <div class="col-md col-sm my-2 text-nowrap"
             *ngFor="let coll of collection"
@@ -126,9 +125,7 @@
                 [ngStyle]="{'background' : coll.background ,'color' : coll.color  }">
                 {{coll.shift}} </span><span> - {{coll.shiftCode}}</span>
         </div>
-    </div>
-    <div class="row col-md-12 m-auto" style="background: #fff;">
-        <div class="col-md col-sm my-2 text-nowrap"
+           <div class="col-md col-sm my-2 text-nowrap"
             *ngFor="let coll of collection"
             [ngStyle]="{'display': coll.shiftCode === 'Weekend' || coll.shiftCode === 'Holiday' ? 'none' : 'block' }">
             <span class="badge"
@@ -136,17 +133,29 @@
                 {{coll.shift}} </span><span> - {{coll.shiftCode}}</span>
         </div>
     </div>
+    <!-- <div class="row col-md-12 m-auto" style="background: #fff;">
+        <div class="col-md col-sm my-2 text-nowrap"
+            *ngFor="let coll of collection"
+            [ngStyle]="{'display': coll.shiftCode === 'Weekend' || coll.shiftCode === 'Holiday' ? 'none' : 'block' }">
+            <span class="badge"
+                [ngStyle]="{'background' : coll.background ,'color' : coll.color  }">
+                {{coll.shift}} </span><span> - {{coll.shiftCode}}</span>
+        </div>
+    </div> -->
 
     <div class="table-responsive card  scrollable-container">
         <table #table class="table  custom-table table-nowrap mb-0">
             <thead class="thead-all">
                 <tr class="tr-th-all">
-                    <th>Emp Code<i class="fa fa-sort  my-auto ms-2"
+                    <th>{{global.getGlobalNames('empCode')}}<i
+                            class="fa fa-sort  my-auto ms-2"
                             data-column="code"
                             (click)="sortData('code')"
                             [ngClass]="{'asc': sortColumn === 'code' && sortOrder === 'asc',
                 'desc': sortColumn === 'code' && sortOrder === 'desc'}"></i></th>
-                    <th class="d-flex fixeddrow">Emp Name <i
+                    <th
+                        class="d-flex fixeddrow">{{global.getGlobalNames('empName')}}
+                        <i
                             class="fa fa-sort my-auto ms-2"
                             data-column="name"
                             (click)="sortData('name')"
@@ -162,7 +171,7 @@
                 <tr
                     style=" text-align: center; height: 150px;">
                     <td colspan="36">
-                        "No records were found with the selected filter criteria."
+                        {{global.showGlobalErrors('notFound')}}
                     </td>
                 </tr>
             </tbody>
@@ -172,7 +181,7 @@
                 <tr
                     style=" text-align: center; height: 150px;">
                     <td colspan="36">
-                        "Great choices! Finalize your selection by clicking 'Submit' to generate a report with the filtered data you've chosen."
+                        {{global.showGlobalErrors('greatChoices')}}
                     </td>
                 </tr>
             </tbody>
@@ -180,7 +189,7 @@
                 <tr
                     style=" text-align: center; height: 150px;">
                     <td colspan="36">
-                        "Sorry for the Inconvenience!"
+                        {{global.showGlobalErrors('sorry')}}
                     </td>
                 </tr>
             </tbody>
@@ -229,8 +238,8 @@
                 [style.left.px]="hoveredItemPosition.x"
                 [style.top.px]="hoveredItemPosition.y">
                 <div class="itemHover" (click)="openModal('assignShift')">
-                    <i class="fa-solid fa-pencil me-1"></i>&nbsp;Assign
-                    Shift</div>
+                    <i
+                        class="fa-solid fa-pencil me-1"></i>&nbsp;{{global.showLabel('assignShifts')}}</div>
                 <!-- <div class="itemHover"  (click)="openModal('markWeekOff')">Mark Week Off</div> -->
 
             </div>

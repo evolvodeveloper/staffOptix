@@ -9,7 +9,7 @@ justify-content: space-between;">
     <div class="col-lg-6 my-3"></div>
     <div class="col-sm-12 col-lg-6 my-3 pe-4">
         <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search"
+            <input type="text" class="form-control" placeholder="{{global.showGlobalplaceholders('search')}}"
                 (keyup)="updateFilter($event)"
                 style="border-radius: 8px 0px 0px 8px;">
             <span class="input-group-text" id="basic-addon1">
@@ -30,29 +30,29 @@ justify-content: space-between;">
                         <thead class="thead-all">
                             <tr class="tr-th-all">
                                 <!-- <th scope="col">#</th> -->
-                                <th>Employee</th>
-                                <th>Designation</th>
-                                <th>Leave Date</th>
-                                <th>Shift</th>
-                                <th>Status</th>
+                                <th>{{global.getGlobalNames('employee')}}</th>
+                                <th>{{global.getGlobalNames('designation')}}</th>
+                                <th>{{global.showLabel('LeaveDate')}}</th>
+                                <th>{{global.getGlobalNames('shift')}}</th>
+                                <th>{{global.getGlobalNames('status')}}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr class="dasboard-td"
                                 *ngFor="let d of data; let i = index">
                                 <!-- <td>{{i+1}}</td> -->
-                                <td>
-                                    <h2 class="table-avatar">
+                                <td >
+                                    <h2 class="newth table-avatar">
                                         <!-- <a class="avatar"><img alt="" src="assets/img/avatar-21.jpg"></a> -->
                                         <a>{{d.employeeName}}
-                                            <span>Code
+                                            <span style="color: #4079ED; font-weight: 400;">Code
                                                 :{{d.employeeCode}}</span></a>
                                     </h2>
                                 </td>
-                                <td>{{d.designation}}</td>
-                                <td>{{d.inDate | date:dateFormat}}</td>
-                                <td>{{d.shiftCode}}</td>
-                                <td>
+                                <td class="newth">{{d.designation}}</td>
+                                <td class="newth">{{d.inDate | date:dateFormat}}</td>
+                                <td class="newth">{{d.shiftCode}}</td>
+                                <td >
                                     <span class="badge bg-inverse-success"
                                         *ngIf="d.employeeStatus === 'Reported'">Leave</span>
                                     <span class="badge bg-inverse-danger"
@@ -69,14 +69,14 @@ justify-content: space-between;">
                         <thead class="thead-all">
                             <tr class="tr-th-all">
                                 <!-- <th scope="col">#</th> -->
-                                <th>Employee</th>
-                                <th>Designation</th>
-                                <th>In Date</th>
-                                <th>In Time</th>
-                                <th><span  *ngIf="load_more.type==='earlycheckins'">Is Early by</span>
-                                <span  *ngIf="load_more.type==='Latecomers'">Is Late by</span> </th>
-                                <th>Shift</th>
-                                <th>Status</th>
+                                <th>{{global.getGlobalNames('employee')}}</th>
+                                <th>{{global.getGlobalNames('designation')}}</th>
+                                <th>{{global.getGlobalNames('inDate')}}</th>
+                                <th>{{global.getGlobalNames('inTime')}}</th>
+                                <th><span  *ngIf="load_more.type==='earlycheckins'">{{global.getGlobalNames('IsEarlyby')}}</span>
+                                <span  *ngIf="load_more.type==='Latecomers'">{{global.getGlobalNames('isLateBy')}}</span> </th>
+                                <th>{{global.getGlobalNames('shift')}}</th>
+                                <th>{{global.getGlobalNames('status')}}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -84,21 +84,21 @@ justify-content: space-between;">
                                 *ngFor="let d of data; let i = index">
                                 <!-- <td>{{i+1}}</td> -->
                                 <td>
-                                    <h2 class="table-avatar">
+                                    <h2 class="newth table-avatar">
                                         <!-- <a class="avatar"><img alt="" src="assets/img/avatar-21.jpg"></a> -->
                                         <a>{{d.employeeName}}
-                                            <span>Code
+                                            <span style="color: #4079ED; font-weight: 400;">Code
                                                 :{{d.employeeCode}}</span></a>
                                     </h2>
                                 </td>
-                                <td>{{d.designation}}</td>
-                                <td>{{d.inDate | date:dateFormat}}</td>
-                                <td>{{d.inTime ? (d.inTime | timeFormater) : ''}}</td>
-                                 <td>{{ d.entryHrs1 }}</td>
-                                <td>{{d.shiftCode}}</td>
+                                <td class="newth">{{d.designation}}</td>
+                                <td class="newth">{{d.inDate | date:dateFormat}}</td>
+                                <td class="newth">{{d.inTime ? (d.inTime | timeFormater) : ''}}</td>
+                                 <td class="newth">{{ d.entryHrs1 }}</td>
+                                <td class="newth">{{d.shiftCode}}</td>
                                 <td>
                                     <span class="badge bg-inverse-danger"
-                                        *ngIf="d.employeeStatus === 'LATE'">{{d.employeeStatus}}</span>
+                                        *ngIf="d.employeeStatus === 'LATE'">{{d.employeeStatus.toLowerCase()}}</span>
                                     <span class="badge bg-inverse-Early"
                                         *ngIf="d.employeeStatus === 'EARLY'">{{d.employeeStatus}}</span>
                                 </td>
@@ -115,15 +115,19 @@ justify-content: space-between;">
                         <thead class="thead-all">
                             <tr class="tr-th-all">
                                 <!-- <th scope="col">#</th> -->
-                                <th>Employee</th>
-                                <th class="text-center">Shift</th>
-                                <th class="text-center">In Time</th>
-                                <th class="text-center">Out Time</th>
-                                <th class="text-center">Total Hrs</th>
-                                <th class="text-center">Effective Hrs</th>
+                                <th>{{global.getGlobalNames('employee')}}</th>
+                                <th>{{global.getGlobalNames('shift')}}</th>
+                                <th>{{global.getGlobalNames('inTime')}}</th>
+                                <th>{{global.getGlobalNames('outTime')}}</th>
+                                <th
+                                    class="text-center">{{global.getGlobalNames('totalHours')}}</th>
+                                <th
+                                    class="text-center">{{global.getGlobalNames('EffectiveHrs')}}Hrs</th>
                                 <!-- <th class="text-center">Attendance Status</th>                -->
-                                <th class="text-center">Entered Status</th>
-                                <th class="text-end">Status</th>
+                                <th
+                                    class="text-center">{{global.getGlobalNames('EnteredStatus ')}}</th>
+                                <th
+                                    class="text-end">{{global.getGlobalNames('status')}}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -133,21 +137,21 @@ justify-content: space-between;">
                                 <td>
                                     <h2 class="table-avatar">
                                         <!-- <a class="avatar"><img alt="" src="assets/img/avatar-21.jpg"></a> -->
-                                        <a>{{d.employeeName}} <span>Code:
+                                        <a>{{d.employeeName}} <span style="color: #4079ED; font-weight: 400;">{{global.getGlobalNames('empCode')}}:
                                                 {{d.employeeCode}}</span></a>
                                     </h2>
                                 </td>
-                                <td class="text-center">{{d.shift}}</td>
-                                <td class="text-center">{{d.inTime ? (d.inTime | timeFormater) :''}}</td>
-                                <td class="text-center">{{d.outTime ? (d.outTime | timeFormater) : ''}}</td>
-                                <td class="text-center">{{d.totalHours1 }}</td>
-                                <td class="text-center">{{d.effectiveHrs1
+                                <td class="newth text-center">{{d.shift}}</td>
+                                <td class="newth text-center">{{d.inTime ? (d.inTime | timeFormater) :''}}</td>
+                                <td class="newth text-center">{{d.outTime ? (d.outTime | timeFormater) : ''}}</td>
+                                <td class="newth text-center">{{d.totalHours1 }}</td>
+                                <td class="newth text-center">{{d.effectiveHrs1
                                     }}</td>
                                 <!-- <td class="text-center">{{d.attStatus }}</td>                                    -->
                                <td class="text-center">
                     <span
                       *ngIf="d.entryStatus === 'LATE'"
-                      class="badge bg-inverse-danger">{{ d.entryStatus }}</span>
+                      class="badge bg-inverse-danger">{{ d.entryStatus.toLowerCase() }}</span>
                     <span
                       *ngIf="d.entryStatus === 'IN_TIME'"
                       class="badge bg-inverse-success">{{ d.entryStatus }}</span>

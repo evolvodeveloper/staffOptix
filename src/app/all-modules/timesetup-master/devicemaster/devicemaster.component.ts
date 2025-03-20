@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { HttpPostService } from 'src/app/services/http-post.service';
 import { HttpPutService } from 'src/app/services/http-put.service';
@@ -22,15 +23,19 @@ export class DevicemasterComponent implements OnInit {
   hasPermissionToApprove = false;
   deviceTypes = ['StandAlone', 'Doorlock'];
   captures = ['IN', 'OUT', 'IN_OUT'];
+
   constructor(private fb: FormBuilder,
     private spinner: NgxSpinnerService,
     private router: Router,
     private acRoute: ActivatedRoute,
     private httpPost: HttpPostService,
-    private httpPut: HttpPutService,
+    private httpPut : HttpPutService,
+    public globalServ: GlobalvariablesService,
     private httpGet: HttpGetService) { }
 
   ngOnInit() {
+    this.globalServ.getMyCompLabels('deviceList');
+    this.globalServ.getMyCompPlaceHolders('deviceList');
     this.acRoute.data.subscribe(data => {
       const permission = data.condition
       this.hasPermissionToUpdate = permission.hasPermissionToUpdate

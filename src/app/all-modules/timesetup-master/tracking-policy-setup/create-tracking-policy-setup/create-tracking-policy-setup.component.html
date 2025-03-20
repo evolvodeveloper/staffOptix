@@ -4,7 +4,8 @@
             <div class="d-flex align-items-baseline">
                 <i style="font-size:20px" class="fa fa-arrow-left"
                     (click)="back()" aria-label="back"></i>
-                <h3 class="ms-4 page-title">Tracking Policy</h3>
+                <h3
+                    class="ms-4 page-title">{{globalServ.showLabel('trackingPolicyHeader')}}</h3>
             </div>
         </div>
     </div>
@@ -22,7 +23,8 @@
                     role="tab"
                     aria-controls="pills-policyInfo"
                     aria-selected="true">
-                    <span class="circle">1</span>Policy Info</span>
+                    <span
+                        class="circle">1</span>{{globalServ.showLabel('policyInfo')}}</span>
             </section>
 
             <section class="col-md col-sm  nav-item  m-2" (click)="tab2()"
@@ -34,7 +36,8 @@
                     role="tab"
                     aria-controls="pills-noAttendance"
                     aria-selected="true">
-                    <span class="circle">2</span>No Attendance</span>
+                    <span
+                        class="circle">2</span>{{globalServ.showLabel('NoAttendance')}}</span>
             </section>
 
             <section class="col-md col-sm  nav-item  m-2" (click)="tab3()"
@@ -46,7 +49,8 @@
                     role="tab"
                     aria-controls="pills-lateArrival"
                     aria-selected="true">
-                    <span class="circle">3</span>Late Arrival</span>
+                    <span
+                        class="circle">3</span>{{globalServ.showLabel('lateArrival')}}</span>
             </section>
 
             <section class="col-md col-sm nav-item  m-2" (click)="tab4()"
@@ -58,7 +62,8 @@
                     role="tab"
                     aria-controls="pills-workHrs"
                     aria-selected="true">
-                    <span class="circle">4</span>Work Hours</span>
+                    <span
+                        class="circle">4</span>{{globalServ.showLabel('wkHours')}}</span>
             </section>
         </div>
     </div>
@@ -72,7 +77,8 @@
             tabindex="0">
             <form [formGroup]="trackingPolicyForm">
                 <div class="form-group col-md-4">
-                    <label class="text-sm mb-1"> Attendance Tracking Policy Name
+                    <label class="text-sm mb-1">
+                        {{globalServ.showLabel('polName')}}
                     </label>
                     <input type="text" class="form-control"
                         [formControl]="trackingPolicyForm.controls.policyCode">
@@ -81,13 +87,12 @@
 
                     <div class="m-2 mt-5">
                         <button (click)="back()"
-                            class="btn delete-btn">Cancel</button>
+                            class="btn delete-btn">{{globalServ.getGlobalNames('cancel')}}
+                        </button>
                         <button [disabled]="trackingPolicyForm.invalid"
                             *ngIf="!view"
                             (click)="forward()"
-                            class="btn add-btn">Continue</button>
-                        <button *ngIf="view" (click)="forward()"
-                            class="btn add-btn">Next</button>
+                            class="btn add-btn">{{globalServ.getGlobalNames('continue')}}</button>
                     </div>
                 </div>
             </form>
@@ -109,8 +114,7 @@
                                 [formControl]="lateArrivalPolicyForm.controls.penalizeForLateArrival">
                         </div>
                         <div>
-                            Do you want to penalize the employee for late
-                            arrival ?
+                            {{globalServ.showLabel('penalizeForLateArrival')}}
                         </div>
                     </div>
                     <section
@@ -118,18 +122,16 @@
                         <div class="row">
                             <div class="col-md-12 d-flex align-items-baseline">
                                 <input type="number"
-                                    placeholder="grace time in minutes"
+                                    placeholder="{{globalServ.showPlaceholder('graceTime')}}"
                                     class="form-control widthFit me-2"
                                     [formControl]="lateArrivalPolicyForm.controls.graceTimeInMin">
-                                    &nbsp;<span
-                                style="color: #f62d51">*</span>
-                                mins is the grace period (or tolerance) beyond
-                                this employee's arrival is consider late
-                                arrival.
+                                &nbsp;<span
+                                    style="color: #f62d51">*</span>
+                                {{globalServ.showLabel('graceTimeInMin')}}
                             </div>
 
                             <div class="col-md-12 mt-4">
-                                How do you want to define deduction ?
+                                {{globalServ.showLabel('defineDeduction')}}
                             </div>
                             <div class="ms-2">
                                 <div class="col-md-12 d-flex mt-2">
@@ -139,7 +141,7 @@
                                         class="form-check-input me-2"
                                         (change)="deductForLateTime(lateArrivalPolicyForm.controls.deductForLateTime.value)"
                                         [formControl]="lateArrivalPolicyForm.controls.deductForLateTime">
-                                    Deduct only for the time employee is late
+                                    {{globalServ.showLabel('deductForLateTime')}}
                                 </div>
 
                                 <div class="col-md-12 d-flex mt-2 ">
@@ -149,20 +151,21 @@
                                         (change)="deductForLateTime(lateArrivalPolicyForm.controls.deductForLateTime.value)"
                                         class="form-check-input me-2"
                                         [formControl]="lateArrivalPolicyForm.controls.deductForLateTime">
-                                    Deduct based on how many times employee is
-                                    late
+                                    {{globalServ.showLabel('allowedNoOfTimesLate')}}
                                 </div>
                                 <ng-container
                                     *ngIf="lateArrivalPolicyForm.controls.deductForLateTime.value === false">
                                     <div
                                         class="col-md-12 mt-2 d-flex align-items-baseline ">
-                                        Employee can be late for &nbsp;<span
-                                style="color: #f62d51">*</span>
+                                        {{globalServ.splitLabelDescription('timeframe').before}}
+                                        &nbsp;<span
+                                            style="color: #f62d51">*</span>
                                         <input type="number"
                                             class="form-control widthFit mx-2"
                                             [formControl]="lateArrivalPolicyForm.controls.allowedNoOfTimesLate">
-                                        times in a &nbsp;<span
-                                style="color: #f62d51">*</span>
+                                        {{globalServ.splitLabelDescription('timeframe').after}}
+                                        &nbsp;<span
+                                            style="color: #f62d51">*</span>
                                         <select name id
                                             class="form-select widthFit  mx-2"
                                             [formControl]="lateArrivalPolicyForm.controls.timeframe">
@@ -177,22 +180,20 @@
                                             class="d-flex align-items-baseline my-3">
                                             <ng-container
                                                 *ngIf="rule.status !=='DELETED'">
-                                                If an employee is late by
+                                                {{globalServ.splitLabelDescription('lateLessThanInHrs').before}}
                                                 <input type="number"
                                                     placeholder="eg. 2"
                                                     class="form-control widthFit mx-2"
                                                     [(ngModel)]="rule.lateLessThanInHrs"
                                                     [disabled]="view"
-                                                    [ngModelOptions]="{standalone: true}">
-                                                hours in a day
-                                                Deduct
+                                                    [ngModelOptions]="{standalone: true}">{{globalServ.splitLabelDescription('lateLessThanInHrs').after}}
+                                                {{globalServ.splitLabelDescription('daysOfLeaveToDeduct').before}}
                                                 <input type="number"
                                                     class="form-control widthFit mx-2"
                                                     placeholder="eg. 0.5"
                                                     [(ngModel)]="rule.daysOfLeaveToDeduct"
                                                     [disabled]="view"
-                                                    [ngModelOptions]="{standalone: true}">days
-                                                of leave
+                                                    [ngModelOptions]="{standalone: true}">{{globalServ.splitLabelDescription('daysOfLeaveToDeduct').after}}
                                                 <div class="circle ms-2"
                                                     [hidden]="view"
                                                     style="border-color: red;"
@@ -204,8 +205,9 @@
                                         </div>
                                         <span (click)="adddeductForLateTime()"
                                             [hidden]="view"
-                                            class="text-primary mt-2" style="cursor: pointer;">
-                                            Add another deduction policy
+                                            class="text-primary mt-2"
+                                            style="cursor: pointer;">
+                                            {{globalServ.showLabel('addDedPolicy')}}
                                         </span>
 
                                     </section>
@@ -216,28 +218,26 @@
                                 <input type="checkbox"
                                     class="form-check-input me-2"
                                     [formControl]="lateArrivalPolicyForm.controls.adjustAgainstLeaves">
-                                Do you want to adjust against leaves ?
+                                {{globalServ.showLabel('adjustAgainstLeaves')}}
                             </div>
                             <div class="col-md-12 d-flex mt-4">
                                 <input type="checkbox"
                                     class="form-check-input me-2"
                                     [formControl]="lateArrivalPolicyForm.controls.ignorePenalizationIfHrsCovered">
-                                Do you want to ignore late arrival penalization,
-                                if employee completes gross/effective work hours
-                                ?
+                                {{globalServ.showLabel('ignorePenalizationIfHrsCovered')}}
                             </div>
                         </div>
                     </section>
                     <div class="col-md-12">
                         <div class="m-2 mt-5">
                             <button (click)="previous()"
-                                class="btn add-btn float-start">Previous</button>
+                                class="btn add-btn float-start">{{globalServ.getGlobalNames('previous')}}</button>
                             <button [disabled]="lateArrivalPolicyForm.invalid"
                                 *ngIf="!view"
                                 (click)="forward()"
-                                class="btn add-btn">Continue</button>
+                                class="btn add-btn">{{globalServ.getGlobalNames('continue')}}</button>
                             <button *ngIf="view" (click)="forward()"
-                                class="btn add-btn">Next</button>
+                                class="btn add-btn">{{globalServ.getGlobalNames('next')}}</button>
                         </div>
                     </div>
                 </div>
@@ -254,8 +254,7 @@
             <form [formGroup]="noAttendancePolicyForm">
                 <div class="row col-md-12 ms-2">
                     <div>
-                        Do you want system to automatically deduct leave when
-                        there is no attendance logged ?
+                        {{globalServ.showLabel('goDeduct')}}
                         <span class="ms-4 block"
                             id="goDeduct">
                             <span id="goDeduct" class="me-4 mt-2">
@@ -266,8 +265,7 @@
                                     [value]="false"
                                     [formControl]="noAttendancePolicyForm.controls.goDeduct"
                                     (change)="goDeduct(noAttendancePolicyForm.controls.goDeduct.value)">
-                                No, Do not let the system automatically deduct
-                                leave.</span>
+                                {{globalServ.showLabel('goDeduct_no')}}</span>
 
                             <span id="goDeduct" class="block"><input
                                     type="radio"
@@ -275,24 +273,22 @@
                                     class="form-check-input me-2"
                                     [value]="true"
                                     [formControl]="noAttendancePolicyForm.controls.goDeduct"
-                                    (change)="goDeduct(noAttendancePolicyForm.controls.goDeduct.value)">Yes,
-                                Deduct leave automatically based on the rules
-                                defined below.</span>
+                                    (change)="goDeduct(noAttendancePolicyForm.controls.goDeduct.value)">{{globalServ.showLabel('goDeduct_yes')}}</span>
                         </span>
                     </div>
                     <div *ngIf="noAttendancePolicyForm.controls.goDeduct.value">
                         <div class="mt-3 d-flex align-items-baseline ">
                             <!-- How many days of salary ? -->
-                            Deduct
+                            {{globalServ.splitLabelDescription('deductDaysOfSalary').before}}
                             <input type="number"
                                 id="deductDaysOfSalary"
                                 placeholder="eg. 1"
                                 class="form-control widthFit mx-2"
                                 [formControl]="noAttendancePolicyForm.controls.deductDaysOfSalary">
-                            days of salary for every no attendance logged ?
+                            {{globalServ.splitLabelDescription('deductDaysOfSalary').after}}
                         </div>
                         <div class="mt-3">
-                            How are leaves deducted ?
+                            {{globalServ.showLabel('adjust_against_leaves')}}
                             <span class="ms-4 block"
                                 id="adjust_against_leaves">
                                 <span id="adjust_against_leaves" class="me-4">
@@ -302,8 +298,7 @@
                                         class="form-check-input me-2"
                                         [value]="false"
                                         [formControl]="noAttendancePolicyForm.controls.adjustAgainstLeaves">
-                                    All penalities to be treated as LOP (Loss Of
-                                    Pay)/Unpaid Leave.</span>
+                                    {{globalServ.showLabel('adjust_against_leaves_Lop')}}</span>
 
                                 <span id="adjust_against_leaves"
                                     class="block"><input type="radio"
@@ -311,9 +306,7 @@
                                         name="adjust_against_leaves"
                                         id="adjust_against_leaves"
                                         [value]="true"
-                                        [formControl]="noAttendancePolicyForm.controls.adjustAgainstLeaves">
-                                    Deduct from avaliable paid leave
-                                    balance</span>
+                                        [formControl]="noAttendancePolicyForm.controls.adjustAgainstLeaves">{{globalServ.showLabel('adjust_against_leaves_Avalible')}}</span>
                             </span>
                         </div>
 
@@ -322,13 +315,13 @@
                 <div class="col-md-12">
                     <div class="m-2 mt-5">
                         <button (click)="previous()"
-                            class="btn add-btn float-start">Previous</button>
+                            class="btn add-btn float-start">{{globalServ.getGlobalNames('previous')}}</button>
                         <button [disabled]="noAttendancePolicyForm.invalid"
                             *ngIf="!view"
                             (click)="forward()"
-                            class="btn add-btn">Continue</button>
+                            class="btn add-btn">{{globalServ.getGlobalNames('continue')}}</button>
                         <button *ngIf="view" (click)="forward()"
-                            class="btn add-btn">Next</button>
+                            class="btn add-btn">{{globalServ.getGlobalNames('next')}}</button>
                     </div>
                 </div>
             </form>
@@ -352,15 +345,14 @@
                                 [formControl]="workingHrsPolicyForm.controls.penalizeForLessHours">
                         </div>
                         <div>
-                            Penalize for shortage of work hours ?
+                            {{globalServ.showLabel('penalize_for_less_hours')}}
                         </div>
                     </div>
 
                     <div class="ms-3">
                         <div class="ms-2 d-flex align-items-baseline "
                             *ngIf="workingHrsPolicyForm.controls.penalizeForLessHours.value">
-                            Select timeframe for calculation of work
-                            hours&nbsp;<span
+                            {{globalServ.showLabel('workHrstimeframe')}}&nbsp;<span
                                 style="color: #f62d51"
                                 *ngIf="workingHrsPolicyForm.controls['timeframe']?.errors?.required">*</span>
                             <div>
@@ -371,7 +363,7 @@
                                     <option value="week">Week</option>
                                     <option value="month">Month</option>
                                 </select>
-                                <div
+                                <div class="mt-2"
                                     *ngIf="workingHrsPolicyForm.controls['timeframe'].invalid &&
                     (workingHrsPolicyForm.controls['timeframe'].dirty ||
                       workingHrsPolicyForm.controls['timeframe'].touched)"
@@ -379,7 +371,8 @@
                                     <div
                                         *ngIf="workingHrsPolicyForm.controls['timeframe'].errors.required"
                                         style="color: #dc3545">
-                                        timeframe is required.
+                                        {{globalServ.getGlobalNames('timeFrame')}}
+                                        {{globalServ.showGlobalErrors('required')}}
                                     </div>
                                 </div>
                             </div>
@@ -387,7 +380,7 @@
                         <ng-container
                             *ngIf="workingHrsPolicyForm.controls.penalizeForLessHours.value">
                             <div class="ms-2">
-                                How do you want to define shortage ?
+                                {{globalServ.showLabel('defineShortage')}}
                                 <div class="ms-4 block"
                                     id="definePolicy">
                                     <div id="definePolicy" class="me-4 mt-2">
@@ -398,8 +391,7 @@
                                             [value]="true"
                                             (change)="deductionRules(workingHrsPolicyForm.controls.deductOnlyForShortage.value)"
                                             [formControl]="workingHrsPolicyForm.controls.deductOnlyForShortage">
-                                        Deduct only for shortage of work hours
-                                        in a
+                                        {{globalServ.showLabel('deductOnlyForShortage')}}
                                         {{workingHrsPolicyForm.controls.timeframe.value}}</div>
 
                                     <div id="definePolicy">
@@ -410,8 +402,7 @@
                                             class="form-check-input me-2"
                                             id="definePolicy"
                                             [value]="false"
-                                            [formControl]="workingHrsPolicyForm.controls.deductOnlyForShortage">Define
-                                        Work hours policy</div>
+                                            [formControl]="workingHrsPolicyForm.controls.deductOnlyForShortage">{{globalServ.showLabel('definePolicy')}}</div>
                                 </div>
                             </div>
 
@@ -422,30 +413,29 @@
                                     class="d-flex align-items-baseline mt-2 ms-2">
                                     <ng-container
                                         *ngIf="rule.status !=='DELETED'">
-                                        If the average work hours in a
+                                        {{globalServ.splitLabelDescription('pct_shift_hours_threshold').before}}
                                         {{workingHrsPolicyForm.controls.timeframe.value}}
-                                        is less than
+                                        {{globalServ.splitLabelDescription('pct_shift_hours_threshold').after}}
                                         <input type="number"
                                             class="form-control widthFit mx-2"
                                             placeholder="eg. 95"
                                             [disabled]="view"
                                             [(ngModel)]="rule.pctShiftHoursThreshold"
-                                            [ngModelOptions]="{standalone: true}">%
-                                        of shift hours,
+                                            [ngModelOptions]="{standalone: true}">{{globalServ.splitLabelDescription('pct_shift_hours_threshold').after1}}
 
-                                        deduct
+                                        {{globalServ.splitLabelDescription('days_to_deduct').before}}
                                         <input type="number"
                                             placeholder="eg. 0.25"
                                             class="form-control widthFit mx-2"
                                             [(ngModel)]="rule.daysToDeduct"
                                             [disabled]="view"
-                                            [ngModelOptions]="{standalone: true}">days
-                                        <!-- {{splitLabelDescription('pct_shift_hours_threshold').before}}
+                                            [ngModelOptions]="{standalone: true}">{{globalServ.splitLabelDescription('days_to_deduct').after}}
+                                        <!-- {{globalServ.splitLabelDescription('pct_shift_hours_threshold').before}}
                                     <input type="number"
                                         class="form-control widthFit mx-2"
                                         placeholder="eg. 0.5"
                                         [(ngModel)]="rule.pctShiftHoursThreshold"
-                                        [ngModelOptions]="{standalone: true}">{{splitLabelDescription('pct_shift_hours_threshold').after}} -->
+                                        [ngModelOptions]="{standalone: true}">{{globalServ.splitLabelDescription('pct_shift_hours_threshold').after}} -->
                                         <div class="circle ms-2" [hidden]="view"
                                             style="border-color: red;"
                                             (click)="deleteworkingHrsPolicy(i,row)"><i
@@ -456,8 +446,9 @@
                                 </div>
                                 <span (click)="addworkingHrsPolicyRules()"
                                     [hidden]="view"
-                                    class="text-primary" style="cursor: pointer;">
-                                    Add another work hours deduction policy
+                                    class="text-primary"
+                                    style="cursor: pointer;">
+                                    {{globalServ.showLabel('addWorkHrs')}}
                                 </span>
                             </section>
                         </ng-container>
@@ -467,17 +458,18 @@
                 <div class="col-md-12">
                     <div class="m-2 mt-5">
                         <button (click)="previous()"
-                            class="btn add-btn float-start">Previous</button>
+                            class="btn add-btn float-start">{{globalServ.getGlobalNames('previous')}}</button>
                         <button
                             [disabled]="trackingPolicyForm.invalid|| noAttendancePolicyForm.invalid || lateArrivalPolicyForm.invalid || workingHrsPolicyForm.invalid"
                             *ngIf="!view && !update" (click)="submit()"
-                            class="btn add-btn">Save & Close</button>
+                            class="btn add-btn">{{globalServ.getGlobalNames('SaveClose')}}</button>
                         <button
                             [disabled]="trackingPolicyForm.invalid|| noAttendancePolicyForm.invalid || lateArrivalPolicyForm.invalid || workingHrsPolicyForm.invalid"
                             *ngIf="update" (click)="Update()"
-                            class="btn add-btn">Update & Close</button>
+                            class="btn add-btn">{{globalServ.getGlobalNames('UpdateClose')}}</button>
                         <button (click)="back()" *ngIf="view"
-                            class="btn delete-btn" style="float:right" >Close</button>
+                            class="btn delete-btn"
+                            style="float:right">{{globalServ.getGlobalNames('close')}}</button>
                     </div>
                 </div>
             </form>

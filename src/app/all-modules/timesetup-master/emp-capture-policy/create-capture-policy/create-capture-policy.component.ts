@@ -23,8 +23,6 @@ export class CreateCapturePolicyComponent implements OnInit, OnDestroy {
   empCapturePolicy: FormGroup;
   webitemsArray = [];
   mobileItemsArray = [];
-  labels: any;
-  placeholder: any;
   temp = [];
   ipPattern = /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
   membersList = [];
@@ -32,7 +30,7 @@ export class CreateCapturePolicyComponent implements OnInit, OnDestroy {
   ipAddressStartIsInValid = false;
 
   constructor(
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private spinner: NgxSpinnerService,
     private httpGetService: HttpGetService,
     private httpPostService: HttpPostService,
@@ -44,47 +42,9 @@ export class CreateCapturePolicyComponent implements OnInit, OnDestroy {
   ) { }
 
 
-  getLabelDescription(divId: string): string {
-    const label = this.labels?.find(item => item.colCode === divId);
-    this.labels?.find(item => item.labelDescription === 'Radius (in meters)');
-    return label ? label.labelDescription : '';
-  }
-
-  getPlaceholderDescription(divId: string): string {
-    const label = this.labels?.find(item => item.colCode === divId);
-    return label ? label.labelDescription : '';
-  }
-  getPlaceholdersDescription(divId: string): string {
-    const pc = this.placeholder?.find(item => item.placeholderColCode === divId);
-    return pc ? pc.placeholderDescription : '';
-  }
-
-  capturePolicy() {
-    this.spinner.show();
-    this.globalServ.getLabels('capturePolicySetup').subscribe((res: any) => {
-      this.labels = res.response;
-      this.spinner.hide();
-    }, (err) => {
-      this.spinner.hide();
-      console.error(err.error.status.message);
-    });
-  }
-
-  getCapturePolicyLabels() {
-    this.spinner.show();
-    this.globalServ.getPlaceholders('capturePolicySetup').subscribe((res: any) => {
-      this.placeholder = res.response;
-      this.spinner.hide();
-    }, (err) => {
-      this.spinner.hide();
-      console.error(err.error.status.message);
-    });
-  }
 
 
   ngOnInit() {
-    // this.capturePolicy();
-    // this.getCapturePolicyLabels();
     this.empCapturePolicy = this.formBuilder.group({
       captureCode: [null, [Validators.required]],
       allowBio: true,
@@ -401,14 +361,14 @@ Previously added geolocations will be deleted.
         this.webitemsArray[length - 1].ipEnd.length == 0;
       if (!isEmpty) {
         this.webitemsArray.push({
-          ipCode: '',
+          // ipCode: '',
           ipStart: '',
           ipEnd: '',
         });
       }
     } else {
       this.webitemsArray.push({
-        ipCode: '',
+        // ipCode: '',
         ipStart: '',
         ipEnd: '',
       });
@@ -487,6 +447,7 @@ Previously added geolocations will be deleted.
   create() {
     let ipAddressResult = false;
     this.webitemsArray.forEach(x => {
+      x.ipCode = null
       if (!x.ipEnd.match(this.ipPattern) || !x.ipStart.match(this.ipPattern)) {
         ipAddressResult = true
       }

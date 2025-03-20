@@ -96,9 +96,7 @@ export class CustomFeildsComponent implements OnInit {
         });
       }
       else {
-        this.rows = rows;
-        console.log(this.rows);
-        
+        this.rows = rows;       
       }
       this.config.totalItems = this.rows.length;
       this.spinner.hide();
@@ -132,15 +130,10 @@ export class CustomFeildsComponent implements OnInit {
   }
 
   viewData(row) {
-console.log(row);
-
     this.UtilServ.viewData = row;
     this.router.navigateByUrl('/setup/custom-config/create-custom-feilds');
   }
-  editData(row) {
-    console.log(row);
-    
- 
+  editData(row) {  
     this.UtilServ.editData = row;
     this.router.navigateByUrl('/setup/custom-config/create-custom-feilds');
   }

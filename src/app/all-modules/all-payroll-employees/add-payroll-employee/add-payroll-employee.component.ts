@@ -51,7 +51,6 @@ export class AddPayrollEmployeeComponent implements OnInit, OnDestroy {
   totalDeduction: number;
   payrollsetups = [];
   supervisors = [];
-  labels = [];
   pytypes = [
     { code: 'Salaried', name: 'Salaried' },
     { code: 'PieceWork', name: 'PieceWork' },
@@ -100,11 +99,13 @@ export class AddPayrollEmployeeComponent implements OnInit, OnDestroy {
   charLimit: number;
   roleAccessArray = [];
   userNames = [];
-  projectlabels = [];
   projectPlaceholder = [];
   roleAccessArrayProject = [];
+
+  formFields: any[] = []; // Loaded dynamically
+  dropdownOptions: { [key: string]: any[] } = {};
   constructor(
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private httpGetService: HttpGetService,
     private httpPostService: HttpPostService,
     private sanitizer: DomSanitizer,
@@ -130,38 +131,7 @@ export class AddPayrollEmployeeComponent implements OnInit, OnDestroy {
     );
   }
 
-  getProjectLabelDescription(divId: string): string {
-    const label = this.projectlabels?.find(item => item.colCode === divId);
-    return label ? label.labelDescription : '';
-  }
 
-  getPlaceholdersDescription(divId: string): string {
-    const pc = this.projectPlaceholder?.find(item => item.placeholderColCode === divId);
-    return pc ? pc.placeholderDescription : '';
-  }
-
-  getProjectMasterLabels() {
-    this.spinner.show();
-    this.globalServ.getLabels('projectMaster').subscribe((res: any) => {
-      this.projectlabels = res.response;
-      this.spinner.hide();
-    },
-      (err) => {
-      this.spinner.hide();
-      console.error(err.error.status.message);
-      }
-    );
-  }
-  getProjectPlaceHolders() {
-    this.spinner.show();
-    this.globalServ.getPlaceholders('projectMaster').subscribe((res: any) => {
-      this.projectPlaceholder = res.response;
-      this.spinner.hide();
-    }, (err) => {
-      this.spinner.hide();
-      console.error(err.error.status.message);
-    });
-  }
 
 
   ngOnInit(): void {
@@ -174,8 +144,15 @@ export class AddPayrollEmployeeComponent implements OnInit, OnDestroy {
     this.getPolicyCode();
     this.getEmpDocs();
     this.getUserNames();
-    // this.getProjectMasterLabels();
-    // this.getProjectPlaceHolders();
+    this.globalServ.getMyCompLabels('departmentMaster');
+    this.globalServ.getMyCompLabels('projectMaster');
+    this.globalServ.getMyCompPlaceHolders('employeeMaster');
+    this.globalServ.getMyCompPlaceHolders('projectMaster');
+    this.globalServ.getMyCompPlaceHolders('departmentMaster');
+    this.globalServ.getMyCompLabels('Designation');
+    this.globalServ.getMyCompPlaceHolders('Designation');
+    this.globalServ.getMyCompLabels('projectMaster');
+    this.globalServ.getMyCompPlaceHolders('employeeMaster');
     this.addEmployeeForm = this.formBuilder.group({
       employeeCode: [null, this.allowAutoGenerateEmpCode ? [Validators.required, this.httpPostService.customValidator()] : null],
       employeeName: [null, [Validators.required, this.httpPostService.customValidator()]],
@@ -206,7 +183,7 @@ export class AddPayrollEmployeeComponent implements OnInit, OnDestroy {
       payrollCode: [null, Validators.required],
       bankAccountNo: null,
       bankName: null,
-      employeeRefCode: [null,[this.httpPostService.customValidator()]],
+      employeeRefCode: [null, [this.httpPostService.customValidator()]],
       bankCode: null,
       bankBranch: null,
       bankAddress: null,
@@ -255,7 +232,6 @@ export class AddPayrollEmployeeComponent implements OnInit, OnDestroy {
     this.charLimit = this.globalServ.charLimitValue;
     this.othersForm = this.formBuilder.group({});
     this.getLocations();
-    // this.getDeptLabels();
     this.getPayrollCodes();
     this.getSupervisors();
     this.getCapturepolicies();
@@ -309,7 +285,72 @@ export class AddPayrollEmployeeComponent implements OnInit, OnDestroy {
     if (this.view || this.update) {
       this.init();
     }
+    // this.loadFormFields();
   }
+  // loadFormFields(): void {
+  //   // Mock form fields (you may replace this with an API call)
+  //   this.formFields = [
+  //     {
+  //       columnCode: 'id',
+  //       columnName: 'designation',
+  //       label: 'Designation',
+  //       dataType: 'dropdown',
+  //       dataSource: 'api',
+  //       apiEndpoint: 'desgs/active',
+  //     },
+  //     {
+  //       columnCode: 'categoryCode',
+  //       columnName: 'description',
+  //       label: 'Category',
+  //       dataType: 'dropdown',
+  //       dataSource: 'api',
+  //       apiEndpoint: 'empcategorys',
+  //     },
+  //     {
+  //       columnCode: 'country',
+  //       columnName: 'country',
+  //       label: 'Country',
+  //       dataType: 'dropdown',
+  //       dataSource: 'static',
+  //       defaultValues: '{"tags": ["India", "USA", "UK"]}',
+  //     },
+  //   ];
+
+  //   this.initializeDropdownOptions();
+  // }
+
+  // initializeDropdownOptions(): void {
+  //   const apiCalls = this.formFields
+  //     .filter((field) => field.dataSource === 'api') // Filter fields with API-based options
+  //     .map((field) => ({
+  //       columnName: field.columnName,
+  //       apiCall: this.httpGetService.getMasterList(field.apiEndpoint),
+  //     }));
+
+  //   // Handle API calls in parallel using forkJoin
+  //   forkJoin(apiCalls.map((call) => call.apiCall)).subscribe(
+  //     (responses) => {
+  //       // Map responses to their respective dropdown fields
+  //       apiCalls.forEach((call, index) => {
+  //         const response: any = responses[index];
+  //         this.dropdownOptions[call.columnName] = response.response || []; // Adjust based on API response structure
+  //       });
+  //     },
+  //     (error) => {
+  //       console.error('Error fetching dropdown data', error);
+  //     }
+  //   );
+
+  //   // Handle static dropdowns
+  //   this.formFields
+  //     .filter((field) => field.dataSource === 'static')
+  //     .forEach((field) => {
+  //       this.dropdownOptions[field.columnName] = JSON.parse(field.defaultValues).tags;
+  //     });
+  // }
+
+
+
   scorllToTop() {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
@@ -317,20 +358,7 @@ export class AddPayrollEmployeeComponent implements OnInit, OnDestroy {
       }
     });
   }
-  getLabelDescription(divId: string): string {
-    const label = this.labels?.find(item => item.colCode === divId);
-    return label ? label.labelDescription : '';
-  }
-  getDeptLabels() {
-    this.spinner.show();
-    this.globalServ.getLabels('departmentMaster').subscribe((res: any) => {
-      this.labels = res.response;
-      this.spinner.hide();
-    }, (err) => {
-      this.spinner.hide();
-      console.error(err.error.status.message);
-    });
-  }
+
   getEmpDocs() {
     this.httpGetService.getMasterList('docs').subscribe(
       (res: any) => {
@@ -353,18 +381,33 @@ export class AddPayrollEmployeeComponent implements OnInit, OnDestroy {
 
       }
     );
-  }	
-  removeImg(index) {
-    if (this.empDoc[index].docId == null) {
-      // this.empDoc.splice(index, 1);
-      this.empDoc[index]['isDeleted'] = true;
-      this.empDoc[index].fileName = null
-      this.empDoc[index].imageByteCode = null
-    } else {
-      this.empDoc[index]['isDeleted'] = true;
-      this.empDoc[index].fileName = null
-      this.empDoc[index].imageByteCode = null
-    }
+  }
+  removeImg(id, row) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const index = this.empDoc.findIndex(x => x.documentId == id);
+        if (this.empDoc[index].docId == null || this.empDoc[index].docId == undefined) {
+          // this.empDoc.splice(index, 1);
+          this.empDoc[index]['isDeleted'] = true;
+          this.empDoc[index].fileName = null
+          this.empDoc[index].imageByteCode = null
+        } else {
+          this.empDoc[index]['isDeleted'] = true;
+          this.empDoc[index].fileName = null
+          this.empDoc[index].imageByteCode = null
+        }
+      }
+    });
+
+
   }
   checkEmailsAreSameOrNot() {
     this.bothAreSame = false;
@@ -657,8 +700,8 @@ export class AddPayrollEmployeeComponent implements OnInit, OnDestroy {
     })
     if (proceed) {
       this.spinner.show();
-      this.departmentForm.get('deptCode').setValue(this.globalServ.checkAndRemoveSpecialCharacters(this.departmentForm.controls.deptCode.value), { emitEvent: false });
-      this.departmentForm.get('deptName').setValue(this.globalServ.checkAndRemoveSpecialCharacters(this.departmentForm.controls.deptName.value), { emitEvent: false });
+      // this.departmentForm.get('deptCode').setValue(this.globalServ.checkAndRemoveSpecialCharacters(this.departmentForm.controls.deptCode.value), { emitEvent: false });
+      // this.departmentForm.get('deptName').setValue(this.globalServ.checkAndRemoveSpecialCharacters(this.departmentForm.controls.deptName.value), { emitEvent: false });
       this.spinner.show();
       const obj = {
         deptDto: {
@@ -973,7 +1016,7 @@ export class AddPayrollEmployeeComponent implements OnInit, OnDestroy {
                 'pctSize': ele.pctSize,
                 'dataLength': ele.dataLength,
                 dataType: ele.dataType,
-                mandatory: ele.mandatory,
+                isMandatory: ele.isMandatory,
                 placeHolder: ele.placeHolder,
                 sameLine: ele.sameLine,
                 subheadName: element.columnCode,
@@ -996,7 +1039,7 @@ export class AddPayrollEmployeeComponent implements OnInit, OnDestroy {
         const index = temporyData.findIndex(x => x.columnCode === element.subheadName);
         if (index !== -1) {
           temporyData[index].array.push(element);
-        } 
+        }
       });
       temporyData.forEach((x) => {
         x.array.sort((a, b) => { return a.sortOrder - b.sortOrder })
@@ -1009,7 +1052,7 @@ export class AddPayrollEmployeeComponent implements OnInit, OnDestroy {
           );
         }
         this.othersForm.addControl(field.columnName,
-          this.formBuilder.control('', field.mandatory ? [Validators.required] : [])
+          this.formBuilder.control('', field.isMandatory ? [Validators.required] : [])
         );
       });
       this.processData(array).then(() => {
@@ -1261,7 +1304,7 @@ export class AddPayrollEmployeeComponent implements OnInit, OnDestroy {
         this.supervisors = res.response;
         if (res.response.length == 1 && !this.view && !this.update) {
           this.payrollForm.controls.supervisor.setValue(res.response[0].employeeName);
-            this.payrollForm.controls.supervisorId.setValue(res.response[0].employeeCode);
+          this.payrollForm.controls.supervisorId.setValue(res.response[0].employeeCode);
         }
       }
     );
@@ -1524,7 +1567,7 @@ export class AddPayrollEmployeeComponent implements OnInit, OnDestroy {
           text: err.error.status.message,
           icon: 'error',
         });
-    });
+      });
 
   }
 
@@ -1562,7 +1605,7 @@ export class AddPayrollEmployeeComponent implements OnInit, OnDestroy {
           objToCheck[paramName] = req[paramName];
         }
       }
-    } 
+    }
     let doc = [];
     doc = this.empDoc.filter(x => x.image)
     const salaryComponents = [];

@@ -50,7 +50,7 @@ export class AddExpenseComponent implements OnInit, OnDestroy {
     private UtilServ: UtilService,
     private sanitizer: DomSanitizer,
     private router: Router,
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private httpPut: HttpPutService,) {
   }
 
@@ -215,12 +215,17 @@ export class AddExpenseComponent implements OnInit, OnDestroy {
   }
 
   getCatagiroies() {
-    this.httpGetService.getMasterList('empexpsubcategory').subscribe(
-      (res: any) => {
-        this.catagaroyList = res.response;
-      }, (err) => {
-        console.error(err.error.status.message);
-      })
+    if (this.UtilServ.empexpsubcategoryList.length > 0) {
+      this.catagaroyList = this.UtilServ.empexpsubcategoryList;
+    } else {
+      this.httpGetService.getMasterList('empexpsubcategory').subscribe(
+        (res: any) => {
+          this.catagaroyList = res.response;
+          this.UtilServ.empexpsubcategoryList = res.response;
+        }, (err) => {
+          console.error(err.error.status.message);
+        })
+    }
   }
   extractMimeType(dataUrl: string): string {
     const match = dataUrl.match(/^data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
@@ -331,8 +336,11 @@ export class AddExpenseComponent implements OnInit, OnDestroy {
   }
 
   removeItem(index) {
-    this.itemsArray[index].isDeleted = true;
-    this.getTotal();
+    if (this.itemsArray[index].billId !== undefined && this.itemsArray[index].billId !== null) {
+      this.itemsArray[index].isDeleted = true;
+    } else {
+      this.itemsArray.splice(index, 1);
+    } this.getTotal();
   }
 
   createExpense() {
@@ -342,6 +350,16 @@ export class AddExpenseComponent implements OnInit, OnDestroy {
       }
       return;
     } else {
+      const emptyRecords = this.itemsArray.filter(x => x.itemName == '' || x.itemQty == '' || x.itemRate == '')
+      if (emptyRecords.length > 0) {
+        Swal.fire({
+          title: 'Error',
+          text: 'Expense items should not be empty',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        })
+      }
+      else {
       this.expenseForm.get('expenseTittle')
         .setValue(this.globalServ.checkAndRemoveSpecialCharacters(this.expenseForm.controls.expenseTittle.value), { emitEvent: false });
       this.spinner.show();
@@ -389,75 +407,86 @@ export class AddExpenseComponent implements OnInit, OnDestroy {
         });
     }
   }
+  }
 
   Update() {
     this.expenseForm.get('expenseTittle').setValue(this.globalServ.checkAndRemoveSpecialCharacters(this.expenseForm.controls.expenseTittle.value), { emitEvent: false });
     const documents = [];
-    this.spinner.show();
-    this.receipts.forEach(img => {
-      if (img.documentId === null) {
-        documents.push(img);
-      }
-    });
-    const data = {
-      billCode: this.UtilServ.editData.row.billCode,
-      billDate: this.expenseForm.controls.dateOfExpense.value,
-      billId: this.UtilServ.editData.row.billId,
-      buCode: this.UtilServ.editData.row.buCode,
-      employeeCode: this.userProfile.employeeCode,
-      totalAmt: this.expenseForm.controls.amount.value,
-      totalQty: this.UtilServ.editData.row.totalQty,
-      costCenterCode: this.UtilServ.editData.row.costCenterCode,
-      categoryCode: this.UtilServ.editData.row.categoryCode,
-      subcategoryCode: this.expenseForm.controls.expenseType.value,
-      status: this.UtilServ.editData.row.status,
-      paidAmt: this.UtilServ.editData.row.paidAmt,
-      paymentStatus: this.UtilServ.editData.row.paymentStatus,
-      notes: this.expenseForm.controls.comments.value,
-      approvedBy: this.UtilServ.editData.row.approvedBy,
-      createdby: this.UtilServ.editData.row.createdby,
-      createddate: this.UtilServ.editData.row.createddate,
-      divisionCode: this.UtilServ.editData.row.divisionCode,
-      lastmodifiedby: this.UtilServ.editData.row.lastmodifiedby,
-      lastmodifieddate: this.UtilServ.editData.row.lastmodifieddate,
-      approveddate: this.UtilServ.editData.row.approveddate,
-      title: this.expenseForm.controls.expenseTittle.value,
-      empExpenseDocuments: this.receipts,
-      tenantCode: this.UtilServ.editData.row.tenantCode,
-      approved: this.UtilServ.editData.row.approved,
-      employeeExpenseLines: this.itemsArray,
-    };
-    this.httpPut.doPut('employeeexpense', data).subscribe((res: any) => {
-      this.spinner.hide();
-      if (res.status.message == 'SUCCESS') {
-        Swal.fire({
-          title: 'Success',
-          text: this.expenseForm.controls.expenseTittle.value + ' Updated',
-          icon: 'success',
-          confirmButtonText: 'OK',
-        }).then(() => {
-          this.router.navigateByUrl('/expenses');
-          this.expenseForm.reset();
-          this.itemsArray = [];
-          this.receipts = [];
-          this.totalAmt = 0;
-          this.UtilServ.expensesByEmp = [];
-          this.UtilServ.AllExpenses = [];
-          this.totalQty = 0;
-        });
-      }
-    },
-      err => {
-        this.spinner.hide();
-        Swal.fire({
-          title: 'Error!',
-          text: err.error.status.message,
-          icon: 'error',
-        });
+    const emptyRecords = this.itemsArray.filter(x => x.itemName == '' || x.itemQty == '' || x.itemRate == '')
+    if (emptyRecords.length > 0) {
+      Swal.fire({
+        title: 'Error',
+        text: 'Expense items should not be empty',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      })
+    }
+    else {
+      this.spinner.show();
+      this.receipts.forEach(img => {
+        if (img.documentId === null) {
+          documents.push(img);
+        }
       });
+      const data = {
+        billCode: this.UtilServ.editData.row.billCode,
+        billDate: this.expenseForm.controls.dateOfExpense.value,
+        billId: this.UtilServ.editData.row.billId,
+        buCode: this.UtilServ.editData.row.buCode,
+        employeeCode: this.userProfile.employeeCode,
+        totalAmt: this.expenseForm.controls.amount.value,
+        totalQty: this.UtilServ.editData.row.totalQty,
+        costCenterCode: this.UtilServ.editData.row.costCenterCode,
+        categoryCode: this.UtilServ.editData.row.categoryCode,
+        subcategoryCode: this.expenseForm.controls.expenseType.value,
+        status: this.UtilServ.editData.row.status,
+        paidAmt: this.UtilServ.editData.row.paidAmt,
+        paymentStatus: this.UtilServ.editData.row.paymentStatus,
+        notes: this.expenseForm.controls.comments.value,
+        approvedBy: this.UtilServ.editData.row.approvedBy,
+        createdby: this.UtilServ.editData.row.createdby,
+        createddate: this.UtilServ.editData.row.createddate,
+        divisionCode: this.UtilServ.editData.row.divisionCode,
+        lastmodifiedby: this.UtilServ.editData.row.lastmodifiedby,
+        lastmodifieddate: this.UtilServ.editData.row.lastmodifieddate,
+        approveddate: this.UtilServ.editData.row.approveddate,
+        title: this.expenseForm.controls.expenseTittle.value,
+        empExpenseDocuments: this.receipts,
+        tenantCode: this.UtilServ.editData.row.tenantCode,
+        approved: this.UtilServ.editData.row.approved,
+        employeeExpenseLines: this.itemsArray,
+      };
+      this.httpPut.doPut('employeeexpense', data).subscribe((res: any) => {
+        this.spinner.hide();
+        if (res.status.message == 'SUCCESS') {
+          Swal.fire({
+            title: 'Success',
+            text: this.expenseForm.controls.expenseTittle.value + ' Updated',
+            icon: 'success',
+            confirmButtonText: 'OK',
+          }).then(() => {
+            this.router.navigateByUrl('/expenses');
+            this.expenseForm.reset();
+            this.itemsArray = [];
+            this.receipts = [];
+            this.totalAmt = 0;
+            this.UtilServ.expensesByEmp = [];
+            this.UtilServ.AllExpenses = [];
+            this.totalQty = 0;
+          });
+        }
+      },
+        err => {
+          this.spinner.hide();
+          Swal.fire({
+            title: 'Error!',
+            text: err.error.status.message,
+            icon: 'error',
+          });
+        });
+    }
   }
   previewRow(i, data) {
     this.PreviewObject = data
   }
-
 }

@@ -48,7 +48,7 @@ export class CreateUserComponent implements OnInit, OnChanges, canLeaveComponent
     private httpPostService: HttpPostService,
     private spinner: NgxSpinnerService,
     private UtilServ: UtilService,
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private httpGetService: HttpGetService,
     private httpPutService: HttpPutService
   ) {
@@ -128,7 +128,11 @@ export class CreateUserComponent implements OnInit, OnChanges, canLeaveComponent
       .subscribe(
         (res: any) => {
           this.spinner.hide();
-          this.List = res.response;
+          const list = res.response.map(x => {
+            x.empNameCode = x.name.concat(' (' + x.code + ')');
+            return x;
+          })
+          this.List = list;
         },
         (err) => {
           this.spinner.hide();
@@ -142,7 +146,7 @@ export class CreateUserComponent implements OnInit, OnChanges, canLeaveComponent
       );
   }
   getroleCodeList() {
-    this.httpGetService.getMasterList('secroles?app=atlas').subscribe(
+    this.httpGetService.getMasterList('secroles?app=ATLAS').subscribe(
       (res: any) => {
         this.roleCodeList = res.response;
       },
@@ -181,8 +185,9 @@ export class CreateUserComponent implements OnInit, OnChanges, canLeaveComponent
       userName: ['', Validators.required],
       phoneNo: [''],
       email: [''],
-      password: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
-      confirm_password: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
+      password: [''],
+      // Validators.compose([Validators.required, Validators.minLength(8)])
+      confirm_password: [''],
       userType: [''],
       userCode: ['', Validators.required],
       accountLocked: false,
@@ -386,11 +391,12 @@ export class CreateUserComponent implements OnInit, OnChanges, canLeaveComponent
     const obj = {
       "user": {
         "userName": this.userForm.controls.userName.value.trim(),
-        "password": this.userForm.controls.password.value,
+        "password": this.userForm.controls.onboardingFlow.value === 'manual' ? this.userForm.controls.password.value : 'welcome1@',
         "userType": this.selectedUserType,
         firstLogin: this.userForm.controls.onboardingFlow.value === 'manual'
           ? false
           : this.userForm.controls.firstLogin.value,
+        onboardingFlow: this.userForm.controls.onboardingFlow.value,
         userCode: this.userForm.controls.userCode.value,
         "multiBranch": this.userForm.controls.multiBranch.value == null
           ? false

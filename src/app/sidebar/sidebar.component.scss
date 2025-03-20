@@ -1,5 +1,31 @@
+// .submenu-slidedown {
+//     display: block;
+//     transition: display 2s ease-out;
+//   }
+
+//   .submenu-slideup {
+//     display: none;
+//   }
+
+//   a {
+//     text-decoration: none !important;
+//   }
+// :not(.mini-sidebar) .mainsub.is-active {
+//   display: block;
+// }
+
+
+// .mainsub.is-active {
+//   display: block;
+// }
+
+// .mainsub {
+//   display: none;
+//   // background: #eefbff;
+//     // border-radius: 12px 12px 12px 12px;
+// }
 .submenu-slidedown {
-    display: block;
+  display: block;
     transition: display 2s ease-out;
   }
   
@@ -7,9 +33,10 @@
     display: none;
   }
 
-  a {
-    text-decoration: none !important;
-  }
+a {
+  text-decoration: none !important;
+}
+
 :not(.mini-sidebar) .mainsub.is-active {
   display: block;
 }
@@ -22,5 +49,38 @@
 .mainsub {
   display: none;
   // background: #eefbff;
-    // border-radius: 12px 12px 12px 12px;
+  // border-radius: 12px 12px 12px 12px;
+}
+
+
+/* Sidebar Layout */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  /* Ensure sidebar takes up the full height of the window */
+}
+
+/* This part makes sure that the scrollbar is applied to the content area */
+.sidebar-inner {
+  flex-grow: 1;
+  /* Makes sure this part grows and takes all available space */
+  overflow: auto;
+  /* Enables scrolling for this section */
+  height: 100%;
+  /* Ensure it fills the available space */
+}
+
+/* Make sure the perfect-scrollbar behaves correctly */
+.my-scroll-container {
+  height: 100%;
+  overflow-y: auto;
+  /* Enable scrolling */
+}
+
+/* Bottom section (Branch section) */
+.text-dark.p-3.dropright,
+.text-dark.p-3 {
+  margin-top: auto;
+  /* Pushes the branch dropdown to the bottom */
+  /* This will always make sure the branch section stays at the bottom of the sidebar */
 }

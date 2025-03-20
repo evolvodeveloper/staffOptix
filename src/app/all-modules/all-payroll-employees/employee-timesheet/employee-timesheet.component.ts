@@ -44,11 +44,8 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
   stopSpinner = true;
   allRecords = [];
   allRecordsTemp = [];
+  config: any;
 
-  allrecordsConfig: any;
-  unApprovedconfig: any;
-  validationNeededconfig: any;
-  isApprovedconfig: any;
 
   unApprovedtemp = [];
   unApprovedRows = [];
@@ -70,9 +67,10 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
   checked = false;
   shifts = [];
   allShifts = [];
+  searchText = '';
   constructor(
     private httpGetService: HttpGetService,
-    private global: GlobalvariablesService,
+    public global: GlobalvariablesService,
     private router: Router,
     private acRoute: ActivatedRoute,
     private excelSer: ExcelService,
@@ -81,25 +79,10 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
     private spinner: NgxSpinnerService,
     private httpPutService: HttpPutService
   ) {
-    this.allrecordsConfig = {
+    this.config = {
       itemsPerPage: 25,
       currentPage: 1,
       totalItems: this.allRecords.length,
-    };
-    this.unApprovedconfig = {
-      itemsPerPage: 25,
-      currentPage: 1,
-      totalItems: this.unApprovedRows.length,
-    };
-    this.validationNeededconfig = {
-      itemsPerPage: 25,
-      currentPage: 1,
-      totalItems: this.validationNeededRows.length,
-    };
-    this.isApprovedconfig = {
-      itemsPerPage: 25,
-      currentPage: 1,
-      totalItems: this.isApprovedRecords.length,
     };
   }
 
@@ -111,6 +94,8 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
     });
     this.getDepartments();
     this.getShifts();
+    this.global.getMyCompLabels('attendanceLogComp');
+
   }
   ngAfterViewInit() {
     const rightCalendar = document.getElementsByClassName('calendar right');
@@ -204,16 +189,16 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
         this.dateFormat = this.global.dateFormat;
         this.stopSpinner = true;
       },
-      // err => {
-      //   this.stopSpinner = false;
-      //   Swal.fire({
-      //     title: 'Error!',
-      //     text: err.error.status.message,
-      //     icon: 'error',
-      //     timer: 3000,
-      //   });
-      // }
-    );
+        // err => {
+        //   this.stopSpinner = false;
+        //   Swal.fire({
+        //     title: 'Error!',
+        //     text: err.error.status.message,
+        //     icon: 'error',
+        //     timer: 3000,
+        //   });
+        // }
+      );
   }
 
   updateFilter(event) {
@@ -254,39 +239,23 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
     this.isApprovedRecordsTemp = [];
     this.message = 'clickOnsubmit';
   }
-  allrecordsPageChanged(event) {
-    this.allrecordsConfig.currentPage = event;
+  configPageChange(event) {
+    this.config.currentPage = event;
     // this.cdr.detectChanges();
   }
-  unApprovedPageChanged(event) {
-    this.unApprovedconfig.currentPage = event;
-  }
-  validationNeededpageChanged(event) {
-    this.validationNeededconfig.currentPage = event;
-  }
-  isApprovedpageChanged(event) {
-    this.isApprovedconfig.currentPage = event;
-  }
-
-  allRecordsresultPerPage(event) {
-    this.allrecordsConfig.itemsPerPage =
-      event.target.value == 'all' ? this.allRecordsTemp.length : event.target.value;
-    this.allrecordsConfig.currentPage = 1;
-  }
-  validationNeededresultsPerPage(event) {
-    this.validationNeededconfig.itemsPerPage =
-      event.target.value == 'all' ? this.validationNeededOrgTemp.length : event.target.value;
-    this.validationNeededconfig.currentPage = 1;
-  }
-  isApprovedResultsPerPage(event) {
-    this.isApprovedconfig.itemsPerPage =
-      event.target.value == 'all' ? this.isApprovedRecordsTemp.length : event.target.value;
-    this.isApprovedconfig.currentPage = 1;
-  }
-  resultsPerPage(event) {
-    this.unApprovedconfig.itemsPerPage =
-      event.target.value == 'all' ? this.unApprovedtemp.length : event.target.value;
-    this.unApprovedconfig.currentPage = 1;
+  formatTime(timeString: string | null | undefined): string {
+    // Check if the input is null or undefined
+    if (!timeString) {
+      console.log('Input time string cannot be null or undefined');
+    }
+    const parts = timeString.split(':');
+    if (parts.length === 3) {
+      return `${parts[0]}:${parts[1]}`;
+    } else if (parts.length === 2) {
+      return `${parts[0]}:${parts[1]}`;
+    } else {
+      console.log('Invalid time format. Expected format is hh:mm:ss');
+    }
   }
   submit() {
     this.spinner.show();
@@ -304,22 +273,14 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
         if (timesheetRes.length > 0) {
           timesheetRes.forEach(r => {
             r.comments = r.comments ? r.comments.replace(/\n/g, '<br>') : '';
-            r.totalHours1 = null;
-            r.effectiveHrs1 = null;
-            // totalHours
-            const resultInMinutes = r.totalHours ? r.totalHours * 60 : 0;
-            const h = Math.floor(resultInMinutes / 60);
-            const hours = h < 10 ? '0' + h : h
-            const m = Math.floor(resultInMinutes % 60);
-            const minutes = m < 10 ? '0' + m : m
-            r.totalHours1 = hours + ':' + minutes
+            r.totalHours1 = this.modifyTime(r.totalHours);
+            r.effectiveHrs1 = this.modifyTime(r.effectiveHrs);
+            r.regularHours1 = this.modifyTime(r.regularHours); 
 
-            const resultInMinutes1 = r.effectiveHrs ? r.effectiveHrs * 60 : 0;
-            const h1 = Math.floor(resultInMinutes1 / 60);
-            const hours1 = h1 < 10 ? '0' + h1 : h1
-            const m1 = Math.floor(resultInMinutes1 % 60);
-            const minutes1 = m1 < 10 ? '0' + m1 : m1
-            r.effectiveHrs1 = hours1 + ':' + minutes1
+            const inTime = r.inTime !== null && r.inTime !== '' ? r.inTime : '';
+            const outTime = r.outTime !== null && r.outTime !== '' ? r.outTime : '';
+            r.inTime = this.formatTime(inTime);
+            r.outTime = this.formatTime(outTime);
             r.logRecords = [];
             r.expand = false;
             r.OrginalInTime = r.inTime;
@@ -347,16 +308,13 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
               this.isApprovedRecordsTemp.push(r);
             }
           });
-
           const records = this.manageRecords(timesheetRes);        
           this.allRecords = records;
           this.allRecordsTemp = records;
           this.spinner.hide();
           this.sortData('employeeName');
-        this.allrecordsConfig.totalItems = this.allRecords.length;
-        this.validationNeededconfig.totalItems = this.validationNeededRows.length;
-        this.unApprovedconfig.totalItems = this.unApprovedRows.length;
-          this.isApprovedconfig.totalItems = this.isApprovedRecords.length;
+          this.config.totalItems = this.allRecords.length;
+          this.allrecordstab();
         } else {
           this.spinner.hide();
           Swal.fire({
@@ -366,15 +324,27 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
           });
         }
       },
-      // err => {
-      //   this.spinner.hide();
-      //   Swal.fire({
-      //     title: 'Error!',
-      //     text: err.error.status.message,
-      //     icon: 'error',
-      //   });
-      // }
-    )
+        // err => {
+        //   this.spinner.hide();
+        //   Swal.fire({
+        //     title: 'Error!',
+        //     text: err.error.status.message,
+        //     icon: 'error',
+        //   });
+        // }
+      )
+  }
+  modifyTime(time) {
+    if (time == null) {
+      return '--:--'
+    } else {
+      const resultInEXHMinutes = time ? time * 60 : 0;
+      const exh = Math.floor(resultInEXHMinutes / 60);
+      const exhours = exh < 10 ? '0' + exh : exh
+      const exm = Math.floor(resultInEXHMinutes % 60);
+      const exminutes = exm < 10 ? '0' + exm : exm
+      return exhours + ':' + exminutes
+    }
   }
 
   manageRecords(records) {
@@ -420,20 +390,20 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
     if (this.checked) {
       this.unApprovedRows.forEach(value => {
         if (value.OrginalOutTime && value.OrginalOutDate && value.OrginalInTime && value.OrginalInDate) {
-        // if (!value.approve) {
+          // if (!value.approve) {
           value.checked = true;
-        value.approved = this.checked;
-        this.approvedRowsPost.push(value)
+          value.approved = this.checked;
+          this.approvedRowsPost.push(value)
+          // }
+        }
+        // else {
+        //   Swal.fire({
+        //     title: 'Error!',
+        //     text: 'Please Select the records with IN and OUT Time & Date',
+        //     icon: 'error',
+        //   });
         // }
-      }
-      // else {
-      //   Swal.fire({
-      //     title: 'Error!',
-      //     text: 'Please Select the records with IN and OUT Time & Date',
-      //     icon: 'error',
-      //   });
-      // }
-    });
+      });
     } else {
       this.unApprovedRows.forEach(value => {
         if (value.checked) {
@@ -570,29 +540,29 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
       }
       row.inDateEdit = true;
       row.outDateEdit = true;
-    } 
+    }
   }
   approveItem(ev, item): void {
-      if (ev.target.checked) {
-        if (item.OrginalOutTime && item.OrginalOutDate && item.OrginalInTime && item.OrginalInDate) {
-          item.approved = true;
-          item.checked = true;
-          this.approvedRowsPost.push(item);
-        }
-        else {
-          ev.target.checked = false,
-            item.checked = false;
-            Swal.fire({
-              title: 'Error!',
-              text: 'Please select the records with IN and Out-time,Date',
-              icon: 'error',
-            });
-        }
+    if (ev.target.checked) {
+      if (item.OrginalOutTime && item.OrginalOutDate && item.OrginalInTime && item.OrginalInDate) {
+        item.approved = true;
+        item.checked = true;
+        this.approvedRowsPost.push(item);
       }
       else {
-        const id = this.approvedRowsPost.findIndex(x => x.id == item.id);
-        this.approvedRowsPost.splice(id, 1);
+        ev.target.checked = false,
+          item.checked = false;
+        Swal.fire({
+          title: 'Error!',
+          text: 'Please select the records with IN and Out-time,Date',
+          icon: 'error',
+        });
       }
+    }
+    else {
+      const id = this.approvedRowsPost.findIndex(x => x.id == item.id);
+      this.approvedRowsPost.splice(id, 1);
+    }
   }
   editData(row): void {
     row.inDateEdit = true;
@@ -832,19 +802,9 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
 
             Object.assign(row, res.response);
             const recordIndex = this.allRecords.findIndex(x => x.id == row.id);
-            const resultInMinutes = row.totalHours ? row.totalHours * 60 : 0;
-            const h = Math.floor(resultInMinutes / 60);
-            const hours = h < 10 ? '0' + h : h
-            const m = Math.floor(resultInMinutes % 60);
-            const minutes = m < 10 ? '0' + m : m
-            row.totalHours1 = hours + ':' + minutes
-
-            const resultInMinuteseffectiveHrs = row.effectiveHrs ? row.effectiveHrs * 60 : 0;
-            const heffectiveHrs = Math.floor(resultInMinuteseffectiveHrs / 60);
-            const hourseffectiveHrs = heffectiveHrs < 10 ? '0' + heffectiveHrs : heffectiveHrs
-            const meffectiveHrs = Math.floor(resultInMinuteseffectiveHrs % 60);
-            const minuteseffectiveHrs = meffectiveHrs < 10 ? '0' + meffectiveHrs : meffectiveHrs
-            row.effectiveHrs1 = hourseffectiveHrs + ':' + minuteseffectiveHrs
+            row.effectiveHrs1 = this.modifyTime(row.effectiveHrs); 
+            row.totalHours1 = this.modifyTime(row.totalHours); 
+            row.regularHours1 = this.modifyTime(row.regularHours); 
             this.allRecords[recordIndex] = row;
             this.allRecordsTemp[recordIndex] = row;
             const validIndex = this.validationNeededRows.findIndex(x => x.id == row.id);
@@ -879,7 +839,7 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
             icon: 'error',
           });
         })
-  }
+    }
   }
   approveRecord(): void {
     this.spinner.show();
@@ -918,27 +878,32 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
         })
   }
   allrecordstab() {
+    this.config.totalItems = this.allRecords.length;
+    this.config.currentPage = 1;
     this.firstTab = false;
     this.secondTab = false;
     this.thirdTab = false;
     this.allRecordsTab = true;
-
   }
   tab1() {
+    this.config.totalItems = this.validationNeededRows.length;
+    this.config.currentPage = 1;
     this.firstTab = true;
     this.secondTab = false;
     this.thirdTab = false;
     this.allRecordsTab = false;
-
   }
   tab2() {
+    this.config.totalItems = this.unApprovedRows.length;
+    this.config.currentPage = 1;
     this.firstTab = false;
     this.secondTab = true;
     this.thirdTab = false;
     this.allRecordsTab = false;
-
   }
   tab3() {
+    this.config.totalItems = this.isApprovedRecords.length;
+    this.config.currentPage = 1;
     this.firstTab = false;
     this.secondTab = false;
     this.thirdTab = true;
@@ -1008,11 +973,12 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
       '&empCode=' + this.reportObj.empCode + '&project=' + this.reportObj.projectCode + '&shift=' + this.reportObj.shiftCode).subscribe((res: any) => {
         this.spinner.hide();
         const data: Blob = new Blob([res], { type: EXCEL_TYPE });
+        const fileName = 'Un_Validated_Timesheet_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_')
         FileSaver.saveAs(
           data,
-          'Un_Validated_Timesheet' + new Date().getTime() + EXCEL_EXTENSION
+          fileName + EXCEL_EXTENSION
         );
-        this.global.showSuccessPopUp('Excel', 'success');
+        this.global.showSuccessPopUp('Excel', 'success', fileName);
       },
         err => {
           this.spinner.hide();
@@ -1029,10 +995,12 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
       + '&project=' + this.reportObj.projectCode + '&deptCode=' + this.reportObj.deptCode).subscribe((res: any) => {
         this.spinner.hide();
         const file = new Blob([res], { type: 'application/pdf' });
-        FileSaver.saveAs(file, 'Timesheet-report' + new Date().getTime() + '.pdf');
+        const fileName = 'Un_Validated_Timesheet_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_')
+        FileSaver.saveAs(file, fileName + '.pdf');
         const fileURL = URL.createObjectURL(file);
+
         window.open(fileURL);
-        this.global.showSuccessPopUp('Pdf', 'success');
+        this.global.showSuccessPopUp('Pdf', 'success', fileName);
       },
         err => {
           this.spinner.hide();
@@ -1054,11 +1022,12 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
       this.reportObj.to + '&empCode=' + this.reportObj.empCode + '&shiftCode=' + this.reportObj.shiftCode).subscribe((res: any) => {
         this.spinner.hide();
         const data: Blob = new Blob([res], { type: EXCEL_TYPE });
+        const fileName = 'Timesheet_Present_Records_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_')
         FileSaver.saveAs(
           data,
-          'Timesheet_Present_Records' + new Date().getTime() + EXCEL_EXTENSION
+          fileName + EXCEL_EXTENSION
         );
-        this.global.showSuccessPopUp('Excel', 'success');
+        this.global.showSuccessPopUp('Excel', 'success', fileName);
       },
         err => {
           this.spinner.hide();
@@ -1077,7 +1046,12 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
         this.spinner.hide();
         const file = new Blob([res], { type: 'application/pdf' });
         const fileURL = URL.createObjectURL(file);
-        this.global.showSuccessPopUp('Pdf', 'success');
+        const fileName = 'Timesheet_Present_Records_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_')
+        FileSaver.saveAs(
+          file,
+          fileName + '.pdf'
+        );
+        this.global.showSuccessPopUp('Pdf', 'success', fileName);
         window.open(fileURL);
       },
         err => {
@@ -1097,7 +1071,12 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
         this.spinner.hide();
         const file = new Blob([res], { type: 'application/pdf' });
         const fileURL = URL.createObjectURL(file);
-        this.global.showSuccessPopUp('Pdf', 'success');
+        const fileName = 'UnApproval_Records_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_')
+        FileSaver.saveAs(
+          file,
+          fileName + '.pdf'
+        );
+        this.global.showSuccessPopUp('Pdf', 'success', fileName);
         window.open(fileURL);
       },
         err => {
@@ -1119,11 +1098,13 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
       this.reportObj.to + '&empCode=' + this.reportObj.empCode + '&deptCode=' + this.reportObj.deptCode + '&shift=' + this.reportObj.shiftCode + '&project=' + this.reportObj.projectCode).subscribe((res: any) => {
         this.spinner.hide();
         const data: Blob = new Blob([res], { type: EXCEL_TYPE });
+        const fileName = 'UnApproval_Records_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_')
         FileSaver.saveAs(
           data,
-          'Timesheet_UnApproved_Records' + new Date().getTime() + EXCEL_EXTENSION
+          fileName + EXCEL_EXTENSION
         );
-        this.global.showSuccessPopUp('Excel', 'success');
+
+        this.global.showSuccessPopUp('Excel', 'success', fileName);
       },
         err => {
           this.spinner.hide();
@@ -1135,48 +1116,11 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
         });
   }
 
-  expandRow222(row: any): void {
-    row.logRecords = [];
-    row.expand = true;
-    row.loading = 'loading';
-    this.httpGetService.getMasterList('timesheetlogBytimesheetid?timesheetid=' + row.id).subscribe(
-      (res: any) => {
-        const newlogRecords = res.response;       
-        newlogRecords.forEach((x) => {
-          if (x.image) {
-            x.empImage = 'data:image/jpeg;base64,' + x.image;
-          }
-        });
-  
-        row.logRecords = newlogRecords;
-        row.loading = 'success';
-      }, (error) => {
-        row.loading = 'failed';
-        console.error(error);
-    })  
-    if (row.BreakShift) {
-      this.httpGetService.getMasterList('timesheetlogBytimesheetid?timesheetid=' + row.SecondId).subscribe(
-        (res: any) => {
-          const secondRecords = res.response;
-          secondRecords.forEach(element => {
-            if(element.image){
-              element.empImage = 'data:image/jpeg;base64,' + element.image;
-            }
-          });
-          row.logRecords = row.logRecords.concat(secondRecords);
-          row.loading = 'success';
-        }, (error) => {
-          row.loading = 'failed';
-          console.error(error);
-        })
-    }
-  }
-
   expandRow(row): void {
     // row.logRecords = [];
     row.expand = true;
     row.loading = 'loading';
-  
+
     // Helper function to process records
     const processRecords = (records: any[]) => {
       records.forEach((x) => {
@@ -1186,7 +1130,7 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
       });
       return records;
     };
-  
+
     // First API call wrapped in a promise
     const firstApiCall = new Promise<any[]>((resolve, reject) => {
       this.httpGetService.getMasterList('timesheetlogBytimesheetid?timesheetid=' + row.id).subscribe(
@@ -1198,22 +1142,20 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
         }
       );
     });
-  
+
     // Second API call wrapped in a promise
     const secondApiCall = row.BreakShift
       ? new Promise<any[]>((resolve, reject) => {
-          this.httpGetService.getMasterList('timesheetlogBytimesheetid?timesheetid=' + row.SecondId).subscribe(
-            (res: any) => {
-              resolve(processRecords(res.response));
-            },
-            (error) => {
-              reject(error);
-            }
-          );
-        })
-      : Promise.resolve([]); // If BreakShift is false, resolve with an empty array
-  
-    // Wait for both API calls to complete
+        this.httpGetService.getMasterList('timesheetlogBytimesheetid?timesheetid=' + row.SecondId).subscribe(
+          (res: any) => {
+            resolve(processRecords(res.response));
+          },
+          (error) => {
+            reject(error);
+          }
+        );
+      })
+      : Promise.resolve([]);
     Promise.all([firstApiCall, secondApiCall])
       .then((results) => {
         const [firstRecords, secondRecords] = results;
@@ -1225,9 +1167,6 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
         console.error(error);
       });
   }
-  
-  
-
   collapseRow(row: any): void {
     row.expand = false;
     row.highlight = false;
@@ -1235,6 +1174,13 @@ export class EmployeeTimesheetComponent implements OnInit, AfterViewInit {
   }
   previewRow(data) {
     this.PreviewObject = 'data:image/jpeg;base64,' + data;
+  }
+
+  filteredEmployees() {
+    return this.employees.filter(emp =>
+      emp.employeeName.toLowerCase().includes(this.searchText.toLowerCase()) ||
+      emp.employeeCode.toLowerCase().includes(this.searchText.toLowerCase())
+    );
   }
 
 }

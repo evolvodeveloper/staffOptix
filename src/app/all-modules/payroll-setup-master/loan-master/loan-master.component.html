@@ -3,7 +3,9 @@
         <div class="col-sm-12 col-lg-8 d-flex align-items-baseline">
             <i style="font-size:20px" class="fa fa-arrow-left me-4"
                 routerLink="/payrollsetup" aria-label="back"></i>
-            <h3 class="page-title">Loan Master List</h3>
+            <h3 class="page-title">
+                {{globalServ.showLabel('loanMasterHeader')}}
+            </h3>
         </div>
     </div>
 </div>
@@ -15,7 +17,7 @@
             <div class="col-sm-12 col-lg-3">
                 <div class="input-group">
                     <input type="text" class="form-control"
-                        placeholder="search by loan"
+                        placeholder="{{globalServ.showPlaceholder('searchLoan') }}"
                         (keyup)="updateFilter($event)"
                         style="border-radius: 8px 0px 0px 8px;height: calc(2.5rem + calc(var(--mo-border-width) * 2));">
                     <span class="input-group-text" id="basic-addon1">
@@ -39,11 +41,12 @@
                 <button id="add_user" type="button"
                     class="btn add-btn float-end d-flex"
                     *ngIf="hasPermissionToUpdate" (click)="create()"><i
-                        class="material-icons me-2">add</i> Add Loan</button>
+                        class="material-icons me-2">add</i>{{globalServ.showLabel('addLoan')}}</button>
             </div>
 
             <div class="col-sm-6 col-lg-2 mt-30px">
-                <label class="form-label ms-2">Show entries</label>
+                <label
+                    class="form-label ms-2">{{globalServ.getGlobalNames('ShowEntries')}}</label>
                 <select class="form-select" (change)="resultsPerPage($event)">
                     <!-- <option value="10">10</option> -->
                     <option value="25">25</option>
@@ -59,19 +62,29 @@
                 class="table table-hover table-nowrap custom-table mb-0 datatable">
                 <thead class="thead-all">
                     <tr class="tr-th-all">
-                        <th scope="col">Loan Name</th>
-                        <th scope="col">EMI Type</th>
-                        <th scope="col">Loan Type</th>
-                        <th scope="col" class="text-center">Max Loan Amount</th>
-                        <th scope="col" class="text-center">Number Of Instalments</th>
-                        <th scope="col" class="text-center">Fixed Amount</th>                     
-                        <th scope="col" class="text-center">Action</th>
+                        <th
+                            scope="col">{{globalServ.showLabel('loanName')}}</th>
+                        <th scope="col">{{globalServ.showLabel('emiType')}}</th>
+                        <th
+                            scope="col">{{globalServ.showLabel('loanType')}}</th>
+                        <th scope="col" class="text-center">
+                            {{globalServ.showLabel('maxLoanAmount')}}
+                        </th>
+                        <th scope="col" class="text-center">
+                            {{globalServ.showLabel('noOfInstalments')}}
+                        </th>
+                        <th scope="col" class="text-center">
+                            {{globalServ.getGlobalNames('fixedAmount')}}
+                        </th>
+                        <th scope="col" class="text-center">
+                            {{globalServ.getGlobalNames('action')}}
+                        </th>
                     </tr>
                 </thead>
                 <tbody *ngIf="rows.length === 0">
                     <tr style=" text-align: center; height: 150px;">
                         <td colspan="8">
-                            "No records were found with the selected filter criteria."
+                            {{globalServ.showGlobalErrors('notFound')}}
                         </td>
                     </tr>
                 </tbody>

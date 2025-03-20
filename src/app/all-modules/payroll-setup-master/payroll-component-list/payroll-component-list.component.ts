@@ -43,7 +43,7 @@ export class PayrollComponentListComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private utilServ: UtilService,
     private router: Router,
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private httpPOst: HttpPostService,
     private httpPutServ: HttpPutService
   ) {
@@ -57,6 +57,8 @@ export class PayrollComponentListComponent implements OnInit {
     this.secondTab = true;
   }
   ngOnInit() {
+    this.globalServ.getMyCompLabels('salaryMaster');
+    this.globalServ.getMyCompPlaceHolders('salaryMaster');
     this.getProjects();
     this.getDepartments();
     this.employeesByDepartmentAndProject();

@@ -7,7 +7,10 @@
         routerLink="/timesetup/leavesetup"
         aria-label="back"></i>
       <h3 class="ms-4 page-title">
-        {{ view ? "View" : update ? "Update" : "Create" }} Leave Setup
+        {{ view ? globalServ.getGlobalNames('view') : (update ?
+        globalServ.getGlobalNames('update')
+        :globalServ.getGlobalNames('create')) }}
+        {{globalServ.showLabel('leaveSetup')}}
       </h3>
     </div>
   </div>
@@ -19,17 +22,17 @@
       <div class="row">
         <div class="col-md-12">
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 ">
               <div class="form-group">
                 <label class="text-sm mb-1">
-                 Leave Plan&nbsp;<span
+                  {{globalServ.showLabel('leavePlanCode')}}&nbsp;<span
                     style="color: #f62d51">*</span></label>
                 <select
                   class="form-select"
                   (change)="onChangeInPlanCode(leavesetUpForm.controls.leavePlanCode)"
                   [formControl]="leavesetUpForm.controls.leavePlanCode">
                   <option [value] selected
-                    disabled>{{getPlaceholdersDescription('leavePlan')}}</option>
+                    disabled>{{globalServ.showPlaceholder('leavePlan')}}</option>
                   <option
                     *ngFor="let lp of leavePlansList"
                     [value]="lp.leavePlanCode">
@@ -39,16 +42,16 @@
               </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 ">
               <div class="form-group">
                 <label class="text-sm mb-1">
-                Leave Type&nbsp;<span
+                  {{globalServ.showLabel('leaveTypeCode')}}&nbsp;<span
                     style="color: #f62d51">*</span></label>
                 <select
                   class="form-select"
-                    (change)="onleaveTypeCodeChange()"
+                  (change)="onleaveTypeCodeChange()"
                   [formControl]="leavesetUpForm.controls.leaveTypeCode">
-                  <option [value] selected disabled>Select Leave Type</option>
+                  <option [value] selected disabled>-</option>
                   <option
                     *ngFor="let lp of leaveTypesList"
                     [disabled]="lp.disable"
@@ -56,7 +59,7 @@
                     {{ lp.leaveTypeCode }}
                   </option>
                 </select>
-                <div *ngIf="
+                <div class="mt-2" *ngIf="
                     leavesetUpForm.controls['leaveTypeCode'].invalid &&
                     (leavesetUpForm.controls['leaveTypeCode'].dirty ||
                       leavesetUpForm.controls['leaveTypeCode'].touched)
@@ -65,86 +68,85 @@
                   <div
                     *ngIf="leavesetUpForm.controls['leaveTypeCode'].errors.required"
                     style="color: #dc3545">
-                    Leave type is required.
+                    {{globalServ.showLabel('leaveTypeCode')}}
+                    {{globalServ.showGlobalErrors('required')}}
                   </div>
                 </div>
               </div>
             </div>
-            <div class="col-md-6">
+
+            <div class="col-md-6 ">
               <div class="form-group input">
                 <label class="text-sm mb-1">
-                  What is the annual quota of paid leave days for an employee ?</label>
+                  {{globalServ.showLabel('leavesquota')}} &nbsp;<span
+                    style="color: #f62d51">*</span>
+                </label>
                 <input
-                  placeholder="Enter Leaves"
+                  placeholder="{{globalServ.showPlaceholder('enterNumberOfLeave')}}"
                   id="leaves"
                   type="number"
+                  (change)="onChangeInEnterNumberOfLeaves(leavesetUpForm.controls.leaves.value)"
                   class="form-control"
                   [formControl]="leavesetUpForm.controls.leaves" />
               </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 ">
               <div class="form-group input">
                 <label class="mb-1 text-sm">
-                 What is the maximum limit an employee can take at one instance ?</label>
+                  {{globalServ.showLabel('maxTakeAtatime')}} &nbsp;<span
+                    style="color: #f62d51">*</span>
+                </label>
                 <input
                   id="maxTakeAtatime"
-                  placeholder="Enter Max Take At Atime"
+                  (change)="maxLeaveAtOneInstance()"
+                  placeholder="{{globalServ.showPlaceholder('maxTakeAtatime')}}"
                   type="number"
                   class="form-control"
                   [formControl]="leavesetUpForm.controls.maxTakeAtatime" />
               </div>
             </div>
 
-            <div class="col-md-6  my-auto ps-3">
-              <div class="form-check">
+            <div class="col-md-6   my-auto">
+              <div class="form-check ms-1">
                 <input
                   class="form-check-input"
                   type="checkbox"
                   id="isPaidLeave"
+                  (change)="isPaidLeaveFun()"
                   [formControl]="leavesetUpForm.controls.isPaidLeave" />
                 <label class="form-check-label" for="isPaidLeave">
-                  Is this a paid leave ?</label>
+                  {{globalServ.showLabel('isPaidLeave')}}</label>
               </div>
             </div>
 
             <div
-              class="col-md-6"
+              class="col-md-6 "
               *ngIf="leavesetUpForm.controls.isPaidLeave.value === true">
               <div class="form-group input">
-                <label class="text-sm mb-1">Pay Percentage</label>
+                <label
+                  class="text-sm mb-1">{{globalServ.showLabel('payPercentage')}}
+                  &nbsp;<span *ngIf="leavesetUpForm.controls.payPct.validator"
+                    style="color: red;">*</span></label>
                 <input
                   type="number"
-                  placeholder="Enter leave pay percentage"
+                  placeholder="{{globalServ.showPlaceholder('payPercentage')}}"
                   id="payPct"
                   class="form-control"
                   [formControl]="leavesetUpForm.controls.payPct" />
               </div>
             </div>
-            <div class="form-check col-md-12 mt-2 ms-3">
+            <div class="col-md-4 d-md-none d-lg-block"> </div>
+            <div class="form-check col-md-12  ms-3">
               <input
                 class="form-check-input"
                 type="checkbox"
                 id="canApplyHalf"
                 [formControl]="leavesetUpForm.controls.canApplyHalf" />
               <label class="form-check-label" for="canApplyHalf">
-                Can an employee apply half day leave ?</label>
+                {{globalServ.showLabel('canApplyHalf')}}</label>
             </div>
-            <div class="col-md-6 mt-2">
-              <div class="form-group input">
-                <label class="text-sm mb-1"
-                  for="eligibleFromDojInMonths">Credit Leaves for the Month only if Employee joins before 
-                </label>
-                <select
-                  class="select floating form-select"
-                  id="eligibleFromDojInMonths"
-                  [formControl]="leavesetUpForm.controls.eligibleFromDojInMonths">
-                  <option selected value>-</option>
-                  <option [value]="date.code" *ngFor="let date of dates" >{{date.name}}</option>
 
-                </select>
-              </div>
-            </div>
             <!-- <div class="col-md-6">
               <div class="form-group">
                 <label class="text-sm mb-1" for="calendarStartMonth"
@@ -185,194 +187,319 @@
                 (change)="checkCanCarryForward(leavesetUpForm.controls.canCarryForward.value)"
                 [formControl]="leavesetUpForm.controls.canCarryForward" />
               <label class="form-check-label"
-                for="canCarryForward">Can an employee carry forward unused leaves to the next year</label>
+                for="canCarryForward">{{globalServ.showLabel('canCarryForward')}}</label>
             </div>
 
             <div class="row align-items-baseline">
-
-
-            <div
-              class="col-md-4 "
-              *ngIf="leavesetUpForm.controls.canCarryForward.value === true">
-              <div class="form-group input">
-                <label class="text-sm mb-1" for="yearlyCarryForwardLimit">
-                How many leaves can an employee carryforward to the next year
-                </label>
-                <input
-                  type="number"
-                  placeholder="Enter Yearly Limit"
-                  id="yearlyCarryForwardLimit"
-                  class="form-control"
-                  [formControl]="
-                    leavesetUpForm.controls.yearlyCarryForwardLimit
-                  " />
+              <div
+                class="col-md-3 "
+                *ngIf="leavesetUpForm.controls.canCarryForward.value === true">
+                <div class="form-group input">
+                  <label class="text-sm mb-1" for="maxCarryForwardLimit">
+                    {{globalServ.showLabel('maxCarryForwardLimit')}} &nbsp;<span
+                      *ngIf="leavesetUpForm.controls.maxCarryForwardLimit.validator"
+                      style="color: red;">*</span></label>
+                  <input
+                    type="number"
+                    (change)="onMaxCarryForwardLimitChange()"
+                    placeholder="{{globalServ.showPlaceholder('maxCarryForwardLimit')}}"
+                    id="maxCarryForwardLimit"
+                    class="form-control"
+                    [formControl]="leavesetUpForm.controls.maxCarryForwardLimit" />
+                </div>
               </div>
-            </div>
-            <div
-              class="col-md-4"
-              *ngIf="leavesetUpForm.controls.canCarryForward.value === true">
-              <div class="form-group input">
-                <label class="text-sm mb-1" for="maxCarryForwardLimit">
-                  How many leaves can an employee carryforward</label>
-                <input
-                  type="number"
-                  placeholder="Enter Max Carry Forward"
-                  id="maxCarryForwardLimit"
-                  class="form-control"
-                  [formControl]="leavesetUpForm.controls.maxCarryForwardLimit" />
+              <div
+                class="col-md-3"
+                *ngIf="leavesetUpForm.controls.canCarryForward.value === true">
+                <div class="form-group input">
+                  <label class="text-sm mb-1" for="yearlyCarryForwardLimit">
+                    {{globalServ.showLabel('yearlyCarryForwardLimit')}}
+                    &nbsp;<span
+                      *ngIf="leavesetUpForm.controls.yearlyCarryForwardLimit.validator"
+                      style="color: red;">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="{{globalServ.showPlaceholder('yearlyCarryForwardLimit')}}"
+                    id="yearlyCarryForwardLimit"
+                    (change)="onMaxCarryForwardLimitChange()"
+                    class="form-control"
+                    [formControl]="
+                    leavesetUpForm.controls.yearlyCarryForwardLimit" />
+                </div>
               </div>
-            </div>
-            <div
-              class="col-md-4"
-              *ngIf="leavesetUpForm.controls.canCarryForward.value === true">
-              <div class="form-group input">
-                <label class="text-sm mb-1" for="lapseAfterYears">
-                How many years will the leave lapse ? </label>
-                <input
-                  id="lapseAfterYears"
-                  placeholder="Enter Carry forward Leaves Upto (in years)"
-                  type="number"
-                  class="form-control"
-                  [formControl]="leavesetUpForm.controls.lapseAfterYears" />
-              </div>
-            </div>
 
- </div>
-
-            <div><b>Weekend</b></div>
-
-            <div class="form-check col-md-12 my-3 ms-3">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                (change)="checkForSandwich(leavesetUpForm.controls.allowDeductionInLeaves4Weekend.value)"
-                id="allowDeductionInLeaves4Weekend"
-                [formControl]="
-                  leavesetUpForm.controls.allowDeductionInLeaves4Weekend
-                " />
-              <label
-                class="form-check-label"
-                for="allowDeductionInLeaves4Weekend">Should the weekends coming in between the leaves be considered as leave ?
-                </label>
-            </div>
-
-            <div><b>Holidays</b></div>
-
-            <div class="form-check col-md-12 my-3 ms-3">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                 (change)="checkForSandwichHoliday(leavesetUpForm.controls.allowDeductionInLeaves4Holiday.value)"
-                id="allowDeductionInLeaves4Holiday"
-                [formControl]="
-                  leavesetUpForm.controls.allowDeductionInLeaves4Holiday
-                " />
-              <label
-                class="form-check-label"
-                for="allowDeductionInLeaves4Holiday">Should the holidays coming in between the leaves be considered as leave ?
-              </label>
-            </div>
-
-            <div
-              class="col-md-6"
-              *ngIf="leavesetUpForm.controls.allowDeductionInLeaves4Weekend.value === true  || leavesetUpForm.controls.allowDeductionInLeaves4Holiday.value === true">
-              <div class="form-group input">
-                <label class="text-sm mb-1">Consider weekend/holidays as leave only if number of leaves cross days
-                  <span class="text-danger">*</span></label>
-                <input
-                  type="number"
-                  placeholder="Enter Max Leave For Sandwich"
-                  id="maxLeaveAllowedForSandwich"
-                  class="form-control"
-                  [formControl]="
-                    leavesetUpForm.controls.maxLeaveAllowedForSandwich" />
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group input">
-                <label class="text-sm mb-1">Leave Policy</label>
-                <input
-                  type="text"
-                  placeholder="Enter leave policy"
-                  id="leavePolicy"
-                  class="form-control"
-                  [formControl]="leavesetUpForm.controls.leavePolicy" />
-              </div>
-            </div>
-
-            <div class="row">
-
-            <div class="form-check col-md-4 my-auto ms-3">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="canMixOtherLeave" (change)="canMixOtherLeave()"
-                [formControl]="leavesetUpForm.controls.canMixOtherLeave" />
-              <label class="form-check-label" for="canMixOtherLeave">
-               Is it possible to Mix Other Leaves with this Leave ?</label>
-            </div>
-
-            <div
-              class="col-md-6"  >
-              <div class="form-group input" *ngIf="leavesetUpForm.controls.canMixOtherLeave.value === true" >
-                <label class="text-sm mb-1" for="canMixWith"> With whom You Have to Mix With
-                </label>
-                <select
-                  class="form-select" id="canMixWith"
-                  [formControl]="leavesetUpForm.controls.canMixWith">
-                  <option [value] selected
-                    disabled>Enter leave type</option>
-                  <option
-                    *ngFor="let lp of otherThanLeaveType"
-                    [value]="lp.leaveTypeCode">
-                    {{ lp.leaveTypeCode }}
-                  </option>
-                </select>
-              </div>
-            </div>
-</div>
-            <div class="col-md-6">
-              <div class="form-group input">
-                <label class="text-sm mb-1">
-                  Accrual Policy&nbsp;<span
-                    style="color: #f62d51">*</span></label>
-                <input
-                  type="number"
-                  placeholder="Enter accrual policy"
-                  id="accrualPolicy"
-                  class="form-control"
-                  [formControl]="leavesetUpForm.controls.accrualPolicy" />
-                <div *ngIf="
-                    leavesetUpForm.controls['accrualPolicy'].invalid &&
-                    (leavesetUpForm.controls['accrualPolicy'].dirty ||
-                      leavesetUpForm.controls['accrualPolicy'].touched)
-                  "
-                  style="padding: 0px">
-                  <div
-                    *ngIf="leavesetUpForm.controls['accrualPolicy'].errors.required"
-                    style="color: #dc3545">
-                    Accrual Policy is required.
-                  </div>
+              <div
+                class="col-md-3"
+                *ngIf="leavesetUpForm.controls.canCarryForward.value === true">
+                <div class="form-group input">
+                  <label class="text-sm mb-1" for="lapseAfterYears">
+                    {{globalServ.showLabel('lapseAfterYears')}} &nbsp;<span
+                      *ngIf="leavesetUpForm.controls.lapseAfterYears.validator"
+                      style="color: red;">*</span> </label>
+                  <input
+                    id="lapseAfterYears"
+                    placeholder="{{globalServ.showPlaceholder('lapseAfterYears')}}"
+                    type="number"
+                    class="form-control"
+                    [formControl]="leavesetUpForm.controls.lapseAfterYears" />
                 </div>
               </div>
 
             </div>
+            <div class="form-check col-md-6 my-auto ms-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="allowAccrueBasedOnWorkdays"
+                (change)="onChangeallowAccrueBasedOnWorkdays(leavesetUpForm.controls.allowAccrueBasedOnWorkdays.value)"
+                [formControl]="
+                  leavesetUpForm.controls.allowAccrueBasedOnWorkdays" />
+              <label class="form-check-label"
+                for="allowAccrueBasedOnWorkdays">
+                {{globalServ.showLabel('allowAccrualonWorkDays')}} </label>
+            </div>
+            <div
+              class="col-md-6 col-lg-6 mt-2 ms-3"
+              *ngIf="leavesetUpForm.controls.allowAccrueBasedOnWorkdays.value === true">
+              <div class="form-group input ms-2 d-flex align-items-center ">
+                <label class="text-sm mb-1"
+                  for="minWorkdaysForAccrue">{{globalServ.showLabel('minWorkdayAccrue')}}
+                  &nbsp;<span
+                    style="color: #f62d51">*</span>
+                </label>
+                <div class="col-md-5 ms-2">
+                  <input
+                    type="number"
+                    placeholder="{{globalServ.showPlaceholder('minWorkdaysForAccrue')}}"
+                    id="minWorkdaysForAccrue" (change)="minWorkDaysFunction()"
+                    class="form-control"
+                    [formControl]="leavesetUpForm.controls.minWorkdaysForAccrue" />
 
-            <!-- <div class="col-md-6">
-              <div class="form-group input">
-                <label class="text-sm mb-1">Applicable From</label>
-                <input
-                  id="applicableFrom"
-                  placeholder="Enter Applicable From"
-                  type="number"
-                  class="form-control"
-                  [formControl]="leavesetUpForm.controls.applicableFrom"
-                />
+                  <div class="ms-2" *ngIf="
+                    leavesetUpForm.controls['minWorkdaysForAccrue'].invalid &&
+                    (leavesetUpForm.controls['minWorkdaysForAccrue'].dirty ||
+                      leavesetUpForm.controls['minWorkdaysForAccrue'].touched)
+                  "
+                    style="padding: 0px">
+                    <div
+                      *ngIf="leavesetUpForm.controls['minWorkdaysForAccrue'].errors.required"
+                      style="color: #dc3545">
+                      {{globalServ.showerror('minWorkdaysforAccureReq')}}
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div> -->
-<div class="row">
-            <div class="form-check col-md-4 my-auto ms-3">
+            </div>
+          </div>
+
+          <div class="col-md-12 col-lg-12 mt-2">
+            <div class="form-group input">
+              <label class="form-label">
+                <b> {{globalServ.showLabel('accrualPolicy')}}</b>&nbsp;<span
+                  style="color: #f62d51">*</span></label>
+              <div class="form-check  ms-2"
+                *ngFor="let option of accrualPolicyOptions">
+                <input class="form-check-input" type="radio"
+                  [id]="option.value" [value]="option.value"
+                  (change)="accrualPolicyFunction()"
+                  [formControl]="leavesetUpForm.controls.accrualPolicy">
+                <label class="form-check-label" [for]="option.value">
+                  {{globalServ.showLabel(option.label)}}
+                </label>
+              </div>
+              <div class="mt-2" *ngIf="
+                    leavesetUpForm.controls['accrualPolicy'].invalid &&
+                    (leavesetUpForm.controls['accrualPolicy'].dirty ||
+                      leavesetUpForm.controls['accrualPolicy'].touched)
+                  "
+                style="padding: 0px">
+                <div
+                  *ngIf="leavesetUpForm.controls['accrualPolicy'].errors.required"
+                  style="color: #dc3545">
+                  {{globalServ.showLabel('accrualPolicy')}}
+                  {{globalServ.showGlobalErrors('required')}}
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="row">
+              <div class="col-md-6 mt-2">
+                <div class="form-group input d-flex  align-items-baseline ">
+                  <label class="text-sm mb-1 text-nowrap ms-2">
+                    {{globalServ.showLabel('eligibilityforMon')}}&nbsp;<span
+                      style="color: #f62d51">*</span></label>
+                  <div class="ms-3">
+                    <select
+                      class="select floating form-select"
+                      id="noLeaveQuotaIfJoinsAfter"
+                      [formControl]="leavesetUpForm.controls.noLeaveQuotaIfJoinsAfter">
+                      <option selected value>-</option>
+                      <option [value]="date.code"
+                        *ngFor="let date of dates">{{date.name}}</option>
+                    </select>
+                    <div *ngIf="
+                    leavesetUpForm.controls['noLeaveQuotaIfJoinsAfter'].invalid &&
+                    (leavesetUpForm.controls['noLeaveQuotaIfJoinsAfter'].dirty ||
+                      leavesetUpForm.controls['noLeaveQuotaIfJoinsAfter'].touched)
+                  "
+                      style="padding: 0px">
+                      <div
+                        *ngIf="leavesetUpForm.controls['noLeaveQuotaIfJoinsAfter'].errors.required"
+                        style="color: #dc3545">
+                        {{globalServ.showGlobalErrors('fieldRequired')}}
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-check col-md-6  my-auto ms-3">
+                  <input
+                    class="form-check-input"
+                    type="checkbox" (change)="prorateLeavesInMonthOfJoining()"
+                    id="prorateLeavesInMonthOfJoining"
+                    [formControl]="
+                    leavesetUpForm.controls.prorateLeavesInMonthOfJoining
+                  " />
+                  <label
+                    class="form-check-label"
+                    for="prorateLeavesInMonthOfJoining">
+                    {{globalServ.showLabel('isProrated')}} </label>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6   mt-2"
+              *ngIf="leavesetUpForm.controls.prorateLeavesInMonthOfJoining.value ==true">
+              <div class="form-group input">
+                <label class="text-sm mb-1"
+                  for="noLeaveQuotaIfJoinsAfter">
+                  {{globalServ.showLabel('noOfLeavesAfterJoin')}} &nbsp;<span
+                    style="color: #f62d51">*</span>
+                </label>
+                <div>
+                  <select
+                    class="select floating form-select"
+                    id="noLeaveQuotaIfJoinsAfter"
+                    [formControl]="leavesetUpForm.controls.noLeaveQuotaIfJoinsAfter">
+                    <option selected value>-</option>
+                    <option [value]="date.code"
+                      *ngFor="let date of dates">{{date.name}}</option>
+                  </select>
+
+                  <div *ngIf="
+                    leavesetUpForm.controls['noLeaveQuotaIfJoinsAfter'].invalid &&
+                    (leavesetUpForm.controls['noLeaveQuotaIfJoinsAfter'].dirty ||
+                      leavesetUpForm.controls['noLeaveQuotaIfJoinsAfter'].touched)
+                  "
+                    style="padding: 0px">
+                    <div
+                      *ngIf="leavesetUpForm.controls['noLeaveQuotaIfJoinsAfter'].errors.required"
+                      style="color: #dc3545">
+                      {{globalServ.showGlobalErrors('fieldRequired')}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>-->
+          <div><b> {{globalServ.showLabel('AccInMonthOfJoin')}}</b></div>
+
+          <div class="row">
+            <div class="col-md-6 mt-2 ms-2">
+              <div class="form-group input d-flex align-items-baseline">
+                <div class=" ">
+                  <!-- Radio buttons for selecting eligibility or prorated leave -->
+                  <div class="form-check d-flex  align-items-baseline">
+                    <input class="form-check-input" type="radio"
+                      id="eligibilityforMon"
+                      (change)="prorateLeavesInMonthOfJoining()"
+                      name="leaveOption" [value]="'eligibility'"
+                      [(ngModel)]="accuralInMonthOfJoin"
+                      [ngModelOptions]="{standalone: true}">
+                    <label class="form-check-label ms-2"
+                      for="eligibilityforMon">
+                      {{globalServ.showLabel('eligibilityforMon')}}
+                      &nbsp;<span
+                        *ngIf="leavesetUpForm.controls.fullLeaveQuotaIfJoinsBefore.validator"
+                        style="color: red;">*</span>
+                    </label>
+                    <div *ngIf="accuralInMonthOfJoin === 'eligibility'"
+                      class="ms-3">
+                      <select
+                        class="select floating form-select"
+                        id="fullLeaveQuotaIfJoinsBefore"
+                        [formControl]="leavesetUpForm.controls.fullLeaveQuotaIfJoinsBefore">
+                        <option selected value>-</option>
+                        <option [value]="date.code"
+                          *ngFor="let date of dates">{{date.name}}</option>
+                      </select>
+                      <div
+                        *ngIf="leavesetUpForm.controls['fullLeaveQuotaIfJoinsBefore'].invalid &&
+                           (leavesetUpForm.controls['fullLeaveQuotaIfJoinsBefore'].dirty || 
+                           leavesetUpForm.controls['fullLeaveQuotaIfJoinsBefore'].touched)"
+                        style="padding: 0px">
+                        <div
+                          *ngIf="leavesetUpForm.controls['fullLeaveQuotaIfJoinsBefore'].errors.required"
+                          style="color: #dc3545">
+                          {{globalServ.showGlobalErrors('fieldRequired')}}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio"
+                      id="prorateLeaves" name="leaveOption"
+                      [value]="'prorate'"
+                      (change)="prorateLeavesInMonthOfJoining()"
+                      [(ngModel)]="accuralInMonthOfJoin"
+                      [ngModelOptions]="{standalone: true}">
+                    <label class="form-check-label" for="prorateLeaves">
+                      {{globalServ.showLabel('isProrated')}}
+                    </label>
+                  </div>
+
+                  <div *ngIf="accuralInMonthOfJoin === 'prorate'"
+                    class="ms-4 d-flex  align-items-center ">
+                    <div class="d-flex  align-items-center">
+                      <label class="text-sm mb-1"
+                        for="noLeaveQuotaIfJoinsAfter">
+                        {{globalServ.showLabel('noOfLeavesAfterJoin')}}
+                        &nbsp;<span
+                          style="color: #f62d51">*</span>
+                      </label>
+                      <div>
+                        <select
+                          class="select floating form-select ms-2"
+                          style="width: fit-content;"
+                          id="noLeaveQuotaIfJoinsAfter"
+                          [formControl]="leavesetUpForm.controls.noLeaveQuotaIfJoinsAfter">
+                          <option selected value>-</option>
+                          <option [value]="date.code"
+                            *ngFor="let date of dates">{{date.name}}</option>
+                        </select>
+                        <div
+                          *ngIf="leavesetUpForm.controls['noLeaveQuotaIfJoinsAfter'].invalid &&
+                          (leavesetUpForm.controls['noLeaveQuotaIfJoinsAfter'].dirty || 
+                          leavesetUpForm.controls['noLeaveQuotaIfJoinsAfter'].touched)"
+                          style="padding: 0px">
+                          <div
+                            *ngIf="leavesetUpForm.controls['noLeaveQuotaIfJoinsAfter'].errors.required"
+                            style="color: #dc3545">
+                            {{globalServ.showGlobalErrors('fieldRequired')}}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="form-check col-md-6  my-auto ms-3">
               <input
                 class="form-check-input"
                 type="checkbox"
@@ -380,101 +507,196 @@
                 (change)="onChangeAccrueLeavesFromDOJ(leavesetUpForm.controls.accrueLeavesFromDojTill.value)"
                 [formControl]="leavesetUpForm.controls.accrueLeavesFromDojTill" />
               <label class="form-check-label" for="accrueLeavesFromDojTill">
-              Accrue Leaves From DOJ till</label>
+                {{globalServ.showLabel('accrueLeaves')}} </label>
             </div>
 
             <div
-              class="col-md-6"
-             >
-              <div class="form-group input"  *ngIf="leavesetUpForm.controls.accrueLeavesFromDojTill.value === true">
+              class="col-md-6 mt-2 ms-3">
+              <div class="form-group input d-flex  align-items-center "
+                *ngIf="leavesetUpForm.controls.accrueLeavesFromDojTill.value === true">
                 <label class="text-sm mb-1" for="startAccrual">
-                Start Accrual From
+                  {{globalServ.showLabel('accrueStarts')}} &nbsp;<span
+                    style="color: #f62d51">*</span>
                 </label>
-                <select
-                  class="form-select" id="startAccrual"
-                  [formControl]="leavesetUpForm.controls.startAccrual">
-                  <option [value]="" selected disabled>Select Accrual</option>
-                  <option
-                    *ngFor="let sa of startAcc"
-                    [value]="sa">
-                    {{ sa }}
-                  </option>
-                </select>
-              </div>
-            </div>
-            </div>
-
-            <div class="row">
-
-            <div class="form-check col-md-4 my-auto ms-3">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="allowAccrueBasedOnWorkdays"
-                    (change)="onChangeallowAccrueBasedOnWorkdays(leavesetUpForm.controls.allowAccrueBasedOnWorkdays.value)"
-                [formControl]="
-                  leavesetUpForm.controls.allowAccrueBasedOnWorkdays
-                " />
-              <label class="form-check-label" for="allowAccrueBasedOnWorkdays">
-               Allow Accrue Based On Workdays ? </label>
-            </div>
-
-            <div
-              class="col-md-6"
-              *ngIf="
-                leavesetUpForm.controls.allowAccrueBasedOnWorkdays.value ===
-                true
-              ">
-              <div class="form-group input">
-                <label class="text-sm mb-1"
-                  for="minWorkdaysForAccrue">Min Workdays For Accrue
-                </label>
-                <input
-                  type="number"
-                  placeholder="Enter Min Workdays For Accrue "
-                  id="minWorkdaysForAccrue"
-                  class="form-control"
-                  [formControl]="leavesetUpForm.controls.minWorkdaysForAccrue" />
-              </div>
-            </div>
-            </div>
-            <div class="form-check col-md-12 mt-2 ms-3">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="prorateLeavesInMonthOfJoining"
-                [formControl]="
-                    leavesetUpForm.controls.prorateLeavesInMonthOfJoining
-                  " />
-              <label
-                class="form-check-label"
-                for="prorateLeavesInMonthOfJoining">
-              Prorate Leaves In Month Of Joining ? </label>
-            </div>
-
-            <div class="col-md-6 mt-2">
-              <div class="form-group input">
-                <label class="text-sm mb-1">
-                  No Leaves Quota is allocated If employee Joins After ?</label>
-                <input
-                  placeholder="enter date in the month. eg: 25"
-                  id="Number of Leave Quota If Joins After"
-                  type="number"
-                  class="form-control"
-                  [formControl]="
-                    leavesetUpForm.controls.noLeaveQuotaIfJoinsAfter
-                  " />
+                <div>
+                  <select
+                    class="form-select ms-2" id="startAccrual"
+                    [formControl]="leavesetUpForm.controls.startAccrual">
+                    <option [value] selected
+                      disabled>{{globalServ.showLabel('selectAcc')}}</option>
+                    <option
+                      *ngFor="let sa of startAcc"
+                      [value]="sa">
+                      {{ sa }}
+                    </option>
+                  </select>
+                  <div *ngIf="
+                    leavesetUpForm.controls['startAccrual'].invalid &&
+                    (leavesetUpForm.controls['startAccrual'].dirty ||
+                      leavesetUpForm.controls['startAccrual'].touched)
+                  "
+                    style="padding: 0px">
+                    <div
+                      *ngIf="leavesetUpForm.controls['startAccrual'].errors.required"
+                      style="color: #dc3545">
+                      {{globalServ.showerror('accuralStart')}}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+
+          <div class="row">
+            <div><b>{{globalServ.getGlobalNames('weekend')}}</b></div>
+
+            <div class="form-check col-md-12 my-3 ms-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                (change)="checkForSandwich()"
+                id="allowDeductionInLeaves4Weekend"
+                [formControl]="
+                  leavesetUpForm.controls.allowDeductionInLeaves4Weekend
+                " />
+              <label
+                class="form-check-label"
+                for="allowDeductionInLeaves4Weekend">{{globalServ.showLabel('allowDeductionInLeaves4Weekend')}}
+              </label>
+            </div>
+
+            <div><b>{{globalServ.getGlobalNames('Holidays')}}</b></div>
+
+            <div class="form-check col-md-12 my-3 ms-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                (change)="checkForSandwich()"
+                id="allowDeductionInLeaves4Holiday"
+                [formControl]="
+                  leavesetUpForm.controls.allowDeductionInLeaves4Holiday
+                " />
+              <label
+                class="form-check-label"
+                for="allowDeductionInLeaves4Holiday">{{globalServ.showLabel('allowDeductionInLeaves4Holiday')}}
+              </label>
+            </div>
+
+            <div
+              class="col-md-6 "
+              *ngIf="leavesetUpForm.controls.allowDeductionInLeaves4Weekend.value === true  || leavesetUpForm.controls.allowDeductionInLeaves4Holiday.value === true">
+              <div class="form-group input">
+                <label
+                  class="text-sm mb-1">{{globalServ.showLabel('maxLeaveAllowedForSandwich')}}
+                  &nbsp;<span
+                    style="color: #f62d51">*</span></label>
+                <input
+                  type="number"
+                  placeholder="{{globalServ.showPlaceholder('maxLeaveAllowedForSandwich')}}"
+                  id="maxLeaveAllowedForSandwich"
+                  class="form-control"
+                  [formControl]="
+                    leavesetUpForm.controls.maxLeaveAllowedForSandwich" />
+              </div>
+            </div>
+            <!-- 
+            <div class="col-md-6 ">
+              <div class="form-group input">
+                <label
+                  class="text-sm mb-1">{{globalServ.showLabel('leavePolicy')}}</label>
+                <input
+                  type="text"
+                  placeholder="{{globalServ.showPlaceholder('leavePolicy')}}"
+                  id="leavePolicy"
+                  class="form-control"
+                  [formControl]="leavesetUpForm.controls.leavePolicy" />
+              </div>
+            </div> -->
+
+            <div class="row">
+              <div class="form-check col-md-6  my-auto ms-3">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="canMixOtherLeave" (change)="canMixOtherLeave()"
+                  [formControl]="leavesetUpForm.controls.canMixOtherLeave" />
+                <label class="form-check-label" for="canMixOtherLeave">
+                  {{globalServ.showLabel('canMixOtherLeave')}}</label>
+              </div>
+
+              <div
+                class="col-md-6 mt-3 ms-3"
+                *ngIf="leavesetUpForm.controls.canMixOtherLeave.value === true">
+                <div class="form-group input">
+                  <label class="text-sm mb-1" for="canMixWith">
+                    {{globalServ.showLabel('canMixWith')}}&nbsp;<span
+                      style="color: #f62d51">*</span>
+                  </label>
+
+                  <ng-select id="canMixWith" [items]="otherThanLeaveType"
+                    style="    border-radius: 5px;
+    border: 1px solid #e3e3e3;"
+                    [bindLabel]="leaveTypeCode" [bindValue]="leaveTypeCode"
+                    multiple="true"
+                    placeholder="{{globalServ.showPlaceholder('leaveType')}}"
+                    [disabled]="view"
+                    [formControl]="leavesetUpForm.controls.canMixWith"></ng-select>
+                  <div *ngIf="
+                    leavesetUpForm.controls['canMixWith'].invalid &&
+                    (leavesetUpForm.controls['canMixWith'].dirty ||
+                      leavesetUpForm.controls['canMixWith'].touched)
+                  "
+                    style="padding: 0px">
+                    <div
+                      *ngIf="leavesetUpForm.controls['canMixWith'].errors.required"
+                      style="color: #dc3545">
+                      {{globalServ.showGlobalErrors('fieldRequired')}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="col-md-6 mt-2 ms-3" *ngIf="!view || !update" >
+              <div class="form-group input d-flex  align-items-center ">
+                <label class="text-sm mb-1" for="applicableFrom">
+                  Setup applicable from &nbsp;<span
+                    style="color: #f62d51">*</span>
+                </label>
+                <div>
+                  <input
+                    id="applicableFrom"
+                    type="month"
+                    id="start" name="start"
+                    class="form-control ms-2"
+                    [min]="LastRunDate"
+                    [formControl]="leavesetUpForm.controls.applicableFrom" />
+                  <div *ngIf="
+                    leavesetUpForm.controls['applicableFrom'].invalid &&
+                    (leavesetUpForm.controls['applicableFrom'].dirty ||
+                      leavesetUpForm.controls['applicableFrom'].touched)
+                  "
+                    style="padding: 0px">
+                    <div
+                      *ngIf="leavesetUpForm.controls['applicableFrom'].errors.required"
+                      style="color: #dc3545">
+                      Setup applicable month was required
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
           <div *ngIf="!view"
-            class="modal-footer d-flex align-items-center justify-content-between">
+            class="modal-footer d-flex align-items-center mt-3 justify-content-between">
             <button
               type="button"
               id="leave_setup_cancel"
               class="btn delete-btn"
               (click)="cancel()">
-              Cancel
+              {{globalServ.getGlobalNames('cancel')}}
             </button>
             <button
               type="button"
@@ -483,7 +705,7 @@
               *ngIf="!update && !view"
               [disabled]="leavesetUpForm.invalid || leavesetUpForm.pristine"
               (click)="create()">
-              Submit
+              {{globalServ.getGlobalNames('submit')}}
             </button>
             <button
               id="leave_setup_update"
@@ -492,7 +714,7 @@
               *ngIf="update && !view"
               [disabled]="leavesetUpForm.invalid || leavesetUpForm.pristine"
               (click)="Update()">
-              Update
+              {{globalServ.getGlobalNames('update')}}
             </button>
           </div>
           <div class="text-center" *ngIf="view">
@@ -501,7 +723,7 @@
               id="leave_setup_cancel"
               class="btn delete-btn"
               (click)="cancel()">
-              Close
+              {{globalServ.getGlobalNames('close')}}
             </button>
           </div>
         </div>

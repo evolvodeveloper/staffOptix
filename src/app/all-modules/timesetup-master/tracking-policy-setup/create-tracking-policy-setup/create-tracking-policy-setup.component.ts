@@ -20,7 +20,6 @@ export class CreateTrackingPolicySetupComponent implements OnInit, OnDestroy {
   displayNoAtt = false;
   update = false;
   view = false;
-  trackingLabels = [];
   trackingPolicyForm: FormGroup;
   lateArrivalPolicyForm: FormGroup;
   noAttendancePolicyForm: FormGroup;
@@ -39,14 +38,13 @@ export class CreateTrackingPolicySetupComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private httPut: HttpPutService,
     private UtilService: UtilService,
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private router: Router) {
   }
   back() {
     this.router.navigateByUrl('/timesetup/trackingPolicy');
   }
   ngOnInit(): void {
-    // this.getTrackingLabels();
     this.trackingPolicyForm = this.fb.group({
       policyCode: [null, [Validators.required, Validators.maxLength(56)]]
     })
@@ -90,7 +88,7 @@ export class CreateTrackingPolicySetupComponent implements OnInit, OnDestroy {
       this.lateArrivalPolicyForm.controls.timeframe.setValue(this.UtilService.editData.lateArrivalPolicy.timeframe);
       this.lateArrivalPolicyForm.controls.adjustAgainstLeaves.setValue(this.UtilService.editData.lateArrivalPolicy.adjustAgainstLeaves);
       this.lateArrivalPolicyForm.controls.ignorePenalizationIfHrsCovered.setValue(this.UtilService.editData.lateArrivalPolicy.ignorePenalizationIfHrsCovered);
-      this.lateArrivalPolicyRules = this.UtilService.editData.lateArrivalPolicy.lateArrivalPolicyRules;
+      this.lateArrivalPolicyRules = this.UtilService.editData.lateArrivalPolicy?.lateArrivalPolicyRules;
       // this.adddeductForLateTime();
 
 
@@ -99,7 +97,7 @@ export class CreateTrackingPolicySetupComponent implements OnInit, OnDestroy {
       this.workingHrsPolicyForm.controls.deductOnlyForShortage.setValue(this.UtilService.editData.workingHoursPolicy.deductOnlyForShortage);
       // this.workingHrsPolicyForm.controls.deductionRules.setValue(true);
 
-      this.workingHrsPolicyRules = this.UtilService.editData.workingHoursPolicy.workingHoursPolicyRules;
+      this.workingHrsPolicyRules = this.UtilService.editData.workingHoursPolicy?.workingHoursPolicyRules;
       // this.addworkingHrsPolicyRules();
       this.trackingPolicyForm.enable();
       this.workingHrsPolicyForm.enable();
@@ -165,7 +163,7 @@ export class CreateTrackingPolicySetupComponent implements OnInit, OnDestroy {
         this.lateArrivalPolicyForm.controls.penalizeForLateArrival.setValue(false)
       } else {
         this.lateArrivalPolicyRules = [];
-        for (let i = 0; i < this.UtilService.editData.lateArrivalPolicy.lateArrivalPolicyRules.length; i++) {
+        for (let i = 0; i < this.UtilService.editData.lateArrivalPolicy?.lateArrivalPolicyRules?.length; i++) {
           this.UtilService.editData.lateArrivalPolicy.lateArrivalPolicyRules[i].status = null
           this.lateArrivalPolicyRules.push(this.UtilService.editData.lateArrivalPolicy.lateArrivalPolicyRules[i])
         }
@@ -209,7 +207,7 @@ export class CreateTrackingPolicySetupComponent implements OnInit, OnDestroy {
         }
       } else {
         this.workingHrsPolicyRules = [];
-        for (let i = 0; i < this.UtilService.editData.workingHoursPolicy.workingHoursPolicyRules.length; i++) {
+        for (let i = 0; i < this.UtilService.editData.workingHoursPolicy.workingHoursPolicyRules?.length; i++) {
           this.UtilService.editData.workingHoursPolicy.workingHoursPolicyRules[i].status = null
           this.workingHrsPolicyRules.push(this.UtilService.editData.workingHoursPolicy.workingHoursPolicyRules[i])
         }
@@ -226,18 +224,18 @@ export class CreateTrackingPolicySetupComponent implements OnInit, OnDestroy {
   penalize_for_less_hours(val) {
     if (this.update) {
       if (val == false) {
-        for (let i = 0; i < this.workingHrsPolicyRules.length; i++) {
+        for (let i = 0; i < this.workingHrsPolicyRules?.length; i++) {
           this.deleteworkingHrsPolicy(i)
         }
       } else {
         this.workingHrsPolicyForm.controls.timeframe.enable();
         this.workingHrsPolicyForm.controls.timeframe.setValue(this.UtilService.editData.workingHoursPolicy.timeframe);
         this.workingHrsPolicyForm.controls.timeframe.setValue(this.UtilService.editData.workingHoursPolicy.timeframe);
-        if (this.UtilService.editData.workingHoursPolicy.workingHoursPolicyRules.length > 0) {
+        if (this.UtilService.editData.workingHoursPolicy.workingHoursPolicyRules?.length > 0) {
           // this.workingHrsPolicyForm.controls.deductionRules.setValue(true);
         }
         this.workingHrsPolicyRules = [];
-        for (let i = 0; i < this.UtilService.editData.workingHoursPolicy.workingHoursPolicyRules.length; i++) {
+        for (let i = 0; i < this.UtilService.editData.workingHoursPolicy.workingHoursPolicyRules?.length; i++) {
           this.UtilService.editData.workingHoursPolicy.workingHoursPolicyRules[i].status = null
           this.workingHrsPolicyRules.push(this.UtilService.editData.workingHoursPolicy.workingHoursPolicyRules[i])
         }
@@ -248,7 +246,7 @@ export class CreateTrackingPolicySetupComponent implements OnInit, OnDestroy {
           this.deleteworkingHrsPolicy(i)
         }
         this.workingHrsPolicyForm.controls.timeframe.clearValidators();
-        this.workingHrsPolicyForm.controls.timeframe.updateValueAndValidity();       
+        this.workingHrsPolicyForm.controls.timeframe.updateValueAndValidity();
         this.workingHrsPolicyForm.reset();
         this.workingHrsPolicyForm.controls.penalizeForLessHours.setValue(false);
         this.workingHrsPolicyForm.controls.deductOnlyForShortage.setValue(false);
@@ -258,7 +256,7 @@ export class CreateTrackingPolicySetupComponent implements OnInit, OnDestroy {
       }
       else {
         this.workingHrsPolicyForm.controls.timeframe.setValidators([Validators.required]);
-        this.workingHrsPolicyForm.controls.timeframe.updateValueAndValidity();       
+        this.workingHrsPolicyForm.controls.timeframe.updateValueAndValidity();
         this.workingHrsPolicyForm.controls.timeframe.enable();
         this.addworkingHrsPolicyRules();
       }
@@ -267,7 +265,7 @@ export class CreateTrackingPolicySetupComponent implements OnInit, OnDestroy {
   deductForLateTime(list) {
     if (this.update) {
       if (list == true) {
-        for (let i = 0; i < this.lateArrivalPolicyRules.length; i++) {
+        for (let i = 0; i < this.lateArrivalPolicyRules?.length; i++) {
           this.deleteDeductRule(i)
         }
         this.lateArrivalPolicyForm.controls.allowedNoOfTimesLate.clearValidators();
@@ -280,18 +278,18 @@ export class CreateTrackingPolicySetupComponent implements OnInit, OnDestroy {
         this.lateArrivalPolicyForm.controls.timeframe.setValue(null);
       } else {
         this.lateArrivalPolicyRules = [];
-        for (let i = 0; i < this.UtilService.editData.lateArrivalPolicy.lateArrivalPolicyRules.length; i++) {
+        for (let i = 0; i < this.UtilService.editData.lateArrivalPolicy.lateArrivalPolicyRules?.length; i++) {
           this.UtilService.editData.lateArrivalPolicy.lateArrivalPolicyRules[i].status = null
-          this.lateArrivalPolicyRules.push(this.UtilService.editData.lateArrivalPolicy.lateArrivalPolicyRules[i])
+          this.lateArrivalPolicyRules.push(this.UtilService.editData.lateArrivalPolicy?.lateArrivalPolicyRules[i])
         }
         this.lateArrivalPolicyForm.controls.allowedNoOfTimesLate.setValidators([Validators.required]);
         this.lateArrivalPolicyForm.controls.allowedNoOfTimesLate.updateValueAndValidity();
         this.lateArrivalPolicyForm.controls.timeframe.setValidators([Validators.required]);
         this.lateArrivalPolicyForm.controls.timeframe.updateValueAndValidity();
         this.lateArrivalPolicyForm.controls.allowedNoOfTimesLate.enable();
-        this.lateArrivalPolicyForm.controls.allowedNoOfTimesLate.setValue(this.UtilService.viewData.lateArrivalPolicy.allowedNoOfTimesLate);
         this.lateArrivalPolicyForm.controls.timeframe.enable();
-        this.lateArrivalPolicyForm.controls.timeframe.setValue(this.UtilService.viewData.lateArrivalPolicy.timeframe);
+        this.lateArrivalPolicyForm.controls.allowedNoOfTimesLate.setValue(this.UtilService.editData.lateArrivalPolicy?.allowedNoOfTimesLate);
+        this.lateArrivalPolicyForm.controls.timeframe.setValue(this.UtilService.editData.lateArrivalPolicy?.timeframe);
       }
     }
     else {
@@ -318,34 +316,6 @@ export class CreateTrackingPolicySetupComponent implements OnInit, OnDestroy {
         this.lateArrivalPolicyForm.controls.timeframe.setValue(null);
       }
     }
-  }
-
-
-  getTrackingLabels() {
-    this.spinner.show();
-    this.globalServ.getLabels('trackingPolicy').subscribe((res: any) => {
-      this.trackingLabels = res.response;
-      this.spinner.hide();
-    },
-      (err) => {
-        this.spinner.hide();
-        console.error(err.error.status.message);
-      }
-    );
-  }
-
-  getLabelDescription(divId: string): string {
-    const label = this.trackingLabels.find(item => item.colCode === divId);
-    return label ? label.labelDescription : '';
-  }
-  splitLabelDescription(colCode: string): { before: string, after: string, after1: string } {
-    const label = this.trackingLabels.find(item => item.colCode === colCode);
-    const parts = label ? label.labelDescription.split('{integer}') : '';
-    return {
-      before: parts[0] || '',
-      after: parts[1] || '',
-      after1: parts[2] || ''
-    };
   }
 
   adddeductForLateTime() {

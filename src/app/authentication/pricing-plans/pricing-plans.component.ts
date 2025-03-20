@@ -83,13 +83,13 @@ export class PricingPlansComponent implements OnInit {
         companyCode: localStorage.getItem('company'),
         "subscriptionMode": row.subscription.subscriptionMode
       }
-
       if (obj != null) {
         this.httpPostService.nonTokenApi('razorPayOrder', obj).subscribe((res: any) => {
           this.spinner.hide();
           razorPayOrder = res.response
           const RAZORPAY_OPTIONS = {
-            "key": "rzp_live_JgqiXhA52wq17g", // Enter the Key ID generated from the Dashboard
+            // "key": "rzp_live_JgqiXhA52wq17g ", // Enter the Key ID generated from the Dashboard
+            "key": "rzp_test_7WQAw2owyf4cd4 ",
             "amount": razorPayOrder.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
             "currency": razorPayOrder.currency,
             "name": "SpringLogix Software Pvt Ltd", //your business name
@@ -276,7 +276,7 @@ export class PricingPlansComponent implements OnInit {
   getPricingPlans() {
     this.spinner.show();
     this.isMostPopular = false;
-    this.httpGet.nonTokenApi('pricingPlans?module=atlas&currency=INR').subscribe((res: any) => {
+    this.httpGet.nonTokenApi('pricingPlans?module=ATLAS&currency=INR').subscribe((res: any) => {
       this.spinner.hide();
       res.response.forEach(element => {
         element.plan.color = this.getRandomColor();
@@ -313,7 +313,7 @@ export class PricingPlansComponent implements OnInit {
     this.spinner.show();
     this.isMostPopular = false;
     this.planAmount = 0;
-    this.httpGet.nonTokenApi('pricingPlansYearly?module=atlas&currency=INR').subscribe((res: any) => {
+    this.httpGet.nonTokenApi('pricingPlansYearly?module=ATLAS&currency=INR').subscribe((res: any) => {
       this.spinner.hide();
       if (res.response.subscription == null) {
         res.response.subscription = [];

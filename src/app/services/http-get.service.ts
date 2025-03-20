@@ -10,6 +10,7 @@ import { UtilService } from './util.service';
 export class HttpGetService {
   constructor(private http: HttpClient,
     private utilServ: UtilService) { }
+
   getHeaders() {
     let headers = new HttpHeaders();
     headers = headers.append(
@@ -60,6 +61,10 @@ export class HttpGetService {
   getMasterList(master) {
     return this.http.get(environment.root_url + `api/${master}`, { headers: this.getHeaders() });
   }
+
+  getMas(master) {
+    return this.http.get(`https://at-api.springlogix.com/api/${master}`, { headers: this.getHeaders() });
+  }
   getjson() {
     return this.http.get(`assets/data.json`);
   }
@@ -70,7 +75,7 @@ export class HttpGetService {
       'Bearer ' + localStorage.getItem('token')
     );
     return this.http.get(
-      environment.root_url + `api/menuaccess/app?app=portal&module=atlas`,
+      environment.root_url + `api/menuaccess/app?app=portal&module=ATLAS`,
       { headers }
     );
   }

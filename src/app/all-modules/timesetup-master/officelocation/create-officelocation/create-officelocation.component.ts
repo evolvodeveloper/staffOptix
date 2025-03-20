@@ -39,7 +39,7 @@ export class CreateOfficelocationComponent implements OnInit, OnDestroy {
     private httpGet: HttpGetService,
     private spinner: NgxSpinnerService,
     private httpPost: HttpPostService,
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private httpPut: HttpPutService,
     public activeModal: NgbActiveModal,
     private authenticationService: AuthenticationService
@@ -51,6 +51,9 @@ export class CreateOfficelocationComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    this.globalServ.getMyCompLabels('officeLocation');
+    this.globalServ.getMyCompPlaceHolders('officeLocation');
+    this.globalServ.getMyCompErrors('officeLocation');
     this.getCountrys();
     if (this.fromParent?.prop4 === "AddPayrollEmployeeComponent") {
       this.isSpecialRoute = true;

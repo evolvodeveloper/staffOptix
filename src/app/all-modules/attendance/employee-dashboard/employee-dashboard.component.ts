@@ -49,7 +49,7 @@ export class EmployeeDashboardComponent implements OnInit {
   constructor(
     private httpGetService: HttpGetService,
     private acRoute: ActivatedRoute,
-    private global: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private router: Router,
     private httpPost: HttpPostService,
     private spinner: NgxSpinnerService,
@@ -80,6 +80,9 @@ export class EmployeeDashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.globalServ.getMyCompLabels('empDashboard');
+    this.globalServ.getMyCompPlaceHolders('empDashboard');
+    this.dateFormat = this.globalServ.dateFormat;
     this.getUserProfile.call(this);
     this.getLeaves();
     this.getExpenses();
@@ -147,7 +150,7 @@ export class EmployeeDashboardComponent implements OnInit {
     this.httpGetService.getMasterList('timesheet/date?empCode=' + empCode + '&date=' + this.selectedDate).subscribe(
       (res: any) => {
         const records = res.response;
-        this.dateFormat = this.global.dateFormat
+        this.dateFormat = this.globalServ.dateFormat
         records.forEach(element => {
           element.totalHours1 = this.convertDecimalToHours(element.totalHours);
         });
@@ -265,7 +268,7 @@ export class EmployeeDashboardComponent implements OnInit {
 
   calculateForOneTimesheetRecord() {
     const currentDateTime = moment(); // Current date and time
-    if (this.utilServ.todayTimeSheetRecord[0].attDate !== null || this.utilServ.todayTimeSheetRecord[0].attTime !== null) {
+    if (this.utilServ.todayTimeSheetRecord[0].attDate !== null && this.utilServ.todayTimeSheetRecord[0].attTime !== null && this.utilServ.todayTimeSheetRecord[0].attStatus !== 'FAILED') {
       const inDateTime = moment(`${this.utilServ.todayTimeSheetRecord[0].attDate} ${this.utilServ.todayTimeSheetRecord[0].attTime}`); // Combine inDate and inTime
       const timeDifferenceInMilliseconds = currentDateTime.diff(inDateTime);
       const hoursDifference = moment.duration(timeDifferenceInMilliseconds).asHours();

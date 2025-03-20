@@ -8,7 +8,9 @@
                 <div class="d-flex align-items-baseline">
                     <i style="font-size:20px" class="fa fa-arrow-left"
                         routerLink="/rpt" aria-label="back"></i>
-                    <h3 class="ms-4 page-title">Leaves Report</h3>
+                    <h3 class="ms-4 page-title">
+                        {{globalServ.showLabel('leavesReportHeader')}}
+                    </h3>
                 </div>
 
             </div>
@@ -16,8 +18,8 @@
     </div>
     <div class="row filter-row">
         <div class="col-md">
-            <div class="">
-                <label>Department</label>
+            <div class>
+                <label> {{globalServ.getGlobalNames('department')}}</label>
                 <select class="form-select" id="departments"
                     [(ngModel)]="reportObj.department"
                     (change)="employeesByDepartmentAndProject()"
@@ -28,8 +30,8 @@
             </div>
         </div>
         <div class="col-md">
-            <div class="">
-                <label>Project</label>
+            <div class>
+                <label> {{globalServ.getGlobalNames('project')}}</label>
                 <select class="form-select" id="projects"
                     [(ngModel)]="reportObj.project" (change)="modified()"
                     (change)="employeesByDepartmentAndProject()">
@@ -40,14 +42,13 @@
         </div>
 
         <div class="col-md d-flex" [ngClass]="{'d-flex':!stopSpinner}">
-            <div class="" *ngIf="stopSpinner">
-                <label>Employee</label>
+            <div class *ngIf="stopSpinner">
+                <label> {{globalServ.getGlobalNames('employee')}}</label>
                 <ng-select
                     [items]="employee"
                     bindLabel="mergeName"
                     bindValue="employeeCode"
                     [multiple]="false"
-                    placeholder="Select an employee"
                     class="ngSelectform"
                     (change)="modified()"
                     [(ngModel)]="reportObj.empCode">
@@ -57,8 +58,8 @@
         </div>
 
         <div class="col-md">
-            <div class="">
-                <label>Leave Type</label>
+            <div class>
+                <label>{{globalServ.getGlobalNames('LeaveType')}}</label>
                 <select class="form-select" [(ngModel)]="reportObj.leaveCode"
                     (change)="modified()">
                     <option [value]="sh.leaveTypeCode"
@@ -68,9 +69,10 @@
         </div>
 
         <div class="col-md">
-            <div class="">
-                <label>Date From & To</label>
+            <div class>
+                <label>{{globalServ.getGlobalNames('dateFromandTo')}}</label>
                 <input id="selectedDateRange" type="text" ngxDaterangepickerMd
+                    [locale]="{format: 'DD-MM-YYYY'}"
                     [(ngModel)]="selectedDateRange" (change)="modified()"
                     class="form-control" />
             </div>
@@ -79,7 +81,9 @@
     </div>
     <div class="row g-2 mb-2 mt-2">
         <div class="col-sm-6 col-lg-2 ">
-            <label class="form-label ms-2">Show entries</label>
+            <label class="form-label ms-2">
+                {{globalServ.getGlobalNames('ShowEntries')}}
+            </label>
             <select class="form-select" (change)="resultsPerPage($event)">
                 <option value="25">25</option>
                 <option value="50">50</option>
@@ -90,12 +94,16 @@
         <div class="col-md d-flex justify-content-end align-items-end">
             <button id="save_pdf" class="btn add-btn float-end mx-2"
                 [disabled]="rows.length === 0"
-                (click)="savePDF()">Save as PDF</button>
+                (click)="savePDF()"> {{globalServ.getGlobalNames('saveAsPDF')}}
+            </button>
             <button id="save_excel" class="btn add-btn float-end mx-2"
                 [disabled]="rows.length === 0"
-                (click)="saveExcel()">Save as Excel</button>
+                (click)="saveExcel()">
+                {{globalServ.getGlobalNames('saveAsExcel')}}
+            </button>
             <button id="submit_leave_rpt" class="btn add-btn float-end mx-2"
-                (click)="submit()">Submit</button>
+                (click)="submit()"> {{globalServ.getGlobalNames('submit')}}
+            </button>
         </div>
     </div>
     <div class="row">
@@ -105,28 +113,47 @@
                     class="table table-hover custom-table mb-0 datatable">
                     <thead class="thead-all">
                         <tr class="tr-th-all">
-                            <th> From Date
-                                <span class="block text-muted">Day</span>
+                            <th>
+                                {{globalServ.showLabel('createdDate')}}
                             </th>
-                            <th>To Date
-                                <span class="block text-muted">Day</span>
+                            <th>
+                                {{globalServ.getGlobalNames('fromDate')}}
+                                <span
+                                    class="block text-muted">{{globalServ.getGlobalNames('day')}}</span>
                             </th>
-                            <th
-                                *ngIf="reportObj.department === 'ALL'">Department</th>
-                            <th *ngIf="reportObj.empCode === 'ALL'">Employee
-                                Code</th>
-                            <th *ngIf="reportObj.empCode === 'ALL'">Employee
-                                Name</th>
-                            <th>Leave Type</th>
-                            <th *ngIf="reportObj.project === 'ALL'">Project</th>
-                            <th>Status</th>
+                            <th>
+                                {{globalServ.getGlobalNames('toDate')}}
+                                <span
+                                    class="block text-muted">{{globalServ.getGlobalNames('day')}}</span>
+                            </th>
+                            <th *ngIf="reportObj.department === 'ALL'">
+                                {{globalServ.getGlobalNames('department')}}
+                            </th>
+                            <th *ngIf="reportObj.empCode === 'ALL'">
+                                {{globalServ.getGlobalNames('empCode')}}
+                            </th>
+                            <th *ngIf="reportObj.empCode === 'ALL'">
+                                {{globalServ.getGlobalNames('empName')}}
+                            </th>
+                            <th>
+                                {{globalServ.getGlobalNames('LeaveType')}}
+                            </th>
+                            <th *ngIf="reportObj.project === 'ALL'">
+                                {{globalServ.getGlobalNames('project')}}
+                            </th>
+                            <th>
+                                {{globalServ.showLabel('leaveStatus')}}
+                            </th>
+                            <th>
+                                {{globalServ.showLabel('approvedby')}}
+                            </th>
                         </tr>
                     </thead>
                     <tbody *ngIf="rows.length === 0 && message === 'modified'">
                         <tr
                             style=" text-align: center; height: 150px;">
-                            <td colspan="8">
-                                "No records were found with the selected filter criteria."
+                            <td colspan="10">
+                                {{globalServ.showGlobalErrors('notFound')}}
                             </td>
                         </tr>
                     </tbody>
@@ -134,16 +161,16 @@
                         *ngIf="rows.length === 0 && message === 'clickOnsubmit'">
                         <tr
                             style=" text-align: center; height: 150px;">
-                            <td colspan="8">
-                                "Great choices! Finalize your selection by clicking 'Submit' to generate a report with the filtered data you've chosen."
+                            <td colspan="10">
+                                {{globalServ.showGlobalErrors('greatChoices')}}
                             </td>
                         </tr>
                     </tbody>
                     <tbody *ngIf="rows.length === 0 && message === 'error'">
                         <tr
                             style=" text-align: center; height: 150px;">
-                            <td colspan="8">
-                                "Sorry for the Inconvenience!"
+                            <td colspan="10">
+                                {{globalServ.showGlobalErrors('sorry')}}
                             </td>
                         </tr>
                     </tbody>
@@ -152,6 +179,7 @@
                             *ngFor="let rw of rows| paginate: config; let i=index;">
                             <!-- <td>{{i+1}}</td> -->
                             <!-- <td><a routerLink = "/accounts/rw-view">{{rw.number}}</a></td> -->
+                            <td>{{rw.createdDate | date: dateFormat }}</td>
                             <td>{{rw.fromDt | date: dateFormat }}
                                 <span
                                     class="block text-muted">{{rw.fromDay}}</span>
@@ -170,6 +198,7 @@
                             <td
                                 *ngIf="reportObj.project === 'ALL'">{{rw.projectCode}}</td>
                             <td>{{rw.status}}</td>
+                            <td>{{rw.approvedby}}</td>
                         </tr>
                     </tbody>
                 </table>

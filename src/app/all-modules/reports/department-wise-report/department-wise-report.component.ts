@@ -32,7 +32,7 @@ export class DepartmentWiseReportComponent implements OnInit {
   constructor(
     private httpPostService: HttpPostService,
     private spinner: NgxSpinnerService,
-    private global: GlobalvariablesService,
+    public global: GlobalvariablesService,
     private httpGetService: HttpGetService,
     private router: Router
   ) {
@@ -45,6 +45,8 @@ export class DepartmentWiseReportComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.global.getMyCompLabels('deptWiseRpt');
+    this.global.getMyCompPlaceHolders('deptWiseRpt');
     this.getDepartments();
   }
 
@@ -81,8 +83,7 @@ export class DepartmentWiseReportComponent implements OnInit {
 
   submit(): void {
     this.spinner.show();   
-    this.httpGetService.
-      getMasterList('reports/pesentRptCountByDept?date=' + this.date )
+    this.httpGetService.getMasterList('reports/pesentRptCountByDept?date=' + this.date)
       .subscribe(
         (res: any) => {
           this.rows = res.response;         
@@ -116,8 +117,9 @@ export class DepartmentWiseReportComponent implements OnInit {
     this.httpGetService.getPdf('reports/pesentRptCountByDept/pdf?date=' + this.date).subscribe((res: any) => {
       this.spinner.hide();
       const file = new Blob([res], { type: 'application/pdf' });
-      FileSaver.saveAs(file, 'Department-wise-report' + new Date().getTime() + '.pdf');
-      this.global.showSuccessPopUp('Pdf', 'success');
+      const fileName = 'Department_wise_report_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_')
+      FileSaver.saveAs(file, fileName + '.pdf');
+      this.global.showSuccessPopUp('Pdf', 'success', fileName);
     },
       err => {
         this.spinner.hide();
@@ -133,10 +135,11 @@ export class DepartmentWiseReportComponent implements OnInit {
     this.httpGetService.getExcel('reports/pesentRptCountByDept/xls?date=' + this.date).subscribe((res: any) => {
       this.spinner.hide();
       const data: Blob = new Blob([res], { type: EXCEL_TYPE });
+      const fileName = 'Department_wise_report_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_')
       FileSaver.saveAs(
         data,
-        'Department-wise-report' + new Date().getTime() + EXCEL_EXTENSION);
-      this.global.showSuccessPopUp('Excel', 'success');
+        fileName + EXCEL_EXTENSION);
+      this.global.showSuccessPopUp('Excel', 'success', fileName);
     },
       err => {
         this.spinner.hide();

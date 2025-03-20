@@ -5,9 +5,8 @@
                 <div class="d-flex align-items-baseline">
                     <i style="font-size:20px" class="fa fa-arrow-left"
                         routerLink="/dashboard" aria-label="back"></i>
-                    <h3 class="ms-4 page-title">Leave Calendar</h3>
+                    <h3 class="ms-4 page-title">{{global.showLabel('LeaveCalendarHeader')}}</h3>
                 </div>
-
             </div>
         </div>
     </div>
@@ -21,7 +20,7 @@
                     <option [value]="dtypes.deptCode"
                         *ngFor="let dtypes of departments">{{dtypes.deptName}}</option>
                 </select>
-                <label>Department</label>
+                <label>{{global.getGlobalNames('department')}}</label>
             </div>
         </div>
         <div class="col-md-3">
@@ -32,7 +31,7 @@
                     <option [value]="sh.categoryCode"
                         *ngFor="let sh of categorys">{{sh.categoryCode}}</option>
                 </select>
-                <label>Project</label>
+                <label>{{global.getGlobalNames('project')}}</label>
             </div>
         </div>
         <div class="col-md d-flex" [ngClass]="{'d-flex':!stopSpinner}">
@@ -44,13 +43,13 @@
                         *ngFor="let emp of employee">{{emp.employeeName}} -
                         {{emp.employeeCode}}</option>
                 </select>
-                <label>Employee</label>
+                <label>{{global.getGlobalNames('employee')}}</label>
             </div>
             <div id="loading" *ngIf="!stopSpinner"></div>
         </div>
         <div class="col-sm-6 col-md-3">
             <mat-form-field appearance="outline">
-                <mat-label>Month and Year</mat-label>
+                <mat-label>{{global.getGlobalNames('montNdYear')}} </mat-label>
                 <input matInput [matDatepicker]="dp" [(ngModel)]="date" />
                 <mat-datepicker-toggle matIconSuffix
                     [for]="dp"></mat-datepicker-toggle>
@@ -65,11 +64,11 @@
         </div>
     </div>
 
-    <div class="row col-md-12 mb-2 mt-5">
-        <div class="col-sm-6 col-lg-4 d-flex mb-2 align-items-end">
+    <div class="row col-md-12 mb-2 mt-5 align-items-end" >
+        <div class="col-sm-6 col-lg-4 d-flex align-items-end">
             <div class="input-group">
                 <input type="text" class="form-control"
-                    placeholder="Search"
+          placeholder="{{global.showGlobalplaceholders('search')}}"
                     (keyup)="updateFilter($event)"
                     style="border-radius: 8px 0px 0px 8px; 
     height: calc(2.5rem + calc(var(--mo-border-width) * 2));">
@@ -79,7 +78,7 @@
             </div>
         </div>
         <div class="col-sm-6 col-md-2 mt-30px">
-            <label class="form-label ms-2">Show entries</label>
+            <label class="form-label ms-2">{{global.getGlobalNames('ShowEntries')}} </label>
             <select class="form-select" (change)="resultsPerPage($event)">
                 <option value="25">25</option>
                 <option value="50">50</option>
@@ -88,10 +87,9 @@
             </select>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-4  col-lg-6">
             <button id="submit_Leave" class="btn add-btn"
-                [disabled]="!reportObj.empCode"
-                (click)="getLeaveCal()">Submit</button>
+            [disabled]="!reportObj.empCode"  (click)="getLeaveCal()">{{global.getGlobalNames('submit')}}</button>
         </div>
     </div>
 
@@ -99,12 +97,12 @@
         <table class="table  custom-table table-nowrap mb-0">
             <thead class="thead-all">
                 <tr class="tr-th-all">
-                    <th>Emp Code<i class="fa fa-sort  my-auto ms-2"
+                    <th>{{global.getGlobalNames('empCode')}}<i class="fa fa-sort  my-auto ms-2"
                             data-column="code"
                             (click)="sortData('code')"
                             [ngClass]="{'asc': sortColumn === 'code' && sortOrder === 'asc',
                             'desc': sortColumn === 'code' && sortOrder === 'desc'}"></i></th>
-                    <th class="d-flex fixeddrow">Emp Name <i
+                    <th class="d-flex fixeddrow">{{global.getGlobalNames('empName')}} <i
                             class="fa fa-sort my-auto ms-2"
                             data-column="name"
                             (click)="sortData('name')"
@@ -120,7 +118,7 @@
                 <tr
                     style=" text-align: center; height: 150px;">
                     <td colspan="35">
-                        "No records were found with the selected filter criteria."
+                        {{global.showGlobalErrors('notFound')}}
                     </td>
                 </tr>
             </tbody>
@@ -129,7 +127,7 @@
                 <tr
                     style=" text-align: center; height: 150px;">
                     <td colspan="35">
-                        "Great choices! Finalize your selection by clicking 'Submit' to generate a report with the filtered data you've chosen."
+                         {{global.showGlobalErrors('greatChoices')}}
                     </td>
                 </tr>
             </tbody>
@@ -137,7 +135,7 @@
                 <tr
                     style=" text-align: center; height: 150px;">
                     <td colspan="35">
-                        "Sorry for the Inconvenience!"
+                       {{global.showGlobalErrors('sorry')}}
                     </td>
                 </tr>
             </tbody>
@@ -163,7 +161,6 @@
                             {{ d.leave }}
                         </td>
                     </ng-container>
-
                 </tr>
             </tbody>
 

@@ -147,7 +147,7 @@ export class AddShiftsComponent implements OnInit, canLeaveComponent {
     private httpGet: HttpGetService,
     private httpPost: HttpPostService,
     private spinner: NgxSpinnerService,
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private cd: ChangeDetectorRef
   ) { }
   canLeave(): boolean {
@@ -175,23 +175,9 @@ export class AddShiftsComponent implements OnInit, canLeaveComponent {
   }
 
 
-  getLabelDescription(divId: string): string {
-    const label = this.labels?.find(item => item.colCode === divId);
-    return label ? label.labelDescription : '';
-  }
-  getShiftLabels() {
-    this.spinner.show();
-    this.globalServ.getLabels('shiftMaster').subscribe((res: any) => {
-      this.labels = res.response;
-      this.spinner.hide();
-    }, (err) => {
-      this.spinner.hide();
-      console.error(err.error.status.message);
-    });
-  }
 
   ngOnInit(): void {
-    // this.getShiftLabels();
+    this.globalServ.getMyCompPlaceHolders('shiftMaster');
     this.shiftForm = this.fb.group({
       shiftCode: [null, [Validators.required, this.httpPost.customValidator()]],
       shortName: [null, [Validators.required, this.httpPost.customValidator()]],

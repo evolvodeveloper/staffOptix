@@ -4,7 +4,7 @@
             <div class="d-flex align-items-baseline">
                 <i style="font-size:20px" class="fa fa-arrow-left"
                     (click)="back()" aria-label="back"></i>
-                <h3 class="ms-4 page-title">Calendar List</h3>
+                <h3 class="ms-4 page-title">{{globalServ.showLabel('calendarList')}}</h3>
             </div>
         </div>
     </div>
@@ -15,7 +15,7 @@
             <div class="col-sm-12 col-lg-3">
                 <div class="input-group">
                     <input type="text" class="form-control"
-                        placeholder="search by calendar"
+                        placeholder="{{globalServ.showPlaceholder('searchBycal')}}"
                         [(ngModel)]="searchedFor" (keyup)="updateFilter($event)"
                         style="border-radius: 8px 0px 0px 8px;">
                     <span class="input-group-text" id="basic-addon1">
@@ -31,10 +31,10 @@
                 <button type="button" id="add_calendar"
                     class="btn add-btn float-end d-flex" *ngIf="hasPermissionToUpdate"
                     (click)="openModal('', '')"><i id="add_calendar"
-                        class="material-icons me-2">add</i> Add New</button>
+                        class="material-icons me-2">add</i> {{globalServ.getGlobalNames('addNew')}}</button>
             </div>
             <div class="col-sm-6 col-lg-2 mt-30px">
-                <label class="form-label ms-2">Show entries</label>
+                <label class="form-label ms-2"> {{globalServ.getGlobalNames('ShowEntries')}}</label>
                 <select class="form-select" (change)="resultsPerPage($event)">
                     <!-- <option value="10">10</option> -->
                     <option value="25">25</option>
@@ -49,19 +49,18 @@
                 class="table table-hover table-nowrap custom-table mb-0 datatable">
                 <thead class="thead-all">
                     <tr class="tr-th-all">
-                        <th scope="col">Calendar</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Timezone</th>
-                        <th scope="col" class="text-center">Default</th>
-                        <th scope="col" class="text-center">Action</th>
+                        <th scope="col">{{globalServ.showLabel('calendarCode')}}</th>
+                        <th scope="col">{{globalServ.showLabel('cDescription')}}</th>
+                        <th scope="col">{{globalServ.showLabel('timeZone')}}</th>
+                        <th scope="col" class="text-center">{{globalServ.getGlobalNames('isDefault')}}</th>
+                        <th scope="col" class="text-center">{{globalServ.getGlobalNames('action')}}</th>
                     </tr>
                 </thead>
                 <tbody *ngIf="rows.length === 0">
                     <tr
                         style=" text-align: center; height: 150px;">
                         <td colspan="5">
-                            "No records were found with the selected filter criteria."
-                        </td>
+    {{globalServ.showGlobalErrors('notFound')}}                        </td>
                     </tr>
                 </tbody>
                 <tbody *ngIf="rows.length > 0">
@@ -94,7 +93,6 @@
                                 </button>
                             </div>
                         </td>
-
                     </tr>
                 </tbody>
             </table>

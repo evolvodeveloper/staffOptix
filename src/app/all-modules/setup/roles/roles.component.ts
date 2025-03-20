@@ -28,7 +28,6 @@ export class RolesComponent implements OnInit, OnDestroy {
   edit = false;
   roleId: any;
   current_editData: any;
-  labels:any;
 
   active = false;
   hasPermissionToUpdate = false;
@@ -43,7 +42,7 @@ export class RolesComponent implements OnInit, OnDestroy {
     private router: Router,
     private httpGetService: HttpGetService,
     private spinner: NgxSpinnerService,
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private modalService: NgbModal,
     private UtilServ: UtilService
   ) {
@@ -54,23 +53,11 @@ export class RolesComponent implements OnInit, OnDestroy {
     };
   }
 
-  
-  getLabelDescription(divId: string): string {
-    const label = this.labels?.find(item => item.colCode === divId);
-    return label ? label.labelDescription : '';
-  }
-  getRolesLabels() {
-    this.spinner.show();
-    this.globalServ.getLabels('roleMaster').subscribe((res: any) => {
-      this.labels = res.response;
-      this.spinner.hide();
-    }, (err) => {
-      this.spinner.hide();
-      console.error(err.error.status.message);
-    });
-  }
+
+
   ngOnInit(): void {
-    // this.getRolesLabels();   
+    this.globalServ.getMyCompLabels('roleMaster');
+    this.globalServ.getMyCompPlaceHolders('roleMaster');
     this.acRoute.data.subscribe(data => {
       const permission = data.condition
       this.hasPermissionToUpdate = permission.hasPermissionToUpdate
@@ -122,7 +109,7 @@ export class RolesComponent implements OnInit, OnDestroy {
 
   getRoles(): void {
     this.spinner.show();
-    this.httpGetService.getMasterList('secroles?app=atlas').subscribe(
+    this.httpGetService.getMasterList('secroles?app=ATLAS').subscribe(
       (res: any) => {
         this.rows = res.response;
         this.temp = [...this.rows];

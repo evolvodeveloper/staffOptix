@@ -7,7 +7,10 @@
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title">
-          {{ view ? "View" : update ? "Update" : "Create" }} Department
+          {{ view ? globalServ.getGlobalNames('view') : (update ?
+          globalServ.getGlobalNames('update')
+          :globalServ.getGlobalNames('create')) }}
+          {{globalServ.showLabel('Departmentheader')}}
         </h1>
         <button
           type="button"
@@ -21,17 +24,17 @@
             <form [formGroup]="departmentForm" novalidate>
               <div class="form-group input">
                 <label class="mb-1 text-sm">
-                  Department&nbsp;<span class="text-danger"
-                    style=" margin-left: 1px">*</span>
+                  {{globalServ.showLabel('deptCode')}}&nbsp;<span
+                    class="text-danger" style=" margin-left: 1px">*</span>
                 </label>
                 <input
                   class="form-control"
                   id="deptCode"
                   maxlength="{{ charLimit }}"
-                  placeholder="Enter Department Code"
+                  placeholder="{{globalServ.showPlaceholder('deptCode')}}"
                   [formControl]="departmentForm.controls.deptCode"
                   [class.is-invalid]="departmentForm.controls.deptCode.invalid && (departmentForm.controls.deptCode.dirty || departmentForm.controls.deptCode.touched)" />
-                <div
+                <div class="mt-2"
                   *ngIf="
                     departmentForm.controls['deptCode'].invalid &&
                     (departmentForm.controls['deptCode'].dirty ||
@@ -41,27 +44,28 @@
                   <div
                     *ngIf="departmentForm.controls['deptCode'].errors.required"
                     style="color: #dc3545">
-                    Department Code is required.
+                    {{globalServ.showLabel('deptCode')}}
+                    {{globalServ.showGlobalErrors('required')}}
                   </div>
                 </div>
 
                 <div
                   *ngIf="departmentForm.get('deptCode').hasError('invalidFormat')"
-                  style="color: #dc3545">field should not contain special
-                  characters</div>
+                  style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
                 <div
                   *ngIf="
                     departmentForm.controls['deptCode'].value?.length >
                     charLimit - 1
                   "
                   style="color: #dc3545">
-                  Max {{ charLimit }} Characters
+                  {{globalServ.showGlobalErrors('max')}} {{ charLimit }}
+                  {{globalServ.showGlobalErrors('char')}}
                 </div>
               </div>
 
               <div class="form-group input">
                 <label class="mb-1 text-sm">
-                  Department Name &nbsp;<span
+                  {{globalServ.showLabel('deptName')}}&nbsp;<span
                     style="color: red; margin-left: 1px">*</span>
                 </label>
                 <input
@@ -69,10 +73,10 @@
                   id="deptName"
                   required
                   maxlength="{{ charLimit }}"
-                  placeholder="Enter Department Name"
+                  placeholder="{{globalServ.showPlaceholder('deptName')}}"
                   [formControl]="departmentForm.controls.deptName"
                   [class.is-invalid]="departmentForm.controls.deptName.invalid && (departmentForm.controls.deptName.dirty || departmentForm.controls.deptName.touched)" />
-                <div
+                <div class="mt-2"
                   *ngIf="
                     departmentForm.controls['deptName'].invalid &&
                     (departmentForm.controls['deptName'].dirty ||
@@ -82,13 +86,13 @@
                   <div
                     *ngIf="departmentForm.controls['deptName'].errors.required"
                     style="color: #dc3545">
-                    Department Name is required.
+                    {{globalServ.showLabel('deptName')}}
+                    {{globalServ.showGlobalErrors('required')}}
                   </div>
                 </div>
                 <div
                   *ngIf="departmentForm.get('deptName').hasError('invalidFormat')"
-                  style="color: #dc3545">field should not contain special
-                  characters</div>
+                  style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
               </div>
               <!-- (keydown.space)="$event.preventDefault()" -->
               <div class="mb-3 form-check">
@@ -98,7 +102,8 @@
                   color="primary"
                   type="checkbox"
                   [formControl]="departmentForm.controls.isactive" />
-                <label class="form-check-label"> Active </label>
+                <label class="form-check-label">
+                  {{globalServ.getGlobalNames('active')}} </label>
               </div>
             </form>
           </div>
@@ -109,12 +114,14 @@
             <div class="item-row head w-100">
               <div class="col-12 item-h">
                 <div class="titlediv">
-                  <h5 class="mb-0" *ngIf="!view">Add Department Access</h5>
                   <h5 class="mb-0"
-                    *ngIf="view && roleAccessArray.length > 0">View Department
-                    Access Users</h5>
+                    *ngIf="!view">{{globalServ.getGlobalNames('add')}}
+                    {{globalServ.showLabel('deptAccess')}}</h5>
+                  <h5 class="mb-0"
+                    *ngIf="view && roleAccessArray.length > 0">{{globalServ.getGlobalNames('view')}}
+                    {{globalServ.showLabel('deptAccess')}}</h5>
                   <h5 class="mb-0" *ngIf="view && roleAccessArray.length === 0">
-                    No Department Access Fond for this Department.
+                    {{globalServ.getGlobalErrors('noDeptAccess')}}
                   </h5>
                 </div>
                 <div style="float: right">
@@ -123,7 +130,8 @@
                     [disabled]="departmentForm.invalid"
                     (click)="addUser()"
                     class="btn btn-primary btn-sm mt-1 me-2 align-items-end d-flex">
-                    <i class="material-icons me-2">add</i> Add More
+                    <i class="material-icons me-2">add</i>
+                    {{globalServ.getGlobalNames('addMore')}}
                   </button>
                 </div>
               </div>
@@ -137,7 +145,6 @@
           <div class="row mt-4 w-100" *ngIf="c.status !== 'delete'">
             <div class="col-md-5 item-h">
               <div class="form-floating">
-
                 <select
                   id="deptRoleCode"
                   class="form-select br-rm"
@@ -151,7 +158,7 @@
                   </option>
                 </select>
                 <label>
-                  Role Code&nbsp;<span
+                  {{globalServ.getGlobalNames('roleCode')}} &nbsp;<span
                     style="color: red; margin-left: 1px">*</span>
                 </label>
               </div>
@@ -171,7 +178,7 @@
                     {{ e }}
                   </option>
                 </select>
-                <label>User Name&nbsp;<span
+                <label>{{globalServ.getGlobalNames('userName')}} &nbsp;<span
                     style="color: red; margin-left: 1px">*</span></label>
               </div>
             </div>
@@ -186,19 +193,19 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn delete-btn" (click)="closeModal()">
-          Cancel
+          {{globalServ.getGlobalNames('cancel')}}
         </button>
         <button
           [hidden]="view || update"
-          [disabled]="departmentForm.invalid || departmentForm.pristine || roleAccessArray.length === 0"
+          [disabled]="departmentForm.invalid || rolesArrLen.length === 0"
           (click)="create()"
           class="btn add-btn">
-          Create
+          {{globalServ.getGlobalNames('create')}}
         </button>
         <button *ngIf="update"
-          [disabled]="departmentForm.invalid || roleAccessArray.length === 0" 
+          [disabled]="departmentForm.invalid || rolesArrLen.length === 0"
           (click)="Update()" class="btn add-btn">
-          Update
+          {{globalServ.getGlobalNames('update')}}
         </button>
       </div>
     </div>

@@ -1,10 +1,12 @@
-    <div class="row align-items-center">
-        <div class="col-sm-12 col-lg-8 d-flex align-items-baseline">
-             <i style="font-size:20px" class="fa fa-arrow-left"
-                        (click)="back()" aria-label="back"></i>
-            <h3 class="ms-4 page-title">User Role Mapping</h3>
-        </div>
+ <div class="row align-items-center">
+    <div class="col-sm-12 col-lg-8 d-flex align-items-baseline">
+        <i style="font-size:20px" class="fa fa-arrow-left"
+            (click)="back()" aria-label="back"></i>
+        <h3 class="ms-4 page-title">
+            {{globalServ.showLabel('userRoleMappingHeader')}}
+        </h3>
     </div>
+</div>
 
 <div class="row">
     <div class="col-md-12">
@@ -13,7 +15,7 @@
             <div class="col-sm-12 col-lg-3  my-auto mb-0">
                 <div class="input-group">
                     <input type="text" class="form-control"
-                        placeholder="search by user name"
+                        placeholder="{{globalServ.showPlaceholder('searchByuserName')}}"
                         [(ngModel)]="searchedFor"
                         (keyup)="updateFilter($event)"
                         style="border-radius: 8px 0px 0px 8px;">
@@ -30,10 +32,13 @@
                     class="btn add-btn float-end d-flex" (click)="create()"
                     data-bs-toggle="modal"
                     data-bs-target="#addRoles"><i id="add_roles_mapping"
-                        class="material-icons me-2">add</i> Add Roles</button>
+                        class="material-icons me-2">add</i>
+                    {{globalServ.getGlobalNames('addNew')}}</button>
             </div>
             <div class="col-sm-6 col-lg-2">
-                <label class="form-label ms-2 mb-0">Show entries</label>
+                <label class="form-label ms-2 mb-0">
+                    {{globalServ.getGlobalNames('ShowEntries')}}
+                </label>
                 <select class="form-select" (change)="resultsPerPage($event)">
                     <!-- <option value="10">10</option> -->
                     <option value="25">25</option>
@@ -50,16 +55,24 @@
                 class="table table-hover table-nowrap custom-table mb-0 datatable">
                 <thead class="thead-all">
                     <tr class="tr-th-all">
-                        <th scope="col">User Name</th>
-                        <th scope="col" class="text-start">Role</th>
-                        <th scope="col" class="text-center">Active </th>
-                        <th scope="col" class="text-center">Action</th>
+                        <th scope="col">
+                            {{globalServ.getGlobalNames('userName')}}
+                        </th>
+                        <th scope="col" class="text-start">
+                            {{globalServ.getGlobalNames('roleCode')}}
+                        </th>
+                        <th scope="col" class="text-center">
+                            {{globalServ.getGlobalNames('active')}}
+                        </th>
+                        <th scope="col" class="text-center">
+                            {{globalServ.getGlobalNames('action')}}
+                        </th>
                     </tr>
                 </thead>
                 <tbody *ngIf="rows.length === 0">
                     <tr style=" text-align: center; height: 150px;">
                         <td colspan="5">
-                           "No records were found with the selected filter criteria."
+                            {{globalServ.showGlobalErrors('notFound')}}
                         </td>
                     </tr>
                 </tbody>
@@ -105,7 +118,8 @@
             </table>
             <div *ngIf="rows.length > config.itemsPerPage"
                 class="text-center mt-3">
-                <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+                <pagination-controls
+                    (pageChange)="pageChanged($event)"></pagination-controls>
             </div>
         </div>
     </div>
@@ -119,10 +133,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">
-                    User Role Mapping
+                    {{globalServ.showLabel('userRoleMappingHeader')}}
                 </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"
-                    aria-label="Close" (click)="closeModel()" ></button>
+                    aria-label="Close" (click)="closeModel()"></button>
             </div>
             <div class="modal-body">
 
@@ -130,10 +144,12 @@
                     <!-- <div class="form-group"> -->
                     <!-- ms-2  -->
                     <label class="text-sm mb-1">
-                        Username&nbsp;<span style="color: red; margin-left: 1px">*</span>
+                        {{globalServ.getGlobalNames('userName')}}
+                        &nbsp;<span
+                            style="color: red; margin-left: 1px">*</span>
                     </label>
                     <ng-select id="userName" [items]="usersAre"
-                        placeholder="Select Username"
+                        placeholder="{{globalServ.showPlaceholder('selectUsername')}}"
                         [disabled]="view || update"
                         [(ngModel)]="selected_userName"
                         (change)="getSelectedUserRoles()"></ng-select>
@@ -143,18 +159,21 @@
                 <div class="form-group input mt-4">
                     <!-- <div class="form-group"> -->
                     <label class="text-sm mb-1">
-                        Roles&nbsp;<span style="color: red; margin-left: 1px">*</span>
+                        {{globalServ.getGlobalNames('roles')}}
+                        &nbsp;<span
+                            style="color: red; margin-left: 1px">*</span>
                     </label>
                     <ng-select id="roleCode" [items]="roleCodeList"
                         bindLabel="roleCode" bindValue="roleCode"
-                        multiple="true" placeholder="Select Roles"
+                        multiple="true"
+                        placeholder="{{globalServ.showPlaceholder('selectRoles')}}"
                         [disabled]="view"
                         [(ngModel)]="selectedRoles"></ng-select>
                     <!-- </div> -->
                 </div>
 
                 <div class="alert alert-info" role="alert">
-                    "Users must sign out and sign back in after role mapping to activate their new access levels"
+                    {{globalServ.showLabel('rolesAlert')}}
                 </div>
                 <!--
 
@@ -179,10 +198,12 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn delete-btn closeModel"
-                    data-bs-dismiss="modal">Cancel</button>
+                    data-bs-dismiss="modal">{{globalServ.getGlobalNames('cancel')}}</button>
                 <button type="button" class="btn add-btn"
                     [disabled]="!selected_userName || !selectedRoles"
-                    (click)="saveChanges()" [hidden]="view">Save changes</button>
+                    (click)="saveChanges()" [hidden]="view">
+                    {{globalServ.getGlobalNames('save')}}
+                </button>
             </div>
         </div>
     </div>

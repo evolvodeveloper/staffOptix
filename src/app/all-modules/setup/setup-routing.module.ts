@@ -119,6 +119,13 @@ const routes: Routes = [
       condition: CheckPermissionResolver
     }
   },
+  {
+    path: 'preferences',
+    loadChildren: () =>
+      import('./preferences/preferences.module').then(
+        (m) => m.PreferencesModule
+      ),
+  },
 
 
   {

@@ -1,10 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import * as FileSaver from 'file-saver';
 import moment from 'moment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import Swal from 'sweetalert2';
+const PDF_EXTENSION = '.pdf';
 
 @Component({
   selector: 'app-dowload-payslips',
@@ -29,10 +31,13 @@ export class DowloadPayslipsComponent implements OnInit {
   displayPayslipCount = false;
   constructor(private httpGet: HttpGetService,
     private http: HttpClient,
-    private global: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private spinner: NgxSpinnerService) { }
   ngOnInit() {
-    this.displayPayslipCount = this.global.showSinglePayslipPerPage === 'Y' ? true : false
+    this.globalServ.getMyCompLabels('payslips');
+    this.globalServ.getMyCompPlaceHolders('payslips');
+    this.displayPayslipCount = this.globalServ.showSinglePayslipPerPage === 'Y' ? true : false
+
     this.getPayrollCodes();
   }
 
@@ -106,9 +111,7 @@ export class DowloadPayslipsComponent implements OnInit {
         const fileURL = URL.createObjectURL(file);
         this.pdfSrc = fileURL;
         this.spinner.hide();
-        // window.open(this.pdfSrc);
-        this.global.showSuccessPopUp('Pdf', 'success');
-        // window.open(fileURL);
+        window.open(this.pdfSrc);
       },
         (err) => {
           this.spinner.hide();
@@ -123,7 +126,9 @@ export class DowloadPayslipsComponent implements OnInit {
 
   savePdf() {
     this.spinner.show();
-    window.open(this.pdfSrc);
+    const fileName = 'Payslip_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_')
+    FileSaver.saveAs(this.pdfSrc, fileName + PDF_EXTENSION);
+    this.globalServ.showSuccessPopUp('Pdf', 'success', fileName);
     this.spinner.hide();
   }
 }

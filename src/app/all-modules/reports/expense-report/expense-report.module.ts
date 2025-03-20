@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
+import { CdkDrag, CdkDragPlaceholder, CdkDropList, DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
@@ -15,7 +16,7 @@ import { ExpenseReportComponent } from './expense-report.component';
   ],
   imports: [NgSelectModule,
     CommonModule,
-    FormsModule,
+    FormsModule, CdkDrag, CdkDragPlaceholder, CdkDropList, DragDropModule,
     NgxPaginationModule,
     NgxDaterangepickerMd.forRoot(),
     ReactiveFormsModule,

@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
@@ -79,9 +79,6 @@ export class VistConfigComponent implements OnInit {
     this.httpGetService.getMasterList('hr/visit').subscribe((res: any) => {
       const rows = res.response;
       this.utilServ.allVisitConfigs = rows;
-      console.log('utilServ.allVisitConfigs',this.utilServ.allVisitConfigs);
-      
-
       this.temp = [...rows];
       if (this.searchedFor !== '' && this.searchedFor !== undefined) {
         const val = this.searchedFor.toLowerCase();
@@ -91,7 +88,6 @@ export class VistConfigComponent implements OnInit {
       }
       else {
         this.rows = rows;
-        console.log(this.rows);
       }
       // Group by ConfigId and collect empcodes
       // const groupedByConfigId = this.rows.reduce((acc, visit) => {
@@ -104,9 +100,6 @@ export class VistConfigComponent implements OnInit {
 
       // Convert the grouped object back to an array
       // this.newrows = Object.values(groupedByConfigId);
-      // console.log(this.newrows);
-      
-
       this.config.totalItems = this.rows.length;
       this.spinner.hide();
     },
@@ -127,17 +120,12 @@ export class VistConfigComponent implements OnInit {
     this.rows.forEach(row => {
       removedEmps = removedEmps.concat(row.empVisitList);
       // or using spread operator: removedEmps.push(...row.empVisitList);
-    });
-    console.log('removedEmps',removedEmps);
-    
-
+    });  
     const navigationExtras = {
       state: {
         selectedEmployees: removedEmps // Pass the employee list
       }
-    };
-    console.log(navigationExtras);
-    
+    };   
     this.router.navigate(['/setup/visit-config/create-vist-config'], navigationExtras);  // Navigate to create component
   }
   
@@ -155,15 +143,11 @@ export class VistConfigComponent implements OnInit {
     this.config.currentPage = 1;
   }
 
-  viewData(row) {
-    console.log(row);
-    
+  viewData(row) {    
     this.UtilServ.viewData = row;
     this.router.navigateByUrl('/setup/visit-config/create-vist-config');
   }
   editData(row) {
-    console.log(row);
-    console.log(row);
     this.UtilServ.editData = {
       ...row,
       empVisitList: row?.empVisitList // Ensure the employee list is included

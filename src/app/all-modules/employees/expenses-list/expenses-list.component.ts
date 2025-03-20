@@ -21,8 +21,6 @@ export class ExpensesListComponent implements OnInit {
   fulldate3 = moment().format('YYYY-MM');
   isFullTextShown = false;
   config: any;
-  config1: any;
-  config2: any;
   TotalQty: string;
   rows = [];
   temp = [];
@@ -49,12 +47,12 @@ export class ExpensesListComponent implements OnInit {
   allRecordstemp = [];
   allRecords = [];
   setTimeId: any;
+  previousUrl = [];
   constructor(
     private httpPostService: HttpPostService,
-    private spr: NgxSpinnerService,
-    private spinner: NgxSpinnerService,
     private spinnerAllExp: NgxSpinnerService,
-    private global: GlobalvariablesService,
+    private spinner: NgxSpinnerService,
+    public global: GlobalvariablesService,
     private httpGetService: HttpGetService,
     private router: Router,
     private httpPut: HttpPutService,
@@ -71,30 +69,25 @@ export class ExpensesListComponent implements OnInit {
       currentPage: 1,
       totalItems: this.rows.length,
     };
-    this.config1 = {
-      itemsPerPage: 25,
-      currentPage: 1,
-      totalItems: this.expensesClaimedByEmp.length,
-    };
-    this.config2 = {
-      itemsPerPage: 25,
-      currentPage: 1,
-      totalItems: this.allRecords.length,
-    };
-
   }
 
   tab1() {
+    this.config.totalItems = this.rows.length;
+    this.config.currentPage = 1;
     this.firstTab = true;
     this.secondTab = false;
     this.thirdTab = false;
   }
   tab2() {
+    this.config.totalItems = this.expensesClaimedByEmp.length;
+    this.config.currentPage = 1;
     this.firstTab = false;
     this.secondTab = true;
     this.thirdTab = false;
   }
   tab3() {
+    this.config.totalItems = this.allRecords.length;
+    this.config.currentPage = 1;
     this.firstTab = false;
     this.secondTab = false;
     this.thirdTab = true;
@@ -111,6 +104,9 @@ export class ExpensesListComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.dateFormat = this.global.dateFormat;
+    this.global.getMyCompLabels('expensesComp');
+    this.global.getMyCompPlaceHolders('expensesComp');
     this.acRoute.data.subscribe(data => {
       const permission = data.condition
       this.hasPermissionToUpdate = permission.hasPermissionToUpdate
@@ -137,8 +133,8 @@ export class ExpensesListComponent implements OnInit {
       this.tab1();
     }
     if (this.utilServ.expensesByEmp.length > 0) {
-      this.rows = this.utilServ.expensesByEmp.filter(x => x.status == 'NEW');
-      this.temp = this.utilServ.expensesByEmp.filter(x => x.status == 'NEW');
+      this.rows = this.utilServ.expensesByEmp;
+      this.temp = this.utilServ.expensesByEmp;
       this.expensesClaimedByEmp = this.utilServ.expensesByEmp.filter(x => x.status == 'CLAIMED');
       this.expensesClaimedByEmpTemp = this.utilServ.expensesByEmp.filter(x => x.status == 'CLAIMED');
     }
@@ -146,10 +142,8 @@ export class ExpensesListComponent implements OnInit {
       this.getExpensesList(this.reportObj.month, this.reportObj.year);
     }
   }
-
-
-
   modified() {
+    this.utilServ.dateInExp = this.fulldate;
     this.fulldate3 = this.fulldate
     const dateSplit = this.fulldate.split('-');
     this.reportObj.month = dateSplit[1];
@@ -167,10 +161,10 @@ export class ExpensesListComponent implements OnInit {
   }
   getExpensesList(month, year) {
     this.spinner.show();
-    this.httpGetService.getMasterList('employeeexpensess?year=' + year + '&month=' + month).subscribe((res: any) => {
-      const rows = res.response.filter(x => x.status == 'NEW' || x.status == 'APPROVED')
-      this.rows = rows;
-      this.temp = rows;
+    this.httpGetService.getMasterList('employeeexpensess?year=' + year + '&month=' + month + '&flag=true').subscribe((res: any) => {
+      // const rows = res.response.filter(x => x.status == 'NEW' || x.status == 'APPROVED')
+      this.rows = res.response;
+      this.temp = res.response;
       this.expensesClaimedByEmp = res.response.filter(x => x.status == 'CLAIMED')
       this.expensesClaimedByEmpTemp = res.response.filter(x => x.status == 'CLAIMED')
       this.utilServ.expensesByEmp = res.response;
@@ -190,14 +184,14 @@ export class ExpensesListComponent implements OnInit {
       this.status = 'loading';
       this.spinnerAllExp.show();
       this.config.currentPage = 1;
-      this.httpGetService.getMasterList('employeeexpensess/all?year=' + year + '&month=' + month).subscribe((res: any) => {
+      this.httpGetService.getMasterList('employeeexpensess/all?year=' + year + '&month=' + month + '&flag=true').subscribe((res: any) => {
         const allRecords = res.response.filter(x => x.status !== 'REJECTED' && x.status !== 'CLAIMED' && x.status !== 'CANCELLED');
         this.allRecords = allRecords;
         this.allRecordstemp = allRecords;
         this.status = 'loaded';
         this.spinnerAllExp.hide();
         this.utilServ.AllExpenses = allRecords;
-        this.config2.totalItems = this.allRecordstemp.length;
+        this.config.totalItems = this.allRecordstemp.length;
       }, (err) => {
         this.status = 'loaded';
         this.spinnerAllExp.hide();
@@ -262,8 +256,8 @@ export class ExpensesListComponent implements OnInit {
       });
       this.expensesClaimedByEmp = temp;
     }
-    this.config1.totalItems = this.expensesClaimedByEmp.length;
-    this.config1.currentPage = 1;
+    this.config.totalItems = this.expensesClaimedByEmp.length;
+    this.config.currentPage = 1;
   }
 
   updateFilter2(event) {
@@ -278,8 +272,8 @@ export class ExpensesListComponent implements OnInit {
       });
       this.allRecords = temp;
     }
-    this.config2.totalItems = this.allRecords.length;
-    this.config2.currentPage = 1;
+    this.config.totalItems = this.allRecords.length;
+    this.config.currentPage = 1;
   }
   changeData(type) {
     this.searchedFor = '';
@@ -290,25 +284,18 @@ export class ExpensesListComponent implements OnInit {
   pageChanged(event) {
     this.config.currentPage = event;
   }
-  pageChanged1(event) {
-    this.config1.currentPage = event;
-  }
-  pageChanged2(event) {
-    this.cdr.detectChanges();
-    this.config2.currentPage = event;
-  }
   resultsPerPage(event) {
     this.config.itemsPerPage = event.target.value == 'all' ? this.temp.length : event.target.value;
     this.config.currentPage = 1;
   }
   resultsPerPage1(event) {
-    this.config1.itemsPerPage = event.target.value == 'all' ? this.expensesClaimedByEmpTemp.length : event.target.value;
-    this.config1.currentPage = 1;
+    this.config.itemsPerPage = event.target.value == 'all' ? this.expensesClaimedByEmpTemp.length : event.target.value;
+    this.config.currentPage = 1;
   }
 
   resultsPerPage2(event) {
-    this.config2.itemsPerPage = event.target.value == 'all' ? this.allRecordstemp.length : event.target.value;
-    this.config2.currentPage = 1;
+    this.config.itemsPerPage = event.target.value == 'all' ? this.allRecordstemp.length : event.target.value;
+    this.config.currentPage = 1;
   }
 
   back() {
@@ -317,7 +304,7 @@ export class ExpensesListComponent implements OnInit {
 
   viewData(row, soure) {
     const data = {
-      row,
+      row
     }
     this.utilServ.dateInExp = this.fulldate;
     this.UtilServ.viewData = data;
@@ -329,7 +316,6 @@ export class ExpensesListComponent implements OnInit {
       date: this.fulldate
     }
     this.utilServ.dateInExp = this.fulldate;
-
     this.UtilServ.editData = data;
     this.router.navigateByUrl('expenses/add-expense');
   }
@@ -373,21 +359,15 @@ export class ExpensesListComponent implements OnInit {
       }
     });
   }
-
-
-
-
-
-
   cancelexp(row) {
     this.spinner.show();
     row.modifiedStatus = 'CANCELLED';
-    this.httpPut.doPut('emp/expenses/approved', row).subscribe((res: any) => {
+    this.httpPut.doPut('emp/expenses/cancel', row).subscribe((res: any) => {
       this.spinner.hide();
       if (res.status.message == 'SUCCESS') {
         Swal.fire({
           title: 'Success',
-          text: row.title + ' Cancelled',
+          text: 'Expense Cancelled',
           icon: 'success',
           confirmButtonText: 'OK',
         })
@@ -399,7 +379,6 @@ export class ExpensesListComponent implements OnInit {
         serEmp.status = 'CANCELLED'
         this.rows = this.utilServ.expensesByEmp.filter(x => x.status == 'NEW');
         this.temp = this.utilServ.expensesByEmp.filter(x => x.status == 'NEW');
-
       }
     },
       err => {
@@ -419,12 +398,11 @@ export class ExpensesListComponent implements OnInit {
       if (res.status.message == 'SUCCESS') {
         Swal.fire({
           title: 'Success',
-          text: row.title + ' Approved',
+          text: 'Expense Approved',
           icon: 'success',
           confirmButtonText: 'OK',
         })
         row.status = 'APPROVED';
-
         const allSer = this.utilServ.AllExpenses.find(x => x.billId == row.billId);
         allSer.status = 'APPROVED'
         this.allRecords = this.utilServ.AllExpenses.filter(x => x.status == 'APPROVED' || x.status == 'NEW');
@@ -433,8 +411,6 @@ export class ExpensesListComponent implements OnInit {
         serEmp.status = 'APPROVED'
         this.rows = this.utilServ.expensesByEmp.filter(x => x.status == 'NEW');
         this.temp = this.utilServ.expensesByEmp.filter(x => x.status == 'NEW');
-
-
       }
     },
       err => {
@@ -469,8 +445,6 @@ export class ExpensesListComponent implements OnInit {
         this.expensesClaimedByEmp = this.utilServ.expensesByEmp.filter(x => x.status == 'CLAIMED');
         this.rows = this.utilServ.expensesByEmp.filter(x => x.status == 'NEW');
         this.temp = this.utilServ.expensesByEmp.filter(x => x.status == 'NEW');
-
-
       }
     },
       err => {
@@ -504,8 +478,6 @@ export class ExpensesListComponent implements OnInit {
         serEmp.status = 'REJECTED'
         this.rows = this.utilServ.expensesByEmp.filter(x => x.status == 'NEW');
         this.temp = this.utilServ.expensesByEmp.filter(x => x.status == 'NEW');
-
-
       }
     },
       err => {

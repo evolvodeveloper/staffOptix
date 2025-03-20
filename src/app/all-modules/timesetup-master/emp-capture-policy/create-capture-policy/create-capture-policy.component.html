@@ -6,7 +6,10 @@
         (click)="back()"
         aria-label="back"></i>
       <h3 class="ms-4 page-title">
-        {{ view ? "View" : update ? "Update" : "Create" }} Capture Policy
+        {{ view ? globalServ.getGlobalNames('view') : (update ?
+        globalServ.getGlobalNames('update')
+        :globalServ.getGlobalNames('create')) }}
+        {{globalServ.showLabel('capPolicyHeader')}}
       </h3>
     </div>
   </div>
@@ -19,14 +22,14 @@
       <form [formGroup]="empCapturePolicy">
         <div class="form-group input">
           <label class="mb-1 col-form-label"
-            id="captureCode">Capture Code &nbsp;<span
+            id="captureCode">{{globalServ.showLabel('captureCode')}} &nbsp;<span
               style="color: red; margin-left: 1px">*</span></label>
           <div style="width: 50%;">
             <input type="text"
-              placeholder="Enter Capture Code"
+              placeholder="{{globalServ.showPlaceholder('captureCode')}}"
               [formControl]="empCapturePolicy.controls.captureCode"
               id="captureCode" class="form-control">
-            <div id="captureCode"
+            <div id="captureCode" class="mt-2"
               *ngIf="empCapturePolicy.controls['captureCode'].invalid &&
                (empCapturePolicy.controls['captureCode'].dirty ||
                 empCapturePolicy.controls['captureCode'].touched)"
@@ -34,7 +37,8 @@
               <div
                 *ngIf="empCapturePolicy.controls['captureCode'].errors.required"
                 style="color: #dc3545">
-                Capture Code is required.
+                {{globalServ.showLabel('captureCode')}}
+                {{globalServ.showGlobalErrors('required')}}
               </div>
             </div>
           </div>
@@ -46,9 +50,11 @@
               [formControl]="empCapturePolicy.controls.allowBio">
           </div>
           <label for="bioCheckin">
-            Allow Employees To Clock In using Biometric machine
+            {{globalServ.showLabel('bioCheckin')}}
           </label>
         </div>
+
+        <!-- <h4 class="col-form-label">  {{globalServ.showLabel('webCheckin')}} </h4> -->
 
         <div class="col-form-label d-flex">
           <div>
@@ -57,18 +63,18 @@
               (change)="checkallowWebCheckIn()">
           </div>
           <label for="webCheckin">
-            Allow Employees To Clock In using Web
+            {{globalServ.showLabel('webCheckin')}}
           </label>
         </div>
         <div class="col-form-label d-flex" style="margin-left: 30px;"
           *ngIf="empCapturePolicy.controls.allowWebCheckIn.value">
           <div>
-            <input type="checkbox" (change)="empty($event, 'for_web')"
-              id="restrictWebtoLocation" class="form-check-input me-2"
-              [formControl]="empCapturePolicy.controls.restrictWebtoLocation">
+<input type="checkbox" (change)="empty($event, 'for_web')"
+id="restrictWebtoLocation" class="form-check-input me-2"
+[formControl]="empCapturePolicy.controls.restrictWebtoLocation">
           </div>
           <label for="restrictWebtoLocation">
-            Do you want to restrict Web login to a location
+            {{globalServ.showLabel('restrictWebtoLocation')}}
           </label>
         </div>
 
@@ -79,8 +85,9 @@
               <div class="col-12 item-h">
                 <div class="titlediv">
                   <h5 class="mb-0" *ngIf="!view">
-                    Add IP Range </h5>
-                  <h5 class="mb-0" *ngIf="view">View IP Range</h5>
+                    {{globalServ.showLabel('multipleWCheckins')}}</h5>
+                  <h5 class="mb-0"
+                    *ngIf="view">{{globalServ.showLabel('multiplevCheckins')}}</h5>
                 </div>
                 <div style="float: right">
                   <button
@@ -88,7 +95,8 @@
                     (click)="addWebItem()"
                     *ngIf="!view"
                     class="btn btn-primary btn-sm mt-1 align-items-end me-2 d-flex">
-                    <i class="material-icons me-2">add</i> Add More
+                    <i class="material-icons me-2">add</i>
+                    {{globalServ.getGlobalNames('addMore')}}
                   </button>
                 </div>
               </div>
@@ -109,11 +117,10 @@
                       pattern="^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
                       type="text" />
                     <label
-                      for="ipStart">IP Address Start</label>
+                      for="ipStart">{{globalServ.showLabel('ipStart')}}</label>
                   </div>
                   <div *ngIf="!c.validStartIpAddress"
-                    style="color: #dc3545">Invalid
-                    IPv4 start address</div>
+                    style="color: #dc3545">{{globalServ.showGlobalErrors('invalidIPV4')}}</div>
                 </div>
                 <div class="col-md-6 item-h">
                   <div class="form-floating">
@@ -126,11 +133,10 @@
                       pattern="^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
                       [disabled]="view"
                       type="text" />
-                    <label for="ipEnd">IP Address End</label>
+                    <label for="ipEnd">{{globalServ.showLabel('ipEnd')}}</label>
                   </div>
                   <div *ngIf="!c.validEndIpAddress"
-                    style="color: #dc3545">Invalid
-                    IPv4 end address</div>
+                    style="color: #dc3545">{{globalServ.showGlobalErrors('invalidIPV4')}}</div>
                 </div>
                 <div
                   class="item-h d-flex justify-content-center align-items-center mx-auto"
@@ -153,19 +159,19 @@
               (change)="checkallowMobileCheckin()">
           </div>
           <label for="mobileCheckin">
-            Allow Employees To Clock In using Mobile
+            {{globalServ.showLabel('mobileCheckin')}}
           </label>
         </div>
 
         <div class="col-form-label d-flex" style="margin-left: 30px;"
           *ngIf="empCapturePolicy.controls.allowMobileCheckin.value">
           <div>
-            <input type="checkbox" (change)="empty($event,'for_mobile')"
-              id="restrictMobiletoLocation" class="form-check-input me-2"
+<input type="checkbox" (change)="empty($event,'for_mobile')"
+id="restrictMobiletoLocation" class="form-check-input me-2"
               [formControl]="empCapturePolicy.controls.restrictMobiletoLocation">
           </div>
           <label for="restrictMobiletoLocation">
-            Do you want to restrict mobile login to a location
+            {{globalServ.showLabel('restrictMobiletoLocation')}}
           </label>
         </div>
 
@@ -175,15 +181,18 @@
             <div class="item-row head w-100">
               <div class="col-12 item-h">
                 <div class="titlediv">
-                  <h5 class="mb-0" *ngIf="!view">Add More </h5>
-                  <h5 class="mb-0" *ngIf="view">View Ip Locations </h5>
+                  <h5 class="mb-0"
+                    *ngIf="!view">{{globalServ.getGlobalNames('addMore')}} </h5>
+                  <h5 class="mb-0" *ngIf="view">
+                    {{globalServ.showLabel('ipLocations')}}</h5>
                 </div>
                 <div style="float: right">
                   <button *ngIf="!view"
                     type="button"
                     (click)="addMobileItem()"
                     class="btn btn-primary btn-sm mt-1 align-items-end me-2 d-flex">
-                    <i class="material-icons me-2">add</i> Add More
+                    <i class="material-icons me-2">add</i>
+                    {{globalServ.getGlobalNames('addMore')}}
                   </button>
                 </div>
               </div>
@@ -202,7 +211,7 @@
                         [ngModelOptions]="{ standalone: true }"
                         type="text" />
                       <label for="ipCode">
-                        IP Range Code &nbsp;<span
+                        {{globalServ.showLabel('ipCode')}} &nbsp;<span
                           style="color: red; margin-left: 1px">*</span>
                       </label>
                     </div>
@@ -226,7 +235,7 @@
                         [(ngModel)]="c.latCode"
                         [disabled]="view"
                         type="text" />
-                      <label>Latitude</label>
+                      <label> {{globalServ.showLabel('latitude')}}</label>
                     </div>
                   </div>
                   <div class="col-md-4 item-h">
@@ -237,7 +246,7 @@
                         [(ngModel)]="c.longCode"
                         [disabled]="view"
                         type="text" />
-                      <label>Longitude</label>
+                      <label> {{globalServ.showLabel('longitude')}}</label>
                     </div>
                   </div>
                   <div class="col-md-3 item-h">
@@ -250,7 +259,8 @@
                         [disabled]="view"
                         type="number" />
                       <label for="radius">
-                        Radius (in meters)</label>
+                        {{globalServ.showLabel('radius')}}</label>
+                      <!-- <label>Radius (in meters)</label> -->
                     </div>
                   </div>
                 </div>
@@ -265,7 +275,7 @@
               [formControl]="empCapturePolicy.controls.isDefault">
           </div>
           <label for="isDefault">
-            Is Default
+            {{globalServ.getGlobalNames('isDefault')}}
           </label>
         </div>
 
@@ -275,16 +285,16 @@
               [formControl]="empCapturePolicy.controls.isActive">
           </div>
           <label for="isActive">
-            Active
+            {{globalServ.getGlobalNames('active')}}
           </label>
         </div>
 
         <div class="col-sm-12 form-group input">
-          <h4>Policy Description
+          <h4>{{globalServ.showLabel('polDesc')}}
           </h4>
           <textarea
             id="Description"
-            placeholder="Enter Description"
+            placeholder="{{globalServ.showGlobalplaceholders('enterDesc')}}"
             class="textArea border-rounded"
             [formControl]="empCapturePolicy.controls.description"
             name="description"
@@ -293,7 +303,7 @@
         </div>
 
       </form>
-    </div>
+    </div>`
     <!-- table -->
     <!-- <div class="col-md-6">
       <div class="table-responsive mt-4 d-flex m-auto">
@@ -337,20 +347,21 @@
 <div class="row mt-3" *ngIf="!view">
   <div class="col-lg-12 col-sm-12">
     <button (click)="back()"
-      class="btn delete-btn float-start">Cancel</button>
-    <button *ngIf="!update" [disabled]="empCapturePolicy.invalid && (ipAddressEndIsInValid  || ipAddressStartIsInValid)"
+      class="btn delete-btn float-start">
+      {{globalServ.getGlobalNames('cancel')}}</button>
+      <button *ngIf="!update" [disabled]="empCapturePolicy.invalid && (ipAddressEndIsInValid  || ipAddressStartIsInValid)"
       (click)="create()"
-      class="btn add-btn">Submit</button>
+      class="btn add-btn">{{globalServ.getGlobalNames('submit')}}</button>
     <button *ngIf="update"
       (click)="updatePolicy()"
       [disabled]="empCapturePolicy.invalid"
-      class="btn add-btn">Update</button>
+      class="btn add-btn">{{globalServ.getGlobalNames('update')}}</button>
   </div>
 </div>
 <div class="row mt-3" *ngIf="view">
   <div class="col-lg-12 col-sm-12 d-flex justify-content-center">
     <button (click)="back()"
-      class="btn delete-btn float-start">Close</button>
+      class="btn delete-btn float-start">{{globalServ.getGlobalNames('close')}}</button>
   </div>
 
 </div>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { HttpPostService } from 'src/app/services/http-post.service';
 
@@ -23,6 +24,7 @@ export class LoanMasterComponent implements OnInit {
     private httpGet: HttpGetService,
     private httpPost: HttpPostService,
     private route: Router,
+    public globalServ: GlobalvariablesService,
     private fb: FormBuilder,
     private spinner: NgxSpinnerService,
     private acRoute: ActivatedRoute
@@ -46,12 +48,16 @@ export class LoanMasterComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.globalServ.getMyCompLabels('loanMaster');
+    this.globalServ.getMyCompPlaceHolders('loanMaster');
+    this.globalServ.getMyCompErrors('loanMaster');
     this.acRoute.data.subscribe(data => {
       const permission = data.condition
       this.hasPermissionToUpdate = permission.hasPermissionToUpdate
       this.hasPermissionToApprove = permission.hasPermissionToApprove
     });
     this.getLoans();
+    this.globalServ.getMyCompPlaceHolders('loanAppForm');
   }
   getLoans() {
     this.spinner.show();
@@ -82,7 +88,7 @@ export class LoanMasterComponent implements OnInit {
   }
   create() {
     //this.router.navigateByUrl('settings/create-designation');
-    this.selectedLoan = { type: 'NEW' };
+    this.selectedLoan = { type: 'NEW', labels: this.globalServ.labels, placeholder: this.globalServ.placeholder };
   }
 
 
@@ -90,12 +96,12 @@ export class LoanMasterComponent implements OnInit {
     //this.UtilServ.viewData = row;
     this.selectedLoan = row;
     //this.router.navigateByUrl('settings/create-designation');
-    this.selectedLoan = { type: 'VIEW', viewData: row };
+    this.selectedLoan = { type: 'VIEW', viewData: row, labels: this.globalServ.labels, placeholder: this.globalServ.placeholder };
   }
   editData(row) {
     //this.UtilServ.editData = row;
     this.selectedLoan = row;
     //this.router.navigateByUrl('settings/create-designation');
-    this.selectedLoan = { type: 'EDIT', editData: row };
+    this.selectedLoan = { type: 'EDIT', editData: row, labels: this.globalServ.labels, placeholder: this.globalServ.placeholder };
   }
 }

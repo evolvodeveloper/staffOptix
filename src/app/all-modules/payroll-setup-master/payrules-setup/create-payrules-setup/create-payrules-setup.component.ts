@@ -52,7 +52,7 @@ export class CreatePayrulesSetupComponent implements OnInit {
 
     private httpGet: HttpGetService,
     private router: Router,
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private utilServ: UtilService,
     private spinner: NgxSpinnerService,
     private httpPut: HttpPutService
@@ -101,7 +101,8 @@ export class CreatePayrulesSetupComponent implements OnInit {
     return label ? label.labelDescription : '';
   }
   ngOnInit() {
-
+    this.globalServ.getMyCompLabels('payrulesForm');
+    this.globalServ.getMyCompPlaceHolders('payrulesForm');
     // this.payrulesLabels();
     // this.payrulesForm = this.fb.group({
     //   ruleCode: [null],

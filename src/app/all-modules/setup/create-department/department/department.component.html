@@ -8,7 +8,7 @@
           (click)="back()"
           aria-label="back"
         ></i>
-        <h3 class="ms-4 page-title">Department</h3>
+        <h3 class="ms-4 page-title">{{globalServ.showLabel('Departmentheader')}}</h3>
       </div>
     </div>
   </div>
@@ -21,7 +21,7 @@
           <input
             type="text"
             class="form-control"
-            placeholder="search by department name"
+            placeholder="{{globalServ.showPlaceholder('searchDept')}}"
             [(ngModel)]="searchedFor"
             (keyup)="updateFilter($event)"
             style="border-radius: 8px 0px 0px 8px"
@@ -41,11 +41,11 @@
           *ngIf="hasPermissionToUpdate"
           (click)="create()"
         >
-          <i id="add_department" class="material-icons me-2">add</i> Add New
+          <i id="add_department" class="material-icons me-2">add</i>{{globalServ.getGlobalNames('addNew')}}
         </button>
       </div>
       <div class="col-sm-6 col-lg-2 mt-30px">
-        <label class="form-label ms-2">Show entries</label>
+        <label class="form-label ms-2">{{globalServ.getGlobalNames('ShowEntries')}}</label>
         <select class="form-select" (change)="resultsPerPage($event)">
           <!-- <option value="10">10</option> -->
           <option value="25">25</option>
@@ -60,25 +60,23 @@
         <thead class="thead-all">
           <tr class="tr-th-all">
             <th></th>
-            <th scope="col">Department</th>
-            <th scope="col">Department Name</th>
-            <th scope="col" class="text-center">Active</th>
-            <th scope="col" class="text-center">Action</th>
+            <th scope="col">{{globalServ.showLabel('deptCode')}}</th>
+            <th scope="col">{{globalServ.showLabel('deptName')}}</th>
+            <th scope="col" class="text-center">{{globalServ.getGlobalNames('active')}}</th>
+            <th scope="col" class="text-center">{{globalServ.getGlobalNames('action')}}</th>
           </tr>
         </thead>
         <tbody *ngIf="rows.length === 0">
           <tr style="text-align: center; height: 150px">
             <td colspan="5">
-              "No records were found with the selected filter criteria."
+             {{globalServ.showGlobalErrors('notFound')}}
             </td>
           </tr>
         </tbody>
         <tbody *ngIf="rows.length > 0">
             <ng-container *ngFor="let row of rows | paginate : config; let i = index">
           <tr
-            class="dasboard-td"
-            
-          >
+            class="dasboard-td">
             <td>
               <small *ngIf=" row.accessDTOs.length >0"
                 ><i
@@ -132,8 +130,7 @@
                   class="btn btn-light me-1 text-secondary"
                   placement="top"
                   ngbTooltip="Edit"
-                  (click)="editData(row)"
-                >
+                  (click)="editData(row)">
                   <i class="fa-solid fa-pen"></i>
                 </button>
               </div>
@@ -147,8 +144,8 @@
               <table class="table table-bordered table-responsive-sm">
                 <thead class="thead-all">
                   <tr class="tr-th-all">
-                    <th scope="col" class="text-center">Role Code</th>
-                    <th scope="col" class="text-center">User Name</th>
+                    <th scope="col" class="text-center">{{globalServ.getGlobalNames('roleCode')}}</th>
+                    <th scope="col" class="text-center">{{globalServ.getGlobalNames('userName')}}</th>
                   </tr>
                 </thead>
                 <tbody  *ngFor="let d of row.accessDTOs">
@@ -173,5 +170,4 @@
 </div>
 <div
   [app-create-department]="selectedDepartment"
-  (selectedDepartmentEvent)="selectedDepartmentEvent()"
-></div>
+  (selectedDepartmentEvent)="selectedDepartmentEvent()"></div>

@@ -48,7 +48,7 @@ export class CompanyDetailsComponent implements OnInit {
     private utilServ: UtilService,
     private fb: FormBuilder,
     private router: Router,
-    private global: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private acRoute: ActivatedRoute,
 
   ) {
@@ -58,12 +58,14 @@ export class CompanyDetailsComponent implements OnInit {
     this.router.navigateByUrl('setup');
   }
   ngOnInit() {
+    this.globalServ.getMyCompLabels('companyMaster');
+    this.globalServ.getMyCompPlaceHolders('companyMaster');
     this.acRoute.data.subscribe(data => {
       const permission = data.condition
       this.hasPermissionToUpdate = permission.hasPermissionToUpdate
       this.hasPermissionToApprove = permission.hasPermissionToApprove
     });
-    this.dateFormat = this.global.dateFormat;
+    this.dateFormat = this.globalServ.dateFormat;
 
     this.getCompany();
   }

@@ -3,8 +3,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 // import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import moment from 'moment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ExcelService } from 'src/app/services/excel.service';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { HttpPutService } from 'src/app/services/http-put.service';
 import { UtilService } from 'src/app/services/util.service';
@@ -25,7 +27,6 @@ export class AllPayrollEmployeesComponent implements OnInit, OnDestroy {
   sortOrderby = 'byEmpName';
   selected_department = 'all';
   selected_departmentinFalse = 'all';
-
   hasPermissionToApprove = false;
   hasPermissionToUpdate = false;
   config: any;
@@ -56,6 +57,7 @@ export class AllPayrollEmployeesComponent implements OnInit, OnDestroy {
     private excelService: ExcelService,
     private httpGet: HttpGetService,
     private router: Router,
+    public globalServ: GlobalvariablesService,
     private httpPutServ: HttpPutService
 
   ) {
@@ -73,6 +75,8 @@ export class AllPayrollEmployeesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.globalServ.getMyCompLabels('employeeMaster');
+    this.globalServ.getMyCompPlaceHolders('employeeMaster');
     this.acRoute.data.subscribe(async data => {
       const permission = data.condition
       this.hasPermissionToUpdate = permission?.hasPermissionToUpdate
@@ -80,6 +84,11 @@ export class AllPayrollEmployeesComponent implements OnInit, OnDestroy {
     });
     if (this.router.url === '/all-payroll-employees') {
       this.iAmFromDir = true;
+      // this.globalServ.getMyCompLabels('departmentMaster');
+      // this.globalServ.getMyCompPlaceHolders('departmentMaster');
+
+      // this.globalServ.getMyCompLabels('projectMaster');
+      // this.globalServ.getMyCompPlaceHolders('projectMaster');
     }
     else if (this.router.url === '/empList') {
       this.iAmFromDir = false;
@@ -517,10 +526,17 @@ export class AllPayrollEmployeesComponent implements OnInit, OnDestroy {
       };
 
       const modalRef = this.modalService.open(EmployeeListViewComponent, {
-        windowClass: 'myCustomModalClass',
+        // windowClass: 'myCustomModalClass modal-dialog-centered',
         backdrop: 'static',
       });
       modalRef.componentInstance.fromParent = data;
+      setTimeout(() => {
+        const modalDialog = document.querySelector('.myCustomModalClass .modal-dialog');
+        if (modalDialog) {
+          modalDialog.scrollTop = 0; // Ensure the top of the modal is visible
+        }
+      }, 0);
+
     }
   }
 
@@ -629,7 +645,6 @@ export class AllPayrollEmployeesComponent implements OnInit, OnDestroy {
     this.spinner.show();
     const req = obj.payrollMaster;
     req.approved = true;
-
     this.httpPutServ.doPut('payroll/approve', req).subscribe((res: any) => {
       this.spinner.hide();
       if (res?.status?.message == 'SUCCESS') {
@@ -658,11 +673,9 @@ export class AllPayrollEmployeesComponent implements OnInit, OnDestroy {
           icon: 'error',
         });
       });
-
-
   }
   saveExcel() {
-    this.spinner.show();
+    this.spinner.show(); 
     const transformedData = [];
     this.employees_list.forEach((item) => {
       const obj = {
@@ -674,10 +687,12 @@ export class AllPayrollEmployeesComponent implements OnInit, OnDestroy {
         "Email": item.employeeMaster.email == null ? '' : item.employeeMaster.email,
         // "Alternate Email": item.employeeMaster.alternateEmail,
         "Contact No": item.employeeMaster.contactNo == null ? '' : item.employeeMaster.contactNo,
+        "DOB": item?.employeeDetails?.dob == null ? '' : moment(item?.employeeDetails?.dob).format('DD-MM-YYYY'),
         "Designation": item.employeeMaster.designation == null ? '' : item.employeeMaster.designation,
         "Department": item.employeeMaster.deptCode == null ? '' : item.employeeMaster.deptCode,
+        "Supervisor": item.payrollMaster.supervisor == null ? '' : item.payrollMaster.supervisor,
         // "Project Code": item.employeeMaster.projectCode,
-        "Location Code": item.employeeMaster.locationCode == null ? '' : item.employeeMaster.locationCode
+        "Location Code": item.employeeMaster.locationCode == null ? '' : item.employeeMaster.locationCode,
         // "User Name": item.employeeMaster.userName,
         // "Join Date": item.employeeMaster.joinDate,
         // "Division Code": item.employeeMaster.divisionCode,
@@ -696,7 +711,7 @@ export class AllPayrollEmployeesComponent implements OnInit, OnDestroy {
       transformedData.push(obj);
     });
     this.spinner.hide();
-    const fileName = "Employee's Data";
+    const fileName = "Employee's Data_";
     this.excelService.exportAsExcelFileNoColor(transformedData, fileName);
   }
 }

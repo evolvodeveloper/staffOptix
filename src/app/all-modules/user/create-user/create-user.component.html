@@ -4,8 +4,11 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title">{{view ? 'View' : update ? 'Update' :
-                    'Create'}} User </h1>
+                <h1 class="modal-title">{{ view ?
+                    globalServ.getGlobalNames('view') : (update ?
+                    globalServ.getGlobalNames('update')
+                    :globalServ.getGlobalNames('create')) }}
+                    {{globalServ.showLabel('userHeader')}} </h1>
                 <button type="button" class="btn-close" (click)="closeModal()"
                     aria-label="Close"></button>
             </div>
@@ -13,29 +16,56 @@
                 <div class="row">
                     <div class="col-12">
                         <form [formGroup]="userForm" novalidate>
+                                  <section class="mt-2" *ngIf="!view && !update">
+                                    <label>
+                                        {{globalServ.showLabel('onboardingProcess')}}
+
+                                    </label>
+                                    <div class="row justify-content-around ">
+                                        <div class="card col-md-5"
+                                            [class.selected]="getSelectedOption() === 'manual'"
+                                            (click)="selectCard('manual')">
+                                            <span class="m-auto p-2">
+                                                {{globalServ.showLabel('manualInvite')}}
+                                            </span>
+                                        </div>
+                                        <div class="card col-md-5"
+                                            [class.selected]="getSelectedOption() === 'email'"
+                                            (click)="selectCard('email')">
+                                            <span class="m-auto p-2">
+                                                {{globalServ.showLabel('emailInvite')}}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </section>
                             <div class="row g-2 mb-3" [hidden]="view || update">
                                 <div class="col-md">
-                                    <!-- <div class="form-floating"> -->
                                     <label>{{selectedUserType | titlecase
                                         }}&nbsp;<span
                                             style="color: red; margin-left: 1px">*</span></label>
-                                    <select id="employee" class="form-select"
-                                        [formControl]="userForm.controls.userCode">
-                                        <option [value]="employee.code"
-                                            *ngFor="let employee of List">{{employee.name}} - [{{employee.code}}]
-                                        </option>
-                                    </select>
-                                    <!-- </div> -->
+                                    <ng-select
+                                        [items]="List"
+                                        [formControl]="userForm.controls.userCode"
+                                        bindLabel="empNameCode"
+                                        bindValue="code"
+                                        [multiple]="false"
+                                        id="emp"
+                                        placeholder="Select an employee"
+                                        class="ngSelectform">
+                                    </ng-select>
                                 </div>
                             </div>
+
                             <div class="row g-2 mb-3" [hidden]="view || update">
                                 <div class="col-md">
                                     <!-- <div class="form-floating"> -->
-                                    <label>User Name&nbsp;<span
+                                    <label>
+                                        {{globalServ.getGlobalNames('userName')}}
+                                        &nbsp;<span
                                             style="color: red; margin-left: 1px">*</span></label>
                                     <div class="input-group">
                                         <input type="text"
-                                            name="userName" class="form-control" 
+                                            name="userName" class="form-control"
                                             (keyup)="onUserNameChange(userForm.controls.userName.value)"
                                             maxlength={{charLimit}}
                                             [formControl]="userForm.controls.userName">
@@ -67,21 +97,23 @@
                                         </span>
                                     </div>
 
-                                    <div
+                                    <div class="mt-2"
                                         *ngIf="userForm.controls['userName'].invalid && (userForm.controls['userName'].dirty ||
                             userForm.controls['userName'].touched) "
                                         style="padding: 0px">
                                         <div class="ms-2"
                                             *ngIf="userForm.controls['userName'].errors.required"
                                             style="color: #dc3545">
-                                            User Name is required.
+                                            {{globalServ.getGlobalNames('userName')}}
+                                            {{globalServ.showGlobalErrors('required')}}
                                         </div>
                                     </div>
                                     <div id="userName"
                                         *ngIf="userForm.controls['userName'].value?.length > charLimit - 1"
                                         style="color: #dc3545">
-                                        Max
-                                        {{charLimit}} Characters
+                                        {{globalServ.showGlobalErrors('max')}}
+                                        {{ charLimit }}
+                                        {{globalServ.showGlobalErrors('char')}}
                                     </div>
                                     <!-- </div> -->
                                 </div>
@@ -90,7 +122,7 @@
                             <div class="row g-2 mb-3" *ngIf="update || view">
                                 <div class="col-md">
                                     <!-- <div class="form-floating"> -->
-                                    <label>User Name</label>
+                                    <label>{{globalServ.getGlobalNames('userName')}}</label>
                                     <input id="employee" type="text"
                                         class="form-control disablepointer "
                                         readonly formControlName="userName">
@@ -99,24 +131,27 @@
                             </div>
                             <div class="form-group ">
                                 <label class="text-sm mb-1">
-                                    Roles&nbsp;<span
+                                    {{globalServ.getGlobalNames('roles')}}
+                                    &nbsp;<span
                                         style="color: red; margin-left: 1px">*</span>
                                 </label>
                                 <ng-select id="roleCode" [items]="roleCodeList"
                                     bindLabel="roleCode" bindValue="roleCode"
-                                    multiple="true" placeholder="Select Roles"
+                                    multiple="true"   class="ngSelectform"
+                                    placeholder=" {{globalServ.showPlaceholder('selectRoles')}}"
                                     formControlName="selectedRoles"></ng-select>
                                 <!-- </div> -->
                             </div>
-                            <div class="form-group input">
-                                <label>Password&nbsp;<span
+                            <div class="form-group input" *ngIf="userForm.controls.onboardingFlow.value === 'manual'">
+                                <label>{{globalServ.showLabel('password')}}
+                                    &nbsp;<span
                                         style="color: red; margin-left: 1px">*</span></label>
                                 <div class="input-group">
                                     <input
                                         id="password"
                                         (keyup)="onPasswordChange()"
                                         name="password"
-                                          autocomplete="new-password"
+                                        autocomplete="new-password"
                                         [type]="showPassword ? 'text' : 'password'"
                                         class="form-control pwd-control bg-white"
                                         [formControl]="userForm.controls.password">
@@ -146,19 +181,22 @@
                                         </div>
                                     </span>
                                 </div>
-                                <div
+                                <div class="mt-2"
                                     *ngIf="userForm.controls['password'].invalid && (userForm.controls['password'].dirty || userForm.controls['password'].touched)"
                                     style="padding: 0px">
                                     <div id="password" class="ms-2"
                                         *ngIf="userForm.controls['password'].errors.required"
                                         style="color: #dc3545">
-                                        Password is required
+                                        {{globalServ.showLabel('password')}}
+                                        {{globalServ.showGlobalErrors('required')}}
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="form-group input" >
-                                <label>Confirm Password&nbsp;<span
+                            <div class="form-group input" *ngIf="userForm.controls.onboardingFlow.value === 'manual'">
+                                <label>
+                                    {{globalServ.showLabel('confirmPassword')}}
+                                    &nbsp;<span
                                         style="color: red; margin-left: 1px">*</span></label>
                                 <div class="input-group">
                                     <input
@@ -195,13 +233,14 @@
                                                 class="fa fa-exclamation-triangle"
                                                 aria-hidden="true"></i></div></span>
                                 </div>
-                                <div
+                                <div class="mt-2"
                                     *ngIf="userForm.controls['confirm_password'].invalid && (userForm.controls['confirm_password'].dirty || userForm.controls['confirm_password'].touched)"
                                     style="padding: 0px">
                                     <div id="confirm_password" class="ms-2"
                                         *ngIf="userForm.controls['confirm_password'].errors.required"
                                         style="color: #dc3545">
-                                        Confirm Password is required
+                                        {{globalServ.showLabel('confirmPassword')}}
+                                        {{globalServ.showGlobalErrors('required')}}
                                     </div>
                                 </div>
                             </div>
@@ -212,7 +251,9 @@
                                         <input id="lastWorkingDate" type="date"
                                             class="form-control"
                                             [formControl]="userForm.controls.lastWorkingDate">
-                                        <label>Account Expiry Date</label>
+                                        <label>
+                                            {{globalServ.showLabel('accountExpiryDate')}}
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -236,7 +277,7 @@
                                             type="checkbox"
                                             [formControl]="userForm.controls.accountLocked">
                                         <label class="form-check-label">
-                                            Account Locked
+                                            {{globalServ.showLabel('accountLocked')}}
                                         </label>
                                     </div>
                                 </div>
@@ -247,7 +288,7 @@
                                             type="checkbox"
                                             [formControl]="userForm.controls.passwordExpired">
                                         <label class="form-check-label">
-                                            Password Expired
+                                            {{globalServ.showLabel('passwordExpired')}}
                                         </label>
                                     </div>
                                 </div>
@@ -259,40 +300,22 @@
                                             [formControl]="userForm.controls.multiBranch">
                                         <label class="form-check-label"
                                             for="multiBranch">
-                                            Multi Branch User
+                                            {{globalServ.showLabel('multiBranchUser')}}
                                         </label>
                                     </div>
                                 </div>
 
-                                <section class="mt-2" *ngIf="!view && !update">
-                                    <label>Onboarding Process</label>
-                                    <div class="row justify-content-around ">
-                                        <div class="card col-md-5"
-                                            [class.selected]="getSelectedOption() === 'manual'"
-                                            (click)="selectCard('manual')">
-                                            <span class="m-auto p-2">
-                                                Manual Invite
-                                            </span>
-                                        </div>
-                                        <div class="card col-md-5"
-                                            [class.selected]="getSelectedOption() === 'email'"
-                                            (click)="selectCard('email')">
-                                            <span class="m-auto p-2">
-                                                Email Invite
-                                            </span>
-                                        </div>
-                                    </div>
-                                </section>
+                          
                                 <section *ngIf="!view && !update">
                                     <div class="alert alert-info mt-1"
                                         role="alert"
                                         *ngIf="userForm.controls.onboardingFlow.value === 'email'">
-                                        "An onboarding email will be sent to your employee. Please encourage them to review and acknowledge the email."
+                                        {{globalServ.showLabel('emailOnboarding')}}
                                     </div>
                                     <div class="alert alert-info mt-1"
                                         role="alert"
                                         *ngIf="userForm.controls.onboardingFlow.value === 'manual'">
-                                        "Kindly provide the following login credentials to the designated employee for accessing the account."
+                                        {{globalServ.showLabel('logincredentials')}}
                                     </div>
                                 </section>
                                 <div class="col-md" *ngIf="update || view">
@@ -302,7 +325,7 @@
                                             [formControl]="userForm.controls.isactive">
                                         <label class="form-check-label"
                                             for="isactive">
-                                            Active
+                                            {{globalServ.getGlobalNames('active')}}
                                         </label>
                                     </div>
                                 </div>
@@ -313,22 +336,24 @@
             </div>
             <div class="modal-footer">
                 <button id="cancel_user" type="button" class="btn delete-btn"
-                    (click)="closeModal()">Cancel</button>
+                    (click)="closeModal()">
+                    {{globalServ.getGlobalNames('cancel')}}
+                </button>
                 <button id="create_user"
                     [disabled]="userForm.pristine || userForm.invalid || showSuccessuserNameToolTip === 'USERNAME ALREADY EXISTS'"
                     [hidden]="view || update"
                     (click)="create()" class="btn add-btn">
-                    Create
+                    {{globalServ.getGlobalNames('create')}}
                 </button>
                 <button id="update_user" *ngIf="update && !passwordChanged"
                     [disabled]="userForm.pristine || showSuccessuserNameToolTip === 'USERNAME ALREADY EXISTS'"
                     (click)="Update()" class="btn add-btn">
-                    Update
+                    {{globalServ.getGlobalNames('update')}}
                 </button>
-                  <button id="update_user" *ngIf="update && passwordChanged"
+                <button id="update_user" *ngIf="update && passwordChanged"
                     [disabled]="userForm.invalid || showSuccessuserNameToolTip === 'USERNAME ALREADY EXISTS' || passwdMatched === true"
                     (click)="Update()" class="btn add-btn">
-                    Update
+                    {{globalServ.getGlobalNames('update')}}
                 </button>
             </div>
         </div>

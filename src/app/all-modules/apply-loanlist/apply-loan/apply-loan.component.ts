@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { HttpPostService } from 'src/app/services/http-post.service';
 import { HttpPutService } from 'src/app/services/http-put.service';
@@ -30,12 +31,15 @@ export class ApplyLoanComponent implements OnInit, OnChanges, OnDestroy {
     private httpGet: HttpGetService,
     private httpPost: HttpPostService,
     private router: Router,
+    public globalServ: GlobalvariablesService,
     private httpPut: HttpPutService,
     private fb: FormBuilder,
     private spinner: NgxSpinnerService,
     private UtilServ: UtilService
   ) { }
   ngOnInit(): void {
+    this.globalServ.getMyCompErrors('applyLoanComp');
+
     this.loanApplicationForm = this.fb.group({
       employeeCode: [''],
       loanCode: ['', [Validators.required]],

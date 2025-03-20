@@ -7,8 +7,12 @@
           class="fa fa-arrow-left"
           (click)="cancel()"
           aria-label="back"></i>
-        <h3 class="ms-4 page-title"> {{ view ? "View" : update ? "Update" :
-          "Create" }} Salary Component</h3>
+        <h3 class="ms-4 page-title">
+          {{ view ? globalServ.getGlobalNames('view') : (update ?
+          globalServ.getGlobalNames('update')
+          :globalServ.getGlobalNames('create')) }}
+          {{globalServ.showLabel('salaryComponent')}}
+        </h3>
       </div>
     </div>
   </div>
@@ -16,7 +20,9 @@
 <div class="card p-3">
   <div class="row " [formGroup]="salaryStructureForm">
     <div class="col-md-4 col-lg-4">
-      <label class="col-form-label">Component <span
+      <label class="col-form-label">
+        {{globalServ.showLabel('componentCode')}}
+        <span
           class="text-danger">*</span></label>
       <input
         class="form-control"
@@ -27,7 +33,7 @@
               salaryStructureForm.get('componentCode').touched
             "
         formControlName="componentCode" />
-      <div
+      <div class="mt-2"
         *ngIf="
               salaryStructureForm.get('componentCode').invalid &&
               salaryStructureForm.get('componentCode').touched
@@ -37,14 +43,17 @@
                 salaryStructureForm.get('componentCode').invalid &&
                 salaryStructureForm.get('componentCode').touched
               "
-          class="text-danger">Component required</small>
+          class="text-danger">
+          {{globalServ.showLabel('componentCode')}}
+          {{globalServ.showGlobalErrors('required')}}
+        </small>
       </div>
       <div
         *ngIf="salaryStructureForm.get('componentCode').hasError('invalidFormat')"
-        style="color: #dc3545">field should not contain special characters</div>
+        style="color: #dc3545">{{globalServ.showGlobalErrors('specialChar')}}</div>
     </div>
     <div class="col-md-4 col-lg-4">
-      <label class="col-form-label">Component Type
+      <label class="col-form-label">{{globalServ.showLabel('componentType')}}
         <span class="text-danger">*</span></label>
       <select
         class="form-select"
@@ -53,13 +62,14 @@
               salaryStructureForm.get('componentType').touched
             "
         formControlName="componentType">
-        <option [value] selected disabled>Select Component Type</option>
+        <option [value] selected
+          disabled>{{globalServ.showLabel('componentType')}}</option>
         <option *ngFor="let pc of componentType"
           [value]="pc">
           {{ pc }}
         </option>
       </select>
-      <div
+      <div class="mt-2"
         *ngIf="
               salaryStructureForm.get('componentType').invalid &&
               salaryStructureForm.get('componentType').touched
@@ -69,7 +79,10 @@
                 salaryStructureForm.get('componentType').invalid &&
                 salaryStructureForm.get('componentType').touched
               "
-          class="text-danger">Component Type required</small>
+          class="text-danger">
+          {{globalServ.showLabel('componentType')}}
+          {{globalServ.showGlobalErrors('required')}}
+        </small>
       </div>
     </div>
 
@@ -104,7 +117,8 @@
       </div> -->
 
     <div class="col-md-4 col-lg-4">
-      <label class="col-form-label">Time Frame <span
+      <label class="col-form-label">{{globalServ.getGlobalNames('timeFrame')}}
+        <span
           class="text-danger">*</span></label>
       <select
         class="form-select"
@@ -114,13 +128,13 @@
             "
         formControlName="timeframe">
         <option [value] selected
-          disabled>Time Frame</option>
+          disabled>{{globalServ.getGlobalNames('timeFrame')}}</option>
         <option *ngFor="let tf of timeframe"
           [value]="tf.code">
           {{ tf.name }}
         </option>
       </select>
-      <div
+      <div class="mt-2"
         *ngIf="
               salaryStructureForm.get('timeframe').invalid &&
               salaryStructureForm.get('timeframe').touched
@@ -130,7 +144,10 @@
                 salaryStructureForm.get('timeframe').invalid &&
                 salaryStructureForm.get('timeframe').touched
               "
-          class="text-danger">Timeframe required</small>
+          class="text-danger">
+          {{globalServ.getGlobalNames('timeFrame')}}
+          {{globalServ.showGlobalErrors('required')}}
+        </small>
       </div>
     </div>
 
@@ -143,13 +160,13 @@
           (change)="maxLimitInYrQuestions()"
           formControlName="maxLimitInYrQuestion" />
         <label class="form-check-label"
-          for="maxLimitInYrQuestion">Does this Component have maximum limit in year
+          for="maxLimitInYrQuestion">{{globalServ.showLabel('maxLimitInYrQuestion')}}
         </label>
       </div>
 
       <div class="col-md-6 col-lg-6" style="padding-left: 0px;">
         <label
-          class="col-form-label">Maximum Limit In Year</label>
+          class="col-form-label">{{globalServ.showLabel('maxLimitInYr')}}</label>
         <input type="number" class="form-control" id="maxLimitInYr"
           formControlName="maxLimitInYr">
       </div>
@@ -161,10 +178,9 @@
           id="xfrUnusedToAllowance"
           formControlName="xfrUnusedToAllowance" />
         <label class="form-check-label ms-2"
-          for="xfrUnusedToAllowance ">xfr Unused To Allowance
+          for="xfrUnusedToAllowance ">{{globalServ.showLabel('xfrUnusedToAllowance')}}
         </label>
       </div>
-
       <div class="form-check col-md-6 mt-2">
         <input
           class="form-check-input"
@@ -173,7 +189,7 @@
           id="isDeduction"
           formControlName="isDeduction" />
         <label class="form-check-label"
-          for="isDeduction">Is this Component a Deduction? </label>
+          for="isDeduction">{{globalServ.showLabel('isDeduction')}} </label>
       </div>
 
       <div
@@ -184,8 +200,8 @@
           id="isDeductionCompanyPayable"
           formControlName="isDeductionCompanyPayable" />
         <label class="form-check-label"
-          for="isDeductionCompanyPayable">Is this Deduction paid by Company ?
-          </label>
+          for="isDeductionCompanyPayable">{{globalServ.showLabel('isDeductionCompanyPayable')
+          }}</label>
       </div>
 
       <div class="form-check col-md-6 mt-2">
@@ -195,7 +211,7 @@
           id="isTaxable"
           formControlName="isTaxable" />
         <label class="form-check-label"
-          for="isTaxable">Is this Component Taxable?</label>
+          for="isTaxable">{{globalServ.showLabel('isTaxable')}} </label>
       </div>
 
       <div class="form-check col-md-6 mt-2 ">
@@ -205,7 +221,7 @@
           id="includeInTotalSalCalc"
           formControlName="includeInTotalSalCalc" />
         <label class="form-check-label"
-          for="includeInTotalSalCalc">Is this Component included in Total Salary Calculation?
+          for="includeInTotalSalCalc">{{globalServ.showLabel('includeInTotalSalCalc')}}
         </label>
       </div>
       <div class="form-check col-md-6 mt-2 ">
@@ -215,9 +231,19 @@
           id="includeInCtcCalc"
           formControlName="includeInCtcCalc" />
         <label class="form-check-label"
-          for="includeInCtcCalc">Is this Component included in CTC Calculation ?
+          for="includeInCtcCalc">{{globalServ.showLabel('includeInCtcCalc')}}
         </label>
       </div>
+      <!-- 
+      <div class="form-check col-md-6 mt-2 ">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="isDerived"
+          formControlName="isDerived" />
+        <label class="form-check-label"
+          for="isDerived">{{globalServ.showLabel('isDerived')}}</label>
+      </div> -->
 
       <div class="form-check col-md-6 mt-2 ">
         <input
@@ -226,7 +252,7 @@
           id="isProrata"
           formControlName="isProrata" />
         <label class="form-check-label" for="isProrata">
-          In case of Loss of Pay, is this Component Prorated ?</label>
+          {{globalServ.showLabel('isProrata')}}</label>
       </div>
 
       <div class="form-check col-md-6 mt-2 ">
@@ -236,7 +262,7 @@
           id="isCommission"
           formControlName="isCommission" />
         <label class="form-check-label"
-          for="isCommission">Is this Component a Commission ?</label>
+          for="isCommission">{{globalServ.showLabel('isCommission') }}</label>
       </div>
 
       <div class="form-check col-md-10 mt-2  mb-3">
@@ -246,81 +272,58 @@
           id="isactive"
           formControlName="isactive" />
         <label class="form-check-label" for="isactive">
-          Is Active
+          {{globalServ.getGlobalNames('active')}}
         </label>
       </div>
       <div class="my-1" *ngIf="rulesList">
-        Defined Rules :
+        {{globalServ.showLabel('definerules') }}
       </div>
       <div class="row my-2"
         *ngIf="rulesList?.array.length === 0 && rulesList?.form.calcType && rulesList?.form.calcType !== ''">
-        <div class="d-flex" [ngStyle]="{ 'color': rulesList?.form.isactive ? '' : 'red'  }">
+        <div class="d-flex"
+          [ngStyle]="{ 'color': rulesList?.form.isactive ? '' : 'red'  }">
           1. <span class="mx-2">
-            <b>{{salaryStructureForm.get('componentCode').value}}</b></span> is
+            <b>{{salaryStructureForm.get('componentCode').value}}</b></span>
+          {{globalServ.getGlobalNames('is')}}
           <span class="mx-2" *ngIf="rulesList?.form.calcType === 'pct'">
             <b> {{rulesList?.form.percentage}}</b> %</span>
           <span *ngIf="rulesList?.form.calcType === 'fixed'">
-            <b class="mx-2">{{rulesList?.form.fixedAmount}}</b> Fixed</span>
-          <span class="mx-2" *ngIf="rulesList?.form.calcType === 'pct'"> of
+            <b class="mx-2">{{rulesList?.form.fixedAmount}}</b>
+            {{globalServ.getGlobalNames('fixedAmount')}}</span>
+          <span class="mx-2" *ngIf="rulesList?.form.calcType === 'pct'">
+            {{globalServ.getGlobalNames('of')}}
             <b class="mx-2">{{rulesList?.form.parentComponentCode}} </b></span>
-             <span class="mx-2" *ngIf="rulesList?.form.calcType === 'remainder'"> the balance of the remaining amount.</span>
+          <span class="mx-2" *ngIf="rulesList?.form.calcType === 'remainder'">
+               {{globalServ.showLabel('remainBal') }}</span>
         </div>
       </div>
 
-      <!-- <div class="row" *ngIf="rulesList?.array.length > 0">
-        <div class="col-md-12">
-          <div class="table-responsive card p-3">
-            <table id="datatable"
-              class="table table-hover custom-table mb-0 datatable">
-              <thead class="thead-all">
-                <tr class="tr-th-all">
-                  <th>Calculation Type</th>
-                  <th>Type Amount </th>
-                  <th>Parent Component</th>
-                  <th>Comparator Component</th>
-                  <th>Comparator</th>
-                  <th>Param1 Value </th>
-                  <th>Param2 Value </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr class="dasboard-td"
-                  *ngFor="let item of rulesList?.array;let i = index">
-                  <td>{{item.calcType}}</td>
-                  <td>
-                    <span *ngIf="item.calcType === 'pct'">
-                      {{item.percentage}}</span>
-                    <span *ngIf="item.calcType === 'fixed'">
-                      {{item.fixedAmount}}</span>
-                  </td>
-                  <td>{{item.parentComponentCode}}</td>
-                  <td>{{item.comparatorComponent }}</td>
-                  <td>{{item.comparator }}</td>
-                  <td>{{item.param1Value }}</td>
-                  <td>{{item.param2Value }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div> -->
+      <!-- for list -->
       <div class="my-2" *ngIf="rulesList?.array.length > 0">
         <ng-container *ngFor="let item of rulesList?.array;let i = index">
-          <div class="row"  [ngStyle]="{ 'color': item.isactive ? '' : 'red'  }">
-            <div class="d-flex"> {{i +1}}. If <span class="mx-2"> <b>
-                  {{item.comparatorComponent}} </b> </span> is
+          <div class="row" [ngStyle]="{ 'color': item.isactive ? '' : 'red'  }">
+            <div class="d-flex"> {{i +1}}. {{globalServ.getGlobalNames('If')}}
+              <span class="mx-2"> <b>
+                  {{item.comparatorComponent}} </b> </span>
+              {{globalServ.getGlobalNames('is')}}
               <span class="mx-2">{{item.comparator}} <span class="ms-2">
                   {{item.param1Value}}</span> </span>
-              <span *ngIf="item.comparator === 'BETWEEN'" class="mx-2">and
-                <b class="mx-2"> {{item.param2Value}}</b></span>
-              then <b class="mx-2"> {{item.componentCode}} </b> is
+              <span *ngIf="item.comparator === 'BETWEEN'"
+                class="mx-2">{{globalServ.getGlobalNames('and')}}
+                <b class="mx-2"> {{item.param1Value}}</b></span>
+              {{globalServ.getGlobalNames('then')}} <b class="mx-2">
+                {{item.componentCode}} </b> {{globalServ.getGlobalNames('is')}}
               <span *ngIf="item.calcType === 'pct'">
                 <b class="mx-2"> {{item.percentage}}</b> %</span>
               <span *ngIf="item.calcType === 'fixed'">
-                <b class="mx-2">{{item.fixedAmount}}</b> Fixed</span>
-              <span *ngIf="item.calcType !== 'fixed'"> <span class="ms-2"> of
+                <b class="mx-2">{{item.fixedAmount}}</b>
+                {{globalServ.getGlobalNames('fixedAmount')}}</span>
+              <span *ngIf="item.calcType === 'pct'"> <span class="ms-2">
+                  {{globalServ.getGlobalNames('of')}}
                 </span>
-                <b class="mx-2">{{item.parentComponentCode}} </b></span></div>
+                <b class="mx-2">{{item.parentComponentCode}} </b></span>
+                <span class="mx-2" *ngIf="item.calcType === 'remainder'">
+              {{globalServ.showLabel('remainBal') }}</span></div>
           </div>
         </ng-container>
       </div>
@@ -365,28 +368,35 @@
         <button *ngIf="!view"
           [disabled]="salaryStructureForm.invalid"
           (click)="addRules()"
-          class="btn add-btn">Add Rules</button>
+          class="btn add-btn">{{globalServ.showLabel('addRules')}}
+        </button>
       </div>
     </div>
     <div class="row mt-3 mb-3" *ngIf="!view">
       <div class="col-lg-6 col-sm-12">
         <button (click)="cancel()"
-          class="btn delete-btn float-start">Cancel</button>
+          class="btn delete-btn float-start">
+          {{globalServ.getGlobalNames('cancel')}}
+        </button>
       </div>
       <div class="col-lg-6 col-sm-12">
         <button *ngIf="!update && !view"
           [disabled]="salaryStructureForm.invalid"
           (click)="submit()"
-          class="btn add-btn">Submit</button>
+          class="btn add-btn"> {{globalServ.getGlobalNames('submit')}}
+        </button>
         <button *ngIf="update && !view"
           [disabled]=" salaryStructureForm.invalid"
           (click)="Update()"
-          class="btn add-btn">Update</button>
+          class="btn add-btn"> {{globalServ.getGlobalNames('update')}}
+        </button>
       </div>
     </div>
     <div class="col-lg-12 col-sm-12 d-flex justify-content-center "
       *ngIf="view">
       <button (click)="cancel()"
-        class="btn delete-btn float-start">Close</button>
+        class="btn delete-btn float-start">
+        {{globalServ.getGlobalNames('cancel')}}
+      </button>
     </div>
   </div>

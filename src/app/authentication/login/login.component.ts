@@ -113,7 +113,11 @@ export class LoginComponent implements OnInit {
               this.globalServ.setAppvariables(null);
               // role_present = false;
               localStorage.setItem('user-data', JSON.stringify(res.response));
-              this.router.navigate(['']);
+              if (res.response.changepw == true) {
+                this.router.navigate(['/changepswd']);
+              } else {
+                this.router.navigate(['']);
+              }
               // home
             } else {
               this.spinnerClass = 'show-fail active';

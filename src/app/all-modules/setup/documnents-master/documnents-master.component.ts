@@ -21,7 +21,7 @@ export class DocumnentsMasterComponent implements OnInit {
   editDoc = false;
   constructor(
     private httpGet: HttpGetService,
-    private global: GlobalvariablesService,
+    public global: GlobalvariablesService,
     public activeModal: NgbActiveModal,
     private spinner: NgxSpinnerService,
     private httpPutServ: HttpPutService,
@@ -31,6 +31,8 @@ export class DocumnentsMasterComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.global.getMyCompLabels('docMaster');
+    this.global.getMyCompPlaceHolders('docMaster')
     this.getEmpDocs();
   }
   back() {
@@ -67,6 +69,7 @@ export class DocumnentsMasterComponent implements OnInit {
     })
   }
   addNew(val, source) {
+    this.listOfNames = [];
     if (source === 'edit') {
       this.editDoc = true;
       this.docType = val.docType
@@ -80,6 +83,9 @@ export class DocumnentsMasterComponent implements OnInit {
           tenantCode: element.tenantCode,
         })
       });
+    }
+    else {
+      this.editDoc = false;
     }
   }
   closeModel(dismiss) {

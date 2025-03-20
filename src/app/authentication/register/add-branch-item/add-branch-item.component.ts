@@ -46,7 +46,7 @@ export class AddBranchItemComponent implements OnInit {
       dayClosingTime: new FormControl('23:59:59'),
       headoffice: [false],
       branchLock: [false],
-      city: null,
+      city: new FormControl(null, [Validators.required]),
       state: null,
       country: null,
       zipCode: [null, Validators.maxLength(6)],

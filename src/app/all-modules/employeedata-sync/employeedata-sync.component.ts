@@ -20,7 +20,16 @@ export class EmployeedataSyncComponent {
   checkAllDevices = false;
   masterEmpData = [];
   masterDeviceData = [];
-  uploadUser = false;
+  fingermissingData = [];
+  fingermissingDataTemp = [];
+
+  facemissingData = [];
+  facemissingDataTemp = [];
+  faceaddedData = [];
+  faceaddedDataTemp = [];
+  fingeraddedData = [];
+  fingeraddedDataTemp = [];
+  // uploadUser = false;
   uploadFingerprint = false;
   uploadFace = false;
   constructor(
@@ -48,7 +57,7 @@ export class EmployeedataSyncComponent {
   getEmps() {
     this.emplist = [];
     this.spinner.show();
-    this.httpGetService.getEmployeesByDepartment('ALL').subscribe((res: any) => {
+    this.httpGetService.getMasterList('getAllDeviceEmployees').subscribe((res: any) => {
       this.spinner.hide();
       this.masterEmpData = res.response;
       this.emplist = res.response;
@@ -71,10 +80,10 @@ export class EmployeedataSyncComponent {
       this.emplist.forEach(x => {
         x.checked = true;
         this.selectedEmp.push({
+          employeeCodeInDevice: x.employeeCodeInDevice,
           employeeCode: x.employeeCode,
-          employeeName: x.employeeName,
-          deptCode: x.deptCode,
-          employeeRefCode: x.employeeRefCode,
+          employeeId: x.employeeId,
+          employeeName: x.employeeName
         });
       })
     } else {
@@ -94,10 +103,10 @@ export class EmployeedataSyncComponent {
     }
     else {
       this.selectedEmp.push({
+        employeeCodeInDevice: emps.employeeCodeInDevice,
         employeeCode: emps.employeeCode,
-        employeeName: emps.employeeName,
-        employeeRefCode: emps.employeeRefCode,
-        deptCode: emps.deptCode,
+        employeeId: emps.employeeId,
+        employeeName: emps.employeeName
       });
     }
   }
@@ -168,91 +177,225 @@ export class EmployeedataSyncComponent {
     }
   }
   create() {
+    this.facemissingData = [];
+    this.faceaddedData = [];
+    this.fingeraddedData = [];
+    this.fingermissingData = [];
     if (this.selectedEmp.length == 0 || this.selectedDevices.length == 0) {
-      alert('Please select at least one employee and one device');
       Swal.fire({
         title: 'Error!',
         text: 'Please select at least one employee and one target device',
         icon: 'info',
       });
     } else {
-      if (this.uploadFace == false && this.uploadFingerprint == false && this.uploadUser == false) {
-        alert('Please upload at least one of the required documents');
+      if (this.uploadFace == false && this.uploadFingerprint == false) {
         Swal.fire({
           title: 'Error!',
-          text: 'You must check at least one option below to continue.',
+          text: 'You must check at least one below option to continue.',
           icon: 'info',
         });
       }
       else {
-        console.log('create', this.selectedEmp, this.selectedDevices, this.uploadFace, this.uploadFingerprint, this.uploadUser);
-        const employeeMultdbDTOList = [], devicesMultdbDTOList = [];
+        const employeeMultdbDTOList = [], devicesDTOList = [];
         this.selectedEmp.forEach(x => {
           employeeMultdbDTOList.push({
-            employeeCodeInDevice: x.employeeRefCode,
+            employeeCodeInDevice: x.employeeCodeInDevice,
+            employeeId: x.employeeId,
+            employeeName: x.employeeName
           })
         })
         this.selectedDevices.forEach(dv => {
-          devicesMultdbDTOList.push({
-            serialNumber: dv.deviceSerial,
+          devicesDTOList.push({
+            deviceSerial: dv.deviceSerial,
           })
         })
         const obj = {
           employeeMultdbDTOList,
-          devicesMultdbDTOList,
+          devicesDTOList,
           "deviceTypes": {
             "face": this.uploadFace,
             "finger": this.uploadFingerprint,
-            "user": this.uploadFace
+            "user": true
           }
         }
-        console.log(obj);
+        this.spinner.show();
         this.httpPost.create('deviceCommandsMultdb', obj).subscribe((res: any) => {
-          if (res.status.message !== 'SUCCESS') {
+          if (res.response) {
             const issues = [];
-            const data = res.response.object
+            const data = res.response
             if (data) {
               for (const [key, value] of Object.entries(data)) {
                 if (value) {
-                  console.log(`${key}: ${value}`);
                   issues.push(`${key}: ${value}`)
                 }
               }
-              Swal.fire({
-                title: 'Error!',
-                text: issues.join('\n'),
-                icon: 'error',
-              })
-              console.log('issues', issues);
-            } else {
+              issues.forEach(issue => {
+                if (issue.includes('Face data not found for users:')) {
+                  // Extract users after 'Face data not found for users:'
+                  const facemissingData = issue.split('Face data not found for users: ')[1].split(',');
+                  const employeeData = facemissingData.map(x => ({
+                    employeeName: null,  // You can replace null with actual names if available
+                    employeeCodeInDevice: null, // You can replace null with actual codes if available
+                    userId: x // The user ID (e.g., "102AMPT", "30", etc.)
+                  }));
+
+                  this.emplist.forEach(c => {
+                    const find = employeeData.find(x => x.userId == c.employeeCodeInDevice);
+                    if (find) {
+                      find.employeeName = c.employeeName,
+                        find.employeeCodeInDevice = c.employeeCodeInDevice
+                    }
+                  })
+                  this.facemissingData = employeeData;
+                  this.facemissingDataTemp = employeeData;
+
+                }
+                if (issue.includes('Face data added for users:')) {
+                  // Extract users after 'Face data added for users:'
+                  const faceaddedData = issue.split('Face data added for users: ')[1].split(',');
+                  const employeeData = faceaddedData.map(x => ({
+                    employeeName: null,  // You can replace null with actual names if available
+                    employeeCodeInDevice: null, // You can replace null with actual codes if available
+                    userId: x // The user ID (e.g., "102AMPT", "30", etc.)
+                  }));
+
+                  this.emplist.forEach(c => {
+                    const find = employeeData.find(x => x.userId == c.employeeCodeInDevice);
+                    if (find) {
+                      find.employeeName = c.employeeName,
+                        find.employeeCodeInDevice = c.employeeCodeInDevice
+                    }
+                  })
+                  this.faceaddedData = employeeData; this.faceaddedDataTemp = employeeData;
+                }
+                if (issue.includes('Finger data added for users:')) {
+                  // Extract users after 'Face data added for users:'
+                  const fingeraddedData = issue.split('Finger data added for users: ')[1].split(',');
+                  const employeeData = fingeraddedData.map(x => ({
+                    employeeName: null,  // You can replace null with actual names if available
+                    employeeCodeInDevice: null, // You can replace null with actual codes if available
+                    userId: x // The user ID (e.g., "102AMPT", "30", etc.)
+                  }));
+
+                  this.emplist.forEach(c => {
+                    const find = employeeData.find(x => x.userId == c.employeeCodeInDevice);
+                    if (find) {
+                      find.employeeName = c.employeeName,
+                        find.employeeCodeInDevice = c.employeeCodeInDevice
+                    }
+                  })
+                  this.fingeraddedData = employeeData;
+                  this.fingeraddedDataTemp = employeeData;
+                }
+                if (issue.includes('Finger data not found for users:')) {
+                  // Extract users after 'Face data added for users:'
+                  const fingermissingData = issue.split('Finger data not found for users: ')[1].split(',');
+                  const employeeData = fingermissingData.map(x => ({
+                    employeeName: null,  // You can replace null with actual names if available
+                    employeeCodeInDevice: null, // You can replace null with actual codes if available
+                    userId: x // The user ID (e.g., "102AMPT", "30", etc.)
+                  }));
+
+                  this.emplist.forEach(c => {
+                    const find = employeeData.find(x => x.userId == c.employeeCodeInDevice);
+                    if (find) {
+                      find.employeeName = c.employeeName,
+                        find.employeeCodeInDevice = c.employeeCodeInDevice
+                    }
+                  })
+                  this.fingermissingData = employeeData;
+                  this.fingermissingDataTemp = employeeData;
+                }
+                // 
+              });
+            }
+            if (res.status.message !== 'SUCCESS') {
+              this.spinner.hide();
               Swal.fire({
                 title: 'Error!',
                 text: res.status.message,
                 icon: 'error',
-                timer: 10000,
+              })
+            } else {
+              this.spinner.hide();
+              Swal.fire({
+                title: 'Success!',
+                text: res.status.message,
+                icon: 'success',
               })
             }
-
           } else {
+            this.spinner.hide();
             Swal.fire({
-              title: 'Success!',
-              text: 'Data Uploaded',
-              icon: 'success',
-              timer: 10000,
+              title: 'Error!',
+              text: res.status.message,
+              icon: 'error',
             })
           }
         },
           err => {
+            this.spinner.hide();
             console.error(err);
             Swal.fire({
               title: 'Error!',
               text: err.error.status.message,
               icon: 'error',
-              timer: 10000,
             })
           })
 
       }
+    }
+  }
+  fingermissingDataFilter(event) {
+    const val = event.target.value.toLowerCase();
+    if (val == '') {
+      this.fingermissingData = [...this.fingermissingDataTemp];
+    } else {
+      const temp = this.fingermissingDataTemp.filter(function (d) {
+        return (d.employeeName && d.employeeName.toLowerCase().indexOf(val) !== -1) ||
+          (d.employeeCodeInDevice && d.employeeCodeInDevice.toLowerCase().indexOf(val) !== -1) ||
+          (d.userId && d.userId.toLowerCase().indexOf(val) !== -1) || !val;
+      });
+      this.fingermissingData = temp;
+    }
+  }
+  facemissingDataFilter(event) {
+    const val = event.target.value.toLowerCase();
+    if (val == '') {
+      this.facemissingData = [...this.facemissingDataTemp];
+    } else {
+      const temp = this.facemissingDataTemp.filter(function (d) {
+        return (d.employeeName && d.employeeName.toLowerCase().indexOf(val) !== -1) ||
+          (d.employeeCodeInDevice && d.employeeCodeInDevice.toLowerCase().indexOf(val) !== -1) ||
+          (d.userId && d.userId.toLowerCase().indexOf(val) !== -1) || !val;
+      });
+      this.facemissingData = temp;
+    }
+  }
+  fingeraddedDataFilter(event) {
+    const val = event.target.value.toLowerCase();
+    if (val == '') {
+      this.fingeraddedData = [...this.fingeraddedDataTemp];
+    } else {
+      const temp = this.fingeraddedDataTemp.filter(function (d) {
+        return (d.employeeName && d.employeeName.toLowerCase().indexOf(val) !== -1) ||
+          (d.employeeCodeInDevice && d.employeeCodeInDevice.toLowerCase().indexOf(val) !== -1) ||
+          (d.userId && d.userId.toLowerCase().indexOf(val) !== -1) || !val;
+      });
+      this.fingeraddedData = temp;
+    }
+  }
+  faceaddedDataFilter(event) {
+    const val = event.target.value.toLowerCase();
+    if (val == '') {
+      this.faceaddedData = [...this.faceaddedDataTemp];
+    } else {
+      const temp = this.faceaddedDataTemp.filter(function (d) {
+        return (d.employeeName && d.employeeName.toLowerCase().indexOf(val) !== -1) ||
+          (d.employeeCodeInDevice && d.employeeCodeInDevice.toLowerCase().indexOf(val) !== -1) ||
+          (d.userId && d.userId.toLowerCase().indexOf(val) !== -1) || !val;
+      });
+      this.faceaddedData = temp;
     }
   }
 }

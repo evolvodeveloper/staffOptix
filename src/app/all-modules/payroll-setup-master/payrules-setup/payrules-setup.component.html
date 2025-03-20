@@ -15,7 +15,7 @@
             <div class="col-sm-12 col-lg-3">
                 <div class="input-group">
                     <input type="text" class="form-control"
-                        placeholder="search by rule code"
+                        placeholder="{{globalServ.showPlaceholder('searchRole') }}"
                         [(ngModel)]="searchedFor" (keyup)="updateFilter($event)"
                         style="border-radius: 8px 0px 0px 8px;">
                     <span class="input-group-text" id="basic-addon1">

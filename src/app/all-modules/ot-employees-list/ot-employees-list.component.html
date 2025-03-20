@@ -4,7 +4,7 @@
       <div class="d-flex align-items-baseline">
         <i style="font-size:20px" class="fa fa-arrow-left" (click)="back()"
           aria-label="back"></i>
-        <h3 class="ms-4 page-title">OT Assignment</h3>
+        <h3 class="ms-4 page-title"> {{global.showLabel('OTAssignment')}}</h3>
       </div>
     </div>
   </div>
@@ -15,7 +15,8 @@
     <div class="input-group">
       <input type="text" class="form-control"
         [(ngModel)]="searhedFor"
-        placeholder="search by employee name" (keyup)="updateFilter($event)"
+        placeholder="{{global.showGlobalplaceholders('searchEmp')}}"
+        (keyup)="updateFilter($event)"
         style="border-radius: 8px 0px 0px 8px;">
       <span class="input-group-text" id="basic-addon1">
         <i class="fa-solid fa-magnifying-glass"></i>
@@ -23,7 +24,7 @@
     </div>
   </div>
   <div class="col-lg-2 col-md-2 mt-30px">
-    <label class="form-label"> Payroll</label>
+    <label class="form-label"> {{global.getGlobalNames('payroll')}}</label>
     <select
       class="form-select"
       id="shiftCode"
@@ -36,12 +37,12 @@
     </select>
   </div>
   <div class="col-lg-2  col-md-2 mt-30px">
-    <label class="form-label">Date</label>
+    <label class="form-label">{{global.getGlobalNames('date')}}</label>
     <input
       type="date"
       class="form-control"
       id="FromDate"
-      placeholder="Enter Date"
+     placeholder="{{global.showGlobalplaceholders('EnterDate')}}"
       [(ngModel)]="startdate"
       (change)="getOtAssignedEmps()" />
   </div>
@@ -49,7 +50,7 @@
     <!--  *ngIf="hasPermissionToUpdate" -->
     <a class="btn add-btn"
       (click)="openOtAssignment()"><i class="fa fa-plus"></i>
-      Assign OT
+      {{global.showLabel('AssignOTBtn')}}
     </a>
   </div>
   <div class="col-lg-2 col-md-2">
@@ -70,12 +71,13 @@
         class="table table-hover table-nowrap custom-table mb-0 datatable">
         <thead class="thead-all">
           <tr class="tr-th-all">
-            <th scope="col">Date </th>
-            <th scope="col" class="text-center">Employee Code</th>
-            <th scope="col">Employee Name</th>
-            <th scope="col">Payroll</th>
+            <th scope="col">{{global.getGlobalNames('date')}} </th>
+            <th scope="col"
+              class="text-center">{{global.getGlobalNames('employeeCode')}}</th>
+            <th scope="col">{{global.getGlobalNames('employeeName')}}</th>
+            <th scope="col">{{global.getGlobalNames('payroll')}}</th>
             <th scope="col" class="text-center"
-              [hidden]="otAssignedEmps[0]?.status==='Payroll Completed'">Action</th>
+              [hidden]="otAssignedEmps[0]?.status==='Payroll Completed'">{{global.getGlobalNames('action')}}</th>
 
             <!-- <th *ngIf="hasPermissionToUpdate">Action</th> -->
           </tr>
@@ -83,7 +85,7 @@
         <tbody *ngIf="otAssignedEmps.length === 0">
           <tr style=" text-align: center; height: 150px;">
             <td colspan="7">
-              "No records were found with the selected filter criteria."
+              {{global.showGlobalErrors('notFound')}}
             </td>
           </tr>
         </tbody>

@@ -155,6 +155,7 @@
                                                 class="btn btn-light me-1 text-success"
                                                 placement="top"
                                                 ngbTooltip="Edit"
+                                                title="Edit"
                                                 *ngIf="hasPermissionToApprove"
                                                 (click)="approveOfferLetter(row)">
                                                 <i id="approve_offerletter"
@@ -165,7 +166,7 @@
                                                 type="button"
                                                 class="btn btn-light me-1 text-danger"
                                                 placement="top"
-                                                title="To Reject the Offer"
+                                                title="Reject"
                                                 ngbTooltip="Reject"
                                                 *ngIf="hasPermissionToUpdate && row.status === null"
                                                 (click)="rejectOffer(row)">
@@ -244,7 +245,7 @@
                                                 type="button"
                                                 class="btn btn-light me-1 text-info"
                                                 placement="top"
-                                                title="To send email"
+                                                title="Send email"
                                                 ngbTooltip="View"
                                                 *ngIf="hasPermissionToUpdate"
                                                 (click)="sendEmail(row)">
@@ -257,7 +258,7 @@
                                                 type="button"
                                                 class="btn btn-light me-1 text-danger"
                                                 placement="top"
-                                                title="To Reject the Offer"
+                                                title="Reject"
                                                 ngbTooltip="Reject"
                                                 *ngIf="hasPermissionToUpdate && row.status === null"
                                                 (click)="rejectOffer(row)">
@@ -337,6 +338,7 @@
                                                 class="btn btn-light me-1 text-info"
                                                 placement="top"
                                                 ngbTooltip="View"
+                                                  title="View"
                                                 (click)="viewData(row)">
                                                 <i id="download_offerletter"
                                                     class="fa-solid fa-download"></i>
@@ -348,7 +350,7 @@
                                                 class="btn btn-light me-1 text-success"
                                                 placement="top"
                                                 ngbTooltip="Accept"
-                                                title="To Accept the Offer"
+                                                title="Accept"
                                                 *ngIf="hasPermissionToUpdate && row.status === null"
                                                 (click)="acceptOffer(row)">
                                                 <i
@@ -359,7 +361,7 @@
                                                 type="button"
                                                 class="btn btn-light me-1 text-danger"
                                                 placement="top"
-                                                title="To Reject the Offer"
+                                                title="Reject"
                                                 ngbTooltip="Reject"
                                                 *ngIf="hasPermissionToUpdate && row.status === null"
                                                 (click)="rejectOffer(row)">

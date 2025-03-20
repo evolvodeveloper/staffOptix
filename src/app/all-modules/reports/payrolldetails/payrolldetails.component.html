@@ -1,13 +1,15 @@
 <!-- Page Content -->
 <div class="content container-fluid">
-        <!-- Page Header -->
+    <!-- Page Header -->
     <div class="mb-2">
         <div class="row">
             <div class="col-sm-12">
                 <div class="d-flex align-items-baseline">
                     <i style="font-size:20px" class="fa fa-arrow-left"
                         (click)="back()" aria-label="back"></i>
-                    <h3 class="ms-4 page-title">Payroll Details</h3>
+                    <h3
+                        class="ms-4 page-title">{{globalServ.showLabel('payrollDetailHeader')}}
+                    </h3>
                 </div>
 
             </div>
@@ -18,8 +20,8 @@
     <!-- Search Filter -->
     <div class="row">
         <div class="col-sm-6 col-md-3">
-            <div class="">
-                <label>Department</label>
+            <div class>
+                <label> {{globalServ.getGlobalNames('department')}}</label>
                 <select class="form-select" id="departments"
                     [(ngModel)]="reportObj.department"
                     (change)="modified()"
@@ -31,8 +33,8 @@
         </div>
 
         <div class="col-sm-6 col-md-3">
-            <div class="">
-                <label>Payroll</label>
+            <div class>
+                <label>{{globalServ.getGlobalNames('payroll')}}</label>
                 <select id="payroll_Type" class="form-select"
                     [(ngModel)]="reportObj.payrollCode" (change)="modified()"
                     (change)="getEmpByCategoryndPayroll()"
@@ -44,15 +46,14 @@
         </div>
 
         <div class="col-sm-6 col-md-3" [ngClass]="{'d-flex':!stopSpinner}">
-            <div class="" *ngIf="stopSpinner">
-                <label>Employee</label>
-              <ng-select
+            <div class *ngIf="stopSpinner">
+                <label> {{globalServ.getGlobalNames('employee')}}</label>
+                <ng-select
                     [items]="employee"
                     bindLabel="mergeName"
                     bindValue="employeeCode"
                     [multiple]="false"
                     id="emp"
-                    placeholder="Select an employee"
                     class="ngSelectform"
                     (change)="modified()"
                     [(ngModel)]="reportObj.employeeCode">
@@ -61,8 +62,9 @@
             <div id="loading" *ngIf="!stopSpinner"></div>
         </div>
         <div class="col-md">
-            <div class="">
-                <label class for="Date">Date </label>
+            <div class>
+                <label class for="Date">{{globalServ.getGlobalNames('date')}}
+                </label>
                 <input
                     class="form-control"
                     type="month"
@@ -86,7 +88,7 @@
         <div class="col-sm-6 col-lg-3 ">
             <div class="input-group">
                 <input type="text" class="form-control"
-                    placeholder="search by employee name or code"
+                    placeholder=" {{globalServ.showGlobalplaceholders('searchbyemployeenamecode')}}"
                     [(ngModel)]="searchedFor" (keyup)="updateFilter($event)"
                     style="border-radius: 8px 0px 0px 8px;">
                 <span class="input-group-text" id="basic-addon1">
@@ -106,13 +108,14 @@
             <button id="submit_salary_details"
                 class="btn add-btn float-end m-1"
                 [disabled]="!reportObj.employeeCode ||employee.length === 0"
-                (click)="submit()">Submit</button>
-            <button id="save_pdf" class="btn add-btn float-end me-4  m-1"
-                [disabled]="reportsList.length <= 0"
-                (click)="savePDF()">Save as PDF</button>
+                (click)="submit()">{{globalServ.getGlobalNames('submit')}}</button>
+
             <button id="save_excel" class="btn add-btn float-end me-4  m-1"
                 [disabled]="reportsList.length <= 0"
-                (click)="saveExcel()">Save as Excel</button>
+                (click)="saveExcel()">{{globalServ.getGlobalNames('saveAsExcel')}}</button>
+            <button id="save_pdf" class="btn add-btn float-end me-4  m-1"
+                [disabled]="reportsList.length <= 0"
+                (click)="savePDF()">{{globalServ.getGlobalNames('saveAsPDF')}}</button>
         </div>
     </div>
     <!-- /Search Filter -->
@@ -124,16 +127,23 @@
                     class="table table-hover custom-table mb-0 datatable">
                     <thead class="thead-all">
                         <tr class="tr-th-all">
-                            <th scope="col" class>Emp Code</th>
                             <th scope="col"
-                                *ngIf="reportObj.employeeCode === 'ALL'">Emp
-                                Name</th>
-                            <th scope="col" class="text-center">Department</th>
-                            <th scope="col" class="text-end">Calendar Days</th>
-                            <th scope="col" class="text-end">Working Days</th>
-                            <th scope="col" class="text-end">Present Days</th>
-                            <th scope="col" class="text-end">Payable Days</th>
-                            <th scope="col" class="text-end">LOP</th>
+                                class>{{globalServ.getGlobalNames('empCode')}}</th>
+                            <th scope="col"
+                                *ngIf="reportObj.employeeCode === 'ALL'">{{globalServ.getGlobalNames('empName')}}</th>
+                            <th scope="col"
+                                class="text-center">{{globalServ.getGlobalNames('department')}}</th>
+                            <th scope="col"
+                                class="text-end">{{globalServ.getGlobalNames('calDays')}}</th>
+                            <th scope="col"
+                                class="text-end">{{globalServ.getGlobalNames('workingDays')}}</th>
+                            <th scope="col"
+                                class="text-end">{{globalServ.getGlobalNames('pDays')}}</th>
+                            <th scope="col"
+                                class="text-end">{{globalServ.getGlobalNames('PayableDays')}}
+                            </th>
+                            <th scope="col"
+                                class="text-end">{{globalServ.getGlobalNames('LOP')}}</th>
                             <!-- <th scope="col">Payroll</th> -->
                             <ng-container
                                 *ngFor="let row of rows[0]?.newArray; let i = index">
@@ -146,7 +156,7 @@
                         <tr
                             style=" text-align: center; height: 150px;">
                             <td colspan="11">
-                                "No records were found with the selected filter criteria."
+                                {{globalServ.showGlobalErrors('notFound')}}
                             </td>
                         </tr>
                     </tbody>
@@ -155,15 +165,14 @@
                         <tr
                             style=" text-align: center; height: 150px;">
                             <td colspan="11">
-                                "Great choices! Finalize your selection by clicking 'Submit' to generate a report with the filtered data you've chosen."
-                            </td>
+                                {{globalServ.showGlobalErrors('greatChoices')}}</td>
                         </tr>
                     </tbody>
                     <tbody *ngIf="rows.length === 0 && message === 'error'">
                         <tr
                             style=" text-align: center; height: 150px;">
                             <td colspan="11">
-                                "Sorry for the Inconvenience!"
+                                {{globalServ.showGlobalErrors('sorry')}}
                             </td>
                         </tr>
                     </tbody>
@@ -172,7 +181,8 @@
                             *ngFor="let row of rows | paginate: config; let i=index;">
                             <tr class="dasboard-td">
                                 <td class>{{row.employeeCode}}</td>
-                                <td *ngIf="reportObj.employeeCode === 'ALL'">{{row.employeeName}}</td>
+                                <td
+                                    *ngIf="reportObj.employeeCode === 'ALL'">{{row.employeeName}}</td>
                                 <td class="text-center">{{row.deptCode}}</td>
                                 <td class="text-end">{{row.calendarDays}}</td>
                                 <td class="text-end">{{row.workingDays}}</td>
@@ -188,8 +198,9 @@
                         </ng-container>
                         <tr *ngIf="rows.length === 0">
                             <td colspan="11">
-                                <h5 style="text-align: center;">No data
-                                    found</h5>
+                                <h5 style="text-align: center;">
+                                    {{globalServ.getGlobalNames('nodatafound')}}
+                                </h5>
                             </td>
 
                         </tr>

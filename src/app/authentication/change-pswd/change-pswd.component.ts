@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpPostService } from 'src/app/services/http-post.service';
+import { UtilService } from 'src/app/services/util.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -17,10 +19,15 @@ export class ChangePswdComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private post: HttpPostService,
-    private spinner: NgxSpinnerService
+    private utilServ: UtilService,
+    private spinner: NgxSpinnerService,
+    public globalServ: GlobalvariablesService,
+
   ) {}
 
   ngOnInit() {
+    this.globalServ.getMyCompLabels('changePassword');
+    this.globalServ.getMyCompPlaceHolders('changePassword');
     this.changePassword = this.formBuilder.group({
       oldPassword: [null, [Validators.required]],
       newPassword: [null, Validators.compose([Validators.required, Validators.minLength(8)])],
@@ -67,9 +74,8 @@ export class ChangePswdComponent implements OnInit {
         )
         .subscribe(
           (res: any) => {
+            this.spinner.hide();
             if (res.response == true) {
-              this.spinner.hide();
-
               Swal.fire({
                 title: 'Success',
                 text: 'Password Updated',
@@ -77,6 +83,7 @@ export class ChangePswdComponent implements OnInit {
                 timer: 10000,
               }).then(() => {
                 this.changePassword.reset();
+                this.utilServ.logout();
               });
             }
           },
@@ -91,7 +98,7 @@ export class ChangePswdComponent implements OnInit {
           }
         );
     } else {
-
+      this.spinner.hide();
       Swal.fire({
         title: 'Error',
         text: 'Please enter old and new passwords',

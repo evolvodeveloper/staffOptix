@@ -6,12 +6,11 @@ import { LoginGuard } from './authentication/guards/login.guard';
 import { PricingPlansComponent } from './authentication/pricing-plans/pricing-plans.component';
 
 const routes: Routes = [
-  {
-    path: 'auth', loadChildren: () => import(`./authentication/auth.module`).then(m => m.AuthenticationModule), canActivate: [LoginGuard]
-  },
+  { path: 'auth', loadChildren: () => import(`./authentication/auth.module`).then(m => m.AuthenticationModule), canActivate: [LoginGuard] },
   { path: '', loadChildren: () => import(`./all-modules/all-modules.module`).then(m => m.AllModulesModule), canActivate: [AuthGuard] },
   { path: 'pricing-plans', component: PricingPlansComponent },
   { path: '503', component: FiveZeroThreePageComponent },
+
   // { path: 'InialChangePswdComponent', component: InialChangePswdComponent },
 
 ];

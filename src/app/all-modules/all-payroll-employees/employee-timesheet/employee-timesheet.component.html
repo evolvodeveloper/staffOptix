@@ -10,7 +10,7 @@
             routerLink="/dashboard"
             aria-label="back"></i>
           <h3 class="ms-4 page-title">
-            Attendance Logs
+            {{global.showLabel('attendanceLogHeader')}}
           </h3>
         </div>
       </div>
@@ -18,7 +18,7 @@
   </div>
   <div class="row">
     <div class="col-md-4">
-      <label>Department</label>
+      <label>{{global.getGlobalNames('department')}}</label>
       <div class="form-floating mt-1">
         <select
           id="departments"
@@ -34,7 +34,7 @@
     </div>
 
     <div class="col-md-4">
-      <label>Project</label>
+      <label>{{global.getGlobalNames('project')}}</label>
       <div class="form-floating mt-1">
         <select
           id="departments"
@@ -49,25 +49,9 @@
       </div>
     </div>
 
-    <!-- <div class="col-md-4 d-flex my-2"
-      [ngClass]="{ 'd-flex my-2': !stopSpinner }">
-      <label>Employee</label>
-      <div class="form-floating mt-1" *ngIf="stopSpinner">
-        <select
-          class="form-select"
-          id="employee"
-          [(ngModel)]="reportObj.empCode" (change)="modified()">
-          <option [value]="emp.employeeCode" *ngFor="let emp of employees">
-            {{ emp.employeeName }} - {{ emp.employeeCode }}
-          </option>
-        </select>
-      </div>
-      <div id="loading" *ngIf="!stopSpinner"></div>
-    </div> -->
-
     <div class="col-md-4" [ngClass]="{'d-flex':!stopSpinner}">
       <div class *ngIf="stopSpinner">
-        <label>Employee</label>
+        <label>{{global.getGlobalNames('employee')}}</label>
         <ng-select
           [items]="employees"
           bindLabel="mergeName"
@@ -84,7 +68,7 @@
     </div>
 
     <div class="col-md-4">
-      <label>Shift</label>
+      <label>{{global.getGlobalNames('shift')}}</label>
       <div class="form-floating mt-1">
         <select
           id="shift"
@@ -99,12 +83,12 @@
     </div>
 
     <div class="col-md-4">
-      <label>Date From & To</label>
+      <label>{{global.getGlobalNames('dateFromandTo')}} </label>
       <div class="form-floating mt-1">
         <input
           id="selectedDateRange"
           type="text"
-          ngxDaterangepickerMd
+          ngxDaterangepickerMd [locale]="{format: 'DD-MM-YYYY'}"
           [(ngModel)]="selectedDateRange"
           (change)="modified()"
           class="form-control" />
@@ -117,7 +101,7 @@
         <input
           type="text"
           class="form-control"
-          placeholder="Search"
+          placeholder="{{global.showGlobalplaceholders('search')}}"
           (keyup)="updateFilter($event)"
           style="
             border-radius: 8px 0px 0px 8px;
@@ -130,7 +114,8 @@
     </div>
 
     <div class="col-sm-6 col-lg-2 my-2">
-      <!-- <label class="form-label ms-2">Show entries</label>
+      <!--   <label
+        class="form-label ms-2">{{global.getGlobalNames('ShowEntries')}}</label>
       <select
         class="form-select"
         *ngIf="allRecordsTab"
@@ -175,7 +160,7 @@
         class="btn add-btn float-end mx-2"
         [disabled]="allRecords.length === 0"
         (click)="savePdfForAllrecords()">
-        Save as PDF
+        {{global.getGlobalNames('saveAsPDF')}}
       </button>
       <button
         id="excel_timesheet"
@@ -183,7 +168,7 @@
         class="btn add-btn float-end mx-2"
         [disabled]="allRecords.length === 0"
         (click)="saveExcelForAllRecords()">
-        Save as Excel
+        {{global.getGlobalNames('saveAsExcel')}}
       </button>
       <button
         id="pdf_timesheet"
@@ -191,7 +176,7 @@
         class="btn add-btn float-end mx-2"
         [disabled]="validationNeededRows.length === 0"
         (click)="savePDF()">
-        Save as PDF
+        {{global.getGlobalNames('saveAsPDF')}}
       </button>
       <button
         id="excel_timesheet"
@@ -199,7 +184,7 @@
         class="btn add-btn float-end mx-2"
         [disabled]="validationNeededRows.length === 0"
         (click)="saveExcel()">
-        Save as Excel
+        {{global.getGlobalNames('saveAsExcel')}}
       </button>
 
       <button
@@ -208,7 +193,7 @@
         class="btn add-btn float-end mx-2"
         [disabled]="unApprovedRows.length === 0"
         (click)="savePdfForNeedApproval()">
-        Save as PDF
+        {{global.getGlobalNames('saveAsPDF')}}
       </button>
       <button
         id="excel_timesheet"
@@ -216,7 +201,7 @@
         class="btn add-btn float-end mx-2"
         [disabled]="unApprovedRows.length === 0"
         (click)="saveExcelForNeedApproval()">
-        Save as Excel
+        {{global.getGlobalNames('saveAsExcel')}}
       </button>
 
       <button
@@ -225,13 +210,13 @@
         class="btn success-btn float-end mx-2"
         [disabled]="approvedRowsPost.length === 0"
         (click)="approveRecord()">
-        Approve
+        {{global.getGlobalNames('approve')}}
       </button>
       <button
         id="submit_timesheet"
         class="btn add-btn float-end mx-2"
         (click)="submit()">
-        Submit
+        {{global.getGlobalNames('submit')}}
       </button>
     </div>
   </div>
@@ -252,7 +237,7 @@
             aria-controls="pills-allrecords"
             aria-selected="true">
             <div class="d-flex my-2 justify-content-center">
-              All Logs
+              {{global.showLabel('AllLogs')}}
             </div>
           </button>
         </li>
@@ -270,7 +255,7 @@
             aria-controls="pills-validation"
             aria-selected="true">
             <div class="d-flex my-2 justify-content-center">
-              Logs needing validation
+              {{global.showLabel('LogsNeedingValidation')}}
             </div>
           </button>
         </li>
@@ -286,8 +271,8 @@
             role="tab"
             aria-controls="pills-needApproveal"
             aria-selected="false">
-            <div class="d-flex my-2 justify-content-center">Unapproved
-              Logs</div>
+            <div class="d-flex my-2 justify-content-center">
+              {{global.showLabel('UnapprovedLogs')}}</div>
           </button>
         </li>
         <li class="nav-item me-2" role="presentation">
@@ -295,15 +280,15 @@
             style="height: 40px; padding: revert"
             (click)="tab3()"
             class="nav-link"
-            id="pills-contact-tab"
+            id="pills-Approved-tab"
             data-bs-toggle="pill"
-            data-bs-target="#pills-contact"
+            data-bs-target="#pills-Approved"
             type="button"
             role="tab"
-            aria-controls="pills-contact"
+            aria-controls="pills-Approved"
             aria-selected="false">
             <div class="d-flex my-2 justify-content-center">
-              Approved Logs
+              {{global.showLabel('ApprovedLogs')}}
             </div>
           </button>
         </li>
@@ -328,7 +313,7 @@
                   <tr class="tr-th-all">
                     <th></th>
                     <th>
-                      Date
+                      {{global.getGlobalNames('date')}}
                       <i
                         class="fa fa-sort"
                         data-column="dateCode"
@@ -340,7 +325,7 @@
                         }"></i>
                     </th>
                     <th>
-                      Employee Name
+                      {{global.getGlobalNames('employeeName')}}
                       <i
                         class="fa fa-sort"
                         data-column="employeeName"
@@ -354,10 +339,10 @@
                             sortOrder === 'desc'
                         }"></i>
                     </th>
-                    <th class>Shift</th>
-                    <th class>Work Hrs</th>
+                    <th class> {{global.getGlobalNames('shift')}}</th>
+                    <th class> {{global.getGlobalNames('workHrs')}}</th>
                     <th class="text-center">
-                      Total Hrs
+                      {{global.getGlobalNames('totalHours')}}
                       <i
                         class="fa fa-sort"
                         data-column="totalHours"
@@ -370,7 +355,7 @@
                         }"></i>
                     </th>
                     <th class="text-center">
-                      Effective Hrs
+                      {{global.getGlobalNames('EffectiveHrs')}}
                       <i
                         class="fa fa-sort"
                         data-column="effectiveHrs1"
@@ -382,16 +367,17 @@
                             sortColumn === 'effectiveHrs1' && sortOrder === 'desc'
                         }"></i>
                     </th>
-                    <th>Attendance <span class="block"> Status </span> </th>
-                    <th>Entry <span class="block"> Status </span></th>
-                    <th>Exit <span class="block"> Status </span></th>
-                    <th>Comment</th>
+                    <th>{{global.getGlobalNames('AttendanceStatus')}}</th>
+                    <th> {{global.getGlobalNames('entryStatus')}}</th>
+                    <th>{{global.getGlobalNames('exitStatus')}}</th>
+                    <th>{{global.getGlobalNames('Comment')}}</th>
                     <th class="text-center"
-                      *ngIf="allRecords.length > 0">Action</th>
+                      *ngIf="allRecords.length > 0">
+                      {{global.getGlobalNames('action')}}</th>
                   </tr>
                 </thead>
                 <tbody
-                  *ngFor="let vnr of allRecords ;let i = index">
+                  *ngFor="let vnr of allRecords | paginate: config;let i = index">
                   <ng-container *ngIf="!vnr.BreakShift">
                     <tr
                       class="dasboard-td">
@@ -426,7 +412,8 @@
                       </td>
                       <td class>
                         <span *ngIf="!vnr?.inDateEditMode">
-                          <td>IN :</td> <td class="text-end"> {{ vnr.inTime }}
+                          <td> {{global.getGlobalNames('IN')}} :</td> <td
+                            class="text-end"> {{ vnr.inTime }}
                           </td>
                         </span>
                         <div
@@ -456,8 +443,8 @@
                         <span
                           *ngIf="!vnr?.outDateEditMode"
                           style="margin-top: -10px">
-                          <td> OUT :</td> <td class="text-end">{{ vnr.outTime
-                            }}</td>
+                          <td> {{global.getGlobalNames('OUT')}} :</td> <td
+                            class="text-end">{{ vnr.outTime }}</td>
                           <!-- &nbsp;&nbsp;&nbsp;
                           <b class="edit-cal">
                             {{ vnr.outTime }}
@@ -489,13 +476,14 @@
                       </td>
                       <td class="text-center">{{ vnr?.totalHours1 }}</td>
                       <td class="text-center"> {{ vnr?.effectiveHrs1 }}</td>
-                      <td> <span *ngIf="vnr.attStatus === 'P'">Present</span>
+                      <td> <span
+                          *ngIf="vnr.attStatus === 'P'">{{global.getGlobalNames('present')}}</span>
                         <span *ngIf="vnr.attStatus !== 'P'">{{vnr.attStatus}}
                         </span></td>
 
                       <td>{{vnr.entryStatus}}</td>
                       <td>{{vnr.exitStatus}}</td>
-                      <td [innerHTML]="vnr.comments" ></td>
+                      <td [innerHTML]="vnr.comments"></td>
                       <td class="text-center">
                         <div class="btn-group" role="group">
                           <button
@@ -574,7 +562,8 @@
                       </td>
                       <td class>
                         <span *ngIf="!vnr?.inDateEditMode">
-                          <td>IN :</td> <td class="text-end"> {{ vnr.inTime }}
+                          <td>{{global.getGlobalNames('IN')}} :</td> <td
+                            class="text-end"> {{ vnr.inTime }}
                           </td>
                           <!-- In :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
                           <!-- <b class="edit-cal">
@@ -608,7 +597,8 @@
                         <span
                           *ngIf="!vnr?.outDateEditMode"
                           style="margin-top: -10px">
-                          <td>OUT :</td> <td class="text-end"> {{ vnr.outTime }}
+                          <td> {{global.getGlobalNames('OUT')}} :</td> <td
+                            class="text-end"> {{ vnr.outTime }}
                           </td>
                           <!-- Out :&nbsp;&nbsp;&nbsp;
                           <b class="edit-cal">
@@ -638,7 +628,8 @@
                         <!-- second record -->
 
                         <span *ngIf="!vnr?.SecondInDateEditMode">
-                          <td>IN :</td> <td class="text-end"> {{
+                          <td> {{global.getGlobalNames('IN')}} :</td> <td
+                            class="text-end"> {{
                             vnr.SecondInTime }} </td>
                           <!-- In :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                           <b class="edit-cal">
@@ -673,7 +664,8 @@
                         <span
                           *ngIf="!vnr?.SecondOutDateEditMode"
                           style="margin-top: -10px">
-                          <td>OUT :</td> <td class="text-end"> {{
+                          <td> {{global.getGlobalNames('OUT')}} :</td> <td
+                            class="text-end"> {{
                             vnr.SecondOutTime }} </td>
                           <!-- Out :&nbsp;&nbsp;&nbsp;
                           <b class="edit-cal">
@@ -714,11 +706,13 @@
                         {{vnr?.SecondEffectiveHrs1}}
                       </td>
 
-                      <td> <span *ngIf="vnr.attStatus === 'P'">Present</span>
+                      <td> <span
+                          *ngIf="vnr.attStatus === 'P'">{{global.getGlobalNames('present')}}</span>
                         <span *ngIf="vnr.attStatus !== 'P'">{{vnr.attStatus}}
                         </span>
                         <br>
-                        <span *ngIf="vnr.SecondAttStatus === 'P'">Present</span>
+                        <span
+                          *ngIf="vnr.SecondAttStatus === 'P'">{{global.getGlobalNames('present')}}</span>
                         <span
                           *ngIf="vnr.SecondAttStatus !== 'P'">{{vnr.SecondAttStatus}}
                         </span>
@@ -792,14 +786,22 @@
                       <table class="table table-bordered table-responsive-sm">
                         <thead class="thead-all">
                           <tr class="tr-th-all">
-                            <th scope="col">Date</th>
-                            <th scope="col">Employee Ref Code</th>
-                            <th scope="col">Time</th>
-                            <th scope="col">IN/OUT</th>
-                            <th scope="col">Device Id</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Comments</th>
-                            <th scope="col">Processed?</th>
+                            <th scope="col">
+                              {{global.getGlobalNames('date')}}</th>
+                            <th scope="col">
+                              {{global.getGlobalNames('EmployeeRefCode')}}</th>
+                            <th scope="col">
+                              {{global.getGlobalNames('time')}}</th>
+                            <th scope="col">
+                              {{global.getGlobalNames('IN/OUT')}}</th>
+                            <th scope="col">
+                              {{global.getGlobalNames('DeviceId')}}</th>
+                            <th
+                              scope="col">{{global.getGlobalNames('status')}}</th>
+                            <th
+                              scope="col">{{global.getGlobalNames('Comment')}}</th>
+                            <th
+                              scope="col">{{global.showLabel('Processed')}}</th>
                             <th></th>
                           </tr>
                         </thead>
@@ -813,7 +815,8 @@
                             <td>{{item.deviceId}}</td>
                             <td>{{item.attStatus}}</td>
                             <td [innerHTML]="item.comments"></td>
-                            <td>{{item.isProcessed}}</td>
+                            <td>{{item.isProcessed ==true ? 'True' :
+                              'False'}}</td>
                             <td><i class="fa-solid fa-image"
                                 style="color: blue; font-size: larger; display: flex;
     justify-content: center;" *ngIf="item.image" data-bs-toggle="modal"
@@ -825,7 +828,7 @@
                             *ngIf="vnr.logRecords.length === 0  && message === 'modified'"
                             style=" text-align: center; height: 150px;">
                             <td colspan="16">
-                              "No records were found"
+                              {{global.showGlobalErrors('norecords')}}
                             </td>
                           </tr>
                         </tbody>
@@ -838,7 +841,7 @@
                   <tr
                     style=" text-align: center; height: 150px;">
                     <td colspan="16">
-                      "No records were found with the selected filter criteria."
+                      {{global.showGlobalErrors('notFound')}}
                     </td>
                   </tr>
                 </tbody>
@@ -847,19 +850,18 @@
                   <tr
                     style=" text-align: center; height: 150px;">
                     <td colspan="16">
-                      "Great choices! Finalize your selection by clicking 'Submit' to generate a report with the filtered data you've chosen."
-                    </td>
+                      {{global.showGlobalErrors('greatChoices')}} </td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
-            <!-- <div
-              *ngIf="allRecordsTab && allRecords.length >  allrecordsConfig.itemsPerPage"
+            <div
+              *ngIf="allRecordsTab && allRecords.length >  config.itemsPerPage"
               class="text-center mt-3">
               <pagination-controls
-                (pageChange)="allrecordsPageChanged($event)"></pagination-controls>
-            </div> -->
+                (pageChange)="configPageChange($event)"></pagination-controls>
+            </div>
           </div>
         </div>
       </div>
@@ -882,7 +884,7 @@
                   <tr class="tr-th-all">
                     <th></th>
                     <th>
-                      Date
+                      {{global.getGlobalNames('date')}}
                       <i
                         class="fa fa-sort"
                         data-column="dateCode"
@@ -894,7 +896,7 @@
                         }"></i>
                     </th>
                     <th>
-                      Employee Name
+                      {{global.getGlobalNames('employeeName')}}
                       <i
                         class="fa fa-sort"
                         data-column="employeeName"
@@ -908,12 +910,14 @@
                             sortOrder === 'desc'
                         }"></i>
                     </th>
-                    <th class>Shift</th>
-                    <th class="text-center">Is Holiday</th>
-                    <th class="text-center">Is Week Off</th>
-                    <th class>Work Hrs</th>
+                    <th class> {{global.getGlobalNames('shift')}}</th>
                     <th class="text-center">
-                      Total Hrs
+                      {{global.showLabel('isHoliday')}}</th>
+                    <th
+                      class="text-center">{{global.showLabel('IsWeekoff')}}</th>
+                    <th class> {{global.getGlobalNames('workHrs')}}</th>
+                    <th class="text-center">
+                      {{global.getGlobalNames('totalHours')}}
                       <i
                         class="fa fa-sort"
                         data-column="totalHours1"
@@ -926,7 +930,7 @@
                         }"></i>
                     </th>
                     <th class="text-center">
-                      Effective Hrs
+                      {{global.getGlobalNames('EffectiveHrs')}}
                       <i
                         class="fa fa-sort"
                         data-column="effectiveHrs1"
@@ -938,10 +942,10 @@
                             sortColumn === 'effectiveHrs1' && sortOrder === 'desc'
                         }"></i>
                     </th>
-                    <th>Attendance Status</th>
-                    <th>Comment</th>
+                    <th> {{global.getGlobalNames('AttendanceStatus')}}</th>
+                    <th> {{global.getGlobalNames('Comment')}}</th>
                     <th class="text-center"
-                      *ngIf="validationNeededRows.length > 0">Action</th>
+                      *ngIf="validationNeededRows.length > 0">{{global.getGlobalNames('action')}}</th>
                   </tr>
                 </thead>
                 <tbody
@@ -949,7 +953,7 @@
                   <tr
                     style=" text-align: center; height: 150px;">
                     <td colspan="14">
-                      "No records were found with the selected filter criteria."
+                      {{global.showGlobalErrors('notFound')}}
                     </td>
                   </tr>
                 </tbody>
@@ -958,11 +962,12 @@
                   <tr
                     style=" text-align: center; height: 150px;">
                     <td colspan="14">
-                      "Great choices! Finalize your selection by clicking 'Submit' to generate a report with the filtered data you've chosen."
-                    </td>
+                      {{global.showGlobalErrors('greatChoices')}} </td>
                   </tr>
                 </tbody>
-                <tbody *ngFor="let vnr of validationNeededRows ; let i = index">
+
+                <tbody
+                  *ngFor="let vnr of validationNeededRows | paginate :config; let i = index">
                   <tr
                     class="dasboard-td">
                     <td><i *ngIf="!vnr.expand" class="fa fa-plus"
@@ -1017,7 +1022,8 @@
 
                     <td class>
                       <span *ngIf="!vnr?.inDateEditMode">
-                        <td>IN :</td> <td class="text-end"> {{ vnr.inTime }}
+                        <td> {{global.getGlobalNames('IN')}} :</td> <td
+                          class="text-end"> {{ vnr.inTime }}
                         </td>
                         <!-- In :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <b class="edit-cal">
@@ -1051,7 +1057,8 @@
                       <span
                         *ngIf="!vnr?.outDateEditMode"
                         style="margin-top: -10px">
-                        <td>OUT :</td> <td class="text-end"> {{ vnr.outTime }}
+                        <td> {{global.getGlobalNames('OUT')}} :</td> <td
+                          class="text-end"> {{ vnr.outTime }}
                         </td>
                         <!-- Out :&nbsp;&nbsp;&nbsp;
                         <b class="edit-cal">
@@ -1084,7 +1091,8 @@
                     </td>
                     <td class="text-center">{{ vnr?.totalHours1 }}</td>
                     <td class="text-center"> {{ vnr?.effectiveHrs1 }}</td>
-                    <td> <span *ngIf="vnr.attStatus === 'P'">Present</span>
+                    <td> <span
+                        *ngIf="vnr.attStatus === 'P'">{{global.getGlobalNames('present')}}</span>
                       <span *ngIf="vnr.attStatus !== 'P'">{{vnr.attStatus}}
                       </span></td>
                     <td [innerHTML]="vnr.comments"></td>
@@ -1141,14 +1149,22 @@
                       <table class="table table-bordered table-responsive-sm">
                         <thead class="thead-all">
                           <tr class="tr-th-all">
-                            <th scope="col">Date</th>
-                            <th scope="col">Employee Ref Code</th>
-                            <th scope="col">Time</th>
-                            <th scope="col">IN/OUT</th>
-                            <th scope="col">Device Id</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Comments</th>
-                            <th scope="col">Processed?</th>
+                            <th scope="col">
+                              {{global.getGlobalNames('date')}}</th>
+                            <th scope="col">
+                              {{global.getGlobalNames('EmployeeRefCode')}}</th>
+                            <th scope="col">
+                              {{global.getGlobalNames('time')}}</th>
+                            <th scope="col">
+                              {{global.getGlobalNames('IN/OUT')}}</th>
+                            <th scope="col">
+                              {{global.getGlobalNames('DeviceId')}}</th>
+                            <th
+                              scope="col">{{global.getGlobalNames('status')}}</th>
+                            <th
+                              scope="col">{{global.getGlobalNames('comment')}}</th>
+                            <th
+                              scope="col">{{global.showLabel('Processed')}}</th>
                             <th></th>
                           </tr>
                         </thead>
@@ -1162,7 +1178,8 @@
                             <td>{{item.deviceId}}</td>
                             <td>{{item.attStatus}}</td>
                             <td [innerHTML]="item.comments"></td>
-                            <td>{{item.isProcessed}}</td>
+                            <td>{{item.isProcessed ==true ? 'True' :
+                              'False'}}</td>
                             <td><i class="fa-solid fa-image"
                                 style="color: blue; font-size: larger; display: flex;
     justify-content: center;" *ngIf="item.image" data-bs-toggle="modal"
@@ -1174,15 +1191,14 @@
                             *ngIf="vnr.logRecords.length === 0  && message === 'modified'"
                             style=" text-align: center; height: 150px;">
                             <td colspan="14">
-                              "No records were found"
+                              {{global.showGlobalErrors('norecords')}}
                             </td>
                           </tr>
                           <tr
                             *ngIf="vnr.logRecords.length === 0  && message === 'clickOnsubmit'"
                             style=" text-align: center; height: 150px;">
                             <td colspan="14">
-                              "Great choices! Finalize your selection by clicking 'Submit' to generate a report with the filtered data you've chosen."
-                            </td>
+                              {{global.showGlobalErrors('greatChoices')}} </td>
                           </tr>
 
                         </tbody>
@@ -1192,14 +1208,14 @@
 
                 </tbody>
               </table>
-              <!-- <div
+              <div
                 *ngIf="firstTab && validationNeededRows.length >
-                  validationNeededconfig.itemsPerPage
+                  config.itemsPerPage
                 "
                 class="text-center mt-3">
                 <pagination-controls
-                  (pageChange)="validationNeededpageChanged($event)"></pagination-controls>
-              </div> -->
+                  (pageChange)="configPageChange($event)"></pagination-controls>
+              </div>
             </div>
           </div>
         </div>
@@ -1244,7 +1260,7 @@
                       </div>
                     </th>
                     <th>
-                      Date<i
+                      {{global.getGlobalNames('date')}}<i
                         class="fa fa-sort ms-1"
                         data-column="dateCode"
                         (click)="sortData('dateCode')"
@@ -1255,7 +1271,7 @@
                         }"></i>
                     </th>
                     <th>
-                      Employee Name<i
+                      {{global.getGlobalNames('employeeName')}}<i
                         class="fa fa-sort ms-1"
                         data-column="employeeName"
                         (click)="sortData('employeeName')"
@@ -1268,13 +1284,15 @@
                             sortOrder === 'desc'
                         }"></i>
                     </th>
-                    <th class>Shift</th>
-                    <th class="text-center">Is Holiday</th>
-                    <th class="text-center">Is Week Off</th>
-                    <th class>Work Hrs</th>
+                    <th class>{{global.getGlobalNames('shift')}}</th>
                     <th class="text-center">
-                      Total Hrs<i
-                        class="fa fa-sort"
+                      {{global.showLabel('isHoliday')}}</th>
+                    <th
+                      class="text-center">{{global.showLabel('IsWeekoff')}}</th>
+                    <th class>{{global.getGlobalNames('workHrs')}}</th>
+                    <th class="text-center">
+                      {{global.getGlobalNames('totalHours')}}<i
+                        class="fa fa-sort ms-1"
                         data-column="totalHours1"
                         (click)="sortData('totalHours1')"
                         [ngClass]="{
@@ -1285,7 +1303,7 @@
                         }"></i>
                     </th>
                     <th class="text-center">
-                      Effective Hrs
+                      {{global.getGlobalNames('EffectiveHrs')}}
                       <i
                         class="fa fa-sort"
                         data-column="effectiveHrs1"
@@ -1297,10 +1315,10 @@
                             sortColumn === 'effectiveHrs1' && sortOrder === 'desc'
                         }"></i>
                     </th>
-                    <th>Attendance Status </th>
+                    <th>{{global.getGlobalNames('AttendanceStatus')}} </th>
                     <th class="text-center"
                       *ngIf="unApprovedRows.length > 0 && hasPermissionToUpdate">
-                      Action
+                      {{global.getGlobalNames('action')}}
                     </th>
                   </tr>
                 </thead>
@@ -1309,7 +1327,7 @@
                   <tr
                     style=" text-align: center; height: 150px;">
                     <td colspan="14">
-                      "No records were found with the selected filter criteria."
+                      {{global.showGlobalErrors('notFound')}}
                     </td>
                   </tr>
                 </tbody>
@@ -1318,13 +1336,12 @@
                   <tr
                     style=" text-align: center; height: 150px;">
                     <td colspan="14">
-                      "Great choices! Finalize your selection by clicking 'Submit' to generate a report with the filtered data you've chosen."
-                    </td>
+                      {{global.showGlobalErrors('greatChoices')}} </td>
                   </tr>
                 </tbody>
                 <tbody *ngIf="unApprovedRows.length > 0">
                   <ng-container
-                    *ngFor="let row of unApprovedRows ;let i = index">
+                    *ngFor="let row of unApprovedRows |paginate :config ;let i = index">
                     <tr class="dasboard-td" *ngIf="row.isApproved !== true">
                       <td><i *ngIf="!row.expand" class="fa fa-plus"
                           aria-hidden="true" (click)="expandRow(row)"></i>
@@ -1386,7 +1403,8 @@
                       </td>
                       <td>
                         <span *ngIf="!row?.inDateEditMode">
-                          <td>IN :</td> <td class="text-end"> {{ row.inTime }}
+                          <td>{{global.getGlobalNames('IN')}} :</td> <td
+                            class="text-end"> {{ row.inTime }}
                           </td>
                           <!-- In :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                           <b class="edit-cal">{{row.inTime}}</b> -->
@@ -1418,7 +1436,8 @@
                         <span
                           *ngIf="!row?.outDateEditMode"
                           style="margin-top: -10px">
-                          <td>OUT :</td> <td class="text-end"> {{ row.outTime }}
+                          <td> {{global.getGlobalNames('OUT')}} :</td> <td
+                            class="text-end"> {{ row.outTime }}
                           </td>
                           <!-- Out :&nbsp;&nbsp;&nbsp;
                           <b class="edit-cal">{{row.outTime}}
@@ -1453,7 +1472,8 @@
                         {{ row?.totalHours1 }}
                       </td>
                       <td class="text-center"> {{ row?.effectiveHrs1 }}</td>
-                      <td> <span *ngIf="row.attStatus === 'P'">Present</span>
+                      <td> <span
+                          *ngIf="row.attStatus === 'P'">{{global.getGlobalNames('present')}}</span>
                         <span *ngIf="row.attStatus !== 'P'">{{row.attStatus}}
                         </span></td>
                       <td class="text-center" *ngIf="hasPermissionToUpdate">
@@ -1490,7 +1510,7 @@
                         </div>
                       </td>
                     </tr>
-                    <tr *ngIf="row.expand">
+                    <tr *ngIf="row.expand && row.isApproved !== true">
                       <td colspan="14" *ngIf="row.loading === 'loading'">
                         <mat-progress-bar mode="query"></mat-progress-bar>
                       </td>
@@ -1499,14 +1519,22 @@
                         <table class="table table-bordered table-responsive-sm">
                           <thead class="thead-all">
                             <tr class="tr-th-all">
-                              <th scope="col">Date</th>
-                              <th scope="col">Employee Ref Code</th>
-                              <th scope="col">Time</th>
-                              <th scope="col">IN/OUT</th>
-                              <th scope="col">Device Id</th>
-                              <th scope="col">Status</th>
-                              <th scope="col">Comments</th>
-                              <th scope="col">Processed?</th>
+                              <th scope="col">
+                                {{global.getGlobalNames('date')}}</th>
+                              <th scope="col">
+                                {{global.getGlobalNames('EmployeeRefCode')}}</th>
+                              <th scope="col">
+                                {{global.getGlobalNames('time')}}</th>
+                              <th scope="col">
+                                {{global.getGlobalNames('IN/OUT')}}</th>
+                              <th scope="col">
+                                {{global.getGlobalNames('DeviceId')}}</th>
+                              <th
+                                scope="col">{{global.getGlobalNames('status')}}</th>
+                              <th
+                                scope="col">{{global.getGlobalNames('comment')}}</th>
+                              <th
+                                scope="col">{{global.showLabel('Processed')}}</th>
                               <th></th>
                             </tr>
                           </thead>
@@ -1520,7 +1548,8 @@
                               <td>{{item.deviceId}}</td>
                               <td>{{item.attStatus}}</td>
                               <td [innerHTML]="item.comments"></td>
-                              <td>{{item.isProcessed}}</td>
+                              <td>{{item.isProcessed ==true ? 'True' :
+                                'False'}}</td>
                               <td><i class="fa-solid fa-image"
                                   style="color: blue; font-size: larger; display: flex;
     justify-content: center;" *ngIf="item.image" data-bs-toggle="modal"
@@ -1532,14 +1561,14 @@
                               *ngIf="row.logRecords.length === 0  && message === 'modified'"
                               style=" text-align: center; height: 150px;">
                               <td colspan="14">
-                                "No records were found"
+                                {{global.showGlobalErrors('norecords')}}
                               </td>
                             </tr>
                             <tr
                               *ngIf="row.logRecords.length === 0  && message === 'clickOnsubmit'"
                               style=" text-align: center; height: 150px;">
                               <td colspan="14">
-                                "Great choices! Finalize your selection by clicking 'Submit' to generate a report with the filtered data you've chosen."
+                                {{global.showGlobalErrors('greatChoices')}}
                               </td>
                             </tr>
                           </tbody>
@@ -1549,12 +1578,12 @@
                   </ng-container>
                 </tbody>
               </table>
-              <!-- <div
-                *ngIf="secondTab &&  unApprovedRows.length > unApprovedconfig.itemsPerPage"
+              <div
+                *ngIf="secondTab &&  unApprovedRows.length > config.itemsPerPage"
                 class="text-center mt-3">
                 <pagination-controls
-                  (pageChange)="unApprovedPageChanged($event)"></pagination-controls>
-              </div> -->
+                  (pageChange)="configPageChange($event)"></pagination-controls>
+              </div>
             </div>
           </div>
         </div>
@@ -1565,9 +1594,9 @@
 
       <div
         class="tab-pane fade"
-        id="pills-contact"
+        id="pills-Approved"
         role="tabpanel"
-        aria-labelledby="pills-contact-tab"
+        aria-labelledby="pills-Approved-tab"
         tabindex="0">
         <div class="row">
           <div class="col-md-12">
@@ -1578,7 +1607,7 @@
                 <thead class="thead-all">
                   <tr class="tr-th-all">
                     <th>
-                      Date
+                      {{global.getGlobalNames('date')}}
                       <i
                         class="fa fa-sort"
                         data-column="dateCode"
@@ -1590,7 +1619,7 @@
                         }"></i>
                     </th>
                     <th>
-                      Employee Name
+                      {{global.getGlobalNames('employeeName')}}
                       <i
                         class="fa fa-sort"
                         data-column="employeeName"
@@ -1604,12 +1633,15 @@
                             sortOrder === 'desc'
                         }"></i>
                     </th>
-                    <th class>Shift</th>
-                    <th class="text-center">Is Holiday</th>
-                    <th class="text-center">Is Week Off</th>
-                    <th class="text-center">Work Hrs</th>
+                    <th class> {{global.getGlobalNames('shift')}}</th>
+                    <th class="text-center">
+                      {{global.showLabel('isHoliday')}}</th>
+                    <th class="text-center">
+                      {{global.showLabel('IsWeekoff')}}</th>
+                    <th class="text-center">
+                      {{global.getGlobalNames('workHrs')}}</th>
                     <th>
-                      Total Hrs
+                      {{global.getGlobalNames('totalHours')}}
                       <i
                         class="fa fa-sort"
                         data-column="totalHours1"
@@ -1622,7 +1654,7 @@
                         }"></i>
                     </th>
                     <th class="text-center">
-                      Effective Hrs
+                      {{global.getGlobalNames('EffectiveHrs')}}
                       <i
                         class="fa fa-sort"
                         data-column="effectiveHrs1"
@@ -1634,7 +1666,7 @@
                             sortColumn === 'effectiveHrs1' && sortOrder === 'desc'
                         }"></i>
                     </th>
-                    <th>Attendance Status </th>
+                    <th> {{global.getGlobalNames('AttendanceStatus')}} </th>
                   </tr>
                 </thead>
                 <tbody
@@ -1642,7 +1674,7 @@
                   <tr
                     style=" text-align: center; height: 150px;">
                     <td colspan="14">
-                      "No records were found with the selected filter criteria."
+                      {{global.showGlobalErrors('notFound')}}
                     </td>
                   </tr>
                 </tbody>
@@ -1651,8 +1683,7 @@
                   <tr
                     style=" text-align: center; height: 150px;">
                     <td colspan="14">
-                      "Great choices! Finalize your selection by clicking 'Submit' to generate a report with the filtered data you've chosen."
-                    </td>
+                      {{global.showGlobalErrors('greatChoices')}} </td>
                   </tr>
                 </tbody>
 
@@ -1660,7 +1691,7 @@
                   <tr
                     class="dasboard-td"
                     *ngFor="
-                      let isApprow of isApprovedRecords;
+                      let isApprow of isApprovedRecords | paginate : config;
                       let i = index
                     ">
                     <td>{{ isApprow.dateCode | date : dateFormat }}</td>
@@ -1693,7 +1724,8 @@
                     </td>
                     <td class="text-center">
                       <span>
-                        <td>IN :</td> <td class="text-end"> {{ isApprow.inDate
+                        <td>{{global.getGlobalNames('inDate')}} :</td> <td
+                          class="text-end"> {{ isApprow.inDate
                           }} {{ isApprow.inTime }} </td>
                         <!-- In :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <b class="edit-cal">{{ isApprow.inDate }}
@@ -1703,8 +1735,9 @@
                       <br />
                       <span style="margin-top: -10px">
 
-                        <td>OUT :</td> <td class="text-end"> {{ isApprow.outDate
-                          }} {{ isApprow.outTime }} </td>
+                        <td> {{global.getGlobalNames('outDate')}} :</td> <td
+                          class="text-end"> {{ isApprow.outDate }} {{
+                          isApprow.outTime }} </td>
                         <!-- Out :&nbsp;&nbsp;&nbsp;
                         <b class="edit-cal">{{ isApprow.outDate }}
                           {{ isApprow.outTime }}
@@ -1714,7 +1747,8 @@
 
                     <td class="text-center">{{ isApprow?.totalHours1 }}</td>
                     <td class="text-center"> {{ isApprow?.effectiveHrs1 }}</td>
-                    <td> <span *ngIf="isApprow.attStatus === 'P'">Present</span>
+                    <td> <span
+                        *ngIf="isApprow.attStatus === 'P'">{{global.getGlobalNames('present')}}</span>
                       <span
                         *ngIf="isApprow.attStatus !== 'P'">{{isApprow.attStatus}}
                       </span></td>
@@ -1722,12 +1756,12 @@
 
                 </tbody>
               </table>
-              <!-- <div
-                *ngIf="thirdTab && isApprovedRecords.length > isApprovedconfig.itemsPerPage"
+              <div
+                *ngIf="thirdTab && isApprovedRecords.length > config.itemsPerPage"
                 class="text-center mt-3">
                 <pagination-controls
-                  (pageChange)="isApprovedpageChanged($event)">jjjd</pagination-controls>
-              </div> -->
+                  (pageChange)="configPageChange($event)"> </pagination-controls>
+              </div>
             </div>
           </div>
         </div>
@@ -1737,11 +1771,12 @@
   </div>
 </div>
 
-<div id="viewRecord" class="modal custom-modal fade" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+<div id="viewRecord" class="modal custom-modal fade" role="dialog"
+  data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Time Sheet</h5>
+        <h5 class="modal-title">{{global.getGlobalNames('TimeSheet')}}</h5>
         <button
           id="timesheetclose"
           type="button"
@@ -1753,28 +1788,34 @@
       <div class="modal-body">
         <div class="row">
           <div class="col-md-12 text-center">
-            <span class="block my-2">Date :
+            <span class="block my-2"> {{global.getGlobalNames('date')}} :
               {{ view?.dateCode | date : dateFormat }}
             </span>
-            <span class="my-2">Comment:
+            <span class="my-2"> {{global.getGlobalNames('Comment')}}:
               {{ view?.comments ? view?.comments : "-" }}
             </span>
           </div>
           <div class="col-md-6">
             <section class="border-bottom p-2"
               style="border: 1px solid; border-color: #8e958e55; border-radius: 10px;">
-              <h5 class="border-bottom p-2">Details</h5>
+              <h5 class="border-bottom p-2">
+                {{global.showLabel('Details')}}</h5>
               <table class="w-100">
                 <tbody>
-                  <tr class="p-2"><td class="text-muted">Employee code
+                  <tr class="p-2"><td
+                      class="text-muted">{{global.getGlobalNames('employeeCode')}}
                       :</td><td>{{view?.employeeCode}}</td></tr>
-                  <tr class="p-2"><td class="text-muted">Employee name : </td>
+                  <tr class="p-2"><td
+                      class="text-muted" style="width: 40%;">{{global.getGlobalNames('employeeName')}} : </td>
                     <td> {{view?.employeeName}} </td></tr>
-                  <tr class="p-2"><td class="text-muted"> Shift :</td>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('shift')}} :</td>
                     <td>{{view?.shift}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Branch :</td> <td>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('Branch')}} :</td> <td>
                       {{view?.branchCode}}</td></tr>
-                  <tr class="p-2"> <td class="text-muted"> Company
+                  <tr class="p-2"> <td class="text-muted">
+                      {{global.showLabel('Company')}}
                       :</td><td>{{view?.companyCode}}</td> </tr>
                 </tbody>
               </table>
@@ -1782,28 +1823,40 @@
 
             <section class="border-bottom p-2 my-2"
               style="border: 1px solid; border-color: #8e958e55; border-radius: 10px;">
-              <h5 class="border-bottom p-2">Status</h5>
+              <h5 class="border-bottom p-2">
+                {{global.getGlobalNames('status')}}</h5>
               <table class="w-100">
                 <tbody>
-                  <tr class="p-2"><td class="text-muted"> Entry Status
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('entryStatus')}}
                       :</td><td>{{ view?.entryStatus}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted">Entry Hrs : </td><td>{{
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.showLabel('EntryHrs')}} : </td><td>{{
                       view?.entryHrs }}</td></tr>
-                  <tr class="p-2"><td class="text-muted"> Exit Status :</td><td>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('exitStatus')}} :</td><td>
                       {{ view?.exitStatus }}</td></tr>
-                  <tr class="p-2"><td class="text-muted"> Exit Hrs : </td><td>{{
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.showLabel('ExitHrs')}} : </td><td>{{
                       view?.exitHrs }}</td></tr>
-                  <tr class="p-2"><td class="text-muted"> Is Holiday :</td>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.showLabel('isHoliday')}} :</td>
                     <td>{{ view?.isHoliday }}</td></tr>
-                  <tr class="p-2"><td class="text-muted"> Is WeeklyOff :</td>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.showLabel('IsWeekoff')}} :</td>
                     <td>{{view?.isWeeklyOff }}</td></tr>
-                  <tr class="p-2"><td class="text-muted">Status:</td><td>{{
+                  <tr class="p-2"><td
+                      class="text-muted">{{global.getGlobalNames('status')}}:</td><td>{{
                       view?.status }}</td></tr>
-                  <tr class="p-2"><td class="text-muted"> Need Validation :</td>
+                  <tr class="p-2"><td
+                      class="text-muted">{{global.showLabel('NeedValidation')}}
+                      :</td>
                     <td>{{ view?.needValidation }}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Is Finalized :</td>
+                  <tr class="p-2"><td
+                      class="text-muted">{{global.showLabel('IsFinalized')}}:</td>
                     <td>{{ view?.isFinalized }}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Approved :</td> <td>{{
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('approve')}}:</td> <td>{{
                       view?.isApproved }}</td> </tr>
                 </tbody></table>
             </section>
@@ -1812,26 +1865,36 @@
           <div class="col-md-6">
             <section class="border-bottom p-2"
               style="border: 1px solid; border-color: #8e958e55; border-radius: 10px;">
-              <h5 class="border-bottom p-2">Attendance Details</h5>
+              <h5
+                class="border-bottom p-2">{{global.showLabel('AttendanceDetails')}}</h5>
               <table class="w-100">
                 <tbody>
-                  <tr class="p-2"><td class="text-muted">In Date
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('inDate')}}
                       :</td><td>{{view?.inDate | date : dateFormat}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> In Time :</td><td>{{
-                      view?.inTime }}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Out Date :</td><td>{{
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('inTime')}} :</td><td>{{
+                      view?.inTime}}</td> </tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('outDate')}} :</td><td>{{
                       view?.outDate | date : dateFormat}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Out Time :</td><td>{{
-                      view?.outTime }}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Total Hours
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('outTime')}} :</td><td>{{
+                      view?.outTime}}</td> </tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('totalHours')}}
                       :</td><td>{{ view?.totalHours1}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Effective Hours
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('EffectiveHrs')}}
                       :</td><td>{{ view?.effectiveHrs1}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> OT Hours :</td><td>{{
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('OTHrs')}} :</td><td>{{
                       view?.otHours}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Regular Hours
-                      :</td><td>{{ view?.regularhours}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Attendance Status
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('RegularHours')}}
+                      :</td><td>{{ view?.regularHours1}}</td> </tr>
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.getGlobalNames('AttendanceStatus')}}
                       :</td><td>{{ view?.attStatus}}</td> </tr>
                 </tbody>
               </table>
@@ -1839,18 +1902,25 @@
 
             <section class="border-bottom p-2 my-2"
               style="border: 1px solid; border-color: #8e958e55; border-radius: 10px;">
-              <h5 class="border-bottom p-2">Device</h5>
+              <h5 class="border-bottom p-2"> {{global.getGlobalNames('device')}}
+              </h5>
               <table>
                 <tbody>
-                  <tr class="p-2"><td class="text-muted"> In Device :</td><td>{{
+                  <tr class="p-2"><td
+                      class="text-muted">{{global.showLabel('InDevice')}}
+                      :</td><td>{{
                       view?.inDevice}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> In Location
+                  <tr class="p-2"><td
+                      class="text-muted">{{global.showLabel('InLocation')}}
                       :</td><td>{{ view?.inLocation}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted">Last In Time
+                  <tr class="p-2"><td
+                      class="text-muted">{{global.showLabel('LastInTime')}}
                       :</td><td>{{ view?.lastInTime}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Out Device
+                  <tr class="p-2"><td class="text-muted">
+                      {{global.showLabel('OutDevice')}}
                       :</td><td>{{ view?.outDevice}}</td> </tr>
-                  <tr class="p-2"><td class="text-muted"> Out Location
+                  <tr class="p-2"><td
+                      class="text-muted">{{global.showLabel('OutLocation')}}
                       :</td><td>{{ view?.outLocation}}</td> </tr>
 
                 </tbody>
@@ -1864,8 +1934,9 @@
   </div>
 </div>
 
-<div id="previewFile" class="modal custom-modal fade" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+<div id="previewFile" class="modal custom-modal fade" role="dialog"
+  data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="dialog">
     <div class="modal-content">
       <ng-container
         *ngIf="PreviewObject">
@@ -1879,7 +1950,8 @@
           type="button"
           class="btn delete-btn closeDesig"
           data-bs-dismiss="modal"
-          aria-label="Close" (click)="PreviewObject = null"> Cancel</button>
+          aria-label="Close" (click)="PreviewObject = null">
+          {{global.getGlobalNames('cancel')}}</button>
 
       </div>
     </div>

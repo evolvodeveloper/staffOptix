@@ -49,8 +49,6 @@ export class LeaveHistoryComponent implements OnInit, AfterContentInit {
   balanceLeaves = [];
   balanceLeavesTemp = [];
   config: any;
-  config1: any;
-  config2: any;
   hasPermissionToUpdate = false;
   hasPermissionToApprove = false;
   temp = [];
@@ -83,31 +81,21 @@ export class LeaveHistoryComponent implements OnInit, AfterContentInit {
     private fb: FormBuilder,
     private utilServ: UtilService,
     private acRoute: ActivatedRoute,
-    private global: GlobalvariablesService,
+    public global: GlobalvariablesService,
     private modalService: NgbModal,
     private httpPutServ: HttpPutService
   ) {
     this.config = {
       itemsPerPage: 25,
       currentPage: 1,
-      totalItems: this.leaveHistory.length,
-    };
-    this.config1 = {
-      itemsPerPage: 25,
-      currentPage: 1,
-      totalItems: this.unapprovedLeaves.length,
+      totalItems: this.hasPermissionToApprove == true ? this.unapprovedLeaves.length : this.leaveHistory.length,
     };
 
-    this.config2 = {
-      itemsPerPage: 25,
-      currentPage: 1,
-      totalItems: this.balanceLeaves.length,
-    };
     const currentDate = moment(); // Get the current date
-    const threeMonthsFromNow = currentDate.clone().add(3, 'months');
+    const month = currentDate.clone().add(0, 'months');
     const threeMonthsBeforeNow = currentDate.clone().subtract(3, 'months');
-    this.minDate = moment(threeMonthsBeforeNow).format('YYYY-MM-DD')
-    this.maxDate = moment(threeMonthsFromNow).format('YYYY-MM-DD')
+    // this.minDate = moment(threeMonthsBeforeNow).format('YYYY-MM-DD')
+    this.maxDate = moment(month).format('YYYY-MM-DD');
   }
   setMonthAndYear(
     normalizedMonthAndYear: Moment,
@@ -161,30 +149,39 @@ export class LeaveHistoryComponent implements OnInit, AfterContentInit {
       this.hasPermissionToApprove = permission.hasPermissionToApprove
     });
     if (this.hasPermissionToApprove) {
+
       this.tab2();
+
     } else {
+
       this.tab1();
     }
   }
   ngOnInit() {
+    this.global.getMyCompLabels('leaveHistory');
+    this.global.getMyCompPlaceHolders('leaveHistory');
     this.getUserProfile.call(this);
     this.getUnapprovedLeaves();
     this.getRemainingLeaves();
   }
 
   tab1() {
+    this.config.totalItems = this.leaveHistory.length;
+    this.config.currentPage = 1;
     this.firstTab = true;
     this.secondTab = false;
     this.thirdTab = false;
-
   }
   tab2() {
+    this.config.totalItems = this.unapprovedLeaves.length;
+    this.config.currentPage = 1;
     this.firstTab = false;
     this.secondTab = true;
     this.thirdTab = false;
-
   }
   tab3() {
+    this.config.totalItems = this.balanceLeaves.length;
+    this.config.currentPage = 1;
     this.firstTab = false;
     this.secondTab = false;
     this.thirdTab = true;
@@ -205,9 +202,8 @@ export class LeaveHistoryComponent implements OnInit, AfterContentInit {
             });
           }
           else {
-            this.leaveHistory = leaveHistory
+            this.leaveHistory = leaveHistory;
           }
-          this.config.totalItems = this.leaveHistory.length;
         },
         (err) => {
           this.spinner.hide();
@@ -230,8 +226,7 @@ export class LeaveHistoryComponent implements OnInit, AfterContentInit {
         else {
           this.unapprovedLeaves = unapprovedLeaves
         }
-        this.config1.totalItems = this.unapprovedLeaves.length;
-        this.config1.currentPage = 1;
+
       });
   }
 
@@ -256,22 +251,17 @@ export class LeaveHistoryComponent implements OnInit, AfterContentInit {
   pageChanged(event) {
     this.config.currentPage = event;
   }
-  pageChanged1(event) {
-    this.config1.currentPage = event;
-  }
-  pageChanged2(event) {
-    this.config2.currentPage = event;
-  }
-  resultsPerPage1(event) {
-    this.config1.itemsPerPage =
-      event.target.value == 'all' ? this.unpprovedLeavesTemp.length : event.target.value;
-    this.config1.currentPage = 1;
-  }
-  resultsPerPage2(event) {
-    this.config2.itemsPerPage =
-      event.target.value == 'all' ? this.balanceLeaves.length : event.target.value;
-    this.config2.currentPage = 1;
-  }
+
+  // resultsPerPage1(event) {
+  //   this.config.itemsPerPage =
+  //     event.target.value == 'all' ? this.unpprovedLeavesTemp.length : event.target.value;
+  //   this.config.currentPage = 1;
+  // }
+  // resultsPerPage2(event) {
+  //   this.config.itemsPerPage =
+  //     event.target.value == 'all' ? this.balanceLeaves.length : event.target.value;
+  //   this.config.currentPage = 1;
+  // }
   updateFilter2(event) {
     const val = event.target.value.toLowerCase();
     if (val == '') {
@@ -282,8 +272,8 @@ export class LeaveHistoryComponent implements OnInit, AfterContentInit {
       });
       this.balanceLeaves = temp;
     }
-    this.config2.totalItems = this.balanceLeaves.length;
-    this.config2.currentPage = 1;
+    this.config.totalItems = this.balanceLeaves.length;
+    this.config.currentPage = 1;
   }
   updateFilter1(event) {
     const val = event.target.value.toLowerCase();
@@ -295,8 +285,8 @@ export class LeaveHistoryComponent implements OnInit, AfterContentInit {
       });
       this.unapprovedLeaves = temp;
     }
-    this.config1.totalItems = this.unapprovedLeaves.length;
-    this.config1.currentPage = 1;
+    this.config.totalItems = this.unapprovedLeaves.length;
+    this.config.currentPage = 1;
   }
   applyLeave(row, action) {
     const modalRef = this.modalService.open(ApplyLeaveComponent, {

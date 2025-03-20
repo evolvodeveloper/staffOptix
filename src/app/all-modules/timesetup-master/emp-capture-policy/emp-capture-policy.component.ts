@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalvariablesService } from 'src/app/services/globalvariables.service';
 import { HttpGetService } from 'src/app/services/http-get.service';
 import { UtilService } from 'src/app/services/util.service';
 import Swal from 'sweetalert2';
@@ -29,6 +30,7 @@ export class EmpCapturePolicyComponent implements OnInit {
     private httpGetService: HttpGetService,
     private spinner: NgxSpinnerService,
     private utilServ: UtilService,
+    public globalServ: GlobalvariablesService,
     private acRoute: ActivatedRoute
   ) {
     this.config = {
@@ -38,6 +40,8 @@ export class EmpCapturePolicyComponent implements OnInit {
     };
   }
   ngOnInit() {
+    this.globalServ.getMyCompLabels('capturePolicySetup');
+    this.globalServ.getMyCompPlaceHolders('capturePolicySetup');
     this.acRoute.data.subscribe(data => {
       const permission = data.condition
       this.hasPermissionToUpdate = permission.hasPermissionToUpdate

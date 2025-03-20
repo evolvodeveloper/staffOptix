@@ -87,7 +87,7 @@ export class CreatePayrollTypeComponent implements OnInit, OnDestroy {
     private httpPostService: HttpPostService,
     private spinner: NgxSpinnerService,
     private utilServ: UtilService,
-    private globalServ: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private httpGetService: HttpGetService
   ) {
     // this.payrollComponentForm = this.fb.group({

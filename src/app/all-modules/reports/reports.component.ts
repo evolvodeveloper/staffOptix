@@ -54,15 +54,18 @@ export class ReportsComponent implements OnInit {
           pages.push({
             header: u,
             subPages: arr.sort((a, b) => {
-              return a.priority - b.priority;
+              // return a.priority - b.priority;
+              return a.name.localeCompare(b.name);
             }),
           });
         }
       });
     });
+
     this.pages = pages.sort((a, b) => {
       return b.header.localeCompare(a.header);
     })
 
   }
+
 }

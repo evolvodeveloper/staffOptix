@@ -52,7 +52,7 @@ export class PayrolldetailsComponent implements OnInit, AfterViewInit {
   constructor(
     private httpPostService: HttpPostService,
     private spinner: NgxSpinnerService,
-    private global: GlobalvariablesService,
+    public globalServ: GlobalvariablesService,
     private httpGetService: HttpGetService,
     private router: Router
   ) {
@@ -64,6 +64,7 @@ export class PayrolldetailsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.globalServ.getMyCompLabels('payrolDetails');
     this.getProjectList();
     this.getDepartments();
     this.getPayrollCodes();
@@ -189,8 +190,7 @@ export class PayrolldetailsComponent implements OnInit, AfterViewInit {
       this.year = dateSplit[0];
     }
     this.config.currentPage = 1;
-    this.httpGetService.
-      getMasterList('reports/salcomponents?payrollCode=' +
+    this.httpGetService.getMasterList('reports/salcomponents?payrollCode=' +
         this.reportObj.payrollCode +
         '&empCode=' +
         this.reportObj.employeeCode +
@@ -275,11 +275,12 @@ export class PayrolldetailsComponent implements OnInit, AfterViewInit {
       .subscribe((res: any) => {
         this.spinner.hide();
         const data: Blob = new Blob([res], { type: EXCEL_TYPE });
+        const fileName = 'Payroll_Details_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_');
         FileSaver.saveAs(
           data,
-          'Payroll_Details' + new Date().getTime() + EXCEL_EXTENSION
+          fileName + EXCEL_EXTENSION
         );
-        this.global.showSuccessPopUp('Excel', 'success');
+        this.globalServ.showSuccessPopUp('Excel', 'success', fileName);
       },
         err => {
           this.spinner.hide();
@@ -308,9 +309,10 @@ export class PayrolldetailsComponent implements OnInit, AfterViewInit {
         '&year=' + this.year + '&date=' + this.date + '&month=' + this.month
     ).subscribe((res: any) => {
         this.spinner.hide();
-        const file = new Blob([res], { type: 'application/pdf' });
-      FileSaver.saveAs(file, 'Payroll_Details' + new Date().getTime() + '.pdf');
-      this.global.showSuccessPopUp('Pdf', 'success');
+      const file = new Blob([res], { type: 'application/pdf' });
+      const fileName = 'Payroll_Details_' + new Date().toTimeString().split(' ')[0].replace(/:/g, '_');
+      FileSaver.saveAs(file, fileName + '.pdf');
+      this.globalServ.showSuccessPopUp('Pdf', 'success', fileName);
         // const fileURL = URL.createObjectURL(file);
         // window.open(fileURL);
       });

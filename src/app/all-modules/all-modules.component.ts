@@ -13,8 +13,9 @@ export class AllModulesComponent {
   isSpecialRoute: boolean;
   remainingdays: number;
   showGif: boolean;
-  constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef, private global: GlobalvariablesService, private router: Router, private utilService: UtilService) {
+  constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef, public globalServ: GlobalvariablesService, private router: Router, private utilService: UtilService) {
     this.showGif = this.utilService.showGif;
+
     this.router.events.subscribe(() => {
       this.isSpecialRoute = this.router.url == '/dashboard'; // Adjust the condition based on your route structure
     });
@@ -57,7 +58,7 @@ export class AllModulesComponent {
   }
 
   callme() {
-    if (this.global.menu_listJSON.length > 0) {
+    if (this.globalServ.menu_listJSON.length > 0) {
       this.showGif = this.utilService.showGif;
     } else {
       setTimeout(() => {

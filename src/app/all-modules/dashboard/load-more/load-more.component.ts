@@ -14,7 +14,7 @@ export class LoadMoreComponent implements OnInit {
   dateFormat: string;
 
   constructor(public activeModal: NgbActiveModal,
-    private global: GlobalvariablesService,
+    public global: GlobalvariablesService,
   ) { }
 
   ngOnInit(): void {

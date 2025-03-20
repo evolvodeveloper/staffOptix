@@ -8,11 +8,12 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { EarlyLateReportsRoutingModule } from './early-late-reports-routing.module';
 import { EarlyLateReportsComponent } from './early-late-reports.component';
 
+import { CdkDrag, CdkDragPlaceholder, CdkDropList, DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [EarlyLateReportsComponent],
   imports: [
-    CommonModule, NgxPaginationModule, FormsModule, NgSelectModule,
+    CommonModule, NgxPaginationModule, FormsModule, CdkDrag, CdkDragPlaceholder, CdkDropList, DragDropModule, NgSelectModule,
     NgxDaterangepickerMd.forRoot(),
     EarlyLateReportsRoutingModule,
     SharedModule

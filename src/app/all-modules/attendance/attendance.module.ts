@@ -32,6 +32,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
     MatDatepickerModule,
     MatInputModule,
     MatNativeDateModule,
+    MatTooltipModule,
     ReactiveFormsModule,
     MatTooltipModule,
     FormsModule,
